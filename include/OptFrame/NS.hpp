@@ -4,10 +4,15 @@
 #ifndef OPTFRAME_NS_HPP_
 #define OPTFRAME_NS_HPP_
 
+#include <string>
+#include <utility>
+//
+
 #include "Move.hpp"
 // #include "Solution.hpp"
 //#include "Action.hpp"
 #include "Component.hpp"
+#include "Domain.hpp"
 #include "GeneralEvaluator.hpp"  // included for Neighborhood Exploration
 #include "Helper/MultiEvaluation.hpp"
 
@@ -70,8 +75,9 @@ class NS : public Component {
  public:
   static string idComponent() {
     stringstream ss;
-    ss << Component::idComponent() << ":NS";
-    if constexpr (std::is_same_v<XEv, MultiEvaluation<>>) ss << "<XMESf64>";
+    ss << Component::idComponent() << ":NS"
+       << Domain::getAlternativeDomain<XES>("<XESf64>");
+    // if constexpr (std::is_same_v<XEv, MultiEvaluation<>>) ss << "<XMESf64>";
     return ss.str();
   }
 

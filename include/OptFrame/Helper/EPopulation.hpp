@@ -45,6 +45,7 @@ class EPopulation : public Component {
   std::vector<XES*> p;
 
  public:
+  using value_type = XES;
   EPopulation() {
   }
 

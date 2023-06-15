@@ -59,6 +59,9 @@ class Pareto {
   using XEv = typename XMEv::XEv;
   static_assert(XEvaluation<XEv>);
 
+public:
+ using value_type = XMES;
+
  private:
   // all individuals are safely stored here
   vector<uptr<XMES>> paretoSetFront;

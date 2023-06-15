@@ -370,21 +370,6 @@ concept
   // details on types
   XSolution<typename Self::first_type>;
   XEvaluation<typename Self::second_type>;
-
-  // old impl. base (deprecated)
-  /*
-  // also allowing as pair<S, XEv>
-  {
-     XSolution<decltype(a.first)>
-  }
-  //-> XSolution<decltype<a.first>>
-  //->XSolution&
-  ;
-  {
-     a.second
-  }
-  ->XEvaluation&;
-  */
 };
 
 // =====================
@@ -426,6 +411,8 @@ concept
     //
     a.at(idx)
     } -> my_convertible_to<P>;
+    //
+    typename Self::value_type;
 };
 /*
 || requires(Self a, size_t idx)

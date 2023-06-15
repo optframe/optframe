@@ -198,6 +198,8 @@ class Component {
 
   virtual std::string id() const { return idComponent(); }
 
+  virtual std::string defaultDomain() const { return ""; }
+
   virtual bool compatible(std::string s) {
     return (s == id()) ||
            (s == idComponent());  // equal to this component or "OptFrame:" base

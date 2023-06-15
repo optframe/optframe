@@ -4,17 +4,15 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
-#include <OptFrame/BaseConcepts.hpp>
+#include<string>
+//
 
+#include <OptFrame/BaseConcepts.hpp>
 #include "Component.hpp"
-//#include "Solution.hpp"
-//#include "Solutions/CopySolution.hpp"
-//#include "InitialSearch.hpp" // TODO: remove
+#include "Domain.hpp"
 
 namespace optframe {
 
-// template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S =
-// CopySolution<R, ADS>>
 template <XSolution S>
 class Constructive : public Component {
  public:
@@ -31,15 +29,22 @@ class Constructive : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     std::string s = Component::idComponent();
-    ss << s << ":Constructive";
+    ss << s << ":Constructive" << Domain::getAlternativeDomain<S>("<XS>");
+
     return ss.str();
   }
 
-  virtual std::string id() const override { return idComponent(); }
+   std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override { return id(); }
+   std::string toString() const override { return id(); }
 };
 //
+
+#ifndef NDEBUG
+//static_assert(Domain::getAlternativeDomain<void*>("<XS>") == std::string_view(""));
+//static_assert(Domain::getAlternativeDomain<std::vector<double>>("<XS>") == std::string_view("<XRKf64>"));
+#endif
+
 }  // namespace optframe
 
 #endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/

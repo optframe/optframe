@@ -192,6 +192,7 @@ class TestPopOrPareto {
 // example of a Population element
 template <XESolution XES>
 struct IsPopulation {
+  using value_type = XES;
   size_t size();      // required
   XES& at(size_t i);  // required
 };
@@ -204,6 +205,7 @@ static_assert(X2ESolution<IsPopulation<IsESolution<double>>, IsESolution<double>
 // example of a Pareto element
 template <XESolution XES>
 struct IsPareto {
+  using value_type = XES;
   size_t size();      // required
   XES& at(size_t i);  // required
 };
