@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_SINGLE_OBJ_SEARCH_HPP_
-#define OPTFRAME_SINGLE_OBJ_SEARCH_HPP_
+#ifndef OPTFRAME_SINGLEOBJSEARCH_HPP_
+#define OPTFRAME_SINGLEOBJSEARCH_HPP_
 
 // C++
 #include <iostream>
@@ -32,31 +32,16 @@ concept
   XESolution<typename Self::BestType>;
 };
 
-// template<XESolution XES, XEvaluation XEv = Evaluation<>>
-// concept SolEv;
-
-// This is a XES, XES global search... using space XES = <S, XEv>
-// template<XESolution XES, XSearchMethod XM = Component>
+// REMEMBER: XES = (S, E)
 //
-// template<XESolution XES, XEvaluation XEv = Evaluation<>>
-//
-// (Primary) Search space is decided by XES
+// (Primary) Search space (implicit XSH) is decided by XES
 // Secondary search space XSH2 is undecided... could be trajectory-based (as
 // default) or population-based
 template <XESolution XES, XESolution XES2 = XES, XSearch<XES2> XSH2 = XES2>
-class SingleObjSearch : public GlobalSearch<XES, XES>  // public Component
-{
+class SingleObjSearch : public GlobalSearch<XES, XES> {
+  // NOTE THAT: XSearch<XES> XSH = XES (IMPLICIT!)
+  using XSH = XES;
   using XEv = typename XES::second_type;
-  // if passing types directly here, error 'typedef declared auto'
-  // typedef vector<XEv*> FitnessValues;
-  // typedef const vector<const XEv*> ConstFitnessValues;
-
-  using XSH = XES;  // XSearch<XES> = XES
-
-  // onIncumbent for SingleObjSearch
-  // bool (*onSingleIncumbent)(GlobalSearch<XES, XSH>& self, const XSH2&
-  // incumbent) =
-  //  [](GlobalSearch<XES, XSH>& self, const XSH2& incumbent) { return true; };
 
   // ========================================
   // THIS CLASS IS USELESS! WHAT'S THE POINT?
@@ -70,19 +55,7 @@ class SingleObjSearch : public GlobalSearch<XES, XES>  // public Component
 
   // search method try to find a feasible solution within timelimit, if there is
   // no such solution it returns nullptr.
-  // virtual pair<S, XEv>* search(StopCriteria<XEv>& stopCriteria, const S* _s =
-  // nullptr, const XEv* _e = nullptr) = 0; virtual std::optional<pair<S, XEv>>
-  // search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<S, XEv>>
-  // input = std::nullopt) = 0;
 
-  // virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria)
-  // = 0; virtual SearchStatus search(op<XSH>& inputOutput, const XStop&
-  // stopCriteria) = 0; virtual SearchStatus search(op<XSH>& inputOutput, const
-  // StopCriteria<XEv>& stopCriteria) = 0;
-  //
-  //  inputOutput now passed directly on local variable 'this->best'
-  //
-  // virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
   SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
                              std::optional<XSH> best) override = 0;
 
@@ -94,29 +67,30 @@ class SingleObjSearch : public GlobalSearch<XES, XES>  // public Component
 
   static string idComponent() {
     stringstream ss;
-    ss << GlobalSearch<XES, XES>::idComponent() << ":SingleObjSearch";
+    ss << GlobalSearch<XES, XES>::idComponent() << ":SingleObjSearch"
+       << Domain::getAlternativeDomain<XES>("<XESf64>");
+    // NOTE THAT: PRIMARY/BEST IS ALWAYS XESf64 FOR SINGLE-OBJ-SEARCH
     return ss.str();
   }
 
   std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override { return id(); }
+  std::string toString() const override { return id(); }
 };
 
-// template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S =
-// CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>> template<XESolution XES,
-// XEvaluation XEv = Evaluation<>>
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~SingleObjSearchBuilder() {}
+  virtual ~SingleObjSearchBuilder() = default;
 
+  // NOLINTNEXTLINE
   virtual SingleObjSearch<XES>* build(Scanner& scanner,
                                       HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                       string family = "") = 0;
 
+  // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
@@ -147,7 +121,7 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class SingleObjSearchAction : public Action<S, XEv, X2ES> {
  public:
-  virtual ~SingleObjSearchAction() {}
+  virtual ~SingleObjSearchAction() = default;
 
   virtual string usage() {
     return "OptFrame:SingleObjSearch idx   search    timelimit  target_f  "
@@ -267,4 +241,4 @@ class SingleObjSearchAction : public Action<S, XEv, X2ES> {
 };
 }  // namespace optframe
 
-#endif /* OPTFRAME_SINGLE_OBJ_SEARCH_HPP_ */
+#endif  // OPTFRAME_SINGLEOBJSEARCH_HPP_

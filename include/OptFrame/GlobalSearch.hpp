@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_GLOBAL_SEARCH_HPP_
-#define OPTFRAME_GLOBAL_SEARCH_HPP_
+#ifndef OPTFRAME_GLOBALSEARCH_HPP_
+#define OPTFRAME_GLOBALSEARCH_HPP_
 
 // C++
 #include <cstring>
 #include <iostream>
+#include <string>
 #include <utility>
 #include <vector>
 //
@@ -18,17 +19,8 @@
 #include <OptFrame/SearchOutput.hpp>
 #include <OptFrame/StopCriteria.hpp>
 
-// using namespace std;
-
 namespace optframe {
-
-// Defaulting SearchSpace to XES, it means, <S,XEv> space (typically, single obj
-// search)
-// template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM =
-// Component>
-//
-// template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH =
-// XES>
+// REMEMBER: XES = (S, E)
 //
 // 'XES' is the "base concept" for the primary search component.
 // 'XSH' is the primary search type ('best' has type XSH)
@@ -46,8 +38,11 @@ class GlobalSearch : public Component {
   using BestType = XSH;
 
  public:
+  // AVAILABLE HERE
   // best known XSH object: solution/pareto/etc
   // std::optional<XSH> best;
+  //
+  // NOT AVAILABLE HERE
   // current/working XSH2 object: population/etc
   // std::optional<XSH2> incumbent;
   // ----------
@@ -61,15 +56,7 @@ class GlobalSearch : public Component {
       [](GlobalSearch<XES, BestType>& self, const BestType& best) {
         return true;
       };
-  //
-  // onIncumbent now will depend on Incumbent type (look on ITrajectory or
-  // IPopulational)
-  //
-  // bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2&
-  // incumbent) =
-  //  [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) {
-  //  return true; };
-  //
+
   // strict or non-strict search
   bool strict{true};
 
@@ -89,16 +76,6 @@ class GlobalSearch : public Component {
   virtual SearchOutput<XES, BestType> searchBy(const StopCriteria<XEv>& stop,
                                                std::optional<XSH> best) = 0;
 
-  /*
-   virtual SearchStatus searchBy(std::optional<XSH>& _best, std::optional<XSH2>&
-   _inc, const StopCriteria<XEv>& stopCriteria)
-   {
-      best = _best;
-      incumbent = _inc;
-      return search(stopCriteria);
-   }
-*/
-
   virtual std::string log() const { return "Empty heuristic log."; }
 
   bool compatible(std::string s) override {
@@ -107,7 +84,10 @@ class GlobalSearch : public Component {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":GlobalSearch";
+    ss << Component::idComponent() << ":GlobalSearch"
+       << Domain::getAlternativeDomain<XES>("<XESf64>");
+    // NOTE THAT: PRIMARY/BEST IS TYPICALLY XESf64
+    // WE IGNORE SECONDARY TYPE FOR NOW...
     return ss.str();
   }
 
@@ -164,13 +144,19 @@ class Populational : public GlobalSearch<XES, XSH> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << GlobalSearch<XES, XSH>::idComponent() << ":Populational:";
+    ss << GlobalSearch<XES, XSH>::idComponent() << ":Populational"
+       << Domain::getAlternativeDomain<XES>("<XESf64>") << ":";
+    // NOTE THAT:
+    // - PRIMARY/BEST IS TYPICALLY XESf64
+    // - SECONDARY/INCUMBENT IS TYPICALLY X2ESf64
+    // FOR NOW, WE DONT FLAG SECONDARY TYPES... BUT WE COULD IN THE FUTURE (IF
+    // NECESSARY!) A NOTATION COULD BE: Populational<XESf64, X2ESf64>
     return ss.str();
   }
 
-  virtual std::string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override { return id(); }
+  std::string toString() const override { return id(); }
 };
 
 template <XESolution XES, XSearch<XES> XSH, XESolution XES2,
@@ -213,4 +199,4 @@ class GlobalSearchBuilder
 
 }  // namespace optframe
 
-#endif /* OPTFRAME_GLOBAL_SEARCH_HPP_ */
+#endif  // OPTFRAME_GLOBALSEARCH_HPP_

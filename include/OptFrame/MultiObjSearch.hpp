@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_MULTIOBJSEARCH_HPP_
 #define OPTFRAME_MULTIOBJSEARCH_HPP_
@@ -56,61 +37,18 @@ concept
   X2ESolution<typename Self::BestType, XES>;
 };
 
-/*
-// Multi Objective Stopping Criteria
-// Must include GENERAL stopping criteria
-// specific stopping criteria for metaheuristics can be included in their
-constructors class MOSC: public Component
-{
-public:
-        // maximum timelimit (seconds)
-        double timelimit;
-        //Hypervolume indicator
-        //	double hv;
-        //Pareto cardinality
-        //	double cardinality;
-
-        MOSC(double _timelimit = 100000000.0) :
-                        timelimit(_timelimit)
-        {
-        }
-
-        virtual ~MOSC()
-        {
-        }
-
-        virtual string id() const override
-        {
-                return "MOSC";
-        }
-};
-*/
-
-// This MultiObjSearch perspective inherits from Multi Solution Search,
-// considering a X2ES space with Pareto structure
-
-// template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-//
-//  template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES =
-//  pair<S, XMEv>>
-//
 template <XESolution XMES, XESolution XMES2 = XMES,
           XSearch<XMES2> XMSH2 = XMES2>
 class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
+  using XMSH = Pareto<XMES>;  // PRIMARY/BEST search space
+  //
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   static_assert(XEvaluation<typename XMEv::XEv>);
   using XEv = typename XMEv::XEv;
   static_assert(XEvaluation<XEv>);
-  using XMSH = Pareto<XMES>;  // search space
 
  public:
-  //
-  // bool (*onParetoIncumbent)(GlobalSearch<XMES, Pareto<XMES>>& self, const
-  // XMSH2& incumbent) =
-  //  [](GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) {
-  //  return true; };
-
   // ========================================
   // THIS CLASS IS USELESS! WHAT'S THE POINT?
   // Best to just have XMultiObjSearch
@@ -122,11 +60,6 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
 
   op<Pareto<XMES>>& getBestPareto() { return this->best; }
 
-  // virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf =
-  // nullptr) = 0;
-  //
-  // virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const
-  // StopCriteria<XMEv>& stopCriteria) = 0;
   SearchOutput<XMES, Pareto<XMES>> searchBy(
       const StopCriteria<XMEv>& stopCriteria,
       std::optional<Pareto<XMES>> _best) override = 0;
@@ -139,7 +72,9 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
 
   static string idComponent() {
     stringstream ss;
-    ss << Component::idComponent() << "MultiObjSearch:";
+    ss << Component::idComponent() << "MultiObjSearch"
+       << Domain::getAlternativeDomain<XMSH>("<X2MESf64>") << ":";
+    // NOTE THAT: PRIMARY/BEST IS ALWAYS X2MESf64 FOR MULTI-OBJ-SEARCH
     return ss.str();
   }
 
@@ -151,12 +86,13 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~MultiObjSearchBuilder() {}
+  virtual ~MultiObjSearchBuilder() = default;
 
+  // NOLINTNEXTLINE
   virtual MultiObjSearch<XES>* build(Scanner& scanner,
                                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                      string family = "") = 0;
-
+  // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
