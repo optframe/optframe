@@ -66,7 +66,8 @@ class GlobalSearch : public Component {
 
   // Assuming method is not thread-safe.
   // Now, we can easily use flag SearchStatus::RUNNING.
-  virtual SearchOutput<XES, BestType> search(const StopCriteria<XEv>& stop) {
+  virtual SearchOutput<XES, BestType> search(
+      const StopCriteria<XEv>& stop) final {
     return searchBy(stop, std::nullopt);
   }
   // 'searchBy': Optionally start with some solution (best type XSH)
