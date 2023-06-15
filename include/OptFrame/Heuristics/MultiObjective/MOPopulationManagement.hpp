@@ -14,11 +14,10 @@
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Heuristics/EA/GeneralCrossover.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
+#include <OptFrame/Domain.hpp>
 
 namespace optframe {
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
-// OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class MOPopulationManagement : public Component {
  public:
@@ -41,7 +40,8 @@ class MOPopulationManagement : public Component {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":MOPopulationManagement";
+    ss << Component::idComponent()
+    << ":MOPopulationManagement" << Domain::getAlternativeDomain<XMES2>("<XMESf64>");
     return ss.str();
   }
 
@@ -50,8 +50,6 @@ class MOPopulationManagement : public Component {
   std::string toString() const override { return id(); }
 };
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
-// OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   using S = typename XMES2::first_type;

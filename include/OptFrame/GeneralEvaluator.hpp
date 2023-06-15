@@ -7,20 +7,13 @@
 #include <iostream>
 #include <string>
 //
-//#include "ADSManager.hpp"
-//#include "Action.hpp"
 #include "Direction.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
 #include "MoveCost.hpp"
-//#include "Solution.hpp"
-//#include "Solutions/ESolution.hpp"  // TODO: remove.. just to enforce
-// compilation errors.
+#include "Domain.hpp"
 
 // This evaluator intends to run for both Single and MultiObj
-
-// using namespace std;
-// using namespace scannerpp;
 
 namespace optframe {
 
@@ -241,19 +234,20 @@ class GeneralEvaluator : public Component {
    }
 */
 
-  virtual std::string toString() const override { return id(); }
+  std::string toString() const override { return id(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  virtual std::string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
   // TODO: decide which methods stay here, and which go to Evaluator.hpp
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":GeneralEvaluator";
+    ss << Component::idComponent() << ":GeneralEvaluator"
+    << Domain::getAlternativeDomain<XES>("<XESf64>");
     return ss.str();
   }
 };

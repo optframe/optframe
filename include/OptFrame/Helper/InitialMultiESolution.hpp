@@ -33,6 +33,7 @@
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
+#include <OptFrame/Domain.hpp>
 
 // #include "EA.hpp"
 
@@ -57,7 +58,8 @@ class InitialMultiESolution : public Component {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":InitialMultiESolution";
+    ss << Component::idComponent() << ":InitialMultiESolution"
+    << Domain::getAlternativeDomain<X2ES>("<X2ESf64>");
     return ss.str();
   }
 

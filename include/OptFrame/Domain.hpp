@@ -22,7 +22,7 @@
 #ifndef NDEBUG
 #include "Helper/EPopulation.hpp"
 #include "Helper/MultiESolution.hpp"
-#include "Pareto.hpp"
+#include "BasicPareto.hpp" // for testing only!
 #endif
 
 namespace optframe {
@@ -209,7 +209,7 @@ static_assert(Domain::getNamedDomain<EPopulation<TestXES1>>() ==
 using EMSolution_Test1 = std::pair<void*, MultiEvaluation<double>>;
 static_assert(Domain::getNamedDomain<EMSolution_Test1>() ==
               std::string_view("<XMESf64>"));
-static_assert(Domain::getNamedDomain<Pareto<EMSolution_Test1>>() ==
+static_assert(Domain::getNamedDomain<BasicPareto<EMSolution_Test1>>() ==
               std::string_view("<X2MESf64>"));
 #endif
 
