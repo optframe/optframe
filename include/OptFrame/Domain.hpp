@@ -20,9 +20,9 @@
 
 // for test only
 #ifndef NDEBUG
+#include "BasicPareto.hpp"  // for testing only!
 #include "Helper/EPopulation.hpp"
 #include "Helper/MultiESolution.hpp"
-#include "BasicPareto.hpp" // for testing only!
 #endif
 
 namespace optframe {
@@ -147,11 +147,56 @@ class Domain {
   };
   //
 
+  // ==================================================================
+  // using SFINAE void_t to allow failure on other non-XESolution types
+  // REMEMBER: X2S = 2^S
+
+  template <typename X2S, typename = void>
+  struct is_X2S : std::false_type {};
+
+  template <typename X2S>
+  struct is_X2S<X2S, std::void_t<typename X2S::value_type>>
+      : std::bool_constant<X2Solution<X2S, typename X2S::value_type>> {};
+  //
+  // =========================================
+  // RK-specific with population
+
+  // XRKf64Ef64 = (RKf64, Ef64)
+  template <typename XES, typename = void>
+  struct is_XRKf64Ef64 : std::false_type {};
+
+  template <typename XES>
+  struct is_XRKf64Ef64<XES, std::void_t<typename XES::second_type>>
+      : std::bool_constant<XESolution<XES> &&
+                           is_rkf64<typename XES::first_type>::value &&
+                           is_f64<typename XES::second_type::objType>::value> {
+  };
+
+  // X2RKf64Ef64 = 2^(RKf64, Ef64)
+
+  template <typename X2ES, typename = void, typename = void>
+  struct is_X2RKf64Ef64 : std::false_type {};
+
+  template <typename X2ES>
+  struct is_X2RKf64Ef64<X2ES,
+                        std::void_t<typename X2ES::value_type>,  // for type
+                                                                 // deduction
+                        std::void_t<typename X2ES::value_type::second_type>>
+      :  // for type deduction
+         std::bool_constant<X2ESolution<X2ES, typename X2ES::value_type> &&
+                            is_XRKf64Ef64<typename X2ES::value_type>::value> {};
+
+  // ===============
+
   template <typename X>
   constexpr static std::string_view getNamedDomain() {
     if constexpr (is_rkf64<X>::value) return "<XRKf64>";
     if constexpr (is_rkf32<X>::value)
       return "<XRKf32>";
+    else if constexpr (is_XRKf64Ef64<X>::value)
+      return "<XRKf64Ef64>";
+    else if constexpr (is_X2RKf64Ef64<X>::value)
+      return "<X2RKf64Ef64>";
     else if constexpr (is_XESf64<X>::value)
       return "<XESf64>";
     else if constexpr (is_XESf32<X>::value)
@@ -166,6 +211,8 @@ class Domain {
       return "<X2MESf64>";
     else if constexpr (XESolution<X>)
       return "<XES>";
+    else if constexpr (is_X2S<X>::value)
+      return "<X2S>";
     else if constexpr (XSolution<X>)
       return "<XS>";
     return "";
@@ -183,10 +230,17 @@ class Domain {
 
 #ifndef NDEBUG
 static_assert(Domain::getNamedDomain<void*>() == std::string_view{"<XS>"});
+//
 static_assert(Domain::getNamedDomain<std::vector<float>>() ==
               std::string_view{"<XRKf32>"});
 static_assert(Domain::getNamedDomain<std::vector<double>>() ==
               std::string_view{"<XRKf64>"});
+using TestXRKf64Ef64 = std::pair<std::vector<double>, optframe::Evaluation<>>;
+static_assert(Domain::getNamedDomain<TestXRKf64Ef64>() ==
+              std::string_view{"<XRKf64Ef64>"});
+static_assert(Domain::getNamedDomain<MultiESolution<TestXRKf64Ef64>>() ==
+              std::string_view("<X2RKf64Ef64>"));
+//
 static_assert(
     Domain::getNamedDomain<std::pair<void*, optframe::Evaluation<float>>>() ==
     std::string_view("<XESf32>"));
@@ -202,6 +256,7 @@ static_assert(
 static_assert(
     Domain::getNamedDomain<std::pair<void*, optframe::Evaluation<int>>>() ==
     std::string_view("<XES>"));
+//
 static_assert(Domain::getNamedDomain<MultiESolution<TestXES1>>() ==
               std::string_view("<X2ESf64>"));
 static_assert(Domain::getNamedDomain<EPopulation<TestXES1>>() ==

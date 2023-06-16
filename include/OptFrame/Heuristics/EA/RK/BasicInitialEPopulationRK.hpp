@@ -1,25 +1,13 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
+#ifndef OPTFRAME_HEURISTICS_EA_RK_BASICINITIALEPOPULATIONRK_HPP_
+#define OPTFRAME_HEURISTICS_EA_RK_BASICINITIALEPOPULATIONRK_HPP_
+
+#include <string>
+#include <utility>
+#include <vector>
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef OPTFRAME_BASIC_INITIAL_EPOPULATION_RK_HPP_
-#define OPTFRAME_BASIC_INITIAL_EPOPULATION_RK_HPP_
 
 #include "ConstructiveRK.hpp"
 #include "InitialEPopulationRK.hpp"
@@ -41,16 +29,17 @@ class BasicInitialEPopulationRK
  public:
   sref<ConstructiveRK<KeyType>> constructiveRK;
 
-  BasicInitialEPopulationRK(sref<ConstructiveRK<KeyType>> _constructiveRK)
+  explicit BasicInitialEPopulationRK(
+      sref<ConstructiveRK<KeyType>> _constructiveRK)
       : constructiveRK{_constructiveRK} {}
 
-  virtual ~BasicInitialEPopulationRK() {}
+  // NOLINTNEXTLINE
+  virtual ~BasicInitialEPopulationRK() override = default;
 
   // cannot evaluate here (return 'false')
-  virtual bool canEvaluate() const override { return false; }
+  bool canEvaluate() const override { return false; }
 
-  virtual X2ES generateEPopulation(unsigned populationSize,
-                                   double timelimit) override {
+  X2ES generateEPopulation(unsigned populationSize, double timelimit) override {
     X2ES p;
     for (unsigned i = 0; i < populationSize; i++) {
       auto ops = constructiveRK->generateSolution(timelimit);
@@ -75,7 +64,7 @@ class BasicInitialEPopulationRK
 
   std::string toString() const override { return id(); }
 
-  virtual string id() const override { return idComponent(); }
+  string id() const override { return idComponent(); }
 };
 
 template <XSolution S, XEvaluation XEv = Evaluation<>,
@@ -89,8 +78,9 @@ class BasicInitialEPopulationRKBuilder
   using RealXES = std::pair<RealS, RealXEv>;
 
  public:
-  virtual ~BasicInitialEPopulationRKBuilder() {}
+  virtual ~BasicInitialEPopulationRKBuilder() = default;
 
+  // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
@@ -102,7 +92,7 @@ class BasicInitialEPopulationRKBuilder
     return new BasicInitialEPopulationRK<RealXES, double>(crk);
   }
 
-  virtual vector<pair<string, string>> parameters() override {
+  vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(
         make_pair(ConstructiveRK<KeyType>::idComponent(), "constructive_rk"));
@@ -110,7 +100,7 @@ class BasicInitialEPopulationRKBuilder
     return params;
   }
 
-  virtual bool canBuild(string component) override {
+  bool canBuild(string component) override {
     return component ==
            BasicInitialEPopulationRK<RealXES, double>::idComponent();
   }
@@ -124,9 +114,9 @@ class BasicInitialEPopulationRKBuilder
 
   std::string toString() const override { return id(); }
 
-  virtual string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_BASIC_INITIAL_EPOPULATION_RK_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_EA_RK_BASICINITIALEPOPULATIONRK_HPP_
