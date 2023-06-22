@@ -34,7 +34,7 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
   //
   sref<GeneralEvaluator<XES>> evaluator;
   sref<InitialSearch<XES>> constructive;
-  vsref<LocalSearch<XES>> localSearch;
+  sref<LocalSearch<XES>> localSearch;
   int iterMax;
 
   MultiStart(sref<GeneralEvaluator<XES>> _evaluator,
@@ -60,15 +60,17 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
     // perform iterMax loop
     for (auto i = 0; i < iterMax; i++) {
       // early stop, maybe?
-      if (star && stop.shouldStop(star->second)) return;
-      //
-      std::optional<XSH> incumbent = constructive->initialSearch(stop);
+      if (star && stop.shouldStop(star->second))
+        return {SearchStatus::NO_REPORT, star};
+      // ignore search status from initialSearch
+      std::optional<XSH> incumbent = constructive->initialSearch(stop).first;
       if (stop.shouldStop()) break;  // timeout already?
       if (!incumbent) continue;      // try again
       if (!star) star = incumbent;   // copy
-      auto status = localSearch->searchFrom(*incumbent);
+      // ignore search status from localSearch
+      localSearch->searchFrom(*incumbent, stop);
       // check best
-      if (evaluator->betterStrict(incumbent.second, star.second)) {
+      if (evaluator->betterStrict(incumbent->second, star->second)) {
         star = incumbent;
         if (Component::information)
           std::cout << "MS: new best solution! e=" << star->second.toString()
@@ -112,7 +114,7 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":SA:BasicSA";
+    ss << SingleObjSearch<XES>::idComponent() << ":MultiStart";
     return ss.str();
   }
 };

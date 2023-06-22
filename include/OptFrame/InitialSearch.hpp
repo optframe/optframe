@@ -8,13 +8,12 @@
 #include <utility>
 //
 #include <OptFrame/BaseConcepts.hpp>
-
-#include "Component.hpp"
-#include "Constructive.hpp"
-#include "Domain.hpp"
-#include "Evaluator.hpp"
-#include "SearchStatus.hpp"
-#include "StopCriteria.hpp"
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Domain.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/SearchStatus.hpp>
+#include <OptFrame/StopCriteria.hpp>
 
 namespace optframe {
 
