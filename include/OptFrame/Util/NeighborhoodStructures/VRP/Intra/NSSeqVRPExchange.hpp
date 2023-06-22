@@ -35,13 +35,13 @@ using namespace std;
 /*
 template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S,
 XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>> class
-MoveVRPExchange: public Move<XES, XEv>
+MoveVRPExchange: public Move<XES>
 {
 
         typedef vector<vector<T> > Routes;
 */
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
-class MoveVRPExchange : public Move<XES, typename XES::second_type> {
+class MoveVRPExchange : public Move<XES> {
   using XEv = typename XES::second_type;
   typedef vector<vector<int>> Routes;
 
@@ -107,14 +107,13 @@ class MoveVRPExchange : public Move<XES, typename XES::second_type> {
 template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE
 = MoveVRPExchange<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation
 XEv = Evaluation<>, XESolution XES = pair<S, XEv>> class NSIteratorVRPExchange:
-public NSIterator<XES, XEv>
+public NSIterator<XES>
 {
         typedef vector<vector<T> > Routes;
 */
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRPExchange<XES, P>>
-class NSIteratorVRPExchange
-    : public NSIterator<XES, typename XES::second_type> {
+class NSIteratorVRPExchange : public NSIterator<XES> {
   typedef vector<vector<int>> Routes;
 
  protected:
@@ -186,7 +185,7 @@ template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE
 = MoveVRPExchange<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class
 NSITERATOR = NSIteratorVRPExchange<T, ADS, S, MOVE, P>, XEvaluation XEv =
 Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S,
-XEv>> class NSSeqVRPExchange: public NSSeq<XES, XEv, XSH>
+XEv>> class NSSeqVRPExchange: public NSSeq<XES, XSH>
 {
         typedef vector<vector<T> > Routes;
 
@@ -196,7 +195,7 @@ private:
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRPExchange<XES, P>,
           class NSITERATOR = NSIteratorVRPExchange<XES, P, MOVE>>
-class NSSeqVRPExchange : public NSSeq<XES, typename XES::second_type, XES> {
+class NSSeqVRPExchange : public NSSeq<XES> {
   typedef vector<vector<int>> Routes;
 
  public:

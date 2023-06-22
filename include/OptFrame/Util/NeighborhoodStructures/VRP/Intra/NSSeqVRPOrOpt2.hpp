@@ -35,13 +35,13 @@ using namespace optframe;
 /*
 template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S,
 XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>> class
-MoveVRPOrOpt2: public Move<XES, XEv>
+MoveVRPOrOpt2: public Move<XES>
 {
 
         typedef vector<vector<T> > Routes;
 */
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
-class MoveVRPOrOpt2 : public Move<XES, typename XES::second_type> {
+class MoveVRPOrOpt2 : public Move<XES> {
   using XEv = typename XES::second_type;
   typedef vector<vector<int>> Routes;
 
@@ -130,14 +130,14 @@ class MoveVRPOrOpt2 : public Move<XES, typename XES::second_type> {
 template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE
 = MoveVRPOrOpt2<XES, P>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv =
 Evaluation<>, XESolution XES = pair<S, XEv>> class NSIteratorVRPOrOpt2: public
-NSIterator<XES, XEv>
+NSIterator<XES>
 {
         typedef vector<vector<T> > Routes;
 */
 
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRPOrOpt2<XES, P>>
-class NSIteratorVRPOrOpt2 : public NSIterator<XES, typename XES::second_type> {
+class NSIteratorVRPOrOpt2 : public NSIterator<XES> {
   typedef vector<vector<int>> Routes;
 
  protected:
@@ -210,7 +210,7 @@ template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE
 = MoveVRPOrOpt2<XES, P>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR =
 NSIteratorVRPOrOpt2<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>,
 XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>> class
-NSSeqVRPOrOpt2: public NSSeq<XES, XEv, XSH>
+NSSeqVRPOrOpt2: public NSSeq<XES, XSH>
 {
         typedef vector<vector<T> > Routes;
 
@@ -220,7 +220,7 @@ private:
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRPOrOpt2<XES, P>,
           class NSITERATOR = NSIteratorVRPOrOpt2<XES, P, MOVE>>
-class NSSeqVRPOrOpt2 : public NSSeq<XES, typename XES::second_type, XES> {
+class NSSeqVRPOrOpt2 : public NSSeq<XES> {
   typedef vector<vector<int>> Routes;
 
  public:

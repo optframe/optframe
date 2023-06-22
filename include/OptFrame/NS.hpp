@@ -8,21 +8,21 @@
 #include <utility>
 //
 
-#include "Move.hpp"
-// #include "Solution.hpp"
-//#include "Action.hpp"
 #include "Component.hpp"
 #include "Domain.hpp"
-#include "GeneralEvaluator.hpp"  // included for Neighborhood Exploration
 #include "Helper/MultiEvaluation.hpp"
+#include "Move.hpp"
+// included for Neighborhood Exploration
+#include "GeneralEvaluator.hpp"
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type,
-          XESolution XSH = XES>
+template <XESolution XES, XSearch<XES> XSH = XES>
 class NS : public Component {
+  using XEv = typename XES::second_type;
+
  public:
-  virtual ~NS() {}
+  ~NS() override = default;
 
  public:
   // returns 'true' if moves generated from this neighborhood are
@@ -33,12 +33,12 @@ class NS : public Component {
 
   virtual bool supportsMoveIndependence() const { return false; }
 
-  virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
+  virtual uptr<Move<XES, XSH>> randomMove(const XES&) = 0;
 
   // TODO(igormcoelho): rename to 'anyValidMove'
   // TODO(igormcoelho): should we require XES here? Or just S?
-  virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) {
-    uptr<Move<XES, XEv, XSH>> moveValid = this->randomMove(se);
+  virtual uptr<Move<XES, XSH>> validRandomMove(const XES& se) {
+    uptr<Move<XES, XSH>> moveValid = this->randomMove(se);
     if (moveValid && moveValid->canBeApplied(se))
       return moveValid;
     else
@@ -53,17 +53,17 @@ class NS : public Component {
   // find section (neighborhood exploration)
   // =======================================
   // findAny: returns any move that strictly improves current solution 'se',
-  // according 'gev' RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> > default
+  // according 'gev' RETURNS: pair< uptr<Move<XES, XSH>>, op<XEv> > default
   // implementation tries method 'validRandomMove' for a *single time* (not
   // iterative) note that 'se' is not const, since moves may need to change it
   // (and revert)
   //   we could have "const_cast" here, or inside "moveCost", but at the moment
   //   let's fully respect "const"
-  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findAny(
-      GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) {
-    uptr<Move<XES, XEv, XSH>> pm = validRandomMove(se);
+  virtual pair<Move<XES, XSH>*, op<XEv>> findAny(
+      GeneralEvaluator<XES, XSH>& gev, XES& se) {
+    uptr<Move<XES, XSH>> pm = validRandomMove(se);
     if (!pm) return std::make_pair(nullptr, std::nullopt);
-    Move<XES, XEv, XSH>& m = *pm;
+    Move<XES, XSH>& m = *pm;
     op<XEv> mvcost = gev.moveCost(m, se);
     // TODO: will we need 'non-strict' checks here
     if (!mvcost) return std::make_pair(nullptr, std::nullopt);
@@ -77,7 +77,6 @@ class NS : public Component {
     stringstream ss;
     ss << Component::idComponent() << ":NS"
        << Domain::getAlternativeDomain<XES>("<XESf64>");
-    // if constexpr (std::is_same_v<XEv, MultiEvaluation<>>) ss << "<XMESf64>";
     return ss.str();
   }
 
@@ -92,4 +91,4 @@ class NS : public Component {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_NS_HPP_*/
+#endif  // OPTFRAME_NS_HPP_

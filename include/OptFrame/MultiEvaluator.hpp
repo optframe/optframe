@@ -22,9 +22,7 @@ namespace optframe {
 // just a bunch/pack of evaluators...
 
 template <XESolution XMES, XSearch<XMES> XSH = XMES>
-class MultiEvaluator : public GeneralEvaluator<XMES,
-                                               typename XMES::second_type,
-                                               XSH>,
+class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
                        public IEvaluator<XMES> {
   // XESolution XES = pair<S, XMEv>,
   using S = typename XMES::first_type;
@@ -62,8 +60,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
     nObjectives = vDir.size();
   }
 
-  explicit MultiEvaluator(bool _allowCosts = false)
-      : allowCosts(_allowCosts) {
+  explicit MultiEvaluator(bool _allowCosts = false) : allowCosts(_allowCosts) {
     nObjectives = 0;
   }
 
@@ -71,22 +68,15 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
     sngEvaluators.push_back(ev);
   }
 
-  virtual ~MultiEvaluator() {
-  }
+  virtual ~MultiEvaluator() {}
 
-  unsigned size() const {
-    return sngEvaluators.size();
-  }
+  unsigned size() const { return sngEvaluators.size(); }
 
-  virtual bool betterThanAt(const XEv& ev1,
-                            const XEv& ev2,
-                            int index) {
+  virtual bool betterThanAt(const XEv& ev1, const XEv& ev2, int index) {
     return sngEvaluators[index]->betterThan(ev1, ev2);
   }
 
-  virtual bool equalsAt(const XEv& ev1,
-                        const XEv& ev2,
-                        int index) {
+  virtual bool equalsAt(const XEv& ev1, const XEv& ev2, int index) {
     return sngEvaluators[index]->equals(ev1, ev2);
   }
 
@@ -101,9 +91,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
     return nev;
   }
 
-  void clear() {
-    sngEvaluators.clear();
-  }
+  void clear() { sngEvaluators.clear(); }
 
   // virtual void reevaluateMEV(MultiXEv& mev, const XES& se)
   //
@@ -119,7 +107,9 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
       //
       XEv& e = mev[i];  // TODO: embed MEV in 'se'
 
-      pair<decltype(se.first), XEv> pse(se.first, e);  // TODO: we should AVOID this 's' and 'e' copy... by keeping s,e together.
+      pair<decltype(se.first), XEv> pse(
+          se.first, e);  // TODO: we should AVOID this 's' and 'e' copy... by
+                         // keeping s,e together.
       sngEvaluators[i]->reevaluate(pse);
       e = std::move(pse.second);  // TODO: verify if this works
 
@@ -135,13 +125,15 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
     return false;
   }
 
-  // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+  // returns 'true' if this 'cost' (represented by this Evaluation) is
+  // improvement
   bool isStrictImprovement(const XMEv& e) override {
     assert(false);
     return false;
   }
 
-  // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+  // returns 'true' if this 'cost' (represented by this Evaluation) is
+  // improvement
   bool isNonStrictImprovement(const XMEv& e) override {
     assert(false);
     return false;
@@ -157,30 +149,28 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
  public:
   // ============= Component ===============
   bool compatible(std::string s) override {
-    return (s == idComponent()) ||
-           (GeneralEvaluator<XMES, XMEv, XSH>::compatible(s));
+    return (s == idComponent()) || (GeneralEvaluator<XMES, XSH>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << GeneralEvaluator<XMES, XMEv, XSH>::idComponent() << ":MultiEvaluator"
-    << Domain::getAlternativeDomain<XMES>("<XMESf64>");
+    ss << GeneralEvaluator<XMES, XSH>::idComponent() << ":MultiEvaluator"
+       << Domain::getAlternativeDomain<XMES>("<XMESf64>");
     return ss.str();
   }
 
-  string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   using XMEv = MultiEvaluation<typename XEv::objType>;
   using XMES = std::pair<S, XMEv>;
 
  public:
-  virtual ~MultiEvaluatorBuilder() {
-  }
+  virtual ~MultiEvaluatorBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -219,17 +209,16 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, X2ESolution<XMES> X2MES = VEPopulation<XMES>>
-class MultiEvaluatorMultiBuilder : public ComponentMultiBuilder<S, XMEv, XMES, X2MES> {
+template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
+          XESolution XMES = pair<S, XMEv>,
+          X2ESolution<XMES> X2MES = VEPopulation<XMES>>
+class MultiEvaluatorMultiBuilder
+    : public ComponentMultiBuilder<S, XMEv, XMES, X2MES> {
   // using XMEv = MultiEvaluation<typename XEv::objType>;
   // using XMES = std::pair<S, XMEv>;
   using XEv = typename XMEv::XEv;
@@ -237,8 +226,7 @@ class MultiEvaluatorMultiBuilder : public ComponentMultiBuilder<S, XMEv, XMES, X
   using X2ES = MultiESolution<XES>;  // TODO: is this right??
 
  public:
-  virtual ~MultiEvaluatorMultiBuilder() {
-  }
+  virtual ~MultiEvaluatorMultiBuilder() {}
 
   Component* buildMultiComponent(Scanner& scanner,
                                  HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -258,8 +246,8 @@ class MultiEvaluatorMultiBuilder : public ComponentMultiBuilder<S, XMEv, XMES, X
 
   vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "list of evaluators"));
+    params.push_back(
+        make_pair(Evaluator<S, XEv, XES>::idComponent(), "list of evaluators"));
 
     return params;
   }
@@ -275,27 +263,26 @@ class MultiEvaluatorMultiBuilder : public ComponentMultiBuilder<S, XMEv, XMES, X
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
  public:
-  virtual ~MultiEvaluatorAction() {
-  }
+  virtual ~MultiEvaluatorAction() {}
 
   virtual string usage() {
-    return ":MultiEvaluator idx  evaluate   :Solution idx  [output_variable] => OptFrame:Evaluation";
+    return ":MultiEvaluator idx  evaluate   :Solution idx  [output_variable] "
+           "=> OptFrame:Evaluation";
   }
 
   virtual bool handleComponent(string type) {
-    return ComponentHelper::compareBase(MultiEvaluator<S, XEv>::idComponent(), type);
+    return ComponentHelper::compareBase(MultiEvaluator<S, XEv>::idComponent(),
+                                        type);
   }
 
   virtual bool handleComponent(Component& component) {
@@ -303,27 +290,33 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
   }
 
   virtual bool handleAction(string action) {
-    return (action == "evaluate");  //|| (action == "betterThan") || (action == "betterOrEquals");
+    return (action == "evaluate");  //|| (action == "betterThan") || (action ==
+                                    //"betterOrEquals");
   }
 
-  virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& d) {
+  virtual bool doCast(string component, int id, string type, string variable,
+                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                      map<string, string>& d) {
     cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
     return false;
 
     if (!handleComponent(type)) {
-      cout << "EvaluatorAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
+      cout << "EvaluatorAction::doCast error: can't handle component type '"
+           << type << " " << id << "'" << endl;
       return false;
     }
 
     Component* comp = hf.components[component].at(id);
 
     if (!comp) {
-      cout << "EvaluatorAction::doCast error: nullptr component '" << component << " " << id << "'" << endl;
+      cout << "EvaluatorAction::doCast error: nullptr component '" << component
+           << " " << id << "'" << endl;
       return false;
     }
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
-      cout << "EvaluatorAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
+      cout << "EvaluatorAction::doCast error: component '" << comp->id()
+           << " is not base of " << type << "'" << endl;
       return false;
     }
 
@@ -336,7 +329,8 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
     if (type == Evaluator<XES, XEv>::idComponent()) {
       final = (Evaluator<XES, XEv>*)comp;
     } else {
-      cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'" << endl;
+      cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'"
+           << endl;
       return false;
     }
 
@@ -345,7 +339,9 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
     return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
+  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                        map<string, string>& dictionary,
+                        map<string, vector<string>>& ldictionary) {
     cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
     return false;
 
@@ -353,32 +349,26 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
 
     Scanner scanner(content);
 
-    if (!scanner.hasNext())
-      return false;
+    if (!scanner.hasNext()) return false;
 
     Evaluator<XES, XEv>* ev;
     hf.assign(ev, *scanner.nextInt(), scanner.next());
 
-    if (!ev)
-      return false;
+    if (!ev) return false;
 
-    if (!scanner.hasNext())
-      return false;
+    if (!scanner.hasNext()) return false;
 
     string action = scanner.next();
 
-    if (!handleAction(action))
-      return false;
+    if (!handleAction(action)) return false;
 
     if (action == "evaluate") {
-      if (!scanner.hasNext())
-        return false;
+      if (!scanner.hasNext()) return false;
 
       S* s;
       hf.assign(s, *scanner.nextInt(), scanner.next());
 
-      if (!s)
-        return false;
+      if (!s) return false;
 
       XEv& e = ev->evaluate(*s);
 

@@ -13,24 +13,17 @@
 namespace optframe {
 
 template <class M, XESolution XES>
-auto fxDefaultCanBeApplied =
-    [](const M&, const XES&) -> bool {
-  return true;
-};
+auto fxDefaultCanBeApplied = [](const M&, const XES&) -> bool { return true; };
 //
 template <class M, XESolution XES>
 auto fxDefaultCompareEq =
-    [](const M& me, const Move<XES>& other) -> bool {
-  return false;
-};
+    [](const M& me, const Move<XES>& other) -> bool { return false; };
 //
 template <
-    class M,
-    XESolution XES,
-    M (*fApply)(const M&, XES&),
+    class M, XESolution XES, M (*fApply)(const M&, XES&),
     bool (*fCanBeApplied)(const M&, const XES&) = fxDefaultCanBeApplied<M, XES>,
     bool (*fCompareEq)(const M&, const Move<XES>&) = fxDefaultCompareEq<M, XES>>
-class FxMove final : public Move<XES, typename XES::second_type> {
+class FxMove final : public Move<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
   using Self = FxMove<M, XES, fApply, fCanBeApplied, fCompareEq>;
@@ -39,38 +32,30 @@ class FxMove final : public Move<XES, typename XES::second_type> {
   M m;  // internal structure for move
 
   // template static functions
-  static M fs_apply(const M& m, XES& xes) {
-    return fApply(m, xes);
-  }
+  static M fs_apply(const M& m, XES& xes) { return fApply(m, xes); }
 
-  FxMove(M&& _m) noexcept
-      : m(std::move(_m)) {
+  FxMove(M&& _m) noexcept : m(std::move(_m)) {
     // std::cout << "FMove() => " << m << " address=" << this << std::endl;
   }
 
-  FxMove(const M& _m) noexcept
-      : m(_m) {
+  FxMove(const M& _m) noexcept : m(_m) {
     // std::cout << "FMove() => " << m << " address=" << this << std::endl;
   }
 
-  bool canBeApplied(const XES& se) override {
-    return fCanBeApplied(m, se);
-  }
+  bool canBeApplied(const XES& se) override { return fCanBeApplied(m, se); }
 
-  uptr<Move<XES, XEv, XSH>> apply(XSH& se) override {
+  uptr<Move<XES, XSH>> apply(XSH& se) override {
     // fApply will require a reverse move to ALWAYS exist.
     // FCore must be simple! Otherwise, just use fallback class-based mode
-    return uptr<Move<XES, XEv, XSH>>{new Self{fApply(m, se)}};
+    return uptr<Move<XES, XSH>>{new Self{fApply(m, se)}};
   }
 
-  bool operator==(const Move<XES, XEv, XSH>& move) const override {
+  bool operator==(const Move<XES, XSH>& move) const override {
     const Move<XES>& move2 = (Move<XES>&)move;
     return fCompareEq(this->m, move2);
   }
 
-  bool operator!=(const Move<XES, XEv, XSH>& m) const {
-    return !(*this == m);
-  }
+  bool operator!=(const Move<XES, XSH>& m) const { return !(*this == m); }
 
   static std::string idComponent() {
     std::stringstream ss;
@@ -78,9 +63,7 @@ class FxMove final : public Move<XES, typename XES::second_type> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   // use 'operator<<' for M
   void print() const override {

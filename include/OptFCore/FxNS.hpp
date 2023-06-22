@@ -11,15 +11,13 @@
 
 namespace optframe {
 
-template <
-    XESolution XES,
-    uptr<Move<XES>> (*fRandom)(const XES&)>
+template <XESolution XES, uptr<Move<XES>> (*fRandom)(const XES&)>
 class FxNS final : public NS<XES, typename XES::second_type> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
 
  public:
-  uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
+  uptr<Move<XES, XSH>> randomMove(const XES& se) override {
     return fRandom(se);
   }
 
@@ -29,9 +27,7 @@ class FxNS final : public NS<XES, typename XES::second_type> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

@@ -31,7 +31,7 @@
 
 namespace optframe {
 
-//Basic MORI does not considering valid move, parameter iterMax only.
+// Basic MORI does not considering valid move, parameter iterMax only.
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
   using S = typename XMES::first_type;
@@ -39,7 +39,7 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
  private:
-  //MultiEvaluator<S, XEv>& mev;
+  // MultiEvaluator<S, XEv>& mev;
   sref<GeneralEvaluator<XMES, XMEv>> mev;
   sref<NS<XMES, XMEv>> ns;
 
@@ -49,26 +49,30 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
   int iterMax;
 
  public:
-  //MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
-  MORandomImprovement(sref<GeneralEvaluator<XMES, XMEv>> _mev, sref<NS<XMES, XMEv>> _ns, unsigned int _iterMax)
+  // MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XSH>& _ns,
+  // unsigned int _iterMax) :
+  MORandomImprovement(sref<GeneralEvaluator<XMES, XMEv>> _mev,
+                      sref<NS<XMES, XMEv>> _ns, unsigned int _iterMax)
       : mev(_mev), ns(_ns), iterMax(_iterMax) {
     sum_time = 0.0;
     num_calls = 0;
   }
 
-  virtual ~MORandomImprovement() {
-  }
+  virtual ~MORandomImprovement() {}
 
   /*
-	virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
-	{
-		MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
+        virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv,
+     XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
+        {
+                MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
 
-		moSearchFrom(p, s, sMev, pManager, stopCriteria);
-	}
+                moSearchFrom(p, s, sMev, pManager, stopCriteria);
+        }
 */
 
-  virtual void moSearchFrom(Pareto<XMES>& p, XMES& se, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override {
+  virtual void moSearchFrom(Pareto<XMES>& p, XMES& se,
+                            paretoManager<S, XMEv, XMES>& pManager,
+                            const StopCriteria<XMEv>& stopCriteria) override {
     num_calls++;
     Timer t;
 
@@ -79,26 +83,29 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
     while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0)) {
       uptr<Move<XMES, XMEv>> move = ns->randomMove(se);
       if (move->canBeApplied(se)) {
-        //Move and mark sMev as outdated
+        // Move and mark sMev as outdated
         uptr<Move<XMES, XMEv>> mov_rev = move->apply(se);
 
-        //Call method to reevaluate sMev and try to include TODO
-        //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
+        // Call method to reevaluate sMev and try to include TODO
+        //				pManager->addSolutionWithMEVReevaluation(p,
+        //*s,*sMev);
 
         pManager.addSolution(p, se.first);
-        //delete mov_rev->apply(s);
+        // delete mov_rev->apply(s);
         mov_rev->apply(se);
-        //delete mov_rev;
+        // delete mov_rev;
 
         //			vector<MoveCost<>*> vMoveCost;
         //			for (int ev = 0; ev < v_e.size(); ev++)
         //			{
-        //				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev], move, s));
+        //				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev],
+        // move, s));
         //			}
-        //			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
-        //			if (itsWorthAdding)
+        //			bool itsWorthAdding =
+        // pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
+        // if (itsWorthAdding)
       }
-      //delete move;
+      // delete move;
 
       iter++;
     }
@@ -115,13 +122,9 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 
   std::string toString() const override {
     stringstream ss;

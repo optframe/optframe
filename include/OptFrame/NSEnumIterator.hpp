@@ -30,55 +30,43 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv, XESolution XSH>
+template <XESolution XES, XSearch<XES> XSH>
 class NSEnum;
 
-template <XESolution XES,
-          XEvaluation XEv = typename XES::second_type,
-          XESolution XSH = XES>
-class NSEnumIterator : public NSIterator<XES, XEv, XSH> {
+template <XESolution XES, XESolution XSH = XES>
+class NSEnumIterator : public NSIterator<XES, XSH> {
  private:
-  NSEnum<XES, XEv, XSH>& ns;
+  NSEnum<XES, XSH>& ns;
   unsigned int move;
   unsigned int nsSize;
 
  public:
-  NSEnumIterator(NSEnum<XES, XEv, XSH>& _ns)
-      : ns(_ns) {
+  NSEnumIterator(NSEnum<XES, XSH>& _ns) : ns(_ns) {
     move = 0;
     nsSize = _ns.size();
   }
 
-  virtual ~NSEnumIterator() {
-  }
+  virtual ~NSEnumIterator() {}
 
-  void first() override {
-    move = 0;
-  }
+  void first() override { move = 0; }
 
-  void next() override {
-    move++;
-  }
+  void next() override { move++; }
 
-  bool isDone() override {
-    return move >= nsSize;
-  }
+  bool isDone() override { return move >= nsSize; }
 
-  uptr<Move<XES, XEv>> current() override {
+  uptr<Move<XES, XSH>> current() override {
     if (isDone())
-      //throw IteratorOutOfBound(move);
+      // throw IteratorOutOfBound(move);
       return nullptr;
     return ns.indexMove(move);
   }
 
-  uptr<Move<XES, XEv>> at(unsigned int m) {
+  uptr<Move<XES, XSH>> at(unsigned int m) {
     // TODO: throw exception if m >= size
     return ns.move(m);
   }
 
-  unsigned int size() {
-    return nsSize;
-  }
+  unsigned int size() { return nsSize; }
 };
 
 }  // namespace optframe

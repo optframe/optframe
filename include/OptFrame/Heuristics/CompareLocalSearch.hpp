@@ -17,16 +17,15 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class CompareLocalSearch : public LocalSearch<XES, XEv> {
+class CompareLocalSearch : public LocalSearch<XES> {
  private:
   sref<Evaluator<XES, XEv>> eval;
-  sref<LocalSearch<XES, XEv>> ls1;
-  sref<LocalSearch<XES, XEv>> ls2;
+  sref<LocalSearch<XES>> ls1;
+  sref<LocalSearch<XES>> ls2;
 
  public:
   CompareLocalSearch(sref<Evaluator<XES, XEv>> _eval,
-                     sref<LocalSearch<XES, XEv>> _ls1,
-                     sref<LocalSearch<XES, XEv>> _ls2)
+                     sref<LocalSearch<XES>> _ls1, sref<LocalSearch<XES>> _ls2)
       : eval(_eval), ls1(_ls1), ls2(_ls2) {}
 
   virtual ~CompareLocalSearch() {}
@@ -66,12 +65,12 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << "CompareLocalSearch";
+    ss << LocalSearch<XES>::idComponent() << "CompareLocalSearch";
     return ss.str();
   }
 
@@ -91,9 +90,9 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
   virtual ~CompareLocalSearchBuilder() {}
 
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
     std::shared_ptr<Evaluator<XES, XEv>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -101,24 +100,24 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
     string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
+    pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
-    sptr<LocalSearch<XES, XEv>> h = method.first;
+    sptr<LocalSearch<XES>> h = method.first;
 
     scanner = Scanner(method.second);
 
     string rest2 = scanner.rest();
 
-    pair<sptr<LocalSearch<XES, XEv>>, std::string> method2;
+    pair<sptr<LocalSearch<XES>>, std::string> method2;
     method2 = hf.createLocalSearch(rest2);
 
-    sptr<LocalSearch<XES, XEv>> h2 = method2.first;
+    sptr<LocalSearch<XES>> h2 = method2.first;
 
     scanner = Scanner(method2.second);
 
     // NOLINTNEXTLINE
-    return new CompareLocalSearch<XES, XEv>(eval, h, h2);
+    return new CompareLocalSearch<XES>(eval, h, h2);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -126,15 +125,15 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     params.push_back(
         make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 1"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search 1"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 2"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search 2"));
 
     return params;
   }
 
   bool canBuild(string component) override {
-    return component == CompareLocalSearch<XES, XEv>::idComponent();
+    return component == CompareLocalSearch<XES>::idComponent();
   }
 
   static string idComponent() {

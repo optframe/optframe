@@ -16,28 +16,23 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type,
-          XESolution XSH = XES>
-class NSSeq : public NSFind<XES, XEv, XSH> {
+template <XESolution XES, XSearch<XES> XSH = XES>
+class NSSeq : public NSFind<XES, XSH> {
+  using XEv = typename XES::second_type;
+  using S = typename XES::first_type;
+
  public:
-  /*
-   NSSeq()
-   {
-      static_assert(std::is_same<XEv, decltype(declval<XES>.second)>, "XEv type
-   test over XES");
-   }
-*/
-  virtual ~NSSeq() {}
+  virtual ~NSSeq() = default;
 
-  uptr<Move<XES, XEv, XSH>> randomMove(const XES&) override = 0;
+  uptr<Move<XES, XSH>> randomMove(const XES&) override = 0;
 
-  virtual uptr<NSIterator<XES, XEv, XSH>> getIterator(const XES&) = 0;
+  virtual uptr<NSIterator<XES, XSH>> getIterator(const XES&) = 0;
 
   // experimental! Should create novel NSSeqBlock perhaps
-  virtual uptr<NSBlockIterator<XES, XEv>> getBlockIterator(const XES& s) {
-    uptr<NSIterator<XES, XEv>> it = this->getIterator(s);
-    return uptr<NSBlockIterator<XES, XEv>>(
-        new DefaultNSBlockIterator<XES, XEv>(*it));
+  virtual uptr<NSBlockIterator<S, XEv, XES>> getBlockIterator(const XES& s) {
+    uptr<NSIterator<XES>> it = this->getIterator(s);
+    return uptr<NSBlockIterator<S, XEv, XES>>(
+        new DefaultNSBlockIterator<S, XEv, XES>(*it));
   }
 
   // ============= For 'Local Optimum'-based methods =============
@@ -58,23 +53,23 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
 
  private:
   // stateful iterator local variable
-  uptr<NSIterator<XES, XEv, XSH>> it;
+  uptr<NSIterator<XES, XSH>> it;
 
  public:
   // findFirst (from NSSeq): returns the *first* move that strictly improves
   // current solution 'se', according 'gev' RETURNS: pair< uptr<Move<XES, XEv,
   // XSH>>, op<XEv> > note that this method is *not stateless* regarding NSSeq
   // class, as a *stateful* iterator variable is locally stored
-  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findFirst(
-      GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) {
+  virtual pair<Move<XES, XSH>*, op<XEv>> findFirst(
+      GeneralEvaluator<XES, XSH>& gev, XES& se) {
     // initializes iterator
     it = this->getIterator(se);
     // finds first valid move
     it->firstValid(se);
     // gets current move (shall we test for isDone()?)
-    uptr<Move<XES, XEv, XSH>> pm = it->current();
+    uptr<Move<XES, XSH>> pm = it->current();
     // stores temporary raw pointer
-    Move<XES, XEv, XSH>* m = pm.get();
+    Move<XES, XSH>* m = pm.get();
     // gets cost for current move
     op<XEv> mvcost = gev.moveCost(*m, se);
     // if no cost, finishes
@@ -101,16 +96,16 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
   // current solution 'se', according 'gev' RETURNS: pair< uptr<Move<XES, XEv,
   // XSH>>, op<XEv> > note that this method is *not stateless* regarding NSSeq
   // class, as a *stateful* iterator variable is locally stored
-  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findNext(
-      GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) {
+  virtual pair<Move<XES, XSH>*, op<XEv>> findNext(
+      GeneralEvaluator<XES, XSH>& gev, XES& se) {
     // checks if iterator is initialized or finished
     if (!it || it->isDone()) return std::make_pair(nullptr, std::nullopt);
     // finds next valid move
     it->nextValid(se);
     // gets current move (shall we test for isDone()?)
-    uptr<Move<XES, XEv, XSH>> pm = it->current();
+    uptr<Move<XES, XSH>> pm = it->current();
     // stores temporary raw pointer
-    Move<XES, XEv, XSH>* m = pm.get();
+    Move<XES, XSH>* m = pm.get();
     // gets cost for current move
     op<XEv> mvcost = gev.moveCost(*m, se);
     // if no cost, finishes
@@ -136,17 +131,17 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
   // findBest (from NSFind): returns move that greatly improves current solution
   // 'se', according 'gev' NSFind is useful for exponential-sized neighborhoods,
   // without requiring any iterator structure
-  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(
-      GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) override {
+  virtual pair<Move<XES, XSH>*, op<XEv>> findBest(
+      GeneralEvaluator<XES, XSH>& gev, XES& se) override {
     // finds first improving move
-    pair<Move<XES, XEv, XSH>*, op<XEv>> mve = this->findFirst(gev, se);
+    pair<Move<XES, XSH>*, op<XEv>> mve = this->findFirst(gev, se);
     if (!mve.second) return std::make_pair(nullptr, std::nullopt);
     op<XEv> bestCost = std::move(mve.second);
-    Move<XES, XEv, XSH>* bestMove = mve.first;
+    Move<XES, XSH>* bestMove = mve.first;
     // iterates while iterator is valid
     while (!it->isDone()) {
       // gets next improving move
-      pair<Move<XES, XEv, XSH>*, op<XEv>> mveNext = this->findNext(gev, se);
+      pair<Move<XES, XSH>*, op<XEv>> mveNext = this->findNext(gev, se);
       // checks if it surpasses existing best move
       if (mve.second && gev.betterStrict(*mve.second, *bestCost)) {
         bestCost = std::move(mve.second);
@@ -159,7 +154,7 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
  public:
   static std::string idComponent() {
     std::stringstream ss;
-    ss << NSFind<XES, XEv>::idComponent() << ":NSSeq";
+    ss << NSFind<XES, XSH>::idComponent() << ":NSSeq";
     return ss.str();
   }
 
@@ -168,7 +163,7 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
   std::string toString() const override { return id(); }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NSFind<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (NSFind<XES, XSH>::compatible(s));
   }
 };
 

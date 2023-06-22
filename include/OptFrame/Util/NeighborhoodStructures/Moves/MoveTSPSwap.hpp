@@ -39,7 +39,7 @@ namespace optframe {
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MoveTSPSwap : public Move<XES, XEv> {
+class MoveTSPSwap : public Move<XES> {
   typedef vector<T> Route;
 
  protected:
@@ -64,16 +64,16 @@ class MoveTSPSwap : public Move<XES, XEv> {
     return all_positive && size_ok && (rep.size() >= 2);
   }
 
-  uptr<Move<XES, XEv>> apply(XES& se) override {
+  uptr<Move<XES>> apply(XES& se) override {
     Route& rep = se.first.getR();
     T t = rep[p1];
     rep[p1] = rep[p2];
     rep[p2] = t;
 
-    return uptr<Move<XES, XEv>>(new MoveTSPSwap(p1, p2));
+    return uptr<Move<XES>>(new MoveTSPSwap(p1, p2));
   }
 
-  bool operator==(const Move<XES, XEv>& _m) const override {
+  bool operator==(const Move<XES>& _m) const override {
     const MoveTSPSwap& m1 = (const MoveTSPSwap&)_m;
     return ((m1.p1 == p1) && (m1.p2 == p2));
   }

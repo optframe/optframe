@@ -14,16 +14,18 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
+template <XESolution XES>
+class RandomDescentMethod : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
-  sref<NS<XES, XEv>> ns;
+  using XEv = typename XES::second_type;
+  using XSH = XES;  // primary-based search type only (BestType)
+  sref<GeneralEvaluator<XES>> evaluator;
+  sref<NS<XES>> ns;
   unsigned int iterMax;
 
  public:
-  RandomDescentMethod(sref<GeneralEvaluator<XES, XEv>> _eval,
-                      sref<NS<XES, XEv>> _ns, unsigned int _iterMax)
+  RandomDescentMethod(sref<GeneralEvaluator<XES>> _eval, sref<NS<XES, XSH>> _ns,
+                      unsigned int _iterMax)
       : evaluator(_eval), ns(_ns), iterMax(_iterMax) {}
 
   virtual ~RandomDescentMethod() = default;
@@ -39,8 +41,8 @@ class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
     // TODO: de-referentiation of 'target_f' WILL crash, if not provided!!
     // removing 'target_f'
     while ((iter < iterMax) && !stopCriteria.shouldStop(se.second)) {
-      // uptr<Move<XES, XEv>> move = ns.randomMove(s);
-      uptr<Move<XES, XEv>> move = ns->randomMove(se);
+      // uptr<Move<XES, XSH>> move = ns.randomMove(s);
+      uptr<Move<XES, XSH>> move = ns->randomMove(se);
 
       op<XEv> cost = nullopt;
 
@@ -67,7 +69,7 @@ class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":RDM";
+    ss << LocalSearch<XES>::idComponent() << ":RDM";
     return ss.str();
   }
 
@@ -79,19 +81,21 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class RandomDescentMethodBuilder
     : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  public:
   virtual ~RandomDescentMethodBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    sptr<NS<XES, XEv>> ns;
+    sptr<NS<XES, XSH>> ns;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(ns, id2, comp_id2);
@@ -99,15 +103,15 @@ class RandomDescentMethodBuilder
     int iterMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new RandomDescentMethod<XES, XEv>(eval, ns, iterMax);
+    return new RandomDescentMethod<XES>(eval, ns, iterMax);
   }
 
   vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
     params.push_back(
-        make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
     params.push_back(make_pair("OptFrame:int",
                                "max number of iterations without improvement"));
 
@@ -115,7 +119,7 @@ class RandomDescentMethodBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == RandomDescentMethod<XES, XEv>::idComponent();
+    return component == RandomDescentMethod<XES>::idComponent();
   }
 
   static std::string idComponent() {

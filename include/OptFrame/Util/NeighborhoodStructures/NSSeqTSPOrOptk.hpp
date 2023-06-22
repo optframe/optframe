@@ -36,9 +36,17 @@ using namespace std;
 
 using namespace optframe;
 
-//template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSPOrOptk<T, ADS, S, XEv, XES>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, XEv, XES, MOVE, P>, XSearch<XES> XSH = std::pair<S, XEv>>
-template <class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSPOrOptk<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSSeqTSPOrOptk : public NSSeq<XES, XEv> {
+// template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv
+// = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSPOrOptk<T,
+// ADS, S, XEv, XES>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR =
+// NSIteratorTSPOrOptk<T, ADS, S, XEv, XES, MOVE, P>, XSearch<XES> XSH =
+// std::pair<S, XEv>>
+template <class T, class ADS, XBaseSolution<vector<T>, ADS> S,
+          class MOVE = MoveTSPOrOptk<T, ADS, S>,
+          class P = OPTFRAME_DEFAULT_PROBLEM,
+          class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, MOVE, P>,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSSeqTSPOrOptk : public NSSeq<XES> {
   typedef vector<T> Route;
 
  private:
@@ -46,17 +54,15 @@ class NSSeqTSPOrOptk : public NSSeq<XES, XEv> {
   std::shared_ptr<P> p;  // has to be the last
 
  public:
-  NSSeqTSPOrOptk(int _k, std::shared_ptr<P> _p = nullptr)
-      : k(_k), p(_p) {
+  NSSeqTSPOrOptk(int _k, std::shared_ptr<P> _p = nullptr) : k(_k), p(_p) {
     static_assert(XSolution<S>);
     static_assert(XESolution<XES>);
     static_assert(XEvaluation<XEv>);
   }
 
-  virtual ~NSSeqTSPOrOptk() {
-  }
+  virtual ~NSSeqTSPOrOptk() {}
 
-  uptr<Move<XES, XEv>> randomMove(const XES& se) override {
+  uptr<Move<XES>> randomMove(const XES& se) override {
     const Route& rep = se.first.getR();
     int n = rep.size();
 
@@ -64,18 +70,17 @@ class NSSeqTSPOrOptk : public NSSeq<XES, XEv> {
       // THROW EXCEPTION!
       cerr << "CANNOT GENERATE MOVE OPTK FOR SOLUTION " << rep << endl;
       exit(1);
-      //return *new MOVE(0, 0, k, p);
+      // return *new MOVE(0, 0, k, p);
     }
 
     int i = rand() % (n - k + 1);
 
     int j = i;
-    while (abs(i - j) < k)
-      j = rand() % (n - k + 1);
+    while (abs(i - j) < k) j = rand() % (n - k + 1);
 
-    uptr<Move<XES, XEv>> m(new MOVE(i, j, k, p));
-    //S sol(rep); // TODO: think
-    //if (!m->canBeApplied(sol)) {
+    uptr<Move<XES>> m(new MOVE(i, j, k, p));
+    // S sol(rep); // TODO: think
+    // if (!m->canBeApplied(sol)) {
     if (!m->canBeApplied(se)) {
       cout << "ERROR IN GENERATION!" << endl;
       m->print();
@@ -84,34 +89,32 @@ class NSSeqTSPOrOptk : public NSSeq<XES, XEv> {
     return m;
   }
 
-  uptr<Move<XES, XEv>> validRandomMove(const XES& se) override {
-    //const Route& r = s.getR();
-    uptr<Move<XES, XEv>> m = randomMove(se);
+  uptr<Move<XES>> validRandomMove(const XES& se) override {
+    // const Route& r = s.getR();
+    uptr<Move<XES>> m = randomMove(se);
     if (m->canBeApplied(se))
       return m;
     else {
-      ///delete m;
+      /// delete m;
       return nullptr;
     }
   }
 
-  virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override {
+  uptr<NSIterator<XES>> getIterator(const XES& se) override {
     const Route& r = se.first.getR();
-    return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), k, p));
+    return uptr<NSIterator<XES>>(new NSITERATOR(r.size(), k, p));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSPOrOptk";
+    ss << NSSeq<XES>::idComponent() << ":NSSeqTSPOrOptk";
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (NSSeq<XES>::compatible(s));
   }
 
   std::string toString() const override {
@@ -122,10 +125,16 @@ class NSSeqTSPOrOptk : public NSSeq<XES, XEv> {
 };
 
 // compile tests
-//using mynsseq_nsseq_tsp_oroptk_test = NSSeqTSPOrOptk<int, short, IsSolution<vector<int>, short>, IsEvaluation<double>, pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
-using mynsseq_nsseq_tsp_oroptk_test = NSSeqTSPOrOptk<int, short, IsSolution<vector<int>, short>>;
+// using mynsseq_nsseq_tsp_oroptk_test = NSSeqTSPOrOptk<int, short,
+// IsSolution<vector<int>, short>, IsEvaluation<double>,
+// pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
+using mynsseq_nsseq_tsp_oroptk_test =
+    NSSeqTSPOrOptk<int, short, IsSolution<vector<int>, short>>;
 //
-static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_oroptk_test>::value, "not inherited from NSSeq");
-static_assert(!std::is_abstract<mynsseq_nsseq_tsp_oroptk_test>::value, "abstract nsseq");
+static_assert(
+    std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_oroptk_test>::value,
+    "not inherited from NSSeq");
+static_assert(!std::is_abstract<mynsseq_nsseq_tsp_oroptk_test>::value,
+              "abstract nsseq");
 
 #endif /*OPTFRAME_NSSEQ_TSP_OROPTK_HPP_*/

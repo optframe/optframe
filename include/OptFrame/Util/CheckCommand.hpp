@@ -204,10 +204,10 @@ class CheckCommand : public Component {  // NOLINT
   // vector<std::shared_ptr<CopySolution<R, ADS>>> lSolution;
   vector<std::shared_ptr<S>> lSolution;
 
-  vector<std::shared_ptr<Move<XES, XEv>>> lMove;
-  vector<std::shared_ptr<NS<XES, XEv>>> lNS;
-  vector<std::shared_ptr<NSSeq<XES, XEv>>> lNSSeq;
-  vector<std::shared_ptr<NSEnum<XES, XEv>>> lNSEnum;
+  vector<std::shared_ptr<Move<XES, XSH>>> lMove;
+  vector<std::shared_ptr<NS<XES, XSH>>> lNS;
+  vector<std::shared_ptr<NSSeq<XES>>> lNSSeq;
+  vector<std::shared_ptr<NSEnum<XES>>> lNSEnum;
 
 #ifdef LEGACY_ADS
   std::shared_ptr<ADSManager<REP, ADS, S>> adsMan;
@@ -320,45 +320,45 @@ class CheckCommand : public Component {  // NOLINT
                        << " added!" << endl;
   }
 
-  void add(Move<XES, XEv>& c) {
+  void add(Move<XES, XSH>& c) {
     lMove.push_back(&c);
     if (verbose)
       (*this->logdata) << "checkcommand: Move " << lMove.size() << " added!"
                        << endl;
   }
 
-  void add(sref<NS<XES, XEv>> c) {
+  void add(sref<NS<XES, XSH>> c) {
     lNS.push_back(c.sptr());
     if (verbose)
       (*this->logdata) << "checkcommand: NS " << lNS.size() << " added!"
                        << endl;
   }
 
-  void addNS(sref<NS<XES, XEv>> c) { add(c); }
+  void addNS(sref<NS<XES, XSH>> c) { add(c); }
 
-  void add(sref<NSSeq<XES, XEv>> c) {
+  void add(sref<NSSeq<XES>> c) {
     lNSSeq.push_back(c.sptr());
     if (verbose)
       (*this->logdata) << "checkcommand: NSSeq " << lNSSeq.size() << " added!"
                        << endl;
     if (paramConvertNS) {
-      std::shared_ptr<NS<XES, XEv>> sptr_ns = c.sptr();
+      std::shared_ptr<NS<XES, XSH>> sptr_ns = c.sptr();
       add(sptr_ns);
-      // add((std::shared_ptr<NS<XES, XEv>>) c.sptr());
+      // add((std::shared_ptr<NS<XES, XSH>>) c.sptr());
     }
   }
 
-  void addNSSeq(sref<NSSeq<XES, XEv>> c) { add(c); }
+  void addNSSeq(sref<NSSeq<XES>> c) { add(c); }
 
-  void add(sref<NSEnum<XES, XEv>> c) {
+  void add(sref<NSEnum<XES>> c) {
     lNSEnum.push_back(c.sptr());
     if (verbose)
       (*this->logdata) << "checkcommand: NSEnum " << lNSEnum.size() << " added!"
                        << endl;
-    if (paramConvertNS) add((sref<NSSeq<XES, XEv>>)c);
+    if (paramConvertNS) add((sref<NSSeq<XES>>)c);
   }
 
-  void addNSEnum(sref<NSEnum<XES, XEv>> c) { add(c); }
+  void addNSEnum(sref<NSEnum<XES>> c) { add(c); }
 
   void message(Component* c, int iter, string text) {
     if (verbose) message(c->id(), iter, text);
@@ -390,11 +390,11 @@ class CheckCommand : public Component {  // NOLINT
   bool parseBool(string b) { return b == "true"; }
 
  private:
-  // bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns,
+  // bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XSH>> ns, int id_ns,
   // CopySolution<R, ADS>& s, int id_s, Move<XES>& move,
   // vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples&
   // timeSamples)
-  bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns,
+  bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XSH>> ns, int id_ns,
                        S& _s, int id_s, Move<XES>& move,
                        vector<vector<std::shared_ptr<XEv>>>& evaluations,
                        TimeDataCheckCommand& timeSamples) {
@@ -454,7 +454,7 @@ class CheckCommand : public Component {  // NOLINT
       S sOriginal = se.first;  // copy
       timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
-      uptr<Move<XES, XEv, XES>> rev;
+      uptr<Move<XES>> rev;
 
       {  // test CMERR_MOVE_HASREVERSE
         Timer tMovApply;
@@ -519,7 +519,7 @@ class CheckCommand : public Component {  // NOLINT
 
       //
       Timer tMovRevApply;
-      uptr<Move<XES, XEv, XES>> ini = nullptr;
+      uptr<Move<XES>> ini = nullptr;
       if (rev) ini = rev->apply(se);
 
       double applyRevMS = tMovRevApply.inMilliSecs();
@@ -584,7 +584,7 @@ class CheckCommand : public Component {  // NOLINT
             move.setVerboseR();
             auto seBackup = sOriginal;
             rev->setVerboseR();
-            uptr<Move<XES, XEv, XES>> ini = rev->apply(se);
+            uptr<Move<XES>> ini = rev->apply(se);
             // compare and let operator== raise debug messages
             if (*ini != move) return false;  // must use bool result here
           }
@@ -686,8 +686,7 @@ class CheckCommand : public Component {  // NOLINT
       // XEv evBeginFasterCost(_e);
       XEv evBeginFasterCost(se.second);
       //
-      uptr<Move<XES, XEv, XES>> rev1 =
-          lEvaluator[ev]->applyMoveReevaluate(move, se);
+      uptr<Move<XES>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
       // evtype e_end1 = _e.evaluation();
       evtype e_end1 = se.second.evaluation();
       if (se.second.isOutdated()) {
@@ -699,10 +698,10 @@ class CheckCommand : public Component {  // NOLINT
       // TODO: check outdated status
       // TODO: if(e.outdated), it means that user did not implement
       // Move::applyMoveReevaluate(e,R,ADS)!
-      //			Move<XES, XEv, XES>& ini1 =
+      //			Move<XES>& ini1 =
       //*lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
       //
-      uptr<Move<XES, XEv, XES>> ini1 = rev1->applyUpdate(se);
+      uptr<Move<XES>> ini1 = rev1->applyUpdate(se);
       if (se.second.isOutdated()) {
         // (*this->logdata) <<  "WARNING: evaluation is OUTDATED after
         // applyUpdate! manual evaluate" << std::endl;
@@ -877,7 +876,7 @@ class CheckCommand : public Component {  // NOLINT
         if (ns)  // not testing for single Move
         {
           // TODO: consider that randomMove can be null
-          uptr<Move<XES, XEv, XES>> move2 = ns->randomMove(se);
+          uptr<Move<XES>> move2 = ns->randomMove(se);
           if (verbose) {
             (*this->logdata) << "testing double move!" << endl;
             move2->print();
@@ -1151,7 +1150,7 @@ class CheckCommand : public Component {  // NOLINT
     }
 
     for (unsigned id_move = 0; id_move < lMove.size(); id_move++) {
-      shared_ptr<Move<XES, XEv, XES>> pmove = lMove.at(id_move);
+      shared_ptr<Move<XES>> pmove = lMove.at(id_move);
       if (this->information)
         (*this->logdata) << "checkcommand: testing Move " << id_move << " => "
                          << pmove->toString() << endl;
@@ -1162,7 +1161,7 @@ class CheckCommand : public Component {  // NOLINT
         // CopySolution<R, ADS>& s = *solutions.at(id_s);
         S& s = *solutions.at(id_s);
 
-        Move<XES, XEv, XES>& move = *pmove;
+        Move<XES>& move = *pmove;
 
         XES se = make_pair(s, XEv());
 
@@ -1175,7 +1174,7 @@ class CheckCommand : public Component {  // NOLINT
         }
 
         // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns,
-        // CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move,
+        // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
         // vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol,
         // TimeNS& timeNS)
 
@@ -1207,7 +1206,7 @@ class CheckCommand : public Component {  // NOLINT
                          << " Solutions=" << solutions.size() << ")" << endl;
 
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
-      std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
+      std::shared_ptr<NS<XES, XSH>> ns = lNS.at(id_ns);
       if (this->information) {
         (*this->logdata) << "checkcommand: testing NS " << id_ns << " => "
                          << ns->toString();
@@ -1228,7 +1227,7 @@ class CheckCommand : public Component {  // NOLINT
           XES se = make_pair(s, XEv());
 
           // TODO: consider that randomMove can be null
-          uptr<Move<XES, XEv, XES>> move = ns->randomMove(se);
+          uptr<Move<XES>> move = ns->randomMove(se);
           if (verbose) move->print();
 
           if (!move->canBeApplied(se)) {
@@ -1243,13 +1242,13 @@ class CheckCommand : public Component {  // NOLINT
           // EXEC TESTS HERE
 
           // bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns,
-          // CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move,
+          // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
           // vector<vector<Evaluation<>*> >& evaluations, pair<int, double>&
           // timeCloneSolution, vector<pair<int, double> >& timeInitializeADS,
           // vector<pair<int, double> >& fullTimeEval, vector<pair<int, double>
           // >& timeReeval, TimeNS& timeNS) bool testMoveGeneral(int iter,
           // NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s,
-          // Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >&
+          // Move<XES>& move, vector<vector<Evaluation<>*> >&
           // evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
           if (!testMoveGeneral(iter, ns, id_ns, s, id_s, *move, evaluations,
@@ -1289,7 +1288,7 @@ class CheckCommand : public Component {  // NOLINT
         countData.vCountValidMovesSamples;  //(lNSSeq.size());
 
     for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
-      std::shared_ptr<NSSeq<XES, XEv, XES>> nsseq = lNSSeq.at(id_nsseq);
+      std::shared_ptr<NSSeq<XES>> nsseq = lNSSeq.at(id_nsseq);
       if (this->information) {
         (*this->logdata) << "checkcommand: testing NSSeq " << id_nsseq << " => "
                          << nsseq->toString();
@@ -1311,7 +1310,7 @@ class CheckCommand : public Component {  // NOLINT
         // ===================
 
         // TODO: consider that iterator can be null!
-        // NSIterator<XES, XEv>& it = *nsseq->getIterator(se);
+        // NSIterator<XES>& it = *nsseq->getIterator(se);
         auto it = nsseq->getIterator(se);
 
         int countMovesNSSeq = 0;
@@ -1324,8 +1323,8 @@ class CheckCommand : public Component {  // NOLINT
                     "getting current move (NSSeq tests).");
 
           // TODO: verify if it's not null!
-          uptr<Move<XES, XEv, XES>> pmove = it->current();
-          Move<XES, XEv, XES>& move = *pmove;
+          uptr<Move<XES>> pmove = it->current();
+          Move<XES>& move = *pmove;
           countMovesNSSeq++;
 
           if (!move.canBeApplied(se)) {
@@ -1341,13 +1340,13 @@ class CheckCommand : public Component {  // NOLINT
           // EXEC MOVES HERE
 
           //	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int
-          // id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>&
+          // id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES>&
           // move, vector<vector<Evaluation<>*> >& evaluations, pair<int,
           // double>& timeCloneSolution, vector<pair<int, double> >&
           // timeInitializeADS, vector<pair<int, double> >& fullTimeEval,
           // vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
           // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns,
-          // CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move,
+          // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
           // vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol,
           // TimeNS& timeNS)
 
@@ -1397,7 +1396,7 @@ class CheckCommand : public Component {  // NOLINT
     // vCountMovePairsEnumSamples = countData.vCountMovePairsEnumSamples;
 
     for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++) {
-      std::shared_ptr<NSEnum<XES, XEv>> nsenum = lNSEnum.at(id_nsenum);
+      std::shared_ptr<NSEnum<XES>> nsenum = lNSEnum.at(id_nsenum);
       if (this->information) {
         (*this->logdata) << "checkcommand: testing NSEnum " << id_nsenum
                          << " => " << nsenum->toString();
@@ -1419,7 +1418,7 @@ class CheckCommand : public Component {  // NOLINT
         // ===================
 
         // TODO: consider that iterator can be null!
-        uptr<NSIterator<XES, XEv>> it = nsenum->getIterator(se);
+        uptr<NSIterator<XES>> it = nsenum->getIterator(se);
         int countMovesNSEnum = 0;
         int countValidMovesNSEnum = 0;
 
@@ -1429,8 +1428,8 @@ class CheckCommand : public Component {  // NOLINT
                   "getting current move (NSEnum tests).");
 
           // TODO: verify if it's not null!
-          uptr<Move<XES, XEv, XES>> pmove = it->current();
-          Move<XES, XEv, XES>& move = *pmove;
+          uptr<Move<XES>> pmove = it->current();
+          Move<XES>& move = *pmove;
           countMovesNSEnum++;
 
           if (!move.canBeApplied(se)) {
@@ -1446,13 +1445,13 @@ class CheckCommand : public Component {  // NOLINT
           // EXEC MOVES HERE
 
           //	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int
-          // id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>&
+          // id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES>&
           // move, vector<vector<Evaluation<>*> >& evaluations, pair<int,
           // double>& timeCloneSolution, vector<pair<int, double> >&
           // timeInitializeADS, vector<pair<int, double> >& fullTimeEval,
           // vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
           // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns,
-          // CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move,
+          // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
           // vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol,
           // TimeNS& timeNS)
 
@@ -1503,8 +1502,8 @@ class CheckCommand : public Component {  // NOLINT
                         XES se = make_pair(s, XEv());
 
                         // TODO: verify if return is return is not null!
-                        uptr<Move<XES, XEv, XES>> move1 = nsenum->indexMove(m1);
-                        uptr<Move<XES, XEv, XES>> move2 = nsenum->indexMove(m2);
+                        uptr<Move<XES>> move1 = nsenum->indexMove(m1);
+                        uptr<Move<XES>> move2 = nsenum->indexMove(m2);
                         // moves must be valid
                         if (!(move1->canBeApplied(se) &&
          move2->canBeApplied(se))) break;
@@ -1520,7 +1519,7 @@ class CheckCommand : public Component {  // NOLINT
                         op<XEv> cost_m2 = ev.moveCostComplete(*move2, se);
 
                         // apply move 1 (consider reverse is not nullptr)
-                        uptr<Move<XES, XEv, XES>> rev_m1 = move1->apply(se);
+                        uptr<Move<XES>> rev_m1 = move1->apply(se);
 
                         // calculate new cost for move 2
                         ///MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
@@ -1596,7 +1595,7 @@ class CheckCommand : public Component {  // NOLINT
     //
 
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
-      std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
+      std::shared_ptr<NS<XES, XSH>> ns = lNS.at(id_ns);
       if (this->information) {
         (*this->logdata) << "checkcommand: testing NS " << id_ns << " => "
                          << ns->toString();
@@ -1651,7 +1650,7 @@ class CheckCommand : public Component {  // NOLINT
                            << std::endl;
         //
 
-        // uptr<NSIterator<XES, XEv>> it = nsseq->getIterator(se);
+        // uptr<NSIterator<XES>> it = nsseq->getIterator(se);
         // int countMoves = 0;
         // int countValidMoves = 0;
 
@@ -1681,8 +1680,8 @@ class CheckCommand : public Component {  // NOLINT
                 XES se = make_pair(s, XEv());
 
                 // TODO: verify if return is return is not null!
-                Move<XES, XEv, XES>* move1{allMoves.at(m1)};
-                Move<XES, XEv, XES>* move2{allMoves.at(m2)};
+                Move<XES>* move1{allMoves.at(m1)};
+                Move<XES>* move2{allMoves.at(m2)};
                 // moves must be valid
                 if (!(move1->canBeApplied(se) && move2->canBeApplied(se)))
                   break;
@@ -1702,7 +1701,7 @@ class CheckCommand : public Component {  // NOLINT
                 op<XEv> cost_m2 = ev.moveCostComplete(*move2, se);
 
                 // apply move 1 (consider reverse is not nullptr)
-                uptr<Move<XES, XEv, XES>> rev_m1 = move1->apply(se);
+                uptr<Move<XES>> rev_m1 = move1->apply(se);
 
                 // calculate new cost for move 2
                 /// MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
@@ -1848,7 +1847,7 @@ class CheckCommand : public Component {  // NOLINT
         countData.vCountFNIndependentSamples;
 
     for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
-      std::shared_ptr<NSSeq<XES, XEv>> nsseq = lNSSeq.at(id_nsseq);
+      std::shared_ptr<NSSeq<XES>> nsseq = lNSSeq.at(id_nsseq);
       if (this->information) {
         (*this->logdata) << "checkcommand: testing NSSeq " << id_nsseq << " => "
                          << nsseq->toString();
@@ -1897,7 +1896,7 @@ class CheckCommand : public Component {  // NOLINT
         S& s = *solutions.at(0);
         XES se = make_pair(s, XEv());
         //
-        uptr<NSIterator<XES, XEv>> it = nsseq->getIterator(se);
+        uptr<NSIterator<XES>> it = nsseq->getIterator(se);
         // int countMoves = 0;
         // int countValidMoves = 0;
 
@@ -1928,8 +1927,8 @@ class CheckCommand : public Component {  // NOLINT
                 XES se = make_pair(s, XEv());
 
                 // TODO: verify if return is return is not null!
-                Move<XES, XEv, XES>* move1{allMoves.at(m1)};
-                Move<XES, XEv, XES>* move2{allMoves.at(m2)};
+                Move<XES>* move1{allMoves.at(m1)};
+                Move<XES>* move2{allMoves.at(m2)};
                 // moves must be valid
                 if (!(move1->canBeApplied(se) && move2->canBeApplied(se)))
                   break;
@@ -1949,7 +1948,7 @@ class CheckCommand : public Component {  // NOLINT
                 op<XEv> cost_m2 = ev.moveCostComplete(*move2, se);
 
                 // apply move 1 (consider reverse is not nullptr)
-                uptr<Move<XES, XEv, XES>> rev_m1 = move1->apply(se);
+                uptr<Move<XES>> rev_m1 = move1->apply(se);
 
                 // calculate new cost for move 2
                 /// MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);

@@ -30,18 +30,16 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class FirstImprovementSlow : public LocalSearch<XES, XEv> {
+class FirstImprovementSlow : public LocalSearch<XES> {
  private:
   Evaluator<S>& eval;
   NSSeq<S>& nsSeq;
 
  public:
   FirstImprovementSlow(Evaluator<S>& _eval, NSSeq<S>& _nsSeq)
-      : eval(_eval), nsSeq(_nsSeq) {
-  }
+      : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~FirstImprovementSlow() {
-  }
+  virtual ~FirstImprovementSlow() {}
 
   virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f) {
     Evaluation<>& e = eval.evaluate(s);
@@ -49,8 +47,9 @@ class FirstImprovementSlow : public LocalSearch<XES, XEv> {
     delete &e;
   }
 
-  virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f) {
-    NSIterator<S, XEv>& it = nsSeq.getIterator(s);
+  virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit,
+                    double target_f) {
+    NSIterator<XES>& it = nsSeq.getIterator(s);
     string bestMoveId = "";
     it.first();
 
@@ -64,13 +63,13 @@ class FirstImprovementSlow : public LocalSearch<XES, XEv> {
 
       // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
       /*
-			if(e.getLocalOptimumStatus(move->id()))
-			{
-				delete &it;
-				delete move;
-				return;
-			}
-			*/
+                        if(e.getLocalOptimumStatus(move->id()))
+                        {
+                                delete &it;
+                                delete move;
+                                return;
+                        }
+                        */
 
       bestMoveId = move->id();
 
@@ -93,7 +92,8 @@ class FirstImprovementSlow : public LocalSearch<XES, XEv> {
             eval.evaluate(e, s);  // updates 'e'
 
             // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-            //e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+            // e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of
+            // Local Optimum
 
             return;
           }
@@ -108,25 +108,24 @@ class FirstImprovementSlow : public LocalSearch<XES, XEv> {
     } while (!it.isDone());
 
     // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-    //if(bestMoveId != "")
-    //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+    // if(bestMoveId != "")
+    //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local
+    // Optimum
 
     delete &it;
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":FISlow";
+    ss << LocalSearch<XES>::idComponent() << ":FISlow";
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
   std::string toString() const override {
     stringstream ss;

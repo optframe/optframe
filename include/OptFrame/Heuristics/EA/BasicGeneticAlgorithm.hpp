@@ -43,7 +43,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
   Selection<R, ADS>& selection;
   Crossover<R, ADS>& cross;
   Mutation<R, ADS>& mut;
-  LocalSearch<XES, XEv>& ls;
+  LocalSearch<XES>& ls;
 
   RandGen& rg;
 
@@ -61,7 +61,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
                         float mutationRate, float _pLS, unsigned numGenerations,
                         Selection<R, ADS>& _selection,
                         Crossover<R, ADS>& _cross, Mutation<R>& _mut,
-                        LocalSearch<XES, XEv>& _ls, RandGen& _rg)
+                        LocalSearch<XES>& _ls, RandGen& _rg)
       : evaluator(_evaluator),
         initPop(_initPop),
         selection(_selection),
@@ -330,9 +330,9 @@ class BasicGeneticAlgorithmBuilder
     hf.assign(mut, id5, comp_id5);
 
     string rest = scanner.rest();
-    pair<LocalSearch<XES, XEv>*, std::string> method;
+    pair<LocalSearch<XES>*, std::string> method;
     method = hf.createLocalSearch(rest);
-    LocalSearch<XES, XEv>* h = method.first;
+    LocalSearch<XES>* h = method.first;
     scanner = Scanner(method.second);
 
     return new BasicGeneticAlgorithm<R, ADS>(*eval, *initPop, popSize, pCross,
@@ -356,7 +356,7 @@ class BasicGeneticAlgorithmBuilder
     params.push_back(make_pair(Crossover<R, ADS>::idComponent(), "crossover"));
     params.push_back(make_pair(Mutation<R, ADS>::idComponent(), "mutation"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search"));
 
     return params;
   }

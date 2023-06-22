@@ -20,16 +20,18 @@ namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicILSPerturbation : public ILS, public Component {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  private:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   int pMin;
   int pMax;
-  vsref<NS<XES, XEv>> ns;
+  vsref<NS<XES, XSH>> ns;
   sref<RandGen> rg;
 
  public:
-  BasicILSPerturbation(sref<GeneralEvaluator<XES, XEv>> e, int _pMin, int _pMax,
-                       vsref<NS<XES, XEv>>& _ns, sref<RandGen> _rg)
+  BasicILSPerturbation(sref<GeneralEvaluator<XES>> e, int _pMin, int _pMax,
+                       vsref<NS<XES, XSH>>& _ns, sref<RandGen> _rg)
       : evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg) {
     if (pMax < pMin) {
       cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
@@ -43,8 +45,8 @@ class BasicILSPerturbation : public ILS, public Component {
       cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
   }
 
-  BasicILSPerturbation(sref<GeneralEvaluator<XES, XEv>> e, int _pMin, int _pMax,
-                       sref<NS<XES, XEv>> _ns, sref<RandGen> _rg)
+  BasicILSPerturbation(sref<GeneralEvaluator<XES>> e, int _pMin, int _pMax,
+                       sref<NS<XES, XSH>> _ns, sref<RandGen> _rg)
       : evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg) {
     ns.push_back(&_ns);
     if (pMax < pMin) {
@@ -61,7 +63,7 @@ class BasicILSPerturbation : public ILS, public Component {
 
   virtual ~BasicILSPerturbation() {}
 
-  void add_ns(NS<XES, XEv>& _ns) { ns.push_back(&_ns); }
+  void add_ns(NS<XES, XSH>& _ns) { ns.push_back(&_ns); }
 
   void perturb(XES& se,
                const StopCriteria<XEv>& stopCriteria)  // TODO: override?? what?
@@ -72,7 +74,7 @@ class BasicILSPerturbation : public ILS, public Component {
     for (int i = pMin; i < pMax; i++) {
       int nk = rand() % ns.size();
 
-      uptr<Move<XES, XEv>> mp = ns[nk]->validRandomMove(se);
+      uptr<Move<XES, XSH>> mp = ns[nk]->validRandomMove(se);
 
       if (!mp) {
         cout << "BasicILSPerturbation warning: perturbation found no valid "
@@ -101,13 +103,15 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  public:
   virtual ~BasicILSPerturbationBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -115,12 +119,12 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     int pMin = *scanner.nextInt();
     int pMax = *scanner.nextInt();
 
-    vsptr<NS<XES, XEv>> _ns_list;
+    vsptr<NS<XES, XSH>> _ns_list;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assignList(_ns_list, id2, comp_id2);
 
-    vsref<NS<XES, XEv>> ns_list;
+    vsref<NS<XES, XSH>> ns_list;
     for (auto x : _ns_list) ns_list.push_back(x);
 
     return new BasicILSPerturbation<XES, XEv>(eval, pMin, pMax, ns_list,
@@ -129,12 +133,12 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
     params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
     stringstream ss;
-    ss << NS<XES, XEv>::idComponent() << "[]";
+    ss << NS<XES, XSH>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
     return params;

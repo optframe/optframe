@@ -13,18 +13,18 @@ namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = typename XES::second_type,
           XESolution XSH = XES>
-class BestImprovement : public LocalSearch<XES, XEv> {
+class BestImprovement : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv>> eval;
-  sref<NSSeq<XES, XEv, XSH>> nsSeq;
+  sref<GeneralEvaluator<XES>> eval;
+  sref<NSSeq<XES, XSH>> nsSeq;
 
   // logs
   double sum_time;
   int num_calls;
 
  public:
-  BestImprovement(sref<GeneralEvaluator<XES, XEv>> _eval,
-                  sref<NSSeq<XES, XEv, XSH>> _nsSeq)
+  BestImprovement(sref<GeneralEvaluator<XES>> _eval,
+                  sref<NSSeq<XES, XSH>> _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {
     sum_time = 0.0;
     num_calls = 0;
@@ -54,8 +54,8 @@ class BestImprovement : public LocalSearch<XES, XEv> {
     Timer t;
 
     // TODO: verify if it's not null
-    // uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(s);
-    uptr<NSIterator<XES, XEv, XSH>> it = nsSeq->getIterator(se);
+    // uptr<NSIterator<XES, XSH>> it = nsSeq.getIterator(s);
+    uptr<NSIterator<XES, XSH>> it = nsSeq->getIterator(se);
     //
     if (!it) return SearchStatus::FAILED;
     //
@@ -68,7 +68,7 @@ class BestImprovement : public LocalSearch<XES, XEv> {
       return SearchStatus::NO_REPORT;
     }
 
-    uptr<Move<XES, XEv, XSH>> bestMove = it->current();
+    uptr<Move<XES, XSH>> bestMove = it->current();
 
     /*if(e.getLocalOptimumStatus(bestMove->id()))
                 {
@@ -114,7 +114,7 @@ class BestImprovement : public LocalSearch<XES, XEv> {
 
     // it.next();
     while (!it->isDone()) {
-      uptr<Move<XES, XEv>> move = it->current();
+      uptr<Move<XES, XSH>> move = it->current();
       // if (move->canBeApplied(s))
       if (move->canBeApplied(se)) {
         /// MoveCost<>* cost = eval.moveCost(*move, se);
@@ -172,12 +172,12 @@ class BestImprovement : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":BI";
+    ss << LocalSearch<XES>::idComponent() << ":BI";
     return ss.str();
   }
 
@@ -206,20 +206,20 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
   virtual ~BestImprovementBuilder() {}
 
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    if(this->verbose)
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    if (this->verbose)
       std::cout << "Debug: BestImprovementBuilder::build()" << std::endl;
     if (!scanner.hasNext()) return nullptr;
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_ev_id = scanner.next();
     if (!scanner.hasNextInt()) return nullptr;
     int ev_id = *scanner.nextInt();
     hf.assign(eval, ev_id, comp_ev_id);
 
     if (!scanner.hasNext()) return nullptr;
-    sptr<NSSeq<XES, XEv, XSH>> nsseq;
+    sptr<NSSeq<XES, XSH>> nsseq;
     std::string comp_nsseq_id = scanner.next();
     if (!scanner.hasNextInt()) return nullptr;
     int nsseq_id = *scanner.nextInt();
@@ -230,10 +230,10 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
-                               "neighborhood structure"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

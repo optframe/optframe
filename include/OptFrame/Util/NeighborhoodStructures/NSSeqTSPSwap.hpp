@@ -32,7 +32,10 @@
 
 using namespace std;
 
-//! \english NSSeq class for the classic Traveling Salesman Problem (TSP) neighborhood of Swap. \endenglish \portuguese Classe NSSeq para a estrutura de vizinhança clássica de troca (Swap) do Problema do Caixeiro Viajante. \endportuguese
+//! \english NSSeq class for the classic Traveling Salesman Problem (TSP)
+//! neighborhood of Swap. \endenglish \portuguese Classe NSSeq para a estrutura
+//! de vizinhança clássica de troca (Swap) do Problema do Caixeiro Viajante.
+//! \endportuguese
 
 /*!
  \english
@@ -44,7 +47,8 @@ using namespace std;
 
  Article:
 
- Swap is applied for any problem that representation is like a vector<T>, where T is the type of the vector.
+ Swap is applied for any problem that representation is like a vector<T>, where
+ T is the type of the vector.
 
  e.g: vector<T> where type of T is int
 
@@ -60,13 +64,15 @@ using namespace std;
  \portuguese
  Estrutura alvo: vector<T>.
 
- Problema clássico: Problema do Caixeiro Viajante (em inglês TSP - Traveling Salesman Problem)
+ Problema clássico: Problema do Caixeiro Viajante (em inglês TSP - Traveling
+ Salesman Problem)
 
  Estrutura de vizinhança clássica de troca.
 
  Artigo referência:
 
- Swap é aplicável em todo tipo de problema no qual a representação é um vector<T>, onde T é o tipo do vector.
+ Swap é aplicável em todo tipo de problema no qual a representação é um
+ vector<T>, onde T é o tipo do vector.
 
  Exemplo: vector<T> onde o tipo de T é int
 
@@ -82,56 +88,55 @@ using namespace std;
 
 namespace optframe {
 
-template <class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
-class NSSeqTSPSwap : public NSSeq<XES, XEv, XSH> {
+template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
+          XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
+          class MOVE = MoveTSPSwap<T, ADS, S>,
+          class P = OPTFRAME_DEFAULT_PROBLEM,
+          class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
+          XSearch<XES> XSH = std::pair<S, XEv>>
+class NSSeqTSPSwap : public NSSeq<XES, XSH> {
   typedef vector<T> Route;
 
  private:
   P* p;  // has to be the last
 
  public:
-  NSSeqTSPSwap(P* _p = nullptr)
-      : p(_p) {
-  }
+  NSSeqTSPSwap(P* _p = nullptr) : p(_p) {}
 
-  virtual ~NSSeqTSPSwap() {
-  }
+  virtual ~NSSeqTSPSwap() {}
 
-  //using NSSeq<S, XEv, XSH>::move;
-  //using NSSeq<S, XEv, XSH>::getIterator;
+  // using NSSeq<S, XEv, XSH>::move;
+  // using NSSeq<S, XEv, XSH>::getIterator;
 
-  uptr<Move<XES, XEv>> randomMove(const XES& s) override {
+  uptr<Move<XES, XSH>> randomMove(const XES& s) override {
     const Route& rep = s.first.getR();
-    if (rep.size() < 2)
-      return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
+    if (rep.size() < 2) return uptr<Move<XES, XSH>>(new MOVE(-1, -1, p));
 
     int p1 = rand() % rep.size();
 
     int p2 = p1;
 
-    while (p2 == p1)
-      p2 = rand() % rep.size();
+    while (p2 == p1) p2 = rand() % rep.size();
 
-    return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
+    return uptr<Move<XES, XSH>>(new MOVE(p1, p2, p));
   }
 
-  virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override {
+  uptr<NSIterator<XES>> getIterator(const XES& s) override {
     const Route& r = s.first.getR();
-    return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), p));
+    return uptr<NSIterator<XES>>(new NSITERATOR(r.size(), p));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSSeqTSPSwap";
+    ss << NSSeq<XES, XSH>::idComponent() << ":NSSeqTSPSwap";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
+    return (s == idComponent()) || (NSSeq<XES, XSH>::compatible(s));
   }
 
   std::string toString() const override {

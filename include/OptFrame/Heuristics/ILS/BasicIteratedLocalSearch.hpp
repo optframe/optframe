@@ -23,14 +23,14 @@ template <XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicIteratedLocalSearch
     : public IteratedLocalSearch<BasicHistory, XES, XEv> {
  protected:
-  sref<LocalSearch<XES, XEv>> ls;
+  sref<LocalSearch<XES>> ls;
   sref<BasicILSPerturbation<XES, XEv>> p;
   int iterMax;
 
  public:
-  BasicIteratedLocalSearch(sref<GeneralEvaluator<XES, XEv>> e,
+  BasicIteratedLocalSearch(sref<GeneralEvaluator<XES>> e,
                            sref<InitialSearch<XES>> constructive,
-                           sref<LocalSearch<XES, XEv>> _ls,
+                           sref<LocalSearch<XES>> _ls,
                            sref<BasicILSPerturbation<XES, XEv>> _p,
                            int _iterMax)
       : IteratedLocalSearch<BasicHistory, XES, XEv>(e, constructive),
@@ -121,7 +121,7 @@ class BasicIteratedLocalSearchBuilder
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -133,10 +133,10 @@ class BasicIteratedLocalSearchBuilder
 
     string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
+    pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
-    sptr<LocalSearch<XES, XEv>> h = method.first;
+    sptr<LocalSearch<XES>> h = method.first;
 
     scanner = Scanner(method.second);
 
@@ -148,18 +148,18 @@ class BasicIteratedLocalSearchBuilder
     int iterMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new BasicIteratedLocalSearch<XES, XEv>(eval, constructive, h, pert,
-                                                  iterMax);
+    return new BasicIteratedLocalSearch<XES>(eval, constructive, h, pert,
+                                             iterMax);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search"));
     params.push_back(make_pair(BasicILSPerturbation<XES, XEv>::idComponent(),
                                "ils perturbation"));
     params.push_back(make_pair("OptFrame:int",
@@ -169,7 +169,7 @@ class BasicIteratedLocalSearchBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicIteratedLocalSearch<XES, XEv>::idComponent();
+    return component == BasicIteratedLocalSearch<XES>::idComponent();
   }
 
   static string idComponent() {

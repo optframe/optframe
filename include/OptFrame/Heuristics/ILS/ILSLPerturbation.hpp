@@ -43,21 +43,23 @@ class ILSLPerturbation : public Component, public ILS {
 
 template <XESolution XES, XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  private:
-  vsref<NS<XES, XEv>> ns;
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  vsref<NS<XES, XSH>> ns;
+  sref<GeneralEvaluator<XES>> evaluator;
   sref<RandGen> rg;
 
  public:
-  ILSLPerturbationLPlus2(sref<GeneralEvaluator<XES, XEv>> e,
-                         sref<NS<XES, XEv>> _ns, sref<RandGen> _rg)
+  ILSLPerturbationLPlus2(sref<GeneralEvaluator<XES>> e, sref<NS<XES, XSH>> _ns,
+                         sref<RandGen> _rg)
       : evaluator(e), rg(_rg) {
     ns.push_back(_ns);
   }
 
   virtual ~ILSLPerturbationLPlus2() = default;
 
-  void add_ns(sref<NS<XES, XEv>> _ns) { ns.push_back(_ns); }
+  void add_ns(sref<NS<XES, XSH>> _ns) { ns.push_back(_ns); }
 
   void perturb(XES& se, const StopCriteria<XEv>& stopCriteria,
                int level) override {
@@ -72,7 +74,7 @@ class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
     while (a < level) {
       int x = rg->rand(ns.size());
 
-      uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
+      uptr<Move<XES, XSH>> m = ns[x]->validRandomMove(se);
 
       if (m) {
         a++;
@@ -104,15 +106,17 @@ class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
 
 template <XESolution XES, XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  private:
-  vsref<NS<XES, XEv>> ns;
+  vsref<NS<XES, XSH>> ns;
   vector<pair<int, double>> pNS;
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   sref<RandGen> rg;
 
  public:
-  ILSLPerturbationLPlus2Prob(sref<GeneralEvaluator<XES, XEv>> e,
-                             sref<NS<XES, XEv>> _ns, sref<RandGen> _rg)
+  ILSLPerturbationLPlus2Prob(sref<GeneralEvaluator<XES>> e,
+                             sref<NS<XES, XSH>> _ns, sref<RandGen> _rg)
       : evaluator(e), rg(_rg) {
     ns.push_back(_ns);
     pNS.push_back(make_pair(1, 1));
@@ -120,7 +124,7 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
 
   virtual ~ILSLPerturbationLPlus2Prob() = default;
 
-  void add_ns(sref<NS<XES, XEv>> _ns) {
+  void add_ns(sref<NS<XES, XSH>> _ns) {
     ns.push_back(_ns);
     pNS.push_back(make_pair(1, 1));
 
@@ -170,7 +174,7 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
         sum += pNS[x].second;
       }
 
-      uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
+      uptr<Move<XES, XSH>> m = ns[x]->validRandomMove(se);
 
       if (m) {
         a++;
@@ -201,6 +205,8 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ILSLPerturbationLPlus2Builder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  public:
   virtual ~ILSLPerturbationLPlus2Builder() = default;
 
@@ -208,12 +214,12 @@ class ILSLPerturbationLPlus2Builder
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
     hf.assign(eval, id_0, sid_0);
 
-    sptr<NS<XES, XEv>> ns;
+    sptr<NS<XES, XSH>> ns;
     std::string sid_1 = scanner.next();
     int id_1 = *scanner.nextInt();
     hf.assign(ns, id_1, sid_1);
@@ -227,7 +233,7 @@ class ILSLPerturbationLPlus2Builder
     params.push_back(
         make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
+        make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }
@@ -253,6 +259,8 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ILSLPerturbationLPlus2ProbBuilder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  public:
   virtual ~ILSLPerturbationLPlus2ProbBuilder() = default;
 
@@ -260,12 +268,12 @@ class ILSLPerturbationLPlus2ProbBuilder
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    sptr<NS<XES, XEv>> ns;
+    sptr<NS<XES, XSH>> ns;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(ns, id2, comp_id2);
@@ -276,10 +284,10 @@ class ILSLPerturbationLPlus2ProbBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
     params.push_back(
-        make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

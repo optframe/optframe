@@ -19,10 +19,10 @@ template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
  private:
   Evaluator<XES, XEv>& eval;
-  NSSeq<XES, XEv, XSH>& nsSeq;
+  NSSeq<XES, XSH>& nsSeq;
 
  public:
-  BestImprovementLOS(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq)
+  BestImprovementLOS(Evaluator<XES, XEv>& _eval, NSSeq<XES, XSH>& _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {}
 
   virtual ~BestImprovementLOS() {}
@@ -46,8 +46,8 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
 
     return;
 
-    // NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
-    NSIterator<S, XEv>& it = *nsSeq.getIterator(se);
+    // NSIterator<XES>& it = *nsSeq.getIterator(s);
+    NSIterator<XES>& it = *nsSeq.getIterator(se);
 
     it.first();
 
@@ -151,12 +151,12 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << "BI_LOS";
+    ss << LocalSearch<XES>::idComponent() << "BI_LOS";
     return ss.str();
   }
 
@@ -179,9 +179,9 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
   virtual ~BestImprovementBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
     if (!scanner.hasNext()) return nullptr;
     Evaluator<XES, XEv>* eval;
     std::string comp_id1 = scanner.next();
@@ -189,7 +189,7 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     hf.assign(eval, id1, comp_id1);
 
     if (!scanner.hasNext()) return nullptr;
-    NSSeq<XES, XEv>* nsseq;
+    NSSeq<XES>* nsseq;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsseq, id2, comp_id2);
@@ -202,8 +202,8 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     vector<pair<string, string>> params;
     params.push_back(
         make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
-                               "neighborhood structure"));
+    params.push_back(
+        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

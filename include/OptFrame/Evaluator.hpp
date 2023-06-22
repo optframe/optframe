@@ -50,10 +50,10 @@ namespace optframe {
 // template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES =
 // pair<S, XEv>>
 template <XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
-class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
-                  public IEvaluator<XES> {
+class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
   static_assert(is_same<S, typename XES::first_type>::value);
   static_assert(is_same<XEv, typename XES::second_type>::value);
+  using XSH = XES;  // primary-type based structure (BestType always here)
 
  public:
   // Evaluator HAS_A Direction, not IS_A Direction!
@@ -69,7 +69,7 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
             evtype w = 1)
       : direction{_direction}, allowCosts{_allowCosts}, weight{w} {}
 
-  virtual ~Evaluator() {}
+  virtual ~Evaluator() = default;
 
   // OLD Direction... now embedded here as well
   virtual bool isMinimization() const { return direction->isMinimization(); }
@@ -102,9 +102,9 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
  public:
   // Apply movement without considering a previous XEv => Slower.
   // Return new XEv 'e'
-  pair<uptr<Move<XES, XEv>>, XEv> applyMove(Move<XES, XEv>& m, XES& se) {
+  pair<uptr<Move<XES, XSH>>, XEv> applyMove(Move<XES, XSH>& m, XES& se) {
     // apply move and get reverse move
-    uptr<Move<XES, XEv>> rev = m.apply(se);
+    uptr<Move<XES, XSH>> rev = m.apply(se);
     // for now, must be not nullptr
     assert(rev != nullptr);
     // TODO: include management for 'false' hasReverse()
@@ -112,21 +112,21 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
     XEv e = evaluate(se.first);
     // this->reevaluate(se);
     //  create pair
-    return pair<uptr<Move<XES, XEv>>, XEv>(
+    return pair<uptr<Move<XES, XSH>>, XEv>(
         std::move(rev), std::move(e));  // TODO: verify if 'e' is copied, but
                                         // probably requires std::move
                                         // return make_pair(rev, evaluate(s));
   }
 
   // Movement cost based on reevaluation of 'e'
-  // MoveCost<>* moveCost(XEv& e, Move<XES, XEv>& m, XES& s, bool allowEstimated
+  // MoveCost<>* moveCost(XEv& e, Move<XES, XSH>& m, XES& s, bool allowEstimated
   // = false)
 
   // Movement cost based on complete evaluation (only on CheckCommand)
   // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
-  /// MoveCost<>* moveCostComplete(Move<XES, XEv>& m, XES& s, bool
+  /// MoveCost<>* moveCostComplete(Move<XES, XSH>& m, XES& s, bool
   /// allowEstimated = false)
-  op<XEv> moveCostComplete(Move<XES, XEv>& m, XES& se,
+  op<XEv> moveCostComplete(Move<XES, XSH>& m, XES& se,
                            bool allowEstimated = false) {
     // TODO: in the future, consider 'allowEstimated' parameter
     // TODO: in the future, consider 'e' and 's' as 'const', and use
@@ -136,9 +136,9 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
     // original solution/evaluation)
     assert(m.hasReverse());
 
-    pair<uptr<Move<XES, XEv>>, XEv> rev = applyMove(m, se);
+    pair<uptr<Move<XES, XSH>>, XEv> rev = applyMove(m, se);
 
-    pair<uptr<Move<XES, XEv>>, XEv> ini = applyMove(*rev.first, se);
+    pair<uptr<Move<XES, XSH>>, XEv> ini = applyMove(*rev.first, se);
 
     // Difference: new - original
 
@@ -253,15 +253,14 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
     // "OptFrame:GeneralEvaluator"); //|| (GeneralEvaluator<XES, XEv,
     // XES>::compatible(s));
     // FIXED!
-    return (s == idComponent()) ||
-           (GeneralEvaluator<XES, XEv, XES>::compatible(s));
+    return (s == idComponent()) || (GeneralEvaluator<XES, XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
     // ss << Component::idComponent() << ":Evaluator";
     ss << GeneralEvaluator<XES>::idComponent() << ":Evaluator"
-    << Domain::getAlternativeDomain<XES>("<XESf64>");
+       << Domain::getAlternativeDomain<XES>("<XESf64>");
     // TODO: this will require multiple idComponent()!! NOT ANYMORE (no
     // diamonds...)
     // ss << "OptFrame:GeneralEvaluator:Direction:Evaluator"; // DEPRECATED!

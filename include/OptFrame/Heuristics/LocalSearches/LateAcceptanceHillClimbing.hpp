@@ -16,23 +16,25 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
+template <XESolution XES, XSearch<XES> XSH = XES>
+class LateAcceptanceHillClimbing : public LocalSearch<XES> {
+  using XEv = typename XES::second_type;
+
  private:
-  sref<GeneralEvaluator<XES, XEv>> ev;
-  vsref<NS<XES, XEv>> lns;
+  sref<GeneralEvaluator<XES>> ev;
+  vsref<NS<XES>> lns;
   int L;        // size of list
   int iterMax;  // max iterations without improvement
 
  public:
-  LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev,
-                             sref<NS<XES, XEv>> _ns, int _L, int _iterMax)
+  LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES>> _ev, sref<NS<XES>> _ns,
+                             int _L, int _iterMax)
       : ev(_ev), L(_L), iterMax(_iterMax) {
     lns.push_back(&_ns);
   }
 
-  LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev,
-                             vsref<NS<XES, XEv>> _lns, int _L, int _iterMax)
+  LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES>> _ev,
+                             vsref<NS<XES>> _lns, int _L, int _iterMax)
       : ev(_ev), lns(_lns), L(_L), iterMax(_iterMax) {}
 
   virtual ~LateAcceptanceHillClimbing() = default;
@@ -77,7 +79,7 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
       // choose random neighborhood
       int ns_k = rand() % lns.size();
 
-      uptr<Move<XES, XEv>> move = lns[ns_k]->validRandomMove(seBest);
+      uptr<Move<XES, XSH>> move = lns[ns_k]->validRandomMove(seBest);
 
       if (!move) {
         cout << "Warning in LAHC: cannot find an appliable move for "
@@ -143,12 +145,12 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":LAHC";
+    ss << LocalSearch<XES>::idComponent() << ":LAHC";
     return ss.str();
   }
 
@@ -176,20 +178,20 @@ class LateAcceptanceHillClimbingBuilder
   virtual ~LateAcceptanceHillClimbingBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    vsptr<NS<XES, XEv>> _nslist;
+    vsptr<NS<XES>> _nslist;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assignList(_nslist, id2, comp_id2);
 
-    vsref<NS<XES, XEv>> nslist;
+    vsref<NS<XES>> nslist;
     for (auto x : _nslist) nslist.push_back(x);
 
     int L = *scanner.nextInt();
@@ -197,7 +199,7 @@ class LateAcceptanceHillClimbingBuilder
     int iterMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new LateAcceptanceHillClimbing<XES, XEv>(eval, nslist, L, iterMax);
+    return new LateAcceptanceHillClimbing<XES>(eval, nslist, L, iterMax);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -205,7 +207,7 @@ class LateAcceptanceHillClimbingBuilder
     params.push_back(
         make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
     stringstream ss;
-    ss << NS<XES, XEv>::idComponent() << "[]";
+    ss << NS<XES>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of NS"));
     params.push_back(make_pair("OptFrame:int", "list size L"));
     params.push_back(
@@ -215,7 +217,7 @@ class LateAcceptanceHillClimbingBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == LateAcceptanceHillClimbing<XES, XEv>::idComponent();
+    return component == LateAcceptanceHillClimbing<XES>::idComponent();
   }
 
   static string idComponent() {

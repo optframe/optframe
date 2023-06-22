@@ -11,6 +11,7 @@
 #include <vector>    // for vsref
 
 #include "nnptr/nnshared.hpp"  // "not null shared pointer" library (local copy!)
+#include "opview/optional_view.hpp"
 
 #if __cplusplus <= 201703L  // after c++20, #include<concepts>
 // no concepts library, yet...
@@ -34,6 +35,11 @@ using sptr = std::shared_ptr<R>;
 //
 template <class R>
 using vsptr = std::vector<sptr<R>>;
+//
+template <class R>
+using opv = opview::optional_view<R>;
+
+typedef void OPTFRAME_DEFAULT_PROBLEM;
 
 namespace optframe {
 
@@ -283,7 +289,7 @@ concept
     } -> my_same_as<T>;  // std::remove_reference_t<T>; // useful for weighted
                          // computation
                          //{ a / b } -> std::remove_reference_t<T>;  // NOT
-                         //actually necessary (until
+                         // actually necessary (until
                          // today!)
 };
 

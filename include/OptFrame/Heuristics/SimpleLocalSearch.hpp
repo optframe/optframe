@@ -25,12 +25,12 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
  protected:
   sref<Evaluator<XES, XEv>> evaluator;
   sref<InitialSearch<XES>> constructive;
-  sref<LocalSearch<XES, XEv>> localSearch;
+  sref<LocalSearch<XES>> localSearch;
 
  public:
   SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator,
                     sref<InitialSearch<XES>> _constructive,
-                    sref<LocalSearch<XES, XEv>> _localSearch)
+                    sref<LocalSearch<XES>> _localSearch)
       : evaluator(_evaluator),
         constructive(_constructive),
         localSearch(_localSearch) {}
@@ -111,15 +111,15 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
 
     string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
+    pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
-    sptr<LocalSearch<XES, XEv>> h = method.first;
+    sptr<LocalSearch<XES>> h = method.first;
 
     scanner = Scanner(method.second);
 
     // NOLINTNEXTLINE
-    return new SimpleLocalSearch<XES, XEv>(eval, constructive, h);
+    return new SimpleLocalSearch<XES>(eval, constructive, h);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -131,13 +131,13 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search"));
 
     return params;
   }
 
   bool canBuild(std::string component) override {
-    return component == SimpleLocalSearch<XES, XEv>::idComponent();
+    return component == SimpleLocalSearch<XES>::idComponent();
   }
 
   static string idComponent() {

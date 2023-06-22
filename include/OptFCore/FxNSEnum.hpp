@@ -13,8 +13,7 @@
 
 namespace optframe {
 
-template <XESolution XES,
-          unsigned int (*fSize)(),
+template <XESolution XES, unsigned int (*fSize)(),
           uptr<Move<XES>> (*fIndex)(unsigned int k)>
 class FxNSEnum final : public NSEnum<XES> {
   using XEv = typename XES::second_type;
@@ -24,18 +23,13 @@ class FxNSEnum final : public NSEnum<XES> {
   sref<RandGen> rg;
   //
  public:
-  FxNSEnum(sref<RandGen> _rg)
-      : NSEnum<XES>(_rg),
-        rg{_rg} {
-  }
+  FxNSEnum(sref<RandGen> _rg) : NSEnum<XES>(_rg), rg{_rg} {}
 
-  uptr<Move<XES, XEv>> indexMove(unsigned int index) override {
+  uptr<Move<XES, XSH>> indexMove(unsigned int index) override {
     return fIndex(index);
   }
 
-  unsigned int size() const override {
-    return fSize();
-  }
+  unsigned int size() const override { return fSize(); }
 
   static std::string idComponent() {
     std::stringstream ss;
@@ -43,9 +37,7 @@ class FxNSEnum final : public NSEnum<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

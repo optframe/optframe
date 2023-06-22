@@ -15,24 +15,24 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type,
-          XESolution XSH = XES>
-class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
+template <XESolution XES, XSearch<XES> XSH = XES>
+class FirstImprovingNeighbor : public NeighborhoodExploration<XES> {
+  using XEv = typename XES::second_type;
+
  private:
-  GeneralEvaluator<XES, XEv, XSH>& eval;
-  NSSeq<XES, XEv, XSH>& nsSeq;
+  GeneralEvaluator<XES, XSH>& eval;
+  NSSeq<XES, XSH>& nsSeq;
 
  public:
-  FirstImprovingNeighbor(GeneralEvaluator<XES, XEv>& _eval,
-                         NSSeq<XES, XEv, XSH>& _nsSeq)
+  FirstImprovingNeighbor(GeneralEvaluator<XES>& _eval, NSSeq<XES, XSH>& _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {}
 
   virtual ~FirstImprovingNeighbor() = default;
 
-  op<RichMove<XES, XEv>> searchMove(
+  op<RichMove<XES, XSH>> searchMove(
       const XES& se, const StopCriteria<XEv>& stopCriteria) override {
     // gets valid iterator
-    uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
+    uptr<NSIterator<XES>> it = nsSeq.getIterator(se);
     // TODO: may throw? just break now...
     assert(it);
     // first possible move
@@ -43,19 +43,19 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
                        //
     do {
       // gets possible move
-      uptr<Move<XES, XEv, XSH>> move = it->current();
+      uptr<Move<XES, XSH>> move = it->current();
       // check if move is valid
       if (move->canBeApplied(se)) {
         // get cost only if it's improving... otherwise, just nullopt
         op<XEv> mcost = this->isImprovingCost(*move, se);
         if (mcost) {
           // should not apply to solution directly! must return...
-          RichMove<XES, XEv> rmove;
+          RichMove<XES, XSH> rmove;
           rmove.move = std::move(move);
           rmove.cost = std::move(*mcost);
           rmove.status = SearchStatus::IMPROVEMENT;
           // return make_optional(rmove);
-          return std::optional<RichMove<XES, XEv>>(std::move(rmove));
+          return std::optional<RichMove<XES, XSH>>(std::move(rmove));
         }
       }
       // get next possible move
@@ -67,7 +67,7 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
   }
 
   // returns 'cost' if it's improving, otherwise std::nullopt
-  op<XEv> isImprovingCost(Move<XES, XEv>& m, const XSH& cse,
+  op<XEv> isImprovingCost(Move<XES, XSH>& m, const XSH& cse,
                           bool allowEstimated = false) {
     // try to get a cost
     op<XEv> p = m.cost(cse, allowEstimated);
@@ -96,7 +96,7 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
       XEv ev_begin(e);
 
       // apply move to both XEv and Solution
-      uptr<Move<XES, XEv>> rev = eval.applyMoveReevaluate(m, se);
+      uptr<Move<XES, XSH>> rev = eval.applyMoveReevaluate(m, se);
 
       // compute cost directly on Evaluation
       XEv mcost = ev_begin.diff(se.second);
@@ -117,12 +117,12 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
 
   bool compatible(std::string s) override {
     return (s == idComponent()) ||
-           (NeighborhoodExploration<XES, XEv>::compatible(s));
+           (NeighborhoodExploration<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << NeighborhoodExploration<XES, XEv>::idComponent()
+    ss << NeighborhoodExploration<XES>::idComponent()
        << ":FirstImprovingNeighbor";
     return ss.str();
   }
@@ -146,30 +146,30 @@ class FirstImprovingNeighborBuilder
   virtual ~FirstImprovingNeighborBuilder() = default;
 
   // NOLINTNEXTLINE
-  NeighborhoodExploration<XES, XEv>* build(
-      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
-      string family = "") override {
+  NeighborhoodExploration<XES>* build(Scanner& scanner,
+                                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                      string family = "") override {
     //
-    GeneralEvaluator<XES, XEv>* eval;
+    GeneralEvaluator<XES>* eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    NSSeq<XES, XEv, XSH>* nsseq;
+    NSSeq<XES, XSH>* nsseq;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsseq, id2, comp_id2);
 
     // NOLINTNEXTLINE
-    return new FirstImprovingNeighbor<XES, XEv, XSH>(*eval, *nsseq);
+    return new FirstImprovingNeighbor<XES, XSH>(*eval, *nsseq);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
-                               "neighborhood structure"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

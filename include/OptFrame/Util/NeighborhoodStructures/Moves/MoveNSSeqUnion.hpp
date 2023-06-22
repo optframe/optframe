@@ -26,18 +26,18 @@
 // Framework includes
 #include "../../../Move.hpp"
 
-using namespace std;
+// using namespace std;
 
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
-class MoveNSSeqUnion : public Move<XES, XEv> {
+class MoveNSSeqUnion : public Move<XES> {
  protected:
   int id;
-  uptr<Move<XES, XEv>> m{nullptr};
+  uptr<Move<XES>> m{nullptr};
 
  public:
   /*
-       MoveNSSeqUnion(int _id, uptr<Move<XES, XEv>>&& _m) :
+       MoveNSSeqUnion(int _id, uptr<Move<XES>>&& _m) :
                        id(_id), m{std::move(_m)}
        {
        }
@@ -45,7 +45,7 @@ class MoveNSSeqUnion : public Move<XES, XEv> {
 
   /*
   // STRANGE ERROR!! CANNOT RECEIVE uptr...
-       MoveNSSeqUnion(int _id, uptr<Move<XES, XEv>> _m) :
+       MoveNSSeqUnion(int _id, uptr<Move<XES>> _m) :
                        //id(_id), m(std::move(_m))
         id(_id), m(_m)
        {
@@ -53,14 +53,14 @@ class MoveNSSeqUnion : public Move<XES, XEv> {
 */
 
   // this pointer will be owned by ME... never delete it!
-  MoveNSSeqUnion(int _id, Move<XES, XEv>* _m)
+  MoveNSSeqUnion(int _id, Move<XES>* _m)
       :  // id(_id), m(std::move(_m))
         id(_id),
         m(_m) {}
 
   int get_id() { return id; }
 
-  uptr<Move<XES, XEv>>& get_m() { return m; }
+  uptr<Move<XES>>& get_m() { return m; }
 
   virtual ~MoveNSSeqUnion() {
     // delete &m;
@@ -68,17 +68,17 @@ class MoveNSSeqUnion : public Move<XES, XEv> {
 
   bool canBeApplied(const XES& s) override { return m->canBeApplied(s); }
 
-  uptr<Move<XES, XEv>> apply(XES& se) override {
-    return uptr<Move<XES, XEv>>(
+  uptr<Move<XES>> apply(XES& se) override {
+    return uptr<Move<XES>>(
         new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se).release()));
   }
 
-  uptr<Move<XES, XEv>> applyUpdate(XES& se) override {
-    return uptr<Move<XES, XEv>>(
+  uptr<Move<XES>> applyUpdate(XES& se) override {
+    return uptr<Move<XES>>(
         new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se).release()));
   }
 
-  bool operator==(const Move<XES, XEv>& _m) const override {
+  bool operator==(const Move<XES>& _m) const override {
     const MoveNSSeqUnion<S, XEv, XES>& m1 =
         (const MoveNSSeqUnion<S, XEv, XES>&)_m;
     if (id == m1.id)

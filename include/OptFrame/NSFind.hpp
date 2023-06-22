@@ -32,34 +32,35 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class NSFind : public NS<XES, XEv, XSH> {
+template <XESolution XES, XSearch<XES> XSH = XES>
+class NSFind : public NS<XES, XSH> {
  public:
-  virtual ~NSFind() {
-  }
+  using XEv = typename XES::second_type;
+  //
+  virtual ~NSFind() = default;
 
  public:
   // =======================================
   // find section (neighborhood exploration)
   // =======================================
-  // findBest: returns move that greatly improves current solution 'se', according 'gev'
-  // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
-  // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
-  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) = 0;
+  // findBest: returns move that greatly improves current solution 'se',
+  // according 'gev' RETURNS: pair< uptr<Move<XES, XSH>>, op<XEv> > NSFind
+  // is useful for exponential-sized neighborhoods, without requiring any
+  // iterator structure
+  virtual pair<Move<XES, XSH>*, op<XEv>> findBest(
+      GeneralEvaluator<XES, XSH>& gev, XES& se) = 0;
 
  public:
   static string idComponent() {
     stringstream ss;
-    ss << NS<XES, XEv>::idComponent() << ":NSFind";
+    ss << NS<XES, XSH>::idComponent() << ":NSFind";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (NS<XES, XSH>::compatible(s));
   }
 };
 

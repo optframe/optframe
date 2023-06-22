@@ -14,17 +14,19 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class CircularSearch : public LocalSearch<XES, XEv> {
+template <XESolution XES>
+class CircularSearch : public LocalSearch<XES> {
+  using XSH = XES;  // primary-based search type only (BestType)
+  using XEv = typename XES::second_type;
+
  private:
-  sref<GeneralEvaluator<XES, XEv>> eval;
-  sref<NSEnum<XES, XEv>> ns;
+  sref<GeneralEvaluator<XES>> eval;
+  sref<NSEnum<XES>> ns;
 
   int initial_w;
 
  public:
-  CircularSearch(sref<GeneralEvaluator<XES, XEv>> _eval,
-                 sref<NSEnum<XES, XEv>> _nsEnum)
+  CircularSearch(sref<GeneralEvaluator<XES>> _eval, sref<NSEnum<XES>> _nsEnum)
       : eval(_eval), ns(_nsEnum) {
     initial_w = 0;
   }
@@ -50,7 +52,7 @@ class CircularSearch : public LocalSearch<XES, XEv> {
     int w = initial_w % Wmax;
 
     do {
-      uptr<Move<XES, XEv>> m = ns->indexMove(w);
+      uptr<Move<XES, XSH>> m = ns->indexMove(w);
 
       // if (m->canBeApplied(s)) {
       if (m->canBeApplied(se)) {
@@ -81,12 +83,12 @@ class CircularSearch : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":CS";
+    ss << LocalSearch<XES>::idComponent() << ":CS";
     return ss.str();
   }
 
@@ -101,35 +103,35 @@ class CircularSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
   virtual ~CircularSearchBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    sptr<NSEnum<XES, XEv>> nsenum;
+    sptr<NSEnum<XES>> nsenum;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsenum, id2, comp_id2);
 
     // NOLINTNEXTLINE
-    return new CircularSearch<XES, XEv>(eval, nsenum);
+    return new CircularSearch<XES>(eval, nsenum);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
     params.push_back(
-        make_pair(NSEnum<XES, XEv>::idComponent(), "neighborhood structure"));
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NSEnum<XES>::idComponent(), "neighborhood structure"));
 
     return params;
   }
 
   bool canBuild(std::string component) override {
-    return component == CircularSearch<XES, XEv>::idComponent();
+    return component == CircularSearch<XES>::idComponent();
   }
 
   static string idComponent() {

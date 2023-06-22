@@ -27,31 +27,24 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class Intensification : public LocalSearch<XES, XEv>
-{
-public:
-   virtual ~Intensification()
-   {
-   }
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class Intensification : public LocalSearch<XES> {
+ public:
+  virtual ~Intensification() {}
 
-   virtual void exec(XES& _s, double timelimit, double target_f) = 0;
+  virtual void exec(XES& _s, double timelimit, double target_f) = 0;
 
-   virtual void addSolution(const XES&) = 0;
+  virtual void addSolution(const XES&) = 0;
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override { return idComponent(); }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << LocalSearch<XES, XEv>::idComponent() << "INTENSIFICATION:";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << LocalSearch<XES>::idComponent() << "INTENSIFICATION:";
+    return ss.str();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*INTENSIFICATION_HPP_*/

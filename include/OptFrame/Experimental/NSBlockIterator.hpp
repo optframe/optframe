@@ -24,6 +24,7 @@
 #define OPTFRAME_EXPERIMENTAL_NSBLOCKITERATOR_HPP_
 
 #include <string>
+#include <utility>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Evaluation.hpp>
@@ -34,18 +35,19 @@
 namespace optframe {
 
 // NSBlockIterator: iterates from blocks (parts) of the neighborhood structure
-// these parts may share any characteristic that may help predicting the behavior of local optima
+// these parts may share any characteristic that may help predicting the
+// behavior of local optima
 
-template <XSolution S, XEvaluation XEv = Evaluation<>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = std::pair<S, XEv>>
 class NSBlockIterator : public Component {
  public:
-  virtual ~NSBlockIterator() {
-  }
+  virtual ~NSBlockIterator() {}
 
   virtual void first() = 0;
   virtual void next() = 0;
   virtual bool isDone() = 0;
-  virtual NSIterator<S, XEv>& current() = 0;
+  virtual NSIterator<XES>& current() = 0;
 
   static string idComponent() {
     stringstream ss;
@@ -53,38 +55,27 @@ class NSBlockIterator : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>>
-class DefaultNSBlockIterator : public NSBlockIterator<S, XEv> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = std::pair<S, XEv>>
+class DefaultNSBlockIterator : public NSBlockIterator<S, XEv, XES> {
  protected:
-  NSIterator<S, XEv>* it;
+  NSIterator<XES>* it;
 
  public:
-  DefaultNSBlockIterator(NSIterator<S, XEv>& _it)
-      : it(&_it) {
-  }
+  DefaultNSBlockIterator(NSIterator<XES>& _it) : it(&_it) {}
 
-  virtual ~DefaultNSBlockIterator() {
-  }
+  virtual ~DefaultNSBlockIterator() {}
 
-  void first() override {
-  }
+  void first() override {}
 
-  void next() override {
-    it = nullptr;
-  }
+  void next() override { it = nullptr; }
 
-  bool isDone() override {
-    return it == nullptr;
-  }
+  bool isDone() override { return it == nullptr; }
 
-  virtual NSIterator<S, XEv>& current() override {
-    return *it;
-  }
+  virtual NSIterator<XES>& current() override { return *it; }
 
   static string idComponent() {
     stringstream ss;
@@ -92,13 +83,9 @@ class DefaultNSBlockIterator : public NSBlockIterator<S, XEv> {
     return ss.str();
   }
 
-  virtual std::string id() const override {
-    return idComponent();
-  }
+  virtual std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 };
 
 }  // namespace optframe

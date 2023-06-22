@@ -33,13 +33,19 @@ using namespace optframe;
 
 // Working structure: vector<T>
 
-//template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
-template <class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSIteratorTSP2Opt : public NSIterator<XES, XEv> {
+// template<class T, class ADS = OPTFRAME_DEFAULT_ADS,
+// XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE =
+// MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv =
+// Evaluation<>>
+template <class T, class ADS, XBaseSolution<vector<T>, ADS> S,
+          class MOVE = MoveTSP2Opt<T, ADS, S>,
+          class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
+class NSIteratorTSP2Opt : public NSIterator<XES> {
   typedef vector<T> Route;
 
  protected:
-  uptr<Move<XES, XEv>> m;
+  uptr<Move<XES>> m;
 
   int p1, p2;  // position 1 and position 2, respectively
   const Route& r;
@@ -55,8 +61,7 @@ class NSIteratorTSP2Opt : public NSIterator<XES, XEv> {
     m = nullptr;
   }
 
-  virtual ~NSIteratorTSP2Opt() {
-  }
+  virtual ~NSIteratorTSP2Opt() {}
 
   virtual void first() override {
     if (r.size() >= 2) {
@@ -82,11 +87,9 @@ class NSIteratorTSP2Opt : public NSIterator<XES, XEv> {
       m = nullptr;
   }
 
-  virtual bool isDone() override {
-    return m == nullptr;
-  }
+  virtual bool isDone() override { return m == nullptr; }
 
-  virtual uptr<Move<XES, XEv>> current() override {
+  virtual uptr<Move<XES>> current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "NSSeqRouteShift. Aborting." << endl;

@@ -41,12 +41,12 @@ class IteratedLocalSearch : public ILS,
                             public SingleObjSearch<XES>,
                             public ITrajectory<XES> {
  protected:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   // Constructive<S>& constructive;
   sref<InitialSearch<XES>> constructive;
 
  public:
-  IteratedLocalSearch(sref<GeneralEvaluator<XES, XEv>> _evaluator,
+  IteratedLocalSearch(sref<GeneralEvaluator<XES>> _evaluator,
                       sref<InitialSearch<XES>> _constructive)
       : evaluator(_evaluator), constructive(_constructive) {}
 

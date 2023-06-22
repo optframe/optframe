@@ -614,49 +614,46 @@ class HeuristicFactory {
 
   sref<RandGen> getRandGen() { return rg; }
 
-  pair<sptr<LocalSearch<XES, XEv>>, std::string> createLocalSearch(
-      std::string str) {
+  pair<sptr<LocalSearch<XES>>, std::string> createLocalSearch(std::string str) {
     Scanner scanner(str);
 
     // No heuristic!
     if (!scanner.hasNext())
-      return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, "");
+      return pair<sptr<LocalSearch<XES>>, std::string>(nullptr, "");
 
     string h = scanner.next();
 
-    if ((h == LocalSearch<XES, XEv>::idComponent()) || (h == "LocalSearch")) {
+    if ((h == LocalSearch<XES>::idComponent()) || (h == "LocalSearch")) {
       unsigned int id = *scanner.nextInt();
 
-      sptr<LocalSearch<XES, XEv>> mtd = nullptr;
+      sptr<LocalSearch<XES>> mtd = nullptr;
 
-      assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
+      assign(mtd, id, LocalSearch<XES>::idComponent());
 
       if (!mtd)
-        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(
-            new EmptyLocalSearch<XES, XEv>, scanner.rest());
+        return pair<sptr<LocalSearch<XES>>, std::string>(
+            new EmptyLocalSearch<XES>, scanner.rest());
 
       return make_pair(mtd, scanner.rest());
     }
 
-    if (h == EmptyLocalSearch<XES, XEv>::idComponent())
-      return pair<sptr<LocalSearch<XES, XEv>>, std::string>(
-          new EmptyLocalSearch<XES, XEv>, scanner.rest());
+    if (h == EmptyLocalSearch<XES>::idComponent())
+      return pair<sptr<LocalSearch<XES>>, std::string>(
+          new EmptyLocalSearch<XES>, scanner.rest());
 
     for (unsigned i = 0; i < builders.size(); i++) {
       // build local search directly by builder name
       if (builders[i]->id() == h) {
-        LocalSearch<XES, XEv>* ls =
+        LocalSearch<XES>* ls =
             ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls,
-                                                              scanner.rest());
+        return pair<sptr<LocalSearch<XES>>, std::string>(ls, scanner.rest());
       }
 
       // locate builder by local search name
       if (builders[i]->canBuild(h)) {
-        LocalSearch<XES, XEv>* ls =
+        LocalSearch<XES>* ls =
             ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls,
-                                                              scanner.rest());
+        return pair<sptr<LocalSearch<XES>>, std::string>(ls, scanner.rest());
       }
     }
 
@@ -665,8 +662,7 @@ class HeuristicFactory {
           << "HeuristicFactory::createLocalSearch warning: no LocalSearch '"
           << h << "' found! ignoring..." << std::endl;
 
-    return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr,
-                                                          scanner.rest());
+    return pair<sptr<LocalSearch<XES>>, std::string>(nullptr, scanner.rest());
   }
 
   pair<sptr<SingleObjSearch<XES>>, std::string> createSingleObjSearch(

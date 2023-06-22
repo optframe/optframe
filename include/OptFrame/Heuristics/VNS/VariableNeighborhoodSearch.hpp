@@ -44,16 +44,16 @@ namespace optframe {
 template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
  protected:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   sref<InitialSearch<XES>> constructive;
-  vsref<NS<XES, XEv, XSH>> vshake;
-  vsref<NSSeq<XES, XEv, XSH>> vsearch;
+  vsref<NS<XES, XSH>> vshake;
+  vsref<NSSeq<XES, XSH>> vsearch;
 
  public:
-  VariableNeighborhoodSearch(sref<GeneralEvaluator<XES, XEv>> _evaluator,
+  VariableNeighborhoodSearch(sref<GeneralEvaluator<XES>> _evaluator,
                              sref<InitialSearch<XES>> _constructive,
-                             vsref<NS<XES, XEv>> _vNS,
-                             vsref<NSSeq<XES, XEv, XSH>> _vNSSeq)
+                             vsref<NS<XES, XSH>> _vNS,
+                             vsref<NSSeq<XES, XSH>> _vNSSeq)
       : evaluator(_evaluator),
         constructive(_constructive),
         vshake(_vNS),
@@ -71,7 +71,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     //
     // XSolution AUTO_CONCEPTS& s = se.first;
     // Evaluation<>& e = se.second;
-    uptr<Move<XES, XEv>> move = vshake.at(k_shake)->validRandomMove(se);
+    uptr<Move<XES, XSH>> move = vshake.at(k_shake)->validRandomMove(se);
     if (move) {
       move->applyUpdate(se);
       evaluator->reevaluate(se);  // refresh 'e'
@@ -107,7 +107,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     }
   }
 
-  virtual sref<LocalSearch<XES, XEv>> buildSearch(unsigned k_search) = 0;
+  virtual sref<LocalSearch<XES>> buildSearch(unsigned k_search) = 0;
 
   /*
    XES genPair(double timelimit)
@@ -170,7 +170,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
 
         shake(p1, k, sosc);
 
-        LocalSearch<XES, XEv>& improve = buildSearch(k);
+        LocalSearch<XES>& improve = buildSearch(k);
 
         improve.searchFrom(p1, sosc);
 

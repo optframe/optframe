@@ -19,7 +19,7 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class SingleObjSearchToLocalSearch : public LocalSearch<XES, XEv> {
+class SingleObjSearchToLocalSearch : public LocalSearch<XES> {
  protected:
   sref<Evaluator<XES, XEv>> evaluator;
   sref<SingleObjSearch<XES>> sios;
@@ -66,7 +66,7 @@ class SingleObjSearchToLocalSearch : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
@@ -93,9 +93,9 @@ class SingleObjSearchToLocalSearchBuilder
  public:
   virtual ~SingleObjSearchToLocalSearchBuilder() {}
 
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
     sptr<Evaluator<XES, XEv>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -111,7 +111,7 @@ class SingleObjSearchToLocalSearchBuilder
     scanner = Scanner(method.second);
 
     // NOLINTNEXTLINE
-    return new SingleObjSearchToLocalSearch<XES, XEv>(eval, h);
+    return new SingleObjSearchToLocalSearch<XES>(eval, h);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -125,7 +125,7 @@ class SingleObjSearchToLocalSearchBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == SingleObjSearchToLocalSearch<XES, XEv>::idComponent();
+    return component == SingleObjSearchToLocalSearch<XES>::idComponent();
   }
 
   static string idComponent() {

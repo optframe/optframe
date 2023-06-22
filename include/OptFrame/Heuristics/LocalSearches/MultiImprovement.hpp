@@ -36,10 +36,10 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class MultiImprovement : public LocalSearch<XES, XEv> {
+class MultiImprovement : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv>> eval;
-  sref<NSSeq<XES, XEv, XSH>> nsSeq;
+  sref<GeneralEvaluator<XES>> eval;
+  sref<NSSeq<XES, XSH>> nsSeq;
   // cost "zero"
   XEv stopCost;
   //
@@ -57,8 +57,8 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
 
  public:
   //
-  MultiImprovement(sref<GeneralEvaluator<XES, XEv>> _eval,
-                   sref<NSSeq<XES, XEv, XSH>> _nsSeq, XEv _stopCost)
+  MultiImprovement(sref<GeneralEvaluator<XES>> _eval,
+                   sref<NSSeq<XES, XSH>> _nsSeq, XEv _stopCost)
       : eval{_eval},
         nsSeq{_nsSeq},
         stopCost{_stopCost}
@@ -72,13 +72,12 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
 
   virtual ~MultiImprovement() {}
 
-  virtual SearchStatus searchFrom(XSH& se,
-                                  const StopCriteria<XEv>& sosc) override {
+  SearchStatus searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override {
     if (Component::information)
       std::cout << "MI::starts for " << nsSeq->toString() << std::endl;
 
     // TODO: verify if it's not null
-    uptr<NSIterator<XES, XEv, XSH>> it = nsSeq->getIterator(se);
+    uptr<NSIterator<XES, XSH>> it = nsSeq->getIterator(se);
     //
     if (!it) {
       if (Component::warning)
@@ -93,7 +92,7 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
     if (Component::information)
       std::cout << "MI storing all moves" << std::endl;
     //
-    std::vector<Move<XES, XEv, XSH>*> allMoves;
+    std::vector<Move<XES, XSH>*> allMoves;
     for (it->first(); !it->isDone(); it->next())
       allMoves.push_back(it->current().release());
 
@@ -174,12 +173,12 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << "MI";
+    ss << LocalSearch<XES>::idComponent() << "MI";
     return ss.str();
   }
 
@@ -203,19 +202,19 @@ class MultiImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
   virtual ~MultiImprovementBuilder() {}
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
     if (!scanner.hasNext()) return nullptr;
 
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
     if (!scanner.hasNext()) return nullptr;
 
-    sptr<NSSeq<XES, XEv, XSH>> nsseq;
+    sptr<NSSeq<XES, XSH>> nsseq;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsseq, id2, comp_id2);
@@ -226,10 +225,10 @@ class MultiImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
-                               "neighborhood structure"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

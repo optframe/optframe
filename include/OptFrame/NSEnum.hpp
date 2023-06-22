@@ -8,49 +8,52 @@
 #include "NSSeq.hpp"
 #include "RandGen.hpp"
 
-using namespace std;
+// using namespace std;
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class NSEnum : public NSSeq<XES, XEv, XSH> {
+template <XESolution XES, XSearch<XES> XSH = XES>
+class NSEnum : public NSSeq<XES, XSH> {
+  using XEv = typename XES::second_type;
+
  protected:
   sref<RandGen> rg;
 
  public:
-  NSEnum(sref<RandGen> _rg) : rg(_rg) {}
+  explicit NSEnum(sref<RandGen> _rg) : rg(_rg) {}
 
-  virtual ~NSEnum() {}
+  virtual ~NSEnum() = default;
 
   // every move from NSEnum must be solution-independent (only
   // problem-dependent)
   bool isSolutionIndependent() const final { return true; }
 
-  uptr<Move<XES, XEv>> randomMove(const XES&) override {
+  uptr<Move<XES, XSH>> randomMove(const XES&) override {
     unsigned int x = rg->rand(size());
     return indexMove(x);
   }
 
-  uptr<NSIterator<XES, XEv>> getIterator(const XES&) override {
-    return uptr<NSIterator<XES, XEv>>(new NSEnumIterator<XES, XEv>(*this));
+  uptr<NSIterator<XES>> getIterator(const XES&) override {
+    return uptr<NSIterator<XES>>(new NSEnumIterator<XES>(*this));
   }
 
-  virtual uptr<Move<XES, XEv>> indexMove(unsigned int index) = 0;
+  virtual uptr<Move<XES, XSH>> indexMove(unsigned int index) = 0;
 
   virtual unsigned int size() const = 0;
 
  public:
   // findFrom: returns the *next* move starting from index k (inclusive), that
   // strictly improves current solution 'se', according 'gev' RETURNS: pair<
-  // uptr<Move<XES, XEv, XSH>>, op<XEv> >
-  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findFrom(
-      unsigned int& k, GeneralEvaluator<XES>& gev, XES& se) {
+  // uptr<Move<XES, XSH>>, op<XEv> >
+  virtual pair<Move<XES, XSH>*, op<XEv>> findFrom(unsigned int& k,
+                                                  GeneralEvaluator<XES>& gev,
+                                                  XES& se) {
     // iterates from k
     for (unsigned xk = k; xk < this->size(); xk++) {
       // gets variable index 'xk'
-      uptr<Move<XES, XEv>> pm = this->indexMove(xk);
+      uptr<Move<XES, XSH>> pm = this->indexMove(xk);
       if (!pm->canBeApplied(se)) continue;
-      Move<XES, XEv, XSH>* m = pm.get();
+      Move<XES, XSH>* m = pm.get();
       op<XEv> mvcost = gev.moveCost(*m, se);
       if (gev.isStrictImprovement(*mvcost)) {
         k = xk;  // updates k
@@ -64,17 +67,17 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
 
   // findBest: returns move that greatly improves current solution 'se',
   // according 'gev' iterates using findFrom: 0..size-1
-  pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev,
-                                               XES& se) override {
+  pair<Move<XES, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev,
+                                          XES& se) override {
     // starts count iterator
     unsigned int k = 0;
     // best move
     op<XEv> bestCost = std::nullopt;
-    Move<XES, XEv, XSH>* bestMove = nullptr;
+    Move<XES, XSH>* bestMove = nullptr;
     // stops at maximum (or return)
     while (k < this->size()) {
       // gets index 'k'
-      pair<Move<XES, XEv, XSH>*, op<XEv>> mve = findFrom(k, gev, se);
+      pair<Move<XES, XSH>*, op<XEv>> mve = findFrom(k, gev, se);
       // if not good, process is finished: returns existing best
       if (!mve.second) return std::make_pair(bestMove, bestCost);
       // if improvement exists, try to improve best
@@ -90,14 +93,14 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
  public:
   static string idComponent() {
     stringstream ss;
-    ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSEnum";
+    ss << NSSeq<XES, XSH>::idComponent() << ":NSEnum";
     return ss.str();
   }
 
   virtual string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
+    return (s == idComponent()) || (NSSeq<XES, XSH>::compatible(s));
   }
 };
 

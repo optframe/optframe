@@ -35,7 +35,10 @@
 using namespace std;
 using namespace optframe;
 
-//! \english NSSeq class for the classic Traveling Salesman Problem (TSP) neighborhood of 2-Opt. \endenglish \portuguese Classe NSSeq para a estrutura de vizinhança clássica de 2-Opt do Problema do Caixeiro Viajante. \endportuguese
+//! \english NSSeq class for the classic Traveling Salesman Problem (TSP)
+//! neighborhood of 2-Opt. \endenglish \portuguese Classe NSSeq para a estrutura
+//! de vizinhança clássica de 2-Opt do Problema do Caixeiro Viajante.
+//! \endportuguese
 
 /*!
  \english
@@ -45,9 +48,11 @@ using namespace optframe;
 
  The Neighborhood Structure 2-opt has proposed by Cross (1958)
 
- Cross G., A method for solving traveling salesman problems. Operations Research 6 (1958), pp. 791–812
+ Cross G., A method for solving traveling salesman problems. Operations Research
+ 6 (1958), pp. 791–812
 
- 2-Opt is applied for any problem that representation is like a vector<T>, where T is the type of the vector.
+ 2-Opt is applied for any problem that representation is like a vector<T>, where
+ T is the type of the vector.
 
  e.g: vector<T> where type of T is int
 
@@ -67,13 +72,16 @@ using namespace optframe;
  \portuguese
  Estrutura alvo: vector<T>.
 
- Problema clássico: Problema do Caixeiro Viajante (em inglês TSP - Traveling Salesman Problem)
+ Problema clássico: Problema do Caixeiro Viajante (em inglês TSP - Traveling
+ Salesman Problem)
 
  A estrutura de vizinhança 2-opt foi proposta por Cross (1958)
 
- Artigo referência: Cross G., A method for solving traveling salesman problems. Operations Research 6 (1958), pp. 791–812
+ Artigo referência: Cross G., A method for solving traveling salesman problems.
+ Operations Research 6 (1958), pp. 791–812
 
- 2-Opt é aplicável em todo tipo de problema no qual a representação é um vector<T>, onde T é o tipo do vector.
+ 2-Opt é aplicável em todo tipo de problema no qual a representação é um
+ vector<T>, onde T é o tipo do vector.
 
  Exemplo: vector<T> onde o tipo de T é int
 
@@ -91,26 +99,29 @@ using namespace optframe;
  \endportuguese
  */
 
-//template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-template <class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSSeqTSP2Opt : public NSSeq<XES, XEv> {
+// template<class T, class ADS = OPTFRAME_DEFAULT_ADS,
+// XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE =
+// MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR
+// = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+template <class T, class ADS, XBaseSolution<vector<T>, ADS> S,
+          class MOVE = MoveTSP2Opt<T, ADS, S>,
+          class P = OPTFRAME_DEFAULT_PROBLEM,
+          class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSSeqTSP2Opt : public NSSeq<XES> {
   typedef vector<T> Route;
 
  private:
   std::shared_ptr<P> p;  // has to be the last
 
  public:
-  NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr)
-      : p(_p) {
-  }
+  NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr) : p(_p) {}
 
-  virtual ~NSSeqTSP2Opt() {
-  }
+  virtual ~NSSeqTSP2Opt() {}
 
-  uptr<Move<XES, XEv>> randomMove(const XES& s) override {
+  uptr<Move<XES>> randomMove(const XES& s) override {
     const Route& rep = s.first.getR();
-    if (rep.size() < 2)
-      return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
+    if (rep.size() < 2) return uptr<Move<XES>>(new MOVE(-1, -1, p));
 
     int p1 = rand() % (rep.size() + 1);
     int p2 = rand() % (rep.size() + 1);
@@ -121,25 +132,23 @@ class NSSeqTSP2Opt : public NSSeq<XES, XEv> {
     } while ((abs(p1 - p2) < 2) || (p1 > p2));
 
     // create 2-opt(p1,p2) move
-    return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
+    return uptr<Move<XES>>(new MOVE(p1, p2, p));
   }
 
-  virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override {
-    return uptr<NSIterator<XES, XEv>>(new NSITERATOR(se.first, p));
+  uptr<NSIterator<XES>> getIterator(const XES& se) override {
+    return uptr<NSIterator<XES>>(new NSITERATOR(se.first, p));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSP2Opt";
+    ss << NSSeq<XES>::idComponent() << ":NSSeqTSP2Opt";
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (NSSeq<XES>::compatible(s));
   }
 
   std::string toString() const override {
@@ -152,8 +161,11 @@ class NSSeqTSP2Opt : public NSSeq<XES, XEv> {
 
 // compile tests
 
-using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>>;
+using mynsseq_nsseq_tsp_2opt_test =
+    NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>>;
 //
-static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value, "not inherited from NSSeq");
+static_assert(
+    std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value,
+    "not inherited from NSSeq");
 
 #endif /*OPTFRAME_NSSEQTSP2OPT_HPP_*/

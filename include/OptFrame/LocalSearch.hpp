@@ -10,67 +10,50 @@
 #include <vector>
 
 //
-#include "Component.hpp"
-#include "Evaluation.hpp"
-#include "NSIterator.hpp"
-#include "SingleObjSearch.hpp"
-//#include "Solution.hpp"
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
+#include <OptFrame/NSIterator.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
 
 // using namespace std;
 
 namespace optframe {
 
-// Maybe LocalSearch should only deal with INCUMBENT TYPES...
-// That may be a difference from GlobalSearch, that deal with BEST and INCUMBENT
-// types...
-// TODO: must investigate
+// LocalSearch should only deal with INCUMBENT (secondary) TYPES, what
+// differs from GlobalSearch, that manages primary/best types and eventually
+// some secondary/incumbent types.
 
-// TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no
-// XSolution explicitly required.
-template <XESolution XES, XEvaluation XEv = typename XES::second_type,
-          XSearch<XES> XSH = XES>  // defaults to XSH = XES
+template <XESolution XES2, XSearch<XES2> XSH2 = XES2>
 class LocalSearch : public Component {
-  typedef vector<XEv*> FitnessValues;
-  typedef const vector<const XEv*> ConstFitnessValues;
-
  public:
+  using IncumbentType = XSH2;  // defaults to XES
+  using XEv = typename XES2::second_type;
+
   LocalSearch() {
     // DEFAULT for LocalSearch: silent
     Component::setSilent();
   }
 
-  virtual ~LocalSearch() {}
+  ~LocalSearch() override = default;
 
   // core methods
 
-  // copy-based version (TODO: deprecate this?)
-  XES lsearch(const XES& se, const StopCriteria<XEv>& stopCriteria) {
-    // S& s2 = s.clone();
-    // XEv& e2 = e.clone();
-    XES p2 = se;  // implicit 'clone' here ??
+  // copy-based version
+  XSH2 lsearch(const XSH2& se, const StopCriteria<XEv>& stopCriteria) {
+    XSH2 p2 = se;
     searchFrom(p2, stopCriteria);
-    // return *new pair<S&, XEv&> (s2, e2);
     return p2;
   }
 
-  // core methods
-
-  // 1
-  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria) = 0;
-
-  // keeping only this method, for simplification
-  // 2
-  // virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria)
-  // = 0;
-  virtual SearchStatus searchFrom(XES& se,
+  virtual SearchStatus searchFrom(XSH2& se,
                                   const StopCriteria<XEv>& stopCriteria) = 0;
 
   // optional: set local optimum status (LOS)
-  virtual void setLOS(LOS los, string nsid, XES& se) {}
+  virtual void setLOS(LOS los, string nsid, XSH2& se) {}
 
   // optional: get local optimum status (LOS)
-  virtual LOS getLOS(string nsid, XES& se) { return los_unknown; }
+  virtual LOS getLOS(string nsid, XSH2& se) { return los_unknown; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -97,12 +80,14 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
 class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~LocalSearchBuilder() {}
+  virtual ~LocalSearchBuilder() = default;
 
-  virtual LocalSearch<XES, XEv, XSH>* build(
-      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
-      string family = "") = 0;
+  // NOLINTNEXTLINE
+  virtual LocalSearch<XES, XSH>* build(Scanner& scanner,
+                                       HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                       string family = "") = 0;
 
+  // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {

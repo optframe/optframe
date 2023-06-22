@@ -37,9 +37,9 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   using XEv = typename XES::second_type;
   using XSH = XES;  // XSearch
   //
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   sref<InitialSearch<XES>> constructive;
-  vsref<NS<XES, XEv, XSH>> neighbors;
+  vsref<NS<XES, XSH>> neighbors;
   sref<RandGen> rg;
   double alpha;
   int SAmax;
@@ -48,9 +48,9 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   // single neighborhood
   // reordered the different term to the front because of peeve, heheheh
   // standart RandGen in declaration could be new standart
-  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator,
+  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES>> _evaluator,
                           sref<InitialSearch<XES>> _constructive,
-                          sref<NS<XES, XEv, XSH>> _neighbors, double _alpha,
+                          sref<NS<XES, XSH>> _neighbors, double _alpha,
                           int _SAmax, double _Ti,
                           sref<RandGen> _rg = new RandGen)
       : evaluator(_evaluator), constructive(_constructive), rg(_rg) {
@@ -63,9 +63,9 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   // vector of neighborhoods
   // reordered the different term to the front because of peeve, heheheh
   // standart RandGen in declaration could be new standart
-  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator,
+  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES>> _evaluator,
                           sref<InitialSearch<XES>> _constructive,
-                          vsref<NS<XES, XEv, XSH>> _neighbors, double _alpha,
+                          vsref<NS<XES, XSH>> _neighbors, double _alpha,
                           int _SAmax, double _Ti,
                           sref<RandGen> _rg = new RandGen)
       : evaluator(_evaluator),
@@ -111,8 +111,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
   // technique found in lecture notes of prof. Marcone Jamilson Freitas Souza
   static double estimateInitialTemperature(
-      sref<GeneralEvaluator<XES, XEv>> evaluator,
-      sref<InitialSearch<XES>> constructive, vsref<NS<XES, XEv, XSH>> neighbors,
+      sref<GeneralEvaluator<XES>> evaluator,
+      sref<InitialSearch<XES>> constructive, vsref<NS<XES, XSH>> neighbors,
       double beta, double gama, int SAmax, double T0, sref<RandGen> rg) {
     // http://www.decom.ufop.br/prof/marcone/Disciplinas/InteligenciaComputacional/InteligenciaComputacional.pdf
     double T = T0;  // {Temp eraturacorrente}
@@ -134,7 +134,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
         XES se = se2;
 
         int n = rg->rand(neighbors.size());
-        uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(
+        uptr<Move<XES, XSH>> move = neighbors[n]->validRandomMove(
             se);  // TODO: pass 'se.first' here (even 'se' should also work...)
         XES se_line(se);
         //
@@ -266,7 +266,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
         std::cout << "SA(verbose): after onLoopCtx" << std::endl;
       int n = rg->rand(neighbors.size());
 
-      uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(
+      uptr<Move<XES, XSH>> move = neighbors[n]->validRandomMove(
           se);  // TODO: pass 'se.first' here (even 'se' should also work...)
 
       if (!move) {
@@ -535,6 +535,7 @@ class BasicSimulatedAnnealingBuilder
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
+  using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~BasicSimulatedAnnealingBuilder() {}
@@ -551,13 +552,13 @@ class BasicSimulatedAnnealingBuilder
       return nullptr;
     }
 
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
     hf.assign(eval, id_0, sid_0);
     assert(eval);
 
-    sptr<GeneralEvaluator<XES, XEv>> ge{eval};
+    sptr<GeneralEvaluator<XES>> ge{eval};
 
     if (Component::debug)
       std::cout << "BasicSA Builder Loading Parameter #2" << std::endl;
@@ -582,13 +583,13 @@ class BasicSimulatedAnnealingBuilder
         std::cout << "no next1c! aborting..." << std::endl;
       return nullptr;
     }
-    vsptr<NS<XES, XEv>> _hlist;
+    vsptr<NS<XES, XSH>> _hlist;
 
     std::string sid_2 = scanner.next();
     int id_2 = *scanner.nextInt();
     hf.assignList(_hlist, id_2, sid_2);
-    vsref<NS<XES, XEv>> hlist;
-    for (sptr<NS<XES, XEv>> x : _hlist) {
+    vsref<NS<XES, XSH>> hlist;
+    for (sptr<NS<XES, XSH>> x : _hlist) {
       assert(x);
       hlist.push_back(x);
     }
@@ -640,7 +641,7 @@ class BasicSimulatedAnnealingBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    // params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+    // params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(),
     // "evaluation function"));
     params.push_back(
         make_pair(Evaluator<typename XES::first_type, typename XES::second_type,
@@ -652,7 +653,7 @@ class BasicSimulatedAnnealingBuilder
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     stringstream ss;
-    ss << NS<XES, XEv>::idComponent() << "[]";
+    ss << NS<XES, XSH>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of NS"));
     params.push_back(make_pair("OptFrame:double", "cooling factor"));
     params.push_back(

@@ -10,45 +10,20 @@
 
 #include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
-// #include "Evaluation.hpp"
-// #include "MoveCost.hpp"
-// #include "MultiEvaluation.hpp"
-// #include "MultiMoveCost.hpp"
-// #include "Solution.hpp"
-// #include "Solutions/CopySolution.hpp"
-
-// #include "Action.hpp"
-
-// using namespace std;
-
-typedef void OPTFRAME_DEFAULT_PROBLEM;
 
 namespace optframe {
 
-// it used to be a 'solution space' here:
-// not anymore: template<XSolution S, XEvaluation XEv = Evaluation<>>
-// Now, 'XR' is a representation space (free of constraints),
-// which can be considered equivalent to the "solution space" (in some cases).
-// This is useful to remove all possible overheads (including clone(),
-// toString()) from a very basic structure 'XR' (if user wants to). This is also
-// useful when solution is composed by smaller "parts", and each part operates
-// with independent moves (thus a fraction of real "solution space"). Efficient
-// components (like Move) should use 'XR' instead of 'XSolution' (and
-// equivalents).
-// template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH =
-// std::pair<S, XEv> > template<XSolution S, XEvaluation XEv = Evaluation<>,
-// XESolution XSH = std::pair<S, XEv>>
-template <XESolution XES, XEvaluation XEv = typename XES::second_type,
-          XSearch<XES> XSH = XES>
-// BREAK TIME!! ONLY 'XES' shall pass... can we finish 'S' here?
-// Finally, now it's possible to abolish XEv (XEv2) passing here, and deduce
-// from 'XES::second_type'.
-class Move : public Component {
-  // using XEv = decltype(declval<XSH>.second); // error: insufficient
-  // contextual information to determine type using XEv = typename
-  // XES::second_type; // This works!!! But better done directly on template
-  // header TOO BAD: we really need to pass XEv here
+// Move: provides move operator over XSH type (XES-based type)
+// Note that, for XSH, we envision possible IncumbentType like EPopulation or
+// EPareto applications, which is not existing for the moment (only BestType
+// XES-based move operators)
+//
+// Future will tell if this was indeed necessary.
 
+template <XESolution XES, XSearch<XES> XSH = XES>
+
+class Move : public Component {
+  using XEv = typename XES::second_type;
   using mvObjType = typename XEv::objType;
 
  public:
@@ -66,7 +41,7 @@ class Move : public Component {
   }
 
   // apply move directly to solution structure (only XSolution required)
-  virtual uptr<Move<XES, XEv, XSH>> apply(XSH& se) = 0;
+  virtual uptr<Move<XES, XSH>> apply(XSH& se) = 0;
 
   virtual void beforeApply(XEv& e) {
     // bool 'outdated' indicates that Evaluation needs update (after Solution
@@ -83,12 +58,12 @@ class Move : public Component {
 
   // apply move to solution structure and updated objective space component
   // (XSolution and XEvaluation)
-  virtual uptr<Move<XES, XEv, XSH>> applyUpdate(XSH& se) {
+  virtual uptr<Move<XES, XSH>> applyUpdate(XSH& se) {
     // invalidate evaluation before apply
     beforeApply(se.second);
     //
     // apply the move to R and ADS, saving the reverse (or undo) move
-    uptr<Move<XES, XEv, XSH>> rev = apply(se);
+    uptr<Move<XES, XSH>> rev = apply(se);
     // update neighborhood local optimum status TODO:deprecated
     updateNeighStatus(se);
 
@@ -98,7 +73,7 @@ class Move : public Component {
 
   /*
    // TODO: remove and unify on a single method (just varying XEv)
-   virtual Move<XES, XEv, XSH>* applyMEV(MultiEvaluation<>& mev, XES& s)
+   virtual Move<XES, XSH>* applyMEV(MultiEvaluation<>& mev, XES& s)
    {
       // boolean 'outdated' indicates that Evaluation needs update (after
    Solution change)
@@ -110,7 +85,7 @@ class Move : public Component {
    method. for (unsigned nE = 0; nE < mev.size(); nE++) mev.setOutdated(nE,
    true);
       // apply the move to R and ADS, saving the reverse (or undo) move
-      Move<XES, XEv, XSH>* rev = apply(s);
+      Move<XES, XSH>* rev = apply(s);
       // update neighborhood local optimum status TODO:deprecated
       updateNeighStatus(s);
       // return reverse move (or null)
@@ -120,13 +95,13 @@ class Move : public Component {
 
   /*
    // TODO: remove and unify on a single method (just varying XEv)
-   virtual uptr<Move<XES, XEv, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, XES&
+   virtual uptr<Move<XES, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, XES&
    se)
    {
       for (unsigned nE = 0; nE < mev.size(); nE++)
          mev.at(nE).outdated = true;
       // apply the move to R and ADS, saving the reverse (or undo) move
-      uptr<Move<XES, XEv, XSH>> rev = apply(se);
+      uptr<Move<XES, XSH>> rev = apply(se);
       // update neighborhood local optimum status TODO:deprecated
       updateNeighStatus(se);
 
@@ -136,7 +111,7 @@ class Move : public Component {
 */
 
   // TODO: coming in one of the next versions..
-  // virtual pair<Move<XES, XEv, XSH>&, MoveCost<>*> apply(const Evaluation<>&
+  // virtual pair<Move<XES, XSH>&, MoveCost<>*> apply(const Evaluation<>&
   // e, R& r, ADS& ads) = 0;
 
   // ================== cost calculation
@@ -156,7 +131,7 @@ class Move : public Component {
 
   // ================== move independence and local search marking
 
-  virtual bool independentOf(const Move<XES, XEv, XSH>& m) {
+  virtual bool independentOf(const Move<XES, XSH>& m) {
     // example: in VRP, move1 changes one route and move2 changes another...
     // they are independent. move1.isIndependent(move2) should return true. by
     // default, it is false (no move is independent)
@@ -190,9 +165,9 @@ class Move : public Component {
   // ================== basic comparison
 
   // default is ALL DIFFERENT
-  virtual bool operator==(const Move<XES, XEv, XSH>& m) const { return false; }
+  virtual bool operator==(const Move<XES, XSH>& m) const { return false; }
 
-  bool operator!=(const Move<XES, XEv, XSH>& m) const { return !(*this == m); }
+  bool operator!=(const Move<XES, XSH>& m) const { return !(*this == m); }
 
   static std::string idComponent() {
     std::stringstream ss;

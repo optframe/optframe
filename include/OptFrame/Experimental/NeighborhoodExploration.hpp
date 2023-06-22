@@ -42,11 +42,10 @@ namespace optframe {
 
 // This is  NEx: Neighborhood Exploration
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>,
-          XSearch<XES> XSH = XES>
-// using MoveWithCost = pair< uptr< Move<XES, XEv> >, XEv >;
+template <XESolution XES, XSearch<XES> XSH = XES>
 struct RichMove {
-  uptr<Move<XES, XEv, XSH>> move;
+  using XEv = typename XES::second_type;
+  uptr<Move<XES, XSH>> move;
   XEv cost;
   SearchStatus status;
 
@@ -64,22 +63,19 @@ struct RichMove {
   }
 };
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>,
-          XSearch<XES> XSH = XES>  // defaults to XSH = XES
-class NeighborhoodExploration
-    : public LocalSearch<XES, XEv, XSH>  //: public Component
-{
+template <XESolution XES, XSearch<XES> XSH = XES>  // defaults to XSH = XES
+class NeighborhoodExploration : public LocalSearch<XES, XSH> {
  public:
+  using XEv = typename XES::second_type;
   NeighborhoodExploration() {}
 
   virtual ~NeighborhoodExploration() {}
 
   // implementation of a "default" local search for this NEx
-  SearchStatus searchFrom(XES& se,
-                          const StopCriteria<XEv>& stopCriteria) override {
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stop) override {
     bool improved = false;
     // searching new move
-    op<RichMove<XES, XEv>> movec = searchMove(se, stopCriteria);
+    op<RichMove<XES, XSH>> movec = searchMove(se, stop);
     // check if move exists
     if (!movec) return SearchStatus::NO_REPORT;
     //
@@ -92,7 +88,7 @@ class NeighborhoodExploration
       // update cost
       movec->cost.update(se.second);
       // searching new move
-      movec = searchMove(se, stopCriteria);
+      movec = searchMove(se, stop);
       // check if move exists
       if (!movec) return SearchStatus::IMPROVEMENT;
     }
@@ -101,8 +97,8 @@ class NeighborhoodExploration
   }
 
   // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
-  virtual op<RichMove<XES, XEv>> searchMove(
-      const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+  virtual op<RichMove<XES, XSH>> searchMove(const XES& se,
+                                            const StopCriteria<XEv>& stop) = 0;
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -125,7 +121,7 @@ class NeighborhoodExplorationBuilder
  public:
   virtual ~NeighborhoodExplorationBuilder() {}
 
-  virtual NeighborhoodExploration<XES, XEv, XSH>* build(
+  virtual NeighborhoodExploration<XES, XSH>* build(
       Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
       string family = "") = 0;
 
@@ -163,7 +159,7 @@ struct TestSimpleRich {
   TestSimpleRich(TestSimpleRich&& tsr) : ptr(std::move(tsr.ptr)) {}
 };
 
-using TestRichMove = RichMove<IsESolution<int>, IsEvaluation<int>>;
+using TestRichMove = RichMove<IsESolution<int>>;
 
 // static_assert(std::is_destructible<TestRichMove>);
 

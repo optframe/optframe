@@ -13,9 +13,13 @@ OptFrame
   </a>
 </p>
 
+[![Documentation Status](https://readthedocs.org/projects/optframe/badge/?version=latest)](https://optframe.readthedocs.io/en/latest/?badge=latest)
+
 ## OptFrame - C++ Optimization Framework
 
 OptFrame `5.0.12` is released.
+
+For optframe python version, see [github.com/optframe/pyoptframe-dev](https://github.com/optframe/pyoptframe-dev)
 
 Project uses semantic versioning, so to patch it, run: `bumpver update --patch`
 
@@ -28,7 +32,6 @@ Major changes happened from v3 to v4, so we will need to update our tutorials...
 
 **Official Documentation on [ReadTheDocs](https://optframe.readthedocs.io)**
 
-[![Documentation Status](https://readthedocs.org/projects/optframe/badge/?version=latest)](https://optframe.readthedocs.io/en/latest/?badge=latest)
 
 #### Try the Demos on [ReadTheDocs Quickstart](https://optframe.readthedocs.io/en/latest/quickstart.html)
 
@@ -273,6 +276,6 @@ Bento Gonçalves-RS, pp 1887-1898.
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2007-2022
+Copyright (C) 2007-2023
 
 The OptFrame team

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-
 #ifndef OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 #define OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 
@@ -15,15 +14,15 @@ namespace optframe {
 
 // When RandGen is given as parameter it performs RVND
 template <XESolution XES, XEvaluation XEv = typename XES::second_type>
-class VariableNeighborhoodDescent : public LocalSearch<XES, XEv> {
+class VariableNeighborhoodDescent : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv>> ev;
-  vsref<LocalSearch<XES, XEv>> lsList;
+  sref<GeneralEvaluator<XES>> ev;
+  vsref<LocalSearch<XES>> lsList;
   sptr<RandGen> rg;
 
  public:
-  VariableNeighborhoodDescent(sref<GeneralEvaluator<XES, XEv>> _ev,
-                              vsref<LocalSearch<XES, XEv>> _lsList,
+  VariableNeighborhoodDescent(sref<GeneralEvaluator<XES>> _ev,
+                              vsref<LocalSearch<XES>> _lsList,
                               sptr<RandGen> _rg = nullptr)
       : ev(_ev), lsList(_lsList), rg(_rg) {}
 
@@ -87,12 +86,12 @@ class VariableNeighborhoodDescent : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":VND";
+    ss << LocalSearch<XES>::idComponent() << ":VND";
     return ss.str();
   }
 
@@ -102,7 +101,7 @@ class VariableNeighborhoodDescent : public LocalSearch<XES, XEv> {
     stringstream ss;
     ss << "VND: [ ";
     for (unsigned i = 0; i < lsList.size(); i++) {
-      auto& x = const_cast<sref<LocalSearch<XES, XEv>>&>(lsList[i]);
+      auto& x = const_cast<sref<LocalSearch<XES>>&>(lsList[i]);
       // ss << lsList[i]->toString();
       ss << x->toString();
       if (i != lsList.size() - 1) ss << ",";
@@ -121,22 +120,23 @@ class VariableNeighborhoodDescentBuilder
  public:
   virtual ~VariableNeighborhoodDescentBuilder() {}
 
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    if(this->verbose)
-      std::cout << "Debug: VariableNeighborhoodDescentBuilder::build()" << std::endl;
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    if (this->verbose)
+      std::cout << "Debug: VariableNeighborhoodDescentBuilder::build()"
+                << std::endl;
 
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_ev_id = scanner.next();
     int ev_id = *scanner.nextInt();
-    hf.assign(eval, ev_id, comp_ev_id);  
+    hf.assign(eval, ev_id, comp_ev_id);
 
-    vsptr<LocalSearch<XES, XEv>> _hlist;
+    vsptr<LocalSearch<XES>> _hlist;
     std::string comp_list_id = scanner.next();
     int list_id = *scanner.nextInt();
     hf.assignList(_hlist, list_id, comp_list_id);
-    vsref<LocalSearch<XES, XEv>> hlist;
+    vsref<LocalSearch<XES>> hlist;
     for (auto x : _hlist) hlist.push_back(x);
 
     return new VariableNeighborhoodDescent<XES, XEv>(eval, hlist);
@@ -144,10 +144,10 @@ class VariableNeighborhoodDescentBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << "[]";
+    ss << LocalSearch<XES>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of local searches"));
 
     return params;

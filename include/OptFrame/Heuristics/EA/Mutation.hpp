@@ -49,13 +49,15 @@ class Mutation : public Component, public EA {
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
 class BasicMutation : public Mutation<S, XEv> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  protected:
   unsigned n;
-  vector<NS<XES, XEv>*> vNS;
+  vector<NS<XES, XSH>*> vNS;
   RandGen& rg;
 
  public:
-  BasicMutation(unsigned _n, vector<NS<XES, XEv>*> _vNS, RandGen& _rg)
+  BasicMutation(unsigned _n, vector<NS<XES, XSH>*> _vNS, RandGen& _rg)
       : n(_n), vNS(_vNS), rg(_rg) {}
 
   virtual ~BasicMutation() {}
@@ -86,6 +88,8 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XSH = XES;  // primary-based search type only (BestType)
+
  public:
   virtual ~BasicMutationBuilder() {}
 
@@ -94,7 +98,7 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
                             string family = "") override {
     int n = *scanner.nextInt();
 
-    vector<NS<XES, XEv>*> ns_list;
+    vector<NS<XES, XSH>*> ns_list;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assignList(ns_list, id1, comp_id1);
@@ -107,7 +111,7 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     vector<pair<string, string>> params;
     params.push_back(make_pair("OptFrame:int", "number of moves"));
     stringstream ss;
-    ss << NS<XES, XEv>::idComponent() << "[]";
+    ss << NS<XES, XSH>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
     return params;

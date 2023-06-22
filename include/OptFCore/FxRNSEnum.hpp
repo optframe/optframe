@@ -19,27 +19,24 @@ namespace optframe {
 // Issue 2: Incomplete (Missing moves)
 // Spirit: believes in randomness
 //
-template <XESolution XES,
-          XEvaluation XEv = typename XES::second_type,
-          XESolution XSH = XES>
-class RNSEnumIteratorOptimistic : public NSIterator<XES, XEv, XSH> {
+template <XESolution XES, XESolution XSH = XES>
+class RNSEnumIteratorOptimistic : public NSIterator<XES, XSH> {
  private:
-  NSEnum<XES, XEv, XSH>& ns;
+  NSEnum<XES, XSH>& ns;
   unsigned int move;
   unsigned int nsSize;
   sref<RandGen> rg;
   int count;
 
  public:
-  RNSEnumIteratorOptimistic(NSEnum<XES, XEv, XSH>& _ns, sref<RandGen> _rg)
+  RNSEnumIteratorOptimistic(NSEnum<XES, XSH>& _ns, sref<RandGen> _rg)
       : ns{_ns}, rg{_rg} {
     move = 0;
     nsSize = _ns.size();
     count = 0;
   }
 
-  virtual ~RNSEnumIteratorOptimistic() {
-  }
+  virtual ~RNSEnumIteratorOptimistic() {}
 
   void first() override {
     move = rg->rand(nsSize);
@@ -51,11 +48,9 @@ class RNSEnumIteratorOptimistic : public NSIterator<XES, XEv, XSH> {
     count++;
   }
 
-  bool isDone() override {
-    return count > nsSize;
-  }
+  bool isDone() override { return count > nsSize; }
 
-  uptr<Move<XES, XEv>> current() override {
+  uptr<Move<XES, XSH>> current() override {
     if (isDone())
       // throw IteratorOutOfBound(move);
       return nullptr;
@@ -68,12 +63,10 @@ class RNSEnumIteratorOptimistic : public NSIterator<XES, XEv, XSH> {
 // Issue 2: -
 // Issue 3: O(neighborhood_size) instead of O(moves) - No Amortized Time!
 // Spirit: always complete but may be slow
-template <XESolution XES,
-          XEvaluation XEv = typename XES::second_type,
-          XESolution XSH = XES>
-class RNSEnumIteratorShuffle : public NSIterator<XES, XEv, XSH> {
+template <XESolution XES, XESolution XSH = XES>
+class RNSEnumIteratorShuffle : public NSIterator<XES, XSH> {
  private:
-  NSEnum<XES, XEv, XSH>& ns;
+  NSEnum<XES, XSH>& ns;
   unsigned int move;
   unsigned int nsSize;
   sref<RandGen> rg;
@@ -81,7 +74,7 @@ class RNSEnumIteratorShuffle : public NSIterator<XES, XEv, XSH> {
   int count;
 
  public:
-  RNSEnumIteratorShuffle(NSEnum<XES, XEv, XSH>& _ns, sref<RandGen> _rg)
+  RNSEnumIteratorShuffle(NSEnum<XES, XSH>& _ns, sref<RandGen> _rg)
       : ns{_ns}, rg{_rg} {
     move = 0;
     nsSize = _ns.size();
@@ -89,14 +82,12 @@ class RNSEnumIteratorShuffle : public NSIterator<XES, XEv, XSH> {
     count = 0;
   }
 
-  virtual ~RNSEnumIteratorShuffle() {
-  }
+  virtual ~RNSEnumIteratorShuffle() {}
 
   void first() override {
     count = 0;
     idMoves.clear();
-    for (unsigned i = 0; i < nsSize; i++)
-      idMoves.push_back(i);
+    for (unsigned i = 0; i < nsSize; i++) idMoves.push_back(i);
     //
     rg->shuffle(this->idMoves);
     //
@@ -116,7 +107,7 @@ class RNSEnumIteratorShuffle : public NSIterator<XES, XEv, XSH> {
     return count >= nsSize;
   }
 
-  uptr<Move<XES, XEv>> current() override {
+  uptr<Move<XES, XSH>> current() override {
     if (isDone())
       // throw IteratorOutOfBound(move);
       return nullptr;
@@ -124,8 +115,7 @@ class RNSEnumIteratorShuffle : public NSIterator<XES, XEv, XSH> {
   }
 };
 
-template <XESolution XES,
-          unsigned int (*fSize)(),
+template <XESolution XES, unsigned int (*fSize)(),
           uptr<Move<XES>> (*fIndex)(unsigned int k),
           typename RNSEnumIterator = RNSEnumIteratorOptimistic<XES>>
 class FxRNSEnum final : public NSEnum<XES> {
@@ -136,20 +126,16 @@ class FxRNSEnum final : public NSEnum<XES> {
   sref<RandGen> rg;
   //
  public:
-  FxRNSEnum(sref<RandGen> _rg)
-      : NSEnum<XES>(_rg), rg{_rg} {
-  }
+  FxRNSEnum(sref<RandGen> _rg) : NSEnum<XES>(_rg), rg{_rg} {}
 
-  uptr<Move<XES, XEv>> indexMove(unsigned int index) override {
+  uptr<Move<XES, XSH>> indexMove(unsigned int index) override {
     return fIndex(index);
   }
 
-  unsigned int size() const override {
-    return fSize();
-  }
+  unsigned int size() const override { return fSize(); }
 
-  virtual uptr<NSIterator<XES, XEv>> getIterator(const XES&) {
-    return uptr<NSIterator<XES, XEv>>(new RNSEnumIterator(*this, rg));
+  virtual uptr<NSIterator<XES>> getIterator(const XES&) {
+    return uptr<NSIterator<XES>>(new RNSEnumIterator(*this, rg));
   }
 
  private:
@@ -165,9 +151,7 @@ class FxRNSEnum final : public NSEnum<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

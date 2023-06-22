@@ -15,14 +15,13 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class HillClimbing : public LocalSearch<XES, XEv> {
+class HillClimbing : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
-  sref<LocalSearch<XES, XEv>> ls;
+  sref<GeneralEvaluator<XES>> evaluator;
+  sref<LocalSearch<XES>> ls;
 
  public:
-  HillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev,
-               sref<LocalSearch<XES, XEv>> _ls)
+  HillClimbing(sref<GeneralEvaluator<XES>> _ev, sref<LocalSearch<XES>> _ls)
       : evaluator(_ev), ls(_ls) {}
 
   virtual ~HillClimbing() = default;
@@ -74,14 +73,14 @@ class HillClimbing : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   std::string id() const override { return idComponent(); }
 
   static std::string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":HC";
+    ss << LocalSearch<XES>::idComponent() << ":HC";
     return ss.str();
   }
 
@@ -100,20 +99,20 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
   virtual ~HillClimbingBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
     string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
+    pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
-    sptr<LocalSearch<XES, XEv>> h = method.first;
+    sptr<LocalSearch<XES>> h = method.first;
 
     scanner = Scanner(method.second);
 
@@ -126,7 +125,7 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     params.push_back(
         make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search"));
 
     return params;
   }

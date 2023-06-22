@@ -42,10 +42,10 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class MultiRandomSelection : public LocalSearch<XES, XEv> {
+class MultiRandomSelection : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv>> eval;
-  sref<NS<XES, XEv, XSH>> ns;
+  sref<GeneralEvaluator<XES>> eval;
+  sref<NS<XES, XSH>> ns;
   // number of moves for random sampling
   int countMoves;
   // cost "zero"
@@ -65,9 +65,8 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
 
  public:
   //
-  MultiRandomSelection(sref<GeneralEvaluator<XES, XEv>> _eval,
-                       sref<NS<XES, XEv, XSH>> _ns, int _countMoves,
-                       XEv _stopCost)
+  MultiRandomSelection(sref<GeneralEvaluator<XES>> _eval,
+                       sref<NS<XES, XSH>> _ns, int _countMoves, XEv _stopCost)
       : eval{_eval},
         ns{_ns},
         countMoves{_countMoves},
@@ -100,9 +99,9 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
     // safety count of tries (prevents infinite loop)
     int tries = 5 * countMoves;
     //
-    std::vector<Move<XES, XEv, XSH>*> allMoves;
+    std::vector<Move<XES, XSH>*> allMoves;
     while (((int)allMoves.size()) < countMoves) {
-      Move<XES, XEv, XSH>* m = ns->randomMove(se).release();
+      Move<XES, XSH>* m = ns->randomMove(se).release();
       if (m->canBeApplied(se))
         allMoves.push_back(m);
       else {
@@ -191,12 +190,12 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":MIRS";
+    ss << LocalSearch<XES>::idComponent() << ":MIRS";
     return ss.str();
   }
 
@@ -219,19 +218,19 @@ class MultiRandomSelectionBuilder
   virtual ~MultiRandomSelectionBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
     if (!scanner.hasNext()) return nullptr;
 
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
     if (!scanner.hasNext()) return nullptr;
 
-    sptr<NS<XES, XEv, XSH>> nsseq;
+    sptr<NS<XES, XSH>> nsseq;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsseq, id2, comp_id2);
@@ -242,10 +241,10 @@ class MultiRandomSelectionBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
     params.push_back(
-        make_pair(NS<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

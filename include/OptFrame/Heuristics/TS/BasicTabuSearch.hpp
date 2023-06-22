@@ -24,16 +24,16 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   using XSH = XES;
   //
  public:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   sref<InitialSearch<XES>> constructive;
-  sref<NSSeq<XES, XEv, XSH>> nsSeq;
+  sref<NSSeq<XES, XSH>> nsSeq;
   int tlSize;
   int tsMax;
 
  public:
-  BasicTabuSearch(sref<GeneralEvaluator<XES, XEv>> _ev,
+  BasicTabuSearch(sref<GeneralEvaluator<XES>> _ev,
                   sref<InitialSearch<XES>> _constructive,
-                  sref<NSSeq<XES, XEv, XSH>> _nsSeq, int _tlSize, int _tsMax)
+                  sref<NSSeq<XES, XSH>> _nsSeq, int _tlSize, int _tsMax)
       : evaluator(_ev),
         constructive(_constructive),
         nsSeq(_nsSeq),
@@ -86,7 +86,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     int BestIter = 0;
 
     // initialize empty tabu list
-    vector<Move<XES, XEv>*> tabuList;
+    vector<Move<XES, XSH>*> tabuList;
 
     int estimative_BTmax = 0;
 
@@ -119,7 +119,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
       // find best non-tabu move OR
       // best move with aspiration
 
-      uptr<Move<XES, XEv>> bestMove =
+      uptr<Move<XES, XSH>> bestMove =
           tabuBestMoveWithAspiration(se, tabuList, cmpA);
       if (!bestMove) return SearchStatus::FAILED;
 
@@ -127,7 +127,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
       //        's' <- 's1';
       // =====================================================
       // apply move and store new tabu move
-      uptr<Move<XES, XEv>> newTabu = bestMove->applyUpdate(se);
+      uptr<Move<XES, XSH>> newTabu = bestMove->applyUpdate(se);
       evaluator->reevaluate(se);
 
       // =======================================
@@ -137,7 +137,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
       if (((int)tabuList.size()) > tlSize) {
         // do not 'delete' here
-        uptr<Move<XES, XEv>> firstMove{tabuList[0]};
+        uptr<Move<XES, XSH>> firstMove{tabuList[0]};
         tabuList.erase(tabuList.begin());
         firstMove = nullptr;
       }
@@ -158,7 +158,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
         for (unsigned int i = 0; i < tabuList.size(); i++)
           if ((*tabuList[i]) == (*bestMove)) {
             // let this move expire (no 'delete' here)
-            uptr<Move<XES, XEv>> sameMove{tabuList[i]};
+            uptr<Move<XES, XSH>> sameMove{tabuList[i]};
             tabuList.erase(tabuList.begin() + i);
             sameMove = nullptr;
             //
@@ -174,7 +174,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
     while (tabuList.size() > 0) {
       // do not 'delete' here
-      uptr<Move<XES, XEv>> firstMove{tabuList[0]};
+      uptr<Move<XES, XSH>> firstMove{tabuList[0]};
       firstMove = nullptr;
       //
       tabuList.erase(tabuList.begin());
@@ -193,23 +193,23 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   // should satisfy aspiration function
   // =====================================
 
-  uptr<Move<XES, XEv>> tabuBestMoveWithAspiration(
-      XES& se, const vector<Move<XES, XEv>*>& tabuList,
+  uptr<Move<XES, XSH>> tabuBestMoveWithAspiration(
+      XES& se, const vector<Move<XES, XSH>*>& tabuList,
       std::function<bool(const XEv&, const XEv&)> cmp) {
     // auto& s = se.first;
     //
-    uptr<Move<XES, XEv>> bestMove = nullptr;
+    uptr<Move<XES, XSH>> bestMove = nullptr;
     XEv bestCost;  // TODO: initialize? how?
     //
 
     // initialize iterator
-    uptr<NSIterator<XES, XEv>> it = nsSeq->getIterator(se);
+    uptr<NSIterator<XES>> it = nsSeq->getIterator(se);
     // find first move
     it->first();
     if (it->isDone()) {
       return bestMove;
     }
-    uptr<Move<XES, XEv>> current = it->current();
+    uptr<Move<XES, XSH>> current = it->current();
 
     // while current move exists
     while (current) {
@@ -306,7 +306,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     return bestMove;
   }
 
-  bool inList(uptr<Move<XES, XEv>>& m, const vector<Move<XES, XEv>*>& v) {
+  bool inList(uptr<Move<XES, XSH>>& m, const vector<Move<XES, XSH>*>& v) {
     for (unsigned int i = 0; i < v.size(); i++)
       if ((*m) == (*v[i])) return true;
     return false;
@@ -342,13 +342,13 @@ class BasicTabuSearchBuilder : public TS,
       return nullptr;
     }
 
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
     hf.assign(eval, id_0, sid_0);
     assert(eval);
 
-    sptr<GeneralEvaluator<XES, XEv>> ge{eval};
+    sptr<GeneralEvaluator<XES>> ge{eval};
 
     if (Component::debug)
       std::cout << "BasicTabuSearch Builder Loading Parameter #2" << std::endl;
@@ -398,8 +398,8 @@ class BasicTabuSearchBuilder : public TS,
     // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
-                               "neighborhood structure"));
+    params.push_back(
+        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
     params.push_back(make_pair("OptFrame:int", "tabu list size"));
     params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 

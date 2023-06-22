@@ -22,16 +22,16 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
 class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
  private:
-  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<GeneralEvaluator<XES>> evaluator;
   sref<GRConstructive<S>> constructive;
-  sref<LocalSearch<XES, XEv>> ls;
+  sref<LocalSearch<XES>> ls;
   float alpha;
   unsigned int iterMax;
 
  public:
-  BasicGRASP(sref<GeneralEvaluator<XES, XEv>> _eval,
-             sref<GRConstructive<S>> _constructive,
-             sref<LocalSearch<XES, XEv>> _ls, float _alpha, int _iterMax)
+  BasicGRASP(sref<GeneralEvaluator<XES>> _eval,
+             sref<GRConstructive<S>> _constructive, sref<LocalSearch<XES>> _ls,
+             float _alpha, int _iterMax)
       : evaluator(_eval), constructive(_constructive), ls(_ls) {
     if (_iterMax <= 0) _iterMax = 1;
     if (_alpha < 0 || _alpha > 1) _alpha = 1;
@@ -145,7 +145,7 @@ class BasicGRASPBuilder : public GRASP,
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+    sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -157,10 +157,10 @@ class BasicGRASPBuilder : public GRASP,
 
     string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
+    pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
-    sptr<LocalSearch<XES, XEv>> h = method.first;
+    sptr<LocalSearch<XES>> h = method.first;
 
     scanner = Scanner(method.second);
 
@@ -178,12 +178,12 @@ class BasicGRASPBuilder : public GRASP,
 
   vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(make_pair(GRConstructive<S>::idComponent(),
                                "greedy randomized constructive heuristic"));
     params.push_back(
-        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+        make_pair(LocalSearch<XES>::idComponent(), "local search"));
     params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));
     params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 

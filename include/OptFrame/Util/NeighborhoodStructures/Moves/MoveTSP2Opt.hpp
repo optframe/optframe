@@ -42,7 +42,7 @@ namespace optframe {
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MoveTSP2Opt : public Move<XES, XEv> {
+class MoveTSP2Opt : public Move<XES> {
   typedef vector<T> Route;
 
  protected:
@@ -68,21 +68,21 @@ class MoveTSP2Opt : public Move<XES, XEv> {
     return all_positive && (rep.size() >= 2) && less;
   }
 
-  virtual uptr<Move<XES, XEv>> apply(XES& se) override {
+  virtual uptr<Move<XES>> apply(XES& se) override {
     Route& rep = se.first.getR();
     reverse(rep.begin() + p1, rep.begin() + p2);
 
     // r1->r1, r2->r2, e1->i1, e2->i2, n1->n2, n2->n1, i1->e1, i2->e2
-    return uptr<Move<XES, XEv>>(new MoveTSP2Opt(p1, p2));
+    return uptr<Move<XES>>(new MoveTSP2Opt(p1, p2));
   }
 
-  bool operator==(const Move<XES, XEv>& _m) const override {
+  bool operator==(const Move<XES>& _m) const override {
     const MoveTSP2Opt& m1 = (const MoveTSP2Opt&)_m;
     return ((m1.p1 == p1) && (m1.p2 == p2));
   }
 
   static string idComponent() {
-    string idComp = Move<XES, XEv>::idComponent();
+    string idComp = Move<XES>::idComponent();
     idComp.append("MoveTSP2Opt");
     return idComp;
   }

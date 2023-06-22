@@ -42,12 +42,12 @@ template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
           class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSIteratorTSPSwap : public NSIterator<XES, XEv> {
+class NSIteratorTSPSwap : public NSIterator<XES> {
   typedef vector<T> Route;
 
  protected:
   // MOVE* m;
-  uptr<Move<XES, XEv>> m;
+  uptr<Move<XES>> m;
   int p1, p2;  // position 1 and position 2, respectively
   int n;
 
@@ -88,7 +88,7 @@ class NSIteratorTSPSwap : public NSIterator<XES, XEv> {
 
   virtual bool isDone() override { return (m == nullptr); }
 
-  virtual uptr<Move<XES, XEv>> current() override {
+  virtual uptr<Move<XES>> current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "NSSeqTSPSwap. Aborting." << endl;
@@ -96,7 +96,7 @@ class NSIteratorTSPSwap : public NSIterator<XES, XEv> {
     }
 
     // steal from 'm'
-    uptr<Move<XES, XEv>> m2 = std::move(m);
+    uptr<Move<XES>> m2 = std::move(m);
     m = nullptr;
 
     return m2;

@@ -41,7 +41,7 @@ namespace optframe {
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MoveTSPOrOptk : public Move<XES, XEv> {
+class MoveTSPOrOptk : public Move<XES> {
   typedef vector<T> Route;
 
  protected:
@@ -52,8 +52,8 @@ class MoveTSPOrOptk : public Move<XES, XEv> {
   std::shared_ptr<OPTFRAME_DEFAULT_PROBLEM> problem;
 
  public:
-  using Move<XES, XEv>::apply;
-  using Move<XES, XEv>::canBeApplied;
+  using Move<XES>::apply;
+  using Move<XES>::canBeApplied;
 
   MoveTSPOrOptk(int _i, int _j, int _k,
                 std::shared_ptr<OPTFRAME_DEFAULT_PROBLEM> _problem = nullptr)
@@ -73,23 +73,23 @@ class MoveTSPOrOptk : public Move<XES, XEv> {
     return abs(i - j) >= k;
   }
 
-  virtual uptr<Move<XES, XEv>> apply(XES& se) override {
+  virtual uptr<Move<XES>> apply(XES& se) override {
     Route& rep = se.first.getR();
     vector<T> v_aux;
     v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
     rep.erase(rep.begin() + i, rep.begin() + i + k);
     rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
 
-    return uptr<Move<XES, XEv>>(new MoveTSPOrOptk(j, i, k));
+    return uptr<Move<XES>>(new MoveTSPOrOptk(j, i, k));
   }
 
-  bool operator==(const Move<XES, XEv>& _m) const override {
+  bool operator==(const Move<XES>& _m) const override {
     const MoveTSPOrOptk& m1 = (const MoveTSPOrOptk&)_m;
     return (m1.i == i) && (m1.j == j) && (m1.k == k);
   }
 
   static string idComponent() {
-    string idComp = Move<XES, XEv>::idComponent();
+    string idComp = Move<XES>::idComponent();
     idComp.append("MoveTSPOrOptk");
     return idComp;
   }

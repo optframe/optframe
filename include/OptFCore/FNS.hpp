@@ -31,8 +31,8 @@ class FNS final : public NS<XES> {
 
   // standard implementation for fValidRandom with ProblemType
   FuncTypeNSValidRand fValidRandom{
-      [this](sref<ProblemType> _p, const XES& se) -> uptr<Move<XES, XEv, XSH>> {
-        uptr<Move<XES, XEv, XSH>> moveValid = this->fRandom(_p, se);
+      [this](sref<ProblemType> _p, const XES& se) -> uptr<Move<XES, XSH>> {
+        uptr<Move<XES, XSH>> moveValid = this->fRandom(_p, se);
         if (moveValid && moveValid->canBeApplied(se))
           return moveValid;
         else
@@ -42,12 +42,12 @@ class FNS final : public NS<XES> {
   FNS(sref<ProblemType> _p, FuncTypeNSRand _fRandom)
       : p{_p}, fRandom{_fRandom} {}
 
-  uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
+  uptr<Move<XES, XSH>> randomMove(const XES& se) override {
     return fRandom(p, se);
   }
 
   // personalization of validRandomRandom, if necessary!
-  uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) override {
+  uptr<Move<XES, XSH>> validRandomMove(const XES& se) override {
     return fValidRandom(p, se);
   }
 
@@ -80,7 +80,7 @@ class FNS<XES, void> final : public NS<XES> {
 
   // standard implementation for fValidRandom for ProblemType=void
   FuncTypeNSValidRand fValidRandom{[this](const XES& se) -> uptr<Move<XES>> {
-    uptr<Move<XES, XEv, XSH>> moveValid = this->fRandom(se);
+    uptr<Move<XES, XSH>> moveValid = this->fRandom(se);
     if (moveValid && moveValid->canBeApplied(se))
       return moveValid;
     else
@@ -89,12 +89,12 @@ class FNS<XES, void> final : public NS<XES> {
 
   explicit FNS(FuncTypeNSRand _fRandom) : fRandom{_fRandom} {}
 
-  uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
+  uptr<Move<XES, XSH>> randomMove(const XES& se) override {
     return fRandom(se);
   }
 
   // personalization of validRandomRandom, if necessary!
-  uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) override {
+  uptr<Move<XES, XSH>> validRandomMove(const XES& se) override {
     return fValidRandom(se);
   }
 

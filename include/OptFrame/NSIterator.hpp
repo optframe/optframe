@@ -35,20 +35,16 @@
 namespace optframe {
 
 // Local Optimum Status
-enum LOS {
-  los_yes,
-  los_no,
-  los_unknown,
-  los_partial
-};
+enum LOS { los_yes, los_no, los_unknown, los_partial };
 
 // exemplo: mochila NSSeq de incrementos (+1).
 // Comeca 'unknown'.
 // Se nao pode mais incrementar nada vira 'yes'.
 // Se perturba um pouquinho vira 'no' (pq sabe como voltar).
 
-// 'partial' indicates that the solution is partially in a local optimum (maybe the word semi-local optimum is better...)
-// it may happen for example in a VRP, where a route is in LO while others are not.
+// 'partial' indicates that the solution is partially in a local optimum (maybe
+// the word semi-local optimum is better...) it may happen for example in a VRP,
+// where a route is in LO while others are not.
 
 // TODO: unused?
 class IteratorOutOfBound {
@@ -56,20 +52,15 @@ class IteratorOutOfBound {
   int id;
 
  public:
-  IteratorOutOfBound(int _id)
-      : id(_id) {
-  }
+  IteratorOutOfBound(int _id) : id(_id) {}
 
-  int getId() {
-    return id;
-  }
+  int getId() { return id; }
 };
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
+template <XESolution XES, XESolution XSH = XES>
 class NSIterator : public Component {
  public:
-  virtual ~NSIterator() {
-  }
+  ~NSIterator() override = default;
 
   virtual void first() = 0;
 
@@ -77,10 +68,9 @@ class NSIterator : public Component {
     first();
 
     while (!isDone()) {
-      uptr<Move<XES, XEv>> m = current();
+      uptr<Move<XES, XSH>> m = current();
 
-      if (m && m->canBeApplied(se))
-        break;
+      if (m && m->canBeApplied(se)) break;
 
       next();
     }
@@ -92,21 +82,19 @@ class NSIterator : public Component {
     next();
 
     while (!isDone()) {
-      uptr<Move<XES, XEv>> m = current();
+      uptr<Move<XES, XSH>> m = current();
 
-      if (m && m->canBeApplied(se))
-        break;
+      if (m && m->canBeApplied(se)) break;
 
       next();
     }
   }
 
   virtual bool isDone() = 0;
-  virtual uptr<Move<XES, XEv>> current() = 0;
+  virtual uptr<Move<XES, XSH>> current() = 0;
 
   // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
-  virtual void setLOS(LOS status, XES& s) {
-  }
+  virtual void setLOS(LOS status, XES& s) {}
 
   static string idComponent() {
     stringstream ss;
@@ -114,15 +102,11 @@ class NSIterator : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 };
 
 }  // namespace optframe
 
-#endif  //OPTFRAME_NSITERATOR_HPP_
+#endif  // OPTFRAME_NSITERATOR_HPP_

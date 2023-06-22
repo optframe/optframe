@@ -35,13 +35,13 @@ class TabuSearch : public SingleObjSearch<XES> {
  private:
   Evaluator<XES, XEv>& evaluator;
   InitialSearch<XES>& constructive;
-  NSSeq<XES, XEv, XSH>& nsSeq;
+  NSSeq<XES, XSH>& nsSeq;
   int tlSize;
   int tsMax;
 
  public:
   TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive,
-             NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
+             NSSeq<XES, XSH>& _nsSeq, int _tlSize, int _tsMax)
       : evaluator(_ev),
         constructive(_constructive),
         nsSeq(_nsSeq),
@@ -193,7 +193,7 @@ class TabuSearch : public SingleObjSearch<XES> {
 
   Move<S, XEv>* tabuBestMove(S& s, Evaluation<DS>& e,
                              const vector<Move<S, XEv>*>& tabuList) {
-    NSIterator<S, XEv>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
+    NSIterator<XES>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
 
     it.first();
 

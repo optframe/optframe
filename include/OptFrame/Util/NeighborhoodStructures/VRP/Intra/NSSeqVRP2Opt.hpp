@@ -42,7 +42,7 @@ using namespace optframe;
 // template<class R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv =
 // Evaluation<>, XESolution XES = pair<S, XEv>>
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
-class MoveVRP2Opt : public Move<XES, typename XES::second_type> {
+class MoveVRP2Opt : public Move<XES> {
   using XEv = typename XES::second_type;
 
  public:
@@ -136,7 +136,7 @@ class MoveVRP2Opt : public Move<XES, typename XES::second_type> {
 //
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRP2Opt<XES, P>>
-class NSIteratorVRP2Opt : public NSIterator<XES, typename XES::second_type> {
+class NSIteratorVRP2Opt : public NSIterator<XES> {
   typedef vector<vector<int>> Routes;
 
  protected:
@@ -226,7 +226,7 @@ class NSIteratorVRP2Opt : public NSIterator<XES, typename XES::second_type> {
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRP2Opt<XES, P>,
           class NSITERATOR = NSIteratorVRP2Opt<XES, P, MOVE>>
-class NSSeqVRP2Opt : public NSSeq<XES, typename XES::second_type, XES> {
+class NSSeqVRP2Opt : public NSSeq<XES> {
   typedef vector<vector<int>> Routes;
 
  public:

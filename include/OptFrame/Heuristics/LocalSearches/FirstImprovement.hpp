@@ -11,14 +11,14 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class FirstImprovement : public LocalSearch<XES, XEv> {
+class FirstImprovement : public LocalSearch<XES> {
  private:
-  sref<GeneralEvaluator<XES, XEv, XSH>> eval;
-  sref<NSSeq<XES, XEv, XSH>> nsSeq;
+  sref<GeneralEvaluator<XES, XSH>> eval;
+  sref<NSSeq<XES, XSH>> nsSeq;
 
  public:
-  FirstImprovement(sref<GeneralEvaluator<XES, XEv>> _eval,
-                   sref<NSSeq<XES, XEv, XSH>> _nsSeq)
+  FirstImprovement(sref<GeneralEvaluator<XES>> _eval,
+                   sref<NSSeq<XES, XSH>> _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {}
 
   virtual ~FirstImprovement() {}
@@ -40,7 +40,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
     // XEv& e = se.second;
 
     if (Component::verbose) std::cout << "FI: getIterator" << std::endl;
-    uptr<NSIterator<XES, XEv>> it = nsSeq->getIterator(se);
+    uptr<NSIterator<XES>> it = nsSeq->getIterator(se);
     //
     if (!it) {
       if (Component::warning)
@@ -60,7 +60,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
 
     do {
       if (Component::verbose) std::cout << "FI: it->current()" << std::endl;
-      uptr<Move<XES, XEv, XSH>> move = it->current();
+      uptr<Move<XES, XSH>> move = it->current();
 
       if (!move) {
         if (Component::warning)
@@ -105,9 +105,9 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
 
   // used on FirstImprovement
   // Accept and apply move if it improves parameter moveCost
-  /// bool acceptsImprove(Move<XES, XEv>& m, XSH& se, MoveCost<>* mc = nullptr,
+  /// bool acceptsImprove(Move<XES, XSH>& m, XSH& se, MoveCost<>* mc = nullptr,
   /// bool allowEstimated = false)
-  bool acceptsImprove(Move<XES, XEv>& m, XSH& se, bool allowEstimated = false) {
+  bool acceptsImprove(Move<XES, XSH>& m, XSH& se, bool allowEstimated = false) {
     if (Component::verbose)
       std::cout << "FI: begin acceptsImprove()" << std::endl;
     // XSolution& s = se.first;
@@ -122,7 +122,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
       // if (p->isStrictImprovement()) {
       if (eval->isStrictImprovement(*p)) {
         // apply move and get reverse
-        uptr<Move<XES, XEv>> rev = m.apply(se);
+        uptr<Move<XES, XSH>> rev = m.apply(se);
         // update value using calculated cost
         p->update(e);
         return true;
@@ -142,7 +142,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
       XEv ev_begin(e);
 
       // apply move to both XEv and Solution
-      uptr<Move<XES, XEv>> rev = eval->applyMoveReevaluate(m, se);
+      uptr<Move<XES, XSH>> rev = eval->applyMoveReevaluate(m, se);
 
       // compute cost directly on Evaluation
       XEv mcost = ev_begin.diff(se.second);
@@ -175,7 +175,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
       if (Component::verbose)
         std::cout << "FI: No improvement. Will reverse." << std::endl;
 
-      uptr<Move<XES, XEv>> ini = rev->apply(se);
+      uptr<Move<XES, XSH>> ini = rev->apply(se);
       // for now, must be not nullptr
       assert(ini != nullptr);
       // TODO: include management for 'false' hasReverse()
@@ -191,12 +191,12 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+    return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << ":FI";
+    ss << LocalSearch<XES>::idComponent() << ":FI";
     return ss.str();
   }
 
@@ -217,18 +217,18 @@ class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
   virtual ~FirstImprovementBuilder() {}
 
-  LocalSearch<XES, XEv>* build(Scanner& scanner,
-                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                               string family = "") override {
-    if(this->verbose)
+  LocalSearch<XES>* build(Scanner& scanner,
+                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                          string family = "") override {
+    if (this->verbose)
       std::cout << "Debug: FirstImprovementBuilder::build()" << std::endl;
-    
-    sptr<GeneralEvaluator<XES, XEv>> eval;
+
+    sptr<GeneralEvaluator<XES>> eval;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
     hf.assign(eval, id_0, sid_0);
 
-    sptr<NSSeq<XES, XEv, XSH>> nsseq;
+    sptr<NSSeq<XES, XSH>> nsseq;
     std::string sid_1 = scanner.next();
     int id_1 = *scanner.nextInt();
     hf.assign(nsseq, id_1, sid_1);
@@ -238,10 +238,10 @@ class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
-                               "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
-                               "neighborhood structure"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }

@@ -20,12 +20,12 @@ class GRASP : public SingleObjSearch<XES> {
  private:
   Evaluator<S>& evaluator;
   InitialSearch<XES>& constructive;
-  LocalSearch<XES, XEv>& ls;
+  LocalSearch<XES>& ls;
   unsigned int iterMax;
 
  public:
   GRASP(Evaluator& _eval, InitialSearch<XES>& _constructive,
-        LocalSearch<XES, XEv>& _ls, int _iterMax)
+        LocalSearch<XES>& _ls, int _iterMax)
       : evaluator(_eval), constructive(_constructive), ls(_ls) {
     iterMax = _iterMax;
   }

@@ -33,8 +33,11 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template <class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSIteratorTSPOrOptk : public NSIterator<XES, XEv> {
+template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
+          XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
+          class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSIteratorTSPOrOptk : public NSIterator<XES> {
   typedef vector<T> Route;
 
  protected:
@@ -49,8 +52,7 @@ class NSIteratorTSPOrOptk : public NSIterator<XES, XEv> {
     i = j = 0;
   }
 
-  virtual ~NSIteratorTSPOrOptk() {
-  }
+  virtual ~NSIteratorTSPOrOptk() {}
 
   virtual void first() override {
     i = 0;
@@ -60,8 +62,7 @@ class NSIteratorTSPOrOptk : public NSIterator<XES, XEv> {
   virtual void next() override {
     j++;
 
-    if (j == i)
-      j++;
+    if (j == i) j++;
 
     if (j > n - k) {
       j = 0;
@@ -69,18 +70,16 @@ class NSIteratorTSPOrOptk : public NSIterator<XES, XEv> {
     }
   }
 
-  virtual bool isDone() override {
-    return i > n - k;
-  }
+  bool isDone() override { return i > n - k; }
 
-  virtual uptr<Move<XES, XEv>> current() override {
+  uptr<Move<XES>> current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "OrOpt{K=" << k << "}. Aborting." << endl;
       exit(1);
     }
 
-    return uptr<Move<XES, XEv>>(new MOVE(i, j, k, p));
+    return uptr<Move<XES>>(new MOVE(i, j, k, p));
   }
 };
 

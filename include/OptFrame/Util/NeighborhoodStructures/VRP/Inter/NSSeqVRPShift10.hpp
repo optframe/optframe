@@ -37,7 +37,7 @@ template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<vector<T>>, ADS> S =
               CopySolution<vector<vector<T>>, ADS>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MoveVRPShift10 : public Move<XES, XEv>  // Move<vector<vector<T> > , ADS>
+class MoveVRPShift10 : public Move<XES>  // Move<vector<vector<T> > , ADS>
 {
   using Routes = vector<vector<T>>;
 
@@ -105,7 +105,7 @@ template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
 class NSIteratorVRPShift10
-    : public NSIterator<XES, XEv>  // NSIterator<vector<vector<T> > , ADS>
+    : public NSIterator<XES>  // NSIterator<vector<vector<T> > , ADS>
 {
   typedef vector<vector<T>> Routes;
 
@@ -187,7 +187,7 @@ template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           class NSITERATOR = NSIteratorVRPShift10<T, ADS, S, MOVE, P>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
           XSearch<XES> XSH = std::pair<S, XEv>>
-class NSSeqVRPShift10 : public NSSeq<XES, XEv, XSH> {
+class NSSeqVRPShift10 : public NSSeq<XES, XSH> {
   typedef vector<vector<T>> Routes;
 
  private:

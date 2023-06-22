@@ -8,10 +8,10 @@
 #include <string>
 //
 #include "Direction.hpp"
+#include "Domain.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
 #include "MoveCost.hpp"
-#include "Domain.hpp"
 
 // This evaluator intends to run for both Single and MultiObj
 
@@ -23,9 +23,9 @@ namespace optframe {
 // template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
 // template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH =
 // XES> // defaults to single obj.
-template <XESolution XES, XEvaluation XEv = typename XES::second_type,
-          XSearch<XES> XSH = XES>  // defaults to single obj.
+template <XESolution XES, XSearch<XES> XSH = XES>  // defaults to single obj.
 class GeneralEvaluator : public Component {
+  using XEv = typename XES::second_type;
   // using S = decltype(declval<XES>.first); // error: insufficient contextual
   // information to determine type
   //
@@ -91,12 +91,11 @@ class GeneralEvaluator : public Component {
 
   // Apply movement considering a previous XEv => Faster (used on CheckCommand
   // and locally) Update XEv 'e'
-  // Move<XES, XEv, XSH>* applyMoveReevaluate(XEv& e, Move<XES, XEv, XSH>& m, S&
+  // Move<XES, XSH>* applyMoveReevaluate(XEv& e, Move<XES, XSH>& m, S&
   // s)
-  uptr<Move<XES, XEv, XSH>> applyMoveReevaluate(Move<XES, XEv, XSH>& m,
-                                                XSH& se) {
+  uptr<Move<XES, XSH>> applyMoveReevaluate(Move<XES, XSH>& m, XSH& se) {
     // apply move and get reverse move
-    uptr<Move<XES, XEv, XSH>> rev = m.applyUpdate(se);
+    uptr<Move<XES, XSH>> rev = m.applyUpdate(se);
     // for now, must be not nullptr
     assert(rev != nullptr);
     // consolidate 'outdated' XEv data on 'e'
@@ -107,9 +106,9 @@ class GeneralEvaluator : public Component {
   }
 
   //
-  // MoveCost<>* moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated =
+  // MoveCost<>* moveCost(Move<XES, XSH>& m, XES& se, bool allowEstimated =
   // false)
-  XEv moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false) {
+  XEv moveCost(Move<XES, XSH>& m, XES& se, bool allowEstimated = false) {
     // TODO: in the future, consider 'allowEstimated' parameter
     // TODO: in the future, consider 'e' and 's' as 'const', and use
     // 'const_cast' to remove it.
@@ -141,7 +140,7 @@ class GeneralEvaluator : public Component {
       //  saving 'outdated' status to avoid inefficient re-evaluations
       //			bool outdated = e.outdated;
       //  apply move to both XEv and Solution
-      uptr<Move<XES, XEv>> rev = this->applyMoveReevaluate(m, se);
+      uptr<Move<XES, XSH>> rev = this->applyMoveReevaluate(m, se);
 
       XEv e_end(se.second);
 
@@ -162,7 +161,7 @@ class GeneralEvaluator : public Component {
       // Even when reevaluate is implemented, It would be hard to design a
       // strategy that is faster than copying previous
       // evaluation//==================================================================
-      //			Move<XES, XEv>* ini = applyMoveReevaluate(e,
+      //			Move<XES, XSH>* ini = applyMoveReevaluate(e,
       //*rev, s);
       //
       //			// if XEv wasn't 'outdated' before, restore its
@@ -170,7 +169,7 @@ class GeneralEvaluator : public Component {
       // e.outdated = outdated;
 
       //
-      // uptr<Move<XES, XEv>> ini = rev->apply(se);
+      // uptr<Move<XES, XSH>> ini = rev->apply(se);
       rev->apply(se);
 
       XEv mcost = ev_begin.diff(e_end);
@@ -247,7 +246,7 @@ class GeneralEvaluator : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GeneralEvaluator"
-    << Domain::getAlternativeDomain<XES>("<XESf64>");
+       << Domain::getAlternativeDomain<XES>("<XESf64>");
     return ss.str();
   }
 };
