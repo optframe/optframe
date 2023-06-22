@@ -17,7 +17,7 @@ OptFrame
 
 ## OptFrame - C++ Optimization Framework
 
-OptFrame `5.0.12` is released.
+OptFrame `5.0.13` is released.
 
 For optframe python version, see [github.com/optframe/pyoptframe-dev](https://github.com/optframe/pyoptframe-dev)
 
