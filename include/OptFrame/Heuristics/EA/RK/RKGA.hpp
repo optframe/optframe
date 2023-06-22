@@ -10,9 +10,9 @@
 #include <vector>
 //
 
-// #include "../../IPopulational.hpp"
+#include <OptFrame/IPopulational.hpp>
+
 #include "../../../InitialPopulation.hpp"
-// #include "../../../Population.hpp"
 #include "../../../SingleObjSearch.hpp"
 #include "../Crossover.hpp"
 #include "../Elitism.hpp"
@@ -146,7 +146,7 @@ class RKGA : public Populational<XES, XES, XES2> {
     assert(!_initPop->canEvaluate());
   }
 
-  virtual ~RKGA() {}
+  virtual ~RKGA() = default;
 
   void decodePopulation(VEPopulation<XES2>& p) {
     for (unsigned i = 0; i < p.size(); ++i) {
@@ -216,7 +216,7 @@ class RKGA : public Populational<XES, XES, XES2> {
         return ctx.self->onIncumbent(*ctx.self, incumbent);
       };
 
-  virtual SearchOutput<XES> searchPopulational(
+  SearchOutput<XES> searchPopulational(
       std::optional<XES>& _best, IncType& _inc,
       const StopCriteria<XEv>& stopCriteria) override {
     // TODO: IMPLEMENT!!
