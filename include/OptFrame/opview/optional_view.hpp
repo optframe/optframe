@@ -42,7 +42,7 @@ class optional_view {
   // OR... optional<T*>... BUT NO NEED OR THAT!
 
  public:
-  optional_view() : value{nullptr} {}
+  optional_view() noexcept : value{nullptr} {}
 
   // do not accept pointer here
   // explicit optional_view(T* _value) : value{_value} {}
