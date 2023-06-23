@@ -127,6 +127,9 @@ class optional_view {
 #endif
 };
 
+template <typename T>
+using const_optional_view = optional_view<const T>;
+
 }  // namespace opview
 
 #endif  // OPVIEW_OPTIONAL_VIEW_HPP_ // NOLINT

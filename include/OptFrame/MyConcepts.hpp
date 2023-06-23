@@ -37,7 +37,10 @@ template <class R>
 using vsptr = std::vector<sptr<R>>;
 //
 template <class R>
-using opv = opview::optional_view<R>;
+using op_view = opview::optional_view<R>;
+//
+template <class R>
+using cop_view = opview::const_optional_view<R>;
 
 typedef void OPTFRAME_DEFAULT_PROBLEM;
 

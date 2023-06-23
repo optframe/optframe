@@ -21,7 +21,7 @@ template <XEvaluation XEv = Evaluation<>>
 class StopCriteria final : public Component {
  public:
   // NOLINTNEXTLINE
-  StopCriteria(std::function<bool(const opv<const XEv>&)> _stopBy)
+  StopCriteria(std::function<bool(const cop_view<XEv>&)> _stopBy)
       : stopBy(_stopBy) {}
 
   // NOLINTNEXTLINE
@@ -52,8 +52,8 @@ class StopCriteria final : public Component {
   void incEvaluationCount(int64_t v = 1) { evCount += v; }
 
   // general stopping criteria (method independent)
-  std::function<bool(const opv<const XEv>&)> stopBy{
-      [&](const opv<const XEv>& bestF) -> bool {
+  std::function<bool(const cop_view<XEv>&)> stopBy{
+      [&](const cop_view<XEv>& bestF) -> bool {
         return this->timerExpired() || this->evCountExpired();
       }};
 
@@ -64,7 +64,7 @@ class StopCriteria final : public Component {
 
  public:
   // now only general stopping criteria supported here
-  virtual bool shouldStop(opv<const XEv> best) const { return stopBy(best); }
+  virtual bool shouldStop(cop_view<XEv> best) const { return stopBy(best); }
 
   virtual bool shouldStop() const { return stopBy(std::nullopt); }
 
