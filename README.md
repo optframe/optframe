@@ -8,7 +8,7 @@ OptFrame
   <a href="https://github.com/optframe/optframe/blob/master/COPYING.LESSERv3">
     <img src="https://img.shields.io/badge/License-LGPL%20v3-blue.svg" alt="LGPLv3 License.">
   </a>
-  <a href="https://github.com/optframe/optframe/blob/master/COPYING">
+  <a href="https://github.com/optframe/optframe/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License.">
   </a>
 </p>
@@ -268,7 +268,7 @@ Bento Gonçalves-RS, pp 1887-1898.
 
 - `<= 4.1`: LICENSE [GNU Lesser General Public License v3 (LGPLv3+)](COPYING.LESSERv3)
 
-- `>= 4.2`: Dual License: [MIT License](COPYING) OR [LGPLv3+](COPYING.LESSERv3)
+- `>= 4.2`: Dual License: [MIT License](LICENSE) OR [LGPLv3+](COPYING.LESSERv3)
 
 Please use the following SPDX identifier:
 `SPDX-License-Identifier: MIT OR LGPL-3.0-or-later`
