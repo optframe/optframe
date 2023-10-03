@@ -5,10 +5,10 @@ OptFrame
   <a href="https://github.com/optframe/optframe">
     <img src="https://tokei.rs/b1/github/optframe/optframe?category=lines" alt="Current total lines.">
   </a>
-  <a href="https://github.com/optframe/optframe/blob/master/LICENSE-legacy">
+  <a href="https://github.com/optframe/optframe/blob/master/COPYING.LESSERv3">
     <img src="https://img.shields.io/badge/License-LGPL%20v3-blue.svg" alt="LGPLv3 License.">
   </a>
-  <a href="https://github.com/optframe/optframe/blob/master/LICENSE">
+  <a href="https://github.com/optframe/optframe/blob/master/COPYING">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License.">
   </a>
 </p>
@@ -264,14 +264,13 @@ Bento Gonçalves-RS, pp 1887-1898.
 ```
 
  
-## Licence
+## License
 
-- (<= 4 dot 1): LICENSE GNU Lesser General Public License v3 (LGPLv3)
+- `<= 4.1`: LICENSE [GNU Lesser General Public License v3 (LGPLv3+)](COPYING.LESSERv3)
 
-- (4 dot 2+): Dual License: MIT License OR LGPLv3
+- `>= 4.2`: Dual License: [MIT License](COPYING) OR [LGPLv3+](COPYING.LESSERv3)
 
-- v5+ : Dual License: [**MIT License**](https://github.com/optframe/optframe/blob/master/LICENSE.MIT.txt) OR [**LGPLv3+**](https://github.com/optframe/optframe/blob/master/LICENSE.LGPLv3+.txt)
-
+Please use the following SPDX identifier:
 `SPDX-License-Identifier: MIT OR LGPL-3.0-or-later`
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
