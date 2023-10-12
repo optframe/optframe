@@ -19,7 +19,7 @@
 
 // core includes
 #include <OptFrame-Core-Examples/FCore-KP/KP-fcore.hpp>
-#include <OptFrame/BaseConcepts.ctest.hpp>
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/InitialSearch.hpp>
 

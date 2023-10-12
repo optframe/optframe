@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-
 #ifndef OPTFRAME_PARETO_HPP_
 #define OPTFRAME_PARETO_HPP_
 
@@ -10,8 +9,8 @@
 #include <iostream>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Direction.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
@@ -26,11 +25,13 @@
 
 // Pareto class is meant to work with Legacy OptFrame structures,
 // meaning that it requires MultiEvaluation and also ParetoDominance.
-// XMES -> Solution with MultiEvaluation (similar to XES: Solution with Evaluation)
+// XMES -> Solution with MultiEvaluation (similar to XES: Solution with
+// Evaluation)
 
 namespace optframe {
 
-//template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+// template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES =
+// pair<S, XMEv>>
 //
 template <XESolution XMES>
 class Pareto {
@@ -41,8 +42,8 @@ class Pareto {
   using XEv = typename XMEv::XEv;
   static_assert(XEvaluation<XEv>);
 
-public:
- using value_type = XMES;
+ public:
+  using value_type = XMES;
 
  private:
   // all individuals are safely stored here
@@ -51,13 +52,11 @@ public:
   vector<S*> paretoSet;
   vector<XMEv*> paretoFront;
   //
-  //mark if solution was added
+  // mark if solution was added
   bool added;
 
  public:
-  Pareto() {
-    added = false;
-  }
+  Pareto() { added = false; }
 
   Pareto(const Pareto<XMES>& _pf) {
     // this->clear();
@@ -72,26 +71,29 @@ public:
     this->added = _pf.added;
     /*
     for (unsigned i = 0; i < sizeNewPop; i++) {
-      //this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
+      //this->add_indWithMev(_pf.getNonDominatedSol(i),
+    _pf.getIndMultiEvaluation(i));
       //
       this->add_indWithMev(_pf.getP(i));
       //
       //			S* sNew = new S(_pf.getNonDominatedSol(i));
-      //			MultiEvaluation<>* mevNew = new MultiEvaluation(_pf.getIndMultiEvaluation(i));
+      //			MultiEvaluation<>* mevNew = new
+    MultiEvaluation(_pf.getIndMultiEvaluation(i));
       //			this->add_indWithMev(sNew, mevNew);
     }
     added = true;
     */
   }
 
-  // paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
+  // paretoSet(std::move(_pf.paretoSet)),
+  // paretoFront(std::move(_pf.paretoFront))
   Pareto(Pareto<XMES>&& _pf)
       : paretoSetFront(std::move(_pf.paretoSetFront)),
         paretoSet{std::move(_pf.paretoSet)},
         paretoFront{std::move(_pf.paretoFront)} {
     added = _pf.added;
-    //if (paretoSetFront.size() > 0)
-    //  added = true;
+    // if (paretoSetFront.size() > 0)
+    //   added = true;
   }
 
   virtual Pareto<XMES>& operator=(const Pareto<XMES>& _pf) {
@@ -112,17 +114,11 @@ public:
     return (*this);
   }
 
-  virtual ~Pareto() {
-    this->clear();
-  }
+  virtual ~Pareto() { this->clear(); }
 
-  bool getNewNonDominatedSolutionsStatus() const {
-    return added;
-  }
+  bool getNewNonDominatedSolutionsStatus() const { return added; }
 
-  void setNewNonDominatedSolutionsStatus(bool _added) {
-    added = _added;
-  }
+  void setNewNonDominatedSolutionsStatus(bool _added) { added = _added; }
 
   void push_back(const XMES& se) {
     XMES* u_se_ptr = new XMES{se};
@@ -137,8 +133,8 @@ public:
   //	{
   //		cout << "something is called inside strange push_back" << endl;
   //		getchar();
-  //		paretoSet.push_back(&s->clone()); // clone, otherwise it is deleted
-  //		paretoFront.push_back(new MultiEvaluation(v_e));
+  //		paretoSet.push_back(&s->clone()); // clone, otherwise it is
+  //deleted 		paretoFront.push_back(new MultiEvaluation(v_e));
   //	}
 
   //	void add_ind(const S* s, const MultiEvaluator<S, XEv>& mEval)
@@ -148,13 +144,13 @@ public:
   //	}
 
   /*
-	void add_indWithMev(const S& s, const XMEv& mev)
-	{
-		paretoSet.push_back(new S(s));
-		paretoFront.push_back(new MultiEvaluation(mev));
+        void add_indWithMev(const S& s, const XMEv& mev)
+        {
+                paretoSet.push_back(new S(s));
+                paretoFront.push_back(new MultiEvaluation(mev));
 
-		added = true;
-	}
+                added = true;
+        }
 */
 
   void add_indWithMev(const XMES& smev) {
@@ -163,29 +159,23 @@ public:
   }
 
   unsigned size() const {
-    //return paretoSet.size();
+    // return paretoSet.size();
     return paretoSetFront.size();
   }
 
   /*
-	pair<S&, XMEv*> at(unsigned index)
-	{
-		return make_pair(*paretoSet.at(index), paretoFront.at(index));
-	}
+        pair<S&, XMEv*> at(unsigned index)
+        {
+                return make_pair(*paretoSet.at(index), paretoFront.at(index));
+        }
 */
 
-  const XMES& getP(unsigned index) const {
-    return *paretoSetFront.at(index);
-  }
+  const XMES& getP(unsigned index) const { return *paretoSetFront.at(index); }
 
-  XMES& getP(unsigned index) {
-    return *paretoSetFront.at(index);
-  }
+  XMES& getP(unsigned index) { return *paretoSetFront.at(index); }
 
   // compatibility with X2ESolution
-  XMES& at(unsigned index) {
-    return getP(index);
-  }
+  XMES& at(unsigned index) { return getP(index); }
 
   // return "observer pointers" mirroring internal pareto set / front
   vector<XMES*> getParetoSetFrontPtr() {
@@ -210,42 +200,40 @@ public:
   }
 
   /*
-	vector<S*> getParetoSet()
-	{
-		return paretoSet;
-	}
+        vector<S*> getParetoSet()
+        {
+                return paretoSet;
+        }
 
    vector<XMEv*> getParetoFront()
-	{
-		return paretoFront;
-	}
+        {
+                return paretoFront;
+        }
 
-	void setParetoSet(vector<S*> pSNew)
-	{
-		paretoSet = std::move(pSNew);
-	}
+        void setParetoSet(vector<S*> pSNew)
+        {
+                paretoSet = std::move(pSNew);
+        }
 
-	void setParetoFront(vector<XMEv*> pFNew)
-	{
-		paretoFront = std::move(pFNew);
+        void setParetoFront(vector<XMEv*> pFNew)
+        {
+                paretoFront = std::move(pFNew);
 
-	}
+        }
 */
 
-  S& getNonDominatedSol(int ind) {
-    return paretoSetFront[ind]->first;
-  }
+  S& getNonDominatedSol(int ind) { return paretoSetFront[ind]->first; }
 
   /*
-	S& getNonDominatedSol(int ind) const
-	{
-		return *paretoSet[ind];
-	}
+        S& getNonDominatedSol(int ind) const
+        {
+                return *paretoSet[ind];
+        }
 
-	S& getCloneNonDominatedSol(int ind) const
-	{
-		return paretoSet[ind]->clone();
-	}
+        S& getCloneNonDominatedSol(int ind) const
+        {
+                return paretoSet[ind]->clone();
+        }
 */
 
   //	MultiEvaluation<>& getIndMultiEvaluation(int ind)
@@ -258,10 +246,10 @@ public:
   }
 
   /*
-	XMEv& getCloneIndMultiEvaluation(int ind) const
-	{
-		return paretoFront.at(ind)->clone();
-	}
+        XMEv& getCloneIndMultiEvaluation(int ind) const
+        {
+                return paretoFront.at(ind)->clone();
+        }
 */
 
   void erase(unsigned pos) {
@@ -272,42 +260,42 @@ public:
     paretoSetFront.erase(paretoSetFront.begin() + pos);
   }
 
-  virtual Pareto<XMES>& clone() const {
-    return *new Pareto<XMES>(*this);
-  }
+  virtual Pareto<XMES>& clone() const { return *new Pareto<XMES>(*this); }
 
   void clear() {
     for (unsigned i = 0; i < paretoSetFront.size(); i++) {
-      //delete paretoSet[i];
-      //delete paretoFront[i];
+      // delete paretoSet[i];
+      // delete paretoFront[i];
     }
 
-    //paretoSet.clear();
-    //paretoFront.clear();
+    // paretoSet.clear();
+    // paretoFront.clear();
     paretoSetFront.clear();
   }
 
   void print() {
     cout << "Printing Pareto!" << endl;
-    //cout << "paretoSet.size():" << paretoSet.size() << endl;
-    //cout << "paretoFront.size():" << paretoFront.size() << endl;
+    // cout << "paretoSet.size():" << paretoSet.size() << endl;
+    // cout << "paretoFront.size():" << paretoFront.size() << endl;
     cout << "paretoSetFront.size():" << paretoSetFront.size() << endl;
     for (unsigned i = 0; i < paretoSetFront.size(); i++) {
-      //cout << paretoSet[i]->getR() << endl;
+      // cout << paretoSet[i]->getR() << endl;
       cout << paretoSetFront[i]->first << endl;
-      //paretoFront[i]->print();
+      // paretoFront[i]->print();
       paretoSetFront[i]->second.print();
     }
   }
 
-  //TODO fix export with new evaluation type
+  // TODO fix export with new evaluation type
   void exportParetoFront(string output, const char* exportType) {
     FILE* fPF = fopen(output.c_str(), exportType);
     assert(fPF);
     for (int i = 0; i < (int)paretoSetFront.size(); i++) {
       for (int e = 0; e < (int)paretoFront[i]->size(); e++)
-        //fprintf(fPF, "%.7f\t", double(paretoFront.at(i)->at(e).evaluation()));
-        fprintf(fPF, "%.7f\t", double(paretoSetFront.at(i)->second.at(e).evaluation()));
+        // fprintf(fPF, "%.7f\t",
+        // double(paretoFront.at(i)->at(e).evaluation()));
+        fprintf(fPF, "%.7f\t",
+                double(paretoSetFront.at(i)->second.at(e).evaluation()));
 
       fprintf(fPF, "\n");
     }
@@ -343,13 +331,16 @@ public:
   }
 
   //====================STILL USED BY 2PPLS OR MOVNS ======================
-  // SOON IT SHOULD BE DELETED --- 2PPLS WILL BECOME G2PPLS -- MOVNS UPDATED TO A MORE GENERIC VERSION
+  // SOON IT SHOULD BE DELETED --- 2PPLS WILL BECOME G2PPLS -- MOVNS UPDATED TO
+  // A MORE GENERIC VERSION
 
   // T. Lust et al (method addSolution)
-  // class T must be handled by ParetoDominance operators (candidate: vector<double>, vector<Evaluation<>*>, MultiEvaluation<>*)
+  // class T must be handled by ParetoDominance operators (candidate:
+  // vector<double>, vector<Evaluation<>*>, MultiEvaluation<>*)
 
   //	template<class T>
-  //	static bool addSolution(vector<Direction*>& vDir, vector<T*>& nonDom, T* candidate)
+  //	static bool addSolution(vector<Direction*>& vDir, vector<T*>& nonDom, T*
+  //candidate)
   //	{
   //		ParetoDominance<XMES> dom(vDir);
   //		ParetoDominanceWeak<XMES> domWeak(vDir);
@@ -374,7 +365,8 @@ public:
     return true;
   }
 
-  //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, Pareto<XMES>& p, S* candidate)
+  //	static bool addSolution(ParetoDominance<XMES>& dom,
+  //ParetoDominanceWeak<XMES>& domWeak, Pareto<XMES>& p, S* candidate)
   //	{
   //		MultiEvaluator<S, XEv>& mEval = dom.getMultiEvaluator();
   //		MultiEvaluation<>& mevCandidate = mEval.evaluate(*candidate);
@@ -392,7 +384,8 @@ public:
   //		bool added = true;
   //		for (int ind = 0; ind < p.size(); ind++)
   //		{
-  //			MultiEvaluation<> popIndFitness = p.getIndMultiEvaluation(ind);
+  //			MultiEvaluation<> popIndFitness =
+  //p.getIndMultiEvaluation(ind);
   //
   //			if (domWeak.dominates(popIndFitness, mevCandidate))
   //			{
@@ -416,7 +409,9 @@ public:
   //		return added;
   //	}
 
-  //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, pair<Pareto<XMES>, vector<vector<bool> > >& p, S* candidate, int neighboorsSize)
+  //	static bool addSolution(ParetoDominance<XMES>& dom,
+  //ParetoDominanceWeak<XMES>& domWeak, pair<Pareto<XMES>, vector<vector<bool> >
+  //>& p, S* candidate, int neighboorsSize)
   //
   //	{
   //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
@@ -428,10 +423,8 @@ public:
   //
   //			if (!e->isFeasible())
   //			{
-  //				for (int eIA = 0; eIA < fitnessNewInd.size(); eIA++)
-  //					delete fitnessNewInd[eIA];
-  //				delete e;
-  //				return false;
+  //				for (int eIA = 0; eIA < fitnessNewInd.size();
+  //eIA++) 					delete fitnessNewInd[eIA]; 				delete e; 				return false;
   //			}
   //
   //			fitnessNewInd.push_back(e);
@@ -440,13 +433,13 @@ public:
   //		bool added = true;
   //		for (int ind = 0; ind < p.first.size(); ind++)
   //		{
-  //			MultiEvaluation<> popIndFitness = p.first.getIndMultiEvaluation(ind);
+  //			MultiEvaluation<> popIndFitness =
+  //p.first.getIndMultiEvaluation(ind);
   //
   //			if (domWeak.dominates(popIndFitness, fitnessNewInd))
   //			{
-  //				for (int eI = 0; eI < fitnessNewInd.size(); eI++)
-  //					delete fitnessNewInd[eI];
-  //				return false;
+  //				for (int eI = 0; eI < fitnessNewInd.size();
+  //eI++) 					delete fitnessNewInd[eI]; 				return false;
   //			}
   //
   //			if (dom.dominates(fitnessNewInd, popIndFitness))
@@ -475,7 +468,8 @@ public:
   //	}
 
   //	template<class T>
-  //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, vector<T>& nonDom, T candidate)
+  //	static bool addSolution(ParetoDominance<XMES>& dom,
+  //ParetoDominanceWeak<XMES>& domWeak, vector<T>& nonDom, T candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{
@@ -493,7 +487,8 @@ public:
   //		return true;
   //	}
 
-  //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, Population<XES>& p, S& s)
+  //	static bool addSolution(ParetoDominance<XMES>& dom,
+  //ParetoDominanceWeak<XMES>& domWeak, Population<XES>& p, S& s)
   //	{
   //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
   //		vector<double> fitnessNewInd;
@@ -533,8 +528,10 @@ public:
   //		return added;
   //	}
 
-  //Special addSolution used in the 2PPLS speedUp
-  //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, pair<Population<XES>, vector<vector<bool> > >& p, S& s, int neighboorsSize)
+  // Special addSolution used in the 2PPLS speedUp
+  //	static bool addSolution(ParetoDominance<XMES>& dom,
+  //ParetoDominanceWeak<XMES>& domWeak, pair<Population<XES>,
+  //vector<vector<bool> > >& p, S& s, int neighboorsSize)
   //	{
   //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
   //		vector<double> fitnessNewInd;
@@ -582,14 +579,17 @@ public:
   //		return added;
   //	}
   //
-  //	static void addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, vector<pair<S*, MultiEvaluation<>*> >& nonDom, pair<S*, MultiEvaluation<>*> candidate)
+  //	static void addSolution(ParetoDominance<XMES>& dom,
+  //ParetoDominanceWeak<XMES>& domWeak, vector<pair<S*, MultiEvaluation<>*> >&
+  //nonDom, pair<S*, MultiEvaluation<>*> candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{
-  //			if (domWeak.dominates(*nonDom.at(ind).second, *candidate.second))
-  //				return;
+  //			if (domWeak.dominates(*nonDom.at(ind).second,
+  //*candidate.second)) 				return;
   //
-  //			if (dom.dominates(*candidate.second, *nonDom.at(ind).second))
+  //			if (dom.dominates(*candidate.second,
+  //*nonDom.at(ind).second))
   //			{
   //				nonDom.erase(nonDom.begin() + ind);
   //				ind--;
@@ -600,7 +600,8 @@ public:
   //	}
 
   //====================STILL USED BY 2PPLS OR MOVNS ======================
-  // SOON IT SHOULD BE DELETED --- 2PPLS WILL BECOME G2PPLS -- MOVNS UPDATED TO A MORE GENERIC VERSION
+  // SOON IT SHOULD BE DELETED --- 2PPLS WILL BECOME G2PPLS -- MOVNS UPDATED TO
+  // A MORE GENERIC VERSION
 };
 
 }  // namespace optframe

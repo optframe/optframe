@@ -8,8 +8,8 @@
 #include <iostream>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Constructive.hpp>  // for helper only  (TODO: make special class)
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>  // for helper only (TODO: make special class)
@@ -37,11 +37,12 @@ concept
 // (Primary) Search space (implicit XSH) is decided by XES
 // Secondary search space XSH2 is undecided... could be trajectory-based (as
 // default) or population-based
-template <XESolution XES, XESolution XES2 = XES, XSearch<XES2> XSH2 = XES2>
-class SingleObjSearch : public GlobalSearch<XES, XES> {
+template <XESSolution XESS, XESSolution XESS2 = XESS,
+          XSearch<XESS2> XSH2 = XESS2>
+class SingleObjSearch : public GlobalSearch<XESS, XESS> {
   // NOTE THAT: XSearch<XES> XSH = XES (IMPLICIT!)
-  using XSH = XES;
-  using XEv = typename XES::second_type;
+  using XSH = XESS;
+  using XEv = typename XESS::second_type;
 
   // ========================================
   // THIS CLASS IS USELESS! WHAT'S THE POINT?
@@ -56,19 +57,19 @@ class SingleObjSearch : public GlobalSearch<XES, XES> {
   // search method try to find a feasible solution within timelimit, if there is
   // no such solution it returns nullptr.
 
-  SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
-                             std::optional<XSH> best) override = 0;
+  SearchOutput<XESS> searchBy(const StopCriteria<XEv>& stopCriteria,
+                              std::optional<XSH> best) override = 0;
 
   std::string log() const override { return "Empty heuristic log."; }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (GlobalSearch<XES, XES>::compatible(s));
+    return (s == idComponent()) || (GlobalSearch<XESS, XESS>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << GlobalSearch<XES, XES>::idComponent() << ":SingleObjSearch"
-       << Domain::getAlternativeDomain<XES>("<XESf64>");
+    ss << GlobalSearch<XESS, XESS>::idComponent() << ":SingleObjSearch"
+       << Domain::getAlternativeDomain<XESS>("<XESf64>");
     // NOTE THAT: PRIMARY/BEST IS ALWAYS XESf64 FOR SINGLE-OBJ-SEARCH
     return ss.str();
   }

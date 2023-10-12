@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/SearchStatus.hpp>
 #include <OptFrame/Timer.hpp>
 

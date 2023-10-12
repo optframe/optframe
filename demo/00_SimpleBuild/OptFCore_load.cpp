@@ -5,10 +5,10 @@
 #include <vector>
 //
 //#include <OptFCore/FCore.hpp> // included src
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
-#include <OptFrame/MyConcepts.hpp>
 
 // simple test for package loading (on bazel)
 

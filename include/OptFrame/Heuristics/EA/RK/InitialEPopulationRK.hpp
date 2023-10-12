@@ -7,7 +7,7 @@
 #include <string>
 //
 
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/InitialPopulation.hpp>
 

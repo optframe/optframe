@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_BASE_CONCEPTS_HPP_
-#define OPTFRAME_BASE_CONCEPTS_HPP_
+#ifndef OPTFRAME_CONCEPTS_BASECONCEPTS_HPP_
+#define OPTFRAME_CONCEPTS_BASECONCEPTS_HPP_
 
 // =============================
 // Basic concepts for OptFrame
@@ -18,7 +18,7 @@
 
 // this is NOT official c++20 concepts... just some for OptFrame! (based on lite
 // concepts g++ 7)
-#include "MyConcepts.hpp"
+#include <OptFrame/Concepts/MyConcepts.hpp>
 
 // may require some basic printing capabilities
 //#include <OptFrame/printable/printable.hpp>
@@ -411,8 +411,8 @@ concept
     //
     a.at(idx)
     } -> my_convertible_to<P>;
-    //
-    typename Self::value_type;
+  //
+  typename Self::value_type;
 };
 /*
 || requires(Self a, size_t idx)
@@ -522,8 +522,8 @@ concept
         //
         //  XES must be of XESolution kind
         //  XES is either the BASE type for Self or the REAL type for Self
-            XSearch = (XESolution<XES> && XESolution<Self>) ||
-                      (XESolution<XES> && X2ESolution<Self, XES>);
+        XSearch = (XESolution<XES> && XESolution<Self>) ||
+                  (XESolution<XES> && X2ESolution<Self, XES>);
 
 // -------------
 // Maybe make evaluation values total_ordered...
@@ -599,11 +599,70 @@ concept
                       // constexpr template, but better not.
 
 // ===================
+// XSEvaluation (Single evaluation)      - Requires Total Order
+// XMEvaluation (Multi evaluation)       - Requires Set of Total Order
+// XESSolution (ES = objective single)   - Requires Total Order
+// XEMSolution (EM = objective multiple) - Requires Set of Total Order
+
+template <class Self>
+concept
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
+#endif
+        XSEvaluation =
+            XEvaluation<Self> && comparability<typename Self::objType>;
+
+// XMEvaluation mimics XPowerSet... but could not use it directly!
+
+template <class Self>
+concept
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
+#endif
+        XMEvaluation = XEvaluation<Self> &&
+    requires(Self e, typename Self::objType m,
+             typename Self::objType::value_type v,
+             typename Self::objType::value_type::objType vm, size_t idx) {
+  { m.size() } -> my_convertible_to<size_t>;
+  { m.at(idx) } -> my_convertible_to<typename Self::objType::value_type>;
+}
+&& comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
+
+template <class Self>
+concept
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
+#endif
+        XESSolution =
+            XESolution<Self> && XSEvaluation<typename Self::second_type>;
+
+template <class Self>
+concept
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
+#endif
+        XEMSolution =
+            XESolution<Self> && XMEvaluation<typename Self::second_type>;
+
+// ===================
+
+// XFamily concept
+
+template <class Self>
+concept
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
+#endif
+        XFamily = requires(Self a) {
+  { a.family() } -> my_same_as<std::string>;
+};
+
+// ========================
 
 }  // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
 // TODO: put on unit tests or directly here (without #include "printable.h")
-#include "BaseConcepts.ctest.hpp"
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 
-#endif  // OPTFRAME_SOLUTION_CONCEPTS_HPP_
+#endif  // OPTFRAME_CONCEPTS_BASECONCEPTS_HPP_

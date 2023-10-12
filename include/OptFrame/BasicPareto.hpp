@@ -13,8 +13,8 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 // #include <OptFrame/Hyper/ComponentBuilder.hpp>
@@ -25,7 +25,7 @@ namespace optframe {
 // remember that XMES = (S, [E])
 // BasicPareto is a X2MES implementation, or simply, 2^XMES
 //
-template <XESolution XMES>
+template <XEMSolution XMES>
 class BasicPareto {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;

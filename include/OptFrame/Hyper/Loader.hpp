@@ -94,7 +94,7 @@
 #include <OptFrame/Heuristics/MultiObjective/MOPopulationManagement.hpp>
 
 // test local searches
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Heuristics/CompareLocalSearch.hpp>
 #include <OptFrame/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>

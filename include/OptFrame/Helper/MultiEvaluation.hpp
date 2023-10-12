@@ -171,6 +171,7 @@ static_assert(optframe::evgoal<MultiEvaluation<double>>);
 // implementations)
 // TODO: remove this
 static_assert(XEvaluation<MultiEvaluation<double>>);
+static_assert(XMEvaluation<MultiEvaluation<double>>);
 
 //#ifndef NDEBUG
 struct optframe_debug_test_multievaluation {

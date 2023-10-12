@@ -8,8 +8,8 @@
 #include <string>
 //
 
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
 namespace optframe {
 

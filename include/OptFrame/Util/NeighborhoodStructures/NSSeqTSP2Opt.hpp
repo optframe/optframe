@@ -24,8 +24,9 @@
 #define OPTFRAME_NSSEQTSP2OPT_HPP_
 
 #include <type_traits>  // static assert is_same
+//
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
-#include "../../BaseConcepts.hpp"
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
 #include "BaseSolutionTSP.hpp"

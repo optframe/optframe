@@ -2,7 +2,8 @@
 
 // compilation tests for concepts (these are not UNIT tests)
 
-#include "BaseConcepts.ctest.hpp"
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+
 #include "Pareto.hpp"
 
 namespace optframe {

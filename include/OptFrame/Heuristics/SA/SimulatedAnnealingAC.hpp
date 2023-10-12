@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
-#define OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
+#ifndef OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
+#define OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 
 // C
 #include <math.h>
@@ -24,11 +24,11 @@ namespace optframe {
 
 // forward declaration
 template <XESolution XES>
-class BasicSimulatedAnnealing;
+class SimulatedAnnealingAC;
 
 template <XESolution XES>
-struct SearchContextSA {
-  BasicSimulatedAnnealing<XES>& self;
+struct SearchContextSA_AC {
+  SimulatedAnnealingAC<XES>& self;
   std::optional<XES>& best;
   std::optional<XES>& incumbent;
   //
@@ -37,10 +37,10 @@ struct SearchContextSA {
 };
 
 template <XESolution XES>
-class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
-                                public SA,
-                                public ILoop<SearchContextSA<XES>, XES>,
-                                public ITrajectory<XES> {
+class SimulatedAnnealingAC : public SingleObjSearch<XES>,
+                             public SA,
+                             public ILoop<SearchContextSA<XES>, XES>,
+                             public ITrajectory<XES> {
  public:
   using XEv = typename XES::second_type;
   using XSH = XES;  // XSearch
@@ -53,29 +53,10 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   int SAmax;
   double Ti;
 
-  // single neighborhood
-  // reordered the different term to the front because of peeve, heheheh
-  // standart RandGen in declaration could be new standart
-  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES>> _evaluator,
-                          sref<InitialSearch<XES>> _constructive,
-                          sref<NS<XES, XSH>> _neighbors, double _alpha,
-                          int _SAmax, double _Ti,
-                          sref<RandGen> _rg = new RandGen)
-      : evaluator(_evaluator), constructive(_constructive), rg(_rg) {
-    neighbors.push_back(_neighbors);
-    alpha = (_alpha);
-    SAmax = (_SAmax);
-    Ti = (_Ti);
-  }
-
-  // vector of neighborhoods
-  // reordered the different term to the front because of peeve, heheheh
-  // standart RandGen in declaration could be new standart
-  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES>> _evaluator,
-                          sref<InitialSearch<XES>> _constructive,
-                          vsref<NS<XES, XSH>> _neighbors, double _alpha,
-                          int _SAmax, double _Ti,
-                          sref<RandGen> _rg = new RandGen)
+  SimulatedAnnealingAC(sref<GeneralEvaluator<XES>> _evaluator,
+                       sref<InitialSearch<XES>> _constructive,
+                       vsref<NS<XES, XSH>> _neighbors, double _alpha,
+                       int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
       : evaluator(_evaluator),
         constructive(_constructive),
         neighbors(_neighbors),
@@ -85,7 +66,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     Ti = (_Ti);
   }
 
-  virtual ~BasicSimulatedAnnealing() = default;
+  virtual ~SimulatedAnnealingAC() = default;
 
   // callback to handle main loop and stop criteria
   bool (*onLoopCtx)(const SearchContextSA<XES>& ctx,
@@ -121,20 +102,31 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       std::cout << "SA search(" << sosc.timelimit << ")" << std::endl;
 
     std::optional<XSH> star = _best;
-    std::optional<XSH> incumbent;  // do not set "= star" here!
-
-    // -------------------------------------------------------------------
     // assuming trajectory implementation (XES = XSH = XBest = XIncumbent)
-    // -------------------------------------------------------------------
+    std::optional<XSH> incumbent = star;
+
     if (Component::verbose)
       std::cout << "SA: will build initialSearch" << std::endl;
 
-    // disable 'constructive' if star is given
     if (!incumbent)
       incumbent = star ? star : constructive->initialSearch(sosc).first;
 
     if (Component::verbose)
       std::cout << "SA: post build initialSearch" << std::endl;
+
+#ifdef OPTFRAME_AC
+    // requires first part of solution to be a component
+    static_assert(
+        XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+    {
+      std::stringstream ss;
+      ss << incumbent->second.evaluation();
+      incumbent->first.listAC.push_back(
+          ContextAC{.id{"SA_INIT"},
+                    .message{ss.str()},
+                    .payload{incumbent->first.sharedClone()}});
+    }
+#endif
 
     if (Component::verbose) {
       std::cout << "SA begin: incumbent? " << (bool)incumbent << std::endl;
@@ -149,8 +141,24 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       std::cout << "SA begin: star? " << (bool)star << std::endl;
     }
 
-    // abort if no star exists
-    if (!star) return SearchStatus::NO_SOLUTION;  // cannot continue!
+#ifdef OPTFRAME_AC
+    // requires first part of solution to be a component
+    static_assert(
+        XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+    {
+      std::stringstream ss;
+      ss << star->second.evaluation();
+      star->first.listAC.push_back(
+          ContextAC{.id{"SA_NEW_STAR"},
+                    .message{ss.str()},
+                    .payload{star->first.sharedClone()}});
+    }
+    //
+    // star->first.printListAC();
+#endif
+
+    // abort if no solution exists
+    if (!star) return SearchStatus::NO_SOLUTION;  // no possibility to continue.
 
     if (Component::verbose) {
       std::cout << "star value: " << star->second.evaluation() << std::endl;
@@ -177,31 +185,49 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
     if (Component::verbose)
       std::cout << "SA(verbose): BEGIN se: " << se << std::endl;
-
-    assert(!se.second.isOutdated());  // SANITY CHECK
+    // SANITY CHECK
+    assert(!se.second.isOutdated());
 
     while (onLoop(ctx, sosc)) {
       if (Component::verbose)
         std::cout << "SA(verbose): after onLoop" << std::endl;
       int n = rg->rand(neighbors.size());
 
-      uptr<Move<XES, XSH>> move = neighbors[n]->validRandomMove(se);
+      uptr<Move<XES, XSH>> move = neighbors[n]->validRandomMove(
+          se);  // TODO: pass 'se.first' here (even 'se' should also work...)
 
       if (!move) {
         if (Component::warning)
           cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T
-               << "! cannot continue..." << endl;
+               << "! continue..." << endl;
+        // TODO: return FAIL?
+        // continue;
         return {SearchStatus::NO_REPORT, star};
       }
 
       if (Component::verbose)
         std::cout << "SA(verbose): will copy to current=se: " << se
                   << std::endl;
-      // copy solution
-      XES current(se);
+      XES current(se);  // implicit clone??
 
       if (Component::verbose)
         std::cout << "SA(verbose): current: " << current << std::endl;
+
+      /*
+#ifdef OPTFRAME_AC
+         std::cout << "begin current: " << std::endl;
+         current.first.printListAC();
+         assert(current.first.hasInListAC("SA_INIT"));
+         std::cout << "begin se: " << std::endl;
+         se.first.printListAC();
+         assert(se.first.hasInListAC("SA_INIT"));
+         std::cout << std::endl;
+#endif
+*/
+      // S* sCurrent = &s.clone();
+      // Evaluation<>* eCurrent = &e.clone();
+      // S& sCurrent = current.first;
+      // XEv& eCurrent = current.second;
 
       if (Component::verbose)
         std::cout << "SA(verbose): will apply move. current=" << current
@@ -215,11 +241,28 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
       evaluator->reevaluate(current);
 
-      assert(!current.second.isOutdated());  // SANITY CHECK
+      // SANITY CHECK
+      assert(!current.second.isOutdated());
 
       if (Component::verbose)
         std::cout << "SA(verbose): after reevaluate. current=" << current
                   << std::endl;
+
+      /*
+#ifdef OPTFRAME_AC
+         // requires first part of solution to be a component
+         static_assert(XRSolution<typename XSH::first_type, typename
+XSH::first_type::typeR>);
+         {
+            std::stringstream ss;
+            ss << move->toString();
+            current.first.listAC.push_back(ContextAC{ .id{ "SA_MOVE_APPLY" },
+.message{ ss.str() }, .payload{ move->sharedClone() } });
+         }
+         //
+         //star->first.printListAC();
+#endif
+*/
 
       if (Component::verbose)
         std::cout << "SA(verbose): will compare betterStrict" << std::endl;
@@ -229,15 +272,87 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       if (evaluator->betterStrict(current.second, se.second)) {
         se = current;
 
-        if (evaluator->betterStrict(se.second, star->second)) {
-          star = make_optional(se);
+// CONSIDER THAT MOVE IS PERFORMED HERE!!
+#ifdef OPTFRAME_AC
+        // requires first part of solution to be a component
+        static_assert(XRSolution<typename XSH::first_type,
+                                 typename XSH::first_type::typeR>);
+        {
+          std::stringstream ss;
+          ss << move->toString();
+          se.first.listAC.push_back(ContextAC{.id{"SA_MOVE_APPLY_GOOD"},
+                                              .message{ss.str()},
+                                              .payload{move->sharedClone()}});
+        }
+        //
+        // star->first.printListAC();
+#endif
 
+        /*
+#ifdef OPTFRAME_AC
+            std::cout << "current: " << std::endl;
+            current.first.printListAC();
+            assert(current.first.hasInListAC("SA_MOVE_APPLY"));
+            std::cout << "se: " << std::endl;
+            se.first.printListAC();
+            assert(se.first.hasInListAC("SA_MOVE_APPLY"));
+            std::cout << std::endl;
+#endif
+*/
+        // if improved, accept it
+        // e = *eCurrent;
+        // s = *sCurrent;
+        // delete sCurrent;
+        // delete eCurrent;
+
+        // if (evaluator.betterThan(e, eStar))
+        // if(e.betterStrict(eStar))
+        if (evaluator->betterStrict(se.second, star->second)) {
+          // delete sStar;
+          // sStar = &s.clone();
+          // delete eStar;
+          // eStar = &e.clone();
+          star = make_optional(se);
+          /*
+#ifdef OPTFRAME_AC
+               std::cout << "se: " << std::endl;
+               se.first.printListAC();
+               assert(se.first.hasInListAC("SA_MOVE_APPLY"));
+               std::cout << "star: " << std::endl;
+               star->first.printListAC();
+               //assert(star->first.hasInListAC("SA_MOVE_APPLY"));
+               assert(star->first.listAC.size() == se.first.listAC.size());
+#endif
+   */
           if (Component::information) {
             std::cout << "Best fo: " << se.second.evaluation()
                       << " Found on Iter = " << ctx.iterT
                       << " and T = " << ctx.T;
             std::cout << endl;
           }
+
+#ifdef OPTFRAME_AC
+          // requires first part of solution to be a component
+          static_assert(XRSolution<typename XSH::first_type,
+                                   typename XSH::first_type::typeR>);
+          {
+            std::stringstream ss;
+            ss << star->second.evaluation();
+            star->first.listAC.push_back(
+                ContextAC{.id{"SA_NEW_STAR"},
+                          .message{ss.str()},
+                          .payload{star->first.sharedClone()}});
+          }
+          //
+          // star->first.printListAC();
+#endif
+
+          /*
+#ifdef OPTFRAME_AC
+               assert(se.first.hasInListAC("SA_MOVE_APPLY"));
+               assert(star->first.hasInListAC("SA_MOVE_APPLY"));
+#endif
+*/
         }
       } else {
         // 'current' didn't improve, but may accept it anyway
@@ -247,6 +362,29 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
         if (x < ::exp(-delta / ctx.T)) {
           se = current;
+          // s = *sCurrent;
+          // e = *eCurrent;
+          // delete sCurrent;
+          // delete eCurrent;
+          //  } else {
+          // delete sCurrent;
+          // delete eCurrent;
+
+// CONSIDER THAT MOVE IS PERFORMED HERE!!
+#ifdef OPTFRAME_AC
+          // requires first part of solution to be a component
+          static_assert(XRSolution<typename XSH::first_type,
+                                   typename XSH::first_type::typeR>);
+          {
+            std::stringstream ss;
+            ss << move->toString();
+            se.first.listAC.push_back(ContextAC{.id{"SA_MOVE_APPLY_BAD"},
+                                                .message{ss.str()},
+                                                .payload{move->sharedClone()}});
+          }
+          //
+          // star->first.printListAC();
+#endif
         }
       }
 
@@ -257,7 +395,23 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       std::cout << "T=" << ctx.T << std::endl;
     }
 
-    // return best solution
+#ifdef OPTFRAME_AC
+    // requires first part of solution to be a component
+    static_assert(
+        XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+    {
+      std::stringstream ss;
+      ss << star->second.evaluation();
+      star->first.listAC.push_back(
+          ContextAC{.id{"SA_FINAL"},
+                    .message{ss.str()},
+                    .payload{star->first.sharedClone()}});
+    }
+    //
+    // std::cout << "SA: final star" << std::endl;
+    // star->first.printListAC();
+#endif
+
     return {SearchStatus::NO_REPORT, star};
   }
 
@@ -464,4 +618,4 @@ class BasicSimulatedAnnealingBuilder
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
+#endif  // OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT

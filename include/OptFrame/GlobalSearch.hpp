@@ -11,8 +11,8 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/InitialSearch.hpp>

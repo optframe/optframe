@@ -24,9 +24,9 @@
 #define OPTFRAME_NSSEQVRP2OPT_HPP_
 
 // Framework includes
-#include "../../../../BaseConcepts.hpp"
-#include "../../../../Move.hpp"
-#include "../../../../NSSeq.hpp"
+#include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Move.hpp>
+#include <OptFrame/NSSeq.hpp>
 
 using namespace std;
 

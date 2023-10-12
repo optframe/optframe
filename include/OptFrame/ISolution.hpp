@@ -29,7 +29,7 @@
 // C
 #include <assert.h>
 //
-#include <OptFrame/BaseConcepts.hpp>  // concepts c++20
+#include <OptFrame/Concepts/BaseConcepts.hpp>  // concepts c++20
 #include <OptFrame/IEvaluation.hpp>
 
 namespace optframe {
@@ -39,41 +39,41 @@ class ISolution {
  public:
   virtual std::string toString() const = 0;
 
-  virtual ~ISolution() {
-  }
+  virtual ~ISolution() {}
 };
 
 // IRSolution should compatible with XRSolution space
 template <XRepresentation R>
 class IRSolution : public ISolution {
  public:
-  virtual R& getR() = 0;  // too bad, virtual cannot return deduced type XRepresentation (cannot remove template here)
+  virtual R& getR() = 0;  // too bad, virtual cannot return deduced type
+                          // XRepresentation (cannot remove template here)
   virtual std::string toString() const = 0;
 
-  virtual ~IRSolution() {
-  }
+  virtual ~IRSolution() {}
 };
 
-// IESolution should compatible with XESolution space (XSolution and XEvaluation)
-// NOTE THAT: XSolutionOrIncomplete allows for ANY incomplete type
-// and it may be XSolution or not... compiler caching may generate undefined behavior (beware!)
-// We need this to allow easy CRTP over IESolution.
+// IESolution should compatible with XESolution space (XSolution and
+// XEvaluation) NOTE THAT: XSolutionOrIncomplete allows for ANY incomplete type
+// and it may be XSolution or not... compiler caching may generate undefined
+// behavior (beware!) We need this to allow easy CRTP over IESolution.
 template <XSolutionOrIncomplete S, XEvaluation XEv>
 class IESolution : public ISolution {
  public:
-  //S first;    // non-static declared with placeholder XSolution (requires template here!)
-  //XEv second; // non-static declared with placeholder XEvaluation (requires template here!)
+  // S first;    // non-static declared with placeholder XSolution (requires
+  // template here!) XEv second; // non-static declared with placeholder
+  // XEvaluation (requires template here!)
 
   using first_type = S;
   using second_type = XEv;
 
-  S& first;     // non-static declared with placeholder XSolution (requires template here!)
-  XEv& second;  // non-static declared with placeholder XEvaluation (requires template here!)
+  S& first;     // non-static declared with placeholder XSolution (requires
+                // template here!)
+  XEv& second;  // non-static declared with placeholder XEvaluation (requires
+                // template here!)
 
   // give me the references of something YOU own, not me...
-  explicit IESolution(S& s, XEv& e)
-      : first(s), second(e) {
-  }
+  explicit IESolution(S& s, XEv& e) : first(s), second(e) {}
 
   /*
    explicit IESolution(S&& s, XEv&& e) :
@@ -82,8 +82,7 @@ class IESolution : public ISolution {
    }
 */
 
-  virtual ~IESolution() noexcept {
-  }
+  virtual ~IESolution() noexcept {}
 };
 
 }  // namespace optframe

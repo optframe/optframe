@@ -27,8 +27,8 @@
 #include <iostream>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
@@ -45,15 +45,16 @@ namespace optframe {
 
 using scannerpp::Scanner;
 
-//template<XSolution S, XEvaluation XEv> class HeuristicFactory;
+// template<XSolution S, XEvaluation XEv> class HeuristicFactory;
 template <XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES>
 class HeuristicFactory;
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class Action {
  public:
-  virtual ~Action() {
-  }
+  virtual ~Action() {}
 
   virtual string usage() = 0;
 
@@ -63,15 +64,20 @@ class Action {
 
   virtual bool handleAction(string action) = 0;
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
+  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                        map<string, string>& dictionary,
+                        map<string, vector<string>>& ldictionary) = 0;
 
-  virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& d) = 0;
+  virtual bool doCast(string component, int id, string type, string variable,
+                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                      map<string, string>& d) = 0;
 
-  static bool addAndRegister(Scanner& scanner, Component& comp, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& d) {
+  static bool addAndRegister(Scanner& scanner, Component& comp,
+                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                             map<string, string>& d) {
     int index = hf.addComponent(comp);
 
-    if (index == -1)
-      return false;
+    if (index == -1) return false;
 
     if (scanner.hasNext()) {
       string varName = scanner.next();
@@ -82,22 +88,24 @@ class Action {
       d[varName] = sscomp.str();  // TODO: fix!!
 
       return true;
-      //return Command<S, XEv>::defineText(varName, sscomp.str(), d);
+      // return Command<S, XEv>::defineText(varName, sscomp.str(), d);
     }
 
     return true;
   }
 
-  static bool registerText(Scanner& scanner, string value, map<string, string>& d) {
+  static bool registerText(Scanner& scanner, string value,
+                           map<string, string>& d) {
     if (scanner.hasNext()) {
       string varName = scanner.next();
 
       d[varName] = value;  // TODO: fix!!
 
       return true;
-      //return Command<S, XEv>::defineText(varName, sscomp.str(), d);
+      // return Command<S, XEv>::defineText(varName, sscomp.str(), d);
     } else {
-      cout << "Action error: no variable to store value '" << value << "'" << endl;
+      cout << "Action error: no variable to store value '" << value << "'"
+           << endl;
       return false;
     }
   }
@@ -123,12 +131,13 @@ class Action {
   }
 };
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+// template<XSolution S, XEvaluation XEv = Evaluation<>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ComponentAction : public Action<S, XEv, X2ES> {
  public:
-  virtual ~ComponentAction() {
-  }
+  virtual ~ComponentAction() {}
 
   virtual string usage() {
     return "OptFrame: idx  log  output_variable\nOptFrame: idx  print";
@@ -143,26 +152,32 @@ class ComponentAction : public Action<S, XEv, X2ES> {
   }
 
   virtual bool handleAction(string action) {
-    return (action == "log") || (action == "print") || (action == "setVerboseLevel") || (action == "getVerboseLevel");
+    return (action == "log") || (action == "print") ||
+           (action == "setVerboseLevel") || (action == "getVerboseLevel");
   }
 
-  virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& d) {
+  virtual bool doCast(string component, int id, string type, string variable,
+                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                      map<string, string>& d) {
     if (!handleComponent(type)) {
-      cout << "ComponentAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
+      cout << "ComponentAction::doCast error: can't handle component type '"
+           << type << " " << id << "'" << endl;
       return false;
     }
 
     Component* comp = hf.components[component].at(id);
 
     if (!comp) {
-      cout << "ComponentAction::doCast error: nullptr component '" << component << " " << id << "'" << endl;
+      cout << "ComponentAction::doCast error: nullptr component '" << component
+           << " " << id << "'" << endl;
       return false;
     }
 
     // cast object to upper base
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
-      cout << "ComponentAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
+      cout << "ComponentAction::doCast error: component '" << comp->id()
+           << " is not base of " << type << "'" << endl;
       return false;
     }
 
@@ -177,45 +192,43 @@ class ComponentAction : public Action<S, XEv, X2ES> {
     return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
-    //cout << "Evaluation::doAction '" << content << "'" << endl;
+  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                        map<string, string>& dictionary,
+                        map<string, vector<string>>& ldictionary) {
+    // cout << "Evaluation::doAction '" << content << "'" << endl;
 
     Scanner scanner(content);
 
-    if (!scanner.hasNext())
-      return false;
+    if (!scanner.hasNext()) return false;
 
     Component* c;
     hf.assign(c, *scanner.nextInt(), scanner.next());
 
-    if (!c)
-      return false;
+    if (!c) return false;
 
-    if (!scanner.hasNext())
-      return false;
+    if (!scanner.hasNext()) return false;
 
     string action = scanner.next();
 
-    if (!handleAction(action))
-      return false;
+    if (!handleAction(action)) return false;
 
-    // TODO: log must be implemented in other manner... maybe store as string somewhere else..
-    // maybe, just support this in specific scenarios
+    // TODO: log must be implemented in other manner... maybe store as string
+    // somewhere else.. maybe, just support this in specific scenarios
     /*
-		if (action == "log")
-		{
-			if (!scanner.hasNext())
-				return false;
+                if (action == "log")
+                {
+                        if (!scanner.hasNext())
+                                return false;
 
-			string var = scanner.next();
+                        string var = scanner.next();
 
-			stringstream ss;
-			ss << c->log();
+                        stringstream ss;
+                        ss << c->log();
 
-			dictionary[var] = ss.str();
+                        dictionary[var] = ss.str();
 
-			return true;
-		}
+                        return true;
+                }
       */
 
     if (action == "print") {
@@ -225,8 +238,7 @@ class ComponentAction : public Action<S, XEv, X2ES> {
     }
 
     if (action == "setVerboseLevel") {
-      if (!scanner.hasNext())
-        return false;
+      if (!scanner.hasNext()) return false;
 
       LogLevel verboseLevel = (LogLevel)*scanner.nextInt();
 
@@ -236,8 +248,7 @@ class ComponentAction : public Action<S, XEv, X2ES> {
     }
 
     if (action == "getVerboseLevel") {
-      if (!scanner.hasNext())
-        return false;
+      if (!scanner.hasNext()) return false;
 
       string var = scanner.next();
 

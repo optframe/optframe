@@ -4,10 +4,11 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
-#include<string>
+#include <string>
 //
 
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
+
 #include "Component.hpp"
 #include "Domain.hpp"
 
@@ -34,15 +35,17 @@ class Constructive : public Component {
     return ss.str();
   }
 
-   std::string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
-   std::string toString() const override { return id(); }
+  std::string toString() const override { return id(); }
 };
 //
 
 #ifndef NDEBUG
-//static_assert(Domain::getAlternativeDomain<void*>("<XS>") == std::string_view(""));
-//static_assert(Domain::getAlternativeDomain<std::vector<double>>("<XS>") == std::string_view("<XRKf64>"));
+// static_assert(Domain::getAlternativeDomain<void*>("<XS>") ==
+// std::string_view(""));
+// static_assert(Domain::getAlternativeDomain<std::vector<double>>("<XS>") ==
+// std::string_view("<XRKf64>"));
 #endif
 
 }  // namespace optframe

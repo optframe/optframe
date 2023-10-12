@@ -36,8 +36,8 @@
 #include <iostream>
 
 // basic elements of an OptFrame Component
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
@@ -49,12 +49,15 @@ class ESolution;
 
 // ostream operator<< forward declaration for ESolution
 template <XRepresentation R, class ADS, XEvaluation XEv>
-ostream&
-operator<<(ostream& os, const ESolution<R, ADS, XEv>& se);
+ostream& operator<<(ostream& os, const ESolution<R, ADS, XEv>& se);
 
-// this is 'final', because I don't see any reason for someone to inherit here...
-template <XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, XEvaluation XEv = Evaluation<>>
-class ESolution final : public Component, public IESolution<ESolution<R, ADS, XEv>, XEv>  // CRTP!!!
+// this is 'final', because I don't see any reason for someone to inherit
+// here...
+template <XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS,
+          XEvaluation XEv = Evaluation<>>
+class ESolution final
+    : public Component,
+      public IESolution<ESolution<R, ADS, XEv>, XEv>  // CRTP!!!
 {
   using super = IESolution<ESolution<R, ADS, XEv>, XEv>;
 
@@ -66,36 +69,34 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
  public:
   // pointer-based initialization (I will keep memory for me!!)
   ESolution(R* _r, ADS* _ads = nullptr, XEv _e = XEv())
-      : super(*this, e), r(_r), ads(_ads), e(_e) {
-  }
+      : super(*this, e), r(_r), ads(_ads), e(_e) {}
 
   // copy constructor (implemented via copy constructor for R and ADS)
   ESolution(const R& _r, const ADS& _ads = nullptr, XEv _e = XEv())
-      : super(*this, e), r(new R(_r)), ads(new ADS(_ads)), e(_e) {
-  }
+      : super(*this, e), r(new R(_r)), ads(new ADS(_ads)), e(_e) {}
 
   // move constructor (implemented via move constructor for R)
   ESolution(R&& _r)
-      : super(*this, e), r(_r)  // TODO: avoid so many constructors....
-  {
-  }
+      : super(*this, e),
+        r(_r)  // TODO: avoid so many constructors....
+  {}
 
   //! copy constructor
   ESolution(const ESolution<R, ADS, XEv>& s)
-      :  //super(s.first, s.second)
-        ESolution(s.r, s.ads, s.e) {
-  }
+      :  // super(s.first, s.second)
+        ESolution(s.r, s.ads, s.e) {}
 
   //! move constructor
   ESolution(ESolution<R, ADS, XEv>&& s)
-      :  //super::first(s.first), super::second(s.second)
+      :  // super::first(s.first), super::second(s.second)
         ESolution(s.r, s.ads, s.e) {
     s.r = nullptr;    // stolen
     s.ads = nullptr;  // stolen
   }
 
   // assignment operator (implemented via copy constructors for R and ADS)
-  // TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+  // TODO: in the future, this could be made using 'R.clone()' operation in
+  // #DEFINE option.
   ESolution<R, ADS, XEv>& operator=(const ESolution<R, ADS, XEv>& s) {
     if (&s == this)  // auto ref check
       return *this;
@@ -118,9 +119,9 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
 
   //! move operator
   /*!
-	 Solution move operator will steal the pointers from the object to itself
-	 and set them to null in the object
-	 */
+         Solution move operator will steal the pointers from the object to
+     itself and set them to null in the object
+         */
   ESolution<R, ADS>& operator=(ESolution<R, ADS>&& s) noexcept {
     // steal pointer from s
     r = s.r;
@@ -138,10 +139,8 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
   using objType = typename XEv::objType;
 
   // not fully needed....
-  //optframe::objval evaluation()
-  objType evaluation() {
-    return this->second.evaluation();
-  }
+  // optframe::objval evaluation()
+  objType evaluation() { return this->second.evaluation(); }
 
   // ==================
   // end canonical part
@@ -150,11 +149,9 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
   // destructor for ESolution (must free R and ADS objects)
   virtual ~ESolution() {
     // if r not null
-    if (r)
-      delete r;
+    if (r) delete r;
     // if ads not null
-    if (ads)
-      delete ads;
+    if (ads) delete ads;
   }
 
   // ==================
@@ -170,9 +167,7 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
   }
 
   // returns true if ads is not null
-  bool hasADS() const {
-    return ads;
-  }
+  bool hasADS() const { return ads; }
 
   // =======
   // setters
@@ -203,15 +198,13 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
   void setADS(const ADS& _ads) {
     // TODO: keep as a #DEFINE option? I don't see any advantage...
     //(*ads) = _ads;
-    if (ads)
-      delete ads;
+    if (ads) delete ads;
     ads = new ADS(_ads);
   }
 
   // setADS with pointer copy
   void setADS(ADS* _ads) {
-    if (ads)
-      delete ads;
+    if (ads) delete ads;
     ads = _ads;
   }
 
@@ -226,14 +219,10 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
   // =======
 
   // get reference of r
-  R& getR() {
-    return *r;
-  }
+  R& getR() { return *r; }
 
   // get const reference of r
-  const R& getR() const {
-    return *r;
-  }
+  const R& getR() const { return *r; }
 
   // contract: assumes hasADS() with positive result
   ADS& getADS() {
@@ -248,14 +237,10 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
   }
 
   // get ADS pointer
-  ADS* getADSptr() {
-    return ads;
-  }
+  ADS* getADSptr() { return ads; }
 
   // get ADS pointer (const)
-  const ADS* getADSptr() const {
-    return ads;
-  }
+  const ADS* getADSptr() const { return ads; }
 
   // =================
   // begin Object part
@@ -267,15 +252,12 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
     std::stringstream ss;
     ss << "ESolution: " << this->first.getR();
-    if (this->first.hasADS())
-      ss << "ADS: " << this->first.getADSptr();
+    if (this->first.hasADS()) ss << "ADS: " << this->first.getADSptr();
     ss << "evaluation(ESolution)=" << this->second;
     return ss.str();
   }
@@ -290,15 +272,15 @@ template <XRepresentation R, class ADS = int, XEvaluation XEv = Evaluation<>>
 void static_check() {
   static_assert(XSolution<ESolution<R, ADS, XEv>>);
 }
-//template<XRepresentation R, class ADS = int, XEvaluation XEv = Evaluation<>>
-//static_assert(XSolution<ESolution<R, ADS, XEv>>);
+// template<XRepresentation R, class ADS = int, XEvaluation XEv = Evaluation<>>
+// static_assert(XSolution<ESolution<R, ADS, XEv>>);
 
 }  // namespace optframe
 
 #ifndef NDEBUG
 
 // basic compilation test
-//static_assert(XESolution<ESolution<IsSolution<int>, Evaluation<double>>>);
+// static_assert(XESolution<ESolution<IsSolution<int>, Evaluation<double>>>);
 //
 // compilation tests for concepts
 // TODO: only in unit tests (or somehow prevent #include "printable.h")

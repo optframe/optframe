@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MYCONCEPTS
-#define OPTFRAME_MYCONCEPTS
+#ifndef OPTFRAME_CONCEPTS_MYCONCEPTS_HPP_
+#define OPTFRAME_CONCEPTS_MYCONCEPTS_HPP_
 
 // general concepts expected to exist on c++20
 
@@ -10,8 +10,10 @@
 #include <optional>  // optional
 #include <vector>    // for vsref
 
-#include "nnptr/nnshared.hpp"  // "not null shared pointer" library (local copy!)
-#include "opview/optional_view.hpp"
+// "not null shared pointer" library (local copy!)
+#include <OptFrame/nnptr/nnshared.hpp>
+// "optional_view" library (local copy!)
+#include <OptFrame/opview/optional_view.hpp>
 
 #if __cplusplus <= 201703L  // after c++20, #include<concepts>
 // no concepts library, yet...
@@ -411,4 +413,4 @@ struct MyConceptsLocalTestBedArithmetics {
 
 #endif  // NDEBUG
 
-#endif  // MYCONCEPTS
+#endif  // OPTFRAME_CONCEPTS_MYCONCEPTS_HPP_

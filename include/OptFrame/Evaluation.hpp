@@ -12,8 +12,8 @@
 #include <iostream>
 #include <utility>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Helper/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
 #include <OptFrame/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
 
@@ -349,6 +349,6 @@ struct basic_ev_test_copy {
 
 // Compilation tests for XEvaluation concepts
 // These are NOT unit tests... Unit Tests are on tests/ folder
-#include "Evaluation.test.hpp"
+#include <OptFrame/Evaluation.test.hpp>
 
 #endif  // OPTFRAME_EVALUATION_HPP_

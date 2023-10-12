@@ -4,8 +4,8 @@
 #ifndef OPTFRAME_ITRAJECTORY_HPP_
 #define OPTFRAME_ITRAJECTORY_HPP_
 
-#include "SearchOutput.hpp"
-#include "StopCriteria.hpp"
+#include <OptFrame/SearchOutput.hpp>
+#include <OptFrame/StopCriteria.hpp>
 
 namespace optframe {
 
@@ -15,8 +15,7 @@ namespace optframe {
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 // for trajectory methods, XSH2 = XSH
 template <XESolution XES, XSearch<XES> XSH = XES>
-class ITrajectory  // do not inherit here!
-{
+class ITrajectory {
   using XEv = typename XES::second_type;
 
  public:
@@ -32,4 +31,4 @@ class ITrajectory  // do not inherit here!
 
 }  // namespace optframe
 
-#endif /* OPTFRAME_ITRAJECTORY_HPP_ */
+#endif  // OPTFRAME_ITRAJECTORY_HPP_

@@ -26,8 +26,9 @@
 #include <chrono>
 #include <limits>
 #include <random>
+//
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
-#include "../../BaseConcepts.hpp"
 #include "../../Evaluation.hpp"
 #include "../../MultiEvaluation.hpp"
 #include "../../MultiSolution.hpp"

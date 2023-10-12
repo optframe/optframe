@@ -146,8 +146,8 @@ class NeighborhoodExplorationBuilder
 
 }  // namespace optframe
 
-#include <OptFrame/BaseConcepts.ctest.hpp>
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
 namespace optframe {
 

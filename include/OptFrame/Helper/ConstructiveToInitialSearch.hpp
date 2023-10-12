@@ -25,15 +25,16 @@
 
 #include <string>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"
 #include <OptFrame/InitialSearch.hpp>  // TODO: remove
 
 namespace optframe {
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
+// template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S =
+// CopySolution<R, ADS>>
 template <XESolution XES>
 class ConstructiveToInitialSearch : public InitialSearch<XES> {
   using S = typename XES::first_type;
@@ -43,19 +44,18 @@ class ConstructiveToInitialSearch : public InitialSearch<XES> {
   Constructive<S>& c;
   Evaluator<S, XEv, XES>& eval;
 
-  ConstructiveToInitialSearch(Constructive<S>& _c, Evaluator<S, XEv, XES>& _eval)
-      : c(_c), eval(_eval) {
-  }
+  ConstructiveToInitialSearch(Constructive<S>& _c,
+                              Evaluator<S, XEv, XES>& _eval)
+      : c(_c), eval(_eval) {}
 
-  virtual ~ConstructiveToInitialSearch() {
-  }
+  virtual ~ConstructiveToInitialSearch() {}
 
   // timelimit in seconds, accepting fractions (millisecs, ...)
   // may or may not generate valid solution in time
-  std::pair<std::optional<XES>, SearchStatus> initialSearch(const StopCriteria<XEv>& sosc) override {
+  std::pair<std::optional<XES>, SearchStatus> initialSearch(
+      const StopCriteria<XEv>& sosc) override {
     std::optional<S> s = c.generateSolution(sosc.timelimit);
-    if (!s)
-      return make_pair(nullopt, SearchStatus::NO_REPORT);
+    if (!s) return make_pair(nullopt, SearchStatus::NO_REPORT);
     XES se = make_pair(*s, eval.evaluate(*s));
     return make_pair(make_optional(se), SearchStatus::NO_REPORT);
   }
@@ -70,9 +70,7 @@ class ConstructiveToInitialSearch : public InitialSearch<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 

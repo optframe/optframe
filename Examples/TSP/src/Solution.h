@@ -23,7 +23,7 @@
 #ifndef TSP_SOLUTION_H_
 #define TSP_SOLUTION_H_
 
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
@@ -32,14 +32,17 @@
 
 using namespace optframe;
 
-//typedef Solution<RepTSP> SolutionTSP;
+// typedef Solution<RepTSP> SolutionTSP;
 typedef CopySolution<RepTSP> SolutionTSP;
 
 typedef pair<SolutionTSP, EvaluationTSP> ESolutionTSP;
 
 // compilation tests
-static_assert(XSolution<SolutionTSP>);               // verify that this is correctly a XSolution
-static_assert(XESolution<ESolutionTSP>);             // verify that this is correctly a XESolution
-static_assert(XSearch<ESolutionTSP, ESolutionTSP>);  // verify that this is correctly a XSearch
+static_assert(
+    XSolution<SolutionTSP>);  // verify that this is correctly a XSolution
+static_assert(
+    XESolution<ESolutionTSP>);  // verify that this is correctly a XESolution
+static_assert(XSearch<ESolutionTSP, ESolutionTSP>);  // verify that this is
+                                                     // correctly a XSearch
 
 #endif /*TSP_SOLUTION_H_*/

@@ -2,20 +2,19 @@
 
 // compilation tests for concepts (these are not UNIT tests)
 
-#include "BaseConcepts.ctest.hpp"
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+
 #include "Population.hpp"
 
 #ifndef NDEBUG
-namespace optframe
-{
+namespace optframe {
 
-struct optframe_test_debug_testpareto_ispopulation_disable_runtime
-{
-   // This is Legacy Population, so should FAIL the next X2ESolution test
-   // TestPopOrPareto<pair<Solution<int>,Evaluation<>>, Population<Solution<int>,Evaluation<>> > testPop;
+struct optframe_test_debug_testpareto_ispopulation_disable_runtime {
+  // This is Legacy Population, so should FAIL the next X2ESolution test
+  // TestPopOrPareto<pair<Solution<int>,Evaluation<>>,
+  // Population<Solution<int>,Evaluation<>> > testPop;
 };
 
+}  // namespace optframe
 
-} // namespace optframe
-
-#endif // NDEBUG
+#endif  // NDEBUG

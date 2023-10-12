@@ -26,7 +26,7 @@
 // C++
 #include <string>
 // Framework includes
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
 #include "../../../Move.hpp"

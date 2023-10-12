@@ -14,7 +14,8 @@
 #include <vector>
 //
 
-#include "BaseConcepts.hpp"
+#include <OptFrame/Concepts/BaseConcepts.hpp>
+
 #include "Component.hpp"
 #include "Evaluation.hpp"
 

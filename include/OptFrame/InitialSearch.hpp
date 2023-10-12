@@ -7,8 +7,8 @@
 #include <string>
 #include <utility>
 //
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Constructive.hpp>
 #include <OptFrame/Domain.hpp>
 #include <OptFrame/Evaluator.hpp>

@@ -23,8 +23,8 @@ class TestTArithMO_is_zero2 {
 
   ObjType infMeasureX;
 
-  //bool outdated; // this is required by XEvaluation
-  //bool estimated; // this is required by XEvaluation
+  // bool outdated; // this is required by XEvaluation
+  // bool estimated; // this is required by XEvaluation
   bool isOutdated();
   void invalidate();
   bool isEstimated();
@@ -35,20 +35,15 @@ class TestTArithMO_is_zero2 {
   bool isStrictImprovement();
   bool isNonStrictImprovement();
 
-  void update(const TestTArithMO_is_zero2<ObjType>& e);                          // required
-  TestTArithMO_is_zero2<ObjType> diff(const TestTArithMO_is_zero2<ObjType>& e);  // required
+  void update(const TestTArithMO_is_zero2<ObjType>& e);  // required
+  TestTArithMO_is_zero2<ObjType> diff(
+      const TestTArithMO_is_zero2<ObjType>& e);  // required
 
-  bool f() {
-    return optframe::numeric_is_zero<ObjType>(infMeasureX);
-  }
+  bool f() { return optframe::numeric_is_zero<ObjType>(infMeasureX); }
 
-  string toString() const {
-    return "";
-  }
+  string toString() const { return ""; }
 
-  TestTArithMO_is_zero2& clone() {
-    return *this;
-  }
+  TestTArithMO_is_zero2& clone() { return *this; }
 
   ObjType evaluation() const {
     ObjType o;
@@ -67,7 +62,9 @@ static_assert(XEvaluation<Evaluation<>>);
 static_assert(XEvaluation<Evaluation<SingleObjValue>>);  // single obj value
 static_assert(XEvaluation<TestTArithMO_is_zero<MultiObjValue<int, double>>>);
 static_assert(XEvaluation<TestTArithMO_is_zero2<MultiObjValue<int, double>>>);
-static_assert(XEvaluation<Evaluation<MultiObjValue<int, double>>>);  // multi obj value
+static_assert(
+    XEvaluation<Evaluation<MultiObjValue<int, double>>>);  // multi obj value
+static_assert(XSEvaluation<Evaluation<>>);  // Single obj evaluator
 
 /*
 struct optframe_test_debug_testev_evaluation_disable_runtime

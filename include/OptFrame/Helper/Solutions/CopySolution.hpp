@@ -33,8 +33,8 @@
 //
 
 // basic elements of an OptFrame Component
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 // #include "../Util/printable.h"
 
 // will require 'R', thus should require basic printability here

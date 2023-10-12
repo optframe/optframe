@@ -1,6 +1,6 @@
 #pragma once
 
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
 #include "SearchStatus.hpp"
 

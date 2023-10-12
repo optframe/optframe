@@ -23,7 +23,7 @@
 #ifndef OPTFRAME_VEPOPULATION_HPP_
 #define OPTFRAME_VEPOPULATION_HPP_
 
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <vector>
 //
 
@@ -35,7 +35,8 @@
 // It implements concept X2ESolution.
 //
 // If you need optframe::Component, try EPopulation or "legacy" Population
-// Also, you can try MultiESolution, as a "neutral" alternative (semantically free)
+// Also, you can try MultiESolution, as a "neutral" alternative (semantically
+// free)
 //
 
 namespace optframe {

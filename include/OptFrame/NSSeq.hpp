@@ -173,9 +173,8 @@ class NSSeq : public NSFind<XES, XSH> {
 
 // General test for NSSeq
 // TODO: only if not #include "printable.h"
-#include <OptFrame/BaseConcepts.hpp>
-
-#include "BaseConcepts.ctest.hpp"
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
 namespace optframe {
 

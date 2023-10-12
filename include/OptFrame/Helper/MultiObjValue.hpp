@@ -8,7 +8,7 @@
 #include <sstream>
 #include <tuple>
 //
-#include <OptFrame/MyConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/SingleObjValue.hpp>  // must re-use some structures
 
 //#include <OptFrame/printable/printable.hpp>
@@ -77,8 +77,8 @@ class MultiObjValue {
   // continues.. I > 0
   template <std::size_t I = 0>
       inline typename std::enable_if <
-      I<sizeof...(AllObjTypes), MOVCompare>::type
-      comparet(const std::tuple<AllObjTypes...>& tOther) const {
+      I<sizeof...(AllObjTypes), MOVCompare>::type comparet(
+          const std::tuple<AllObjTypes...>& tOther) const {
     MOVCompare movc;
     // beware that '==', '<' and '>' may not be completely consistent, must sum
     // individually
@@ -91,7 +91,8 @@ class MultiObjValue {
     // get next recursive  (TODO: may pass by reference or move)
     MOVCompare movc2 = comparet<I + 1>(tOther);
     // aggregate information
-    movc.add(movc2);  // TODO: may get directly from method as 'move &&' and drop
+    movc.add(
+        movc2);  // TODO: may get directly from method as 'move &&' and drop
     return movc;
   }
 
@@ -106,14 +107,11 @@ class MultiObjValue {
     constexpr int N = sizeof...(AllObjTypes);
     MOVCompare movc = comparet(
         c.objValues);  // do not use 'comparev' here, will lose precious time
-    if (movc.eq == N)
-      return 0;  // all equals
-    if (movc.lt == N)
-      return -1;  // all less
-    if (movc.gt == N)
-      return +1;  // all greater
-    return -2;    // different/uncomparable (needs some Pareto-based or other
-                  // specific rule to decide)
+    if (movc.eq == N) return 0;   // all equals
+    if (movc.lt == N) return -1;  // all less
+    if (movc.gt == N) return +1;  // all greater
+    return -2;  // different/uncomparable (needs some Pareto-based or other
+                // specific rule to decide)
   }
 
   // comparev just "safely" exposes comparet
@@ -157,15 +155,13 @@ class MultiObjValue {
   // continues.. I > 0
   template <char OP, std::size_t I = 0>
       inline typename std::enable_if <
-      I<sizeof...(AllObjTypes), void>::type
-      operatet(const std::tuple<AllObjTypes...>& tOther) {
+      I<sizeof...(AllObjTypes), void>::type operatet(
+          const std::tuple<AllObjTypes...>& tOther) {
     // TODO: use 'OP' as consexpr to directly evaluate desired operation (will
     // perform on compile-time) WARNING: doing this on runtime (compiler may be
     // smart and help us!). It would very likely...
-    if (OP == '+')
-      std::get<I>(this->objValues) += std::get<I>(tOther);
-    if (OP == '-')
-      std::get<I>(this->objValues) -= std::get<I>(tOther);
+    if (OP == '+') std::get<I>(this->objValues) += std::get<I>(tOther);
+    if (OP == '-') std::get<I>(this->objValues) -= std::get<I>(tOther);
     // useful, but not supporting scalar multiplication yet!! by int, double..
     // on practice, we cannot do 'weights' yet, too hard..
     // if(OP == '*')
@@ -314,8 +310,7 @@ numeric_zero(MultiObjValue<Args...>& t)
 
 template <template <typename...> class T, typename... Args2>
 inline typename std::enable_if<
-    std::is_same<T<Args2...>, MultiObjValue<Args2...>>::value,
-    void>::type
+    std::is_same<T<Args2...>, MultiObjValue<Args2...>>::value, void>::type
 numeric_zero(T<Args2...>& t) {
   std::tuple<Args2...> tdef;  // default values (TODO: iterate to define zero)
   t.objValues = tdef;
@@ -324,8 +319,7 @@ numeric_zero(T<Args2...>& t) {
 // -----------------
 
 template <optframe::basic_arithmetics T>
-inline T
-get_numeric_zero() {
+inline T get_numeric_zero() {
   T t;
   optframe::numeric_zero<T>(t);
   return t;
@@ -352,8 +346,8 @@ class TestTArithMO_is_zero {
   //
   ObjType infMeasureX;
 
-  //bool outdated;  // required for XEvaluation
-  //bool estimated; // required for XEvaluation
+  // bool outdated;  // required for XEvaluation
+  // bool estimated; // required for XEvaluation
   bool isOutdated();
   void invalidate();
   bool isEstimated();
@@ -365,8 +359,8 @@ class TestTArithMO_is_zero {
   bool isNonStrictImprovement();
 
   void update(TestTArithMO_is_zero<ObjType>& e);  // required
-  TestTArithMO_is_zero<ObjType>
-  diff(const TestTArithMO_is_zero<ObjType>& e);  // required
+  TestTArithMO_is_zero<ObjType> diff(
+      const TestTArithMO_is_zero<ObjType>& e);  // required
 
   void f() { assert(optframe::numeric_is_zero(infMeasureX)); }
 

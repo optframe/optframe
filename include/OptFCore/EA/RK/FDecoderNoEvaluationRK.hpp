@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 //
-#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeysNoEvaluation.hpp>
-#include <OptFrame/MyConcepts.hpp>
 
 namespace optframe {
 

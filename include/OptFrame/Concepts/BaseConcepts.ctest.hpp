@@ -1,12 +1,15 @@
-#ifndef OPTFRAME_BASECONCEPTS_CTEST_HPP
-#define OPTFRAME_BASECONCEPTS_CTEST_HPP
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#include <OptFrame/BaseConcepts.hpp>
+#ifndef OPTFRAME_CONCEPTS_BASECONCEPTS_CTEST_HPP_
+#define OPTFRAME_CONCEPTS_BASECONCEPTS_CTEST_HPP_
+
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 
 // basic printabilty for std::pair<,>
 #include <OptFrame/printable/printable.hpp>
 
-//using namespace optframe; // importing optframe::operator<< stuff
+// using namespace optframe; // importing optframe::operator<< stuff
 
 // testing BaseConcepts: compilation tests (these are NOT unit tests!)
 // unit tests can be found on tests/ folder
@@ -30,11 +33,10 @@ struct IsSolution {
     return *this;  // TODO:
   }
 
-  std::string toString() const {
-    return "";
-  }
+  std::string toString() const { return ""; }
 
-  friend std::ostream& operator<<(std::ostream& os, const IsSolution<R, ADS>& me) {
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const IsSolution<R, ADS>& me) {
     os << me.toString();
     return os;
   }
@@ -49,8 +51,8 @@ struct IsEvaluation {
   //
   T& evaluation();  // this is required!
 
-  //bool outdated;  // this is required!
-  //bool estimated; // this is required!
+  // bool outdated;  // this is required!
+  // bool estimated; // this is required!
   bool isOutdated();
   void invalidate();
   bool isEstimated();
@@ -61,16 +63,15 @@ struct IsEvaluation {
   bool isStrictImprovement();
   bool isNonStrictImprovement();
 
-  void update(IsEvaluation<T>& e);                 // required ('cost' operation)
-  IsEvaluation<T> diff(const IsEvaluation<T>& e);  // required ('cost' operation)
+  void update(IsEvaluation<T>& e);  // required ('cost' operation)
+  IsEvaluation<T> diff(
+      const IsEvaluation<T>& e);  // required ('cost' operation)
 
   IsEvaluation<T>& clone() {
     return *this;  // TODO:
   }
 
-  std::string toString() const {
-    return "";
-  }
+  std::string toString() const { return ""; }
 
   friend std::ostream& operator<<(std::ostream& os, const IsEvaluation<T>& me) {
     os << me.toString();
@@ -87,7 +88,7 @@ struct IsESolution {
   using first_type = IsESolution<T>;
   using second_type = IsEvaluation<T>;
 
-  //T& evaluation();
+  // T& evaluation();
   IsESolution<T>& first{*this};
   IsEvaluation<T> second;
 
@@ -95,9 +96,7 @@ struct IsESolution {
     return *this;  // TODO:
   }
 
-  std::string toString() const {
-    return "";
-  }
+  std::string toString() const { return ""; }
 
   friend std::ostream& operator<<(std::ostream& os, const IsESolution<T>& me) {
     os << me.toString();
@@ -146,13 +145,21 @@ class TestXESol {
 };
 
 // compile tests
-static_assert(XBaseSolution<IsSolution<double>, double>);  //TestBaseSol<IsSolution<double>> test;
-static_assert(XSolution<IsSolution<double>>);              // TestXSol<IsSolution<double>> testXsol;
-static_assert(XRSolution<IsSolution<double>, double>);     //TestXRSolution<double, IsSolution<double>> testxrs;
-static_assert(XEvaluation<IsEvaluation<int>>);             // TestEv<IsEvaluation<short>> testev;
-//static_assert(XEvaluation<IsEvaluation<short>>); // TestEv<IsEvaluation<short>> testev; // won't work wth 'short' on C++20
-// XESolution tests
-static_assert(XESolution<IsESolution<double>>);  // TestXESol<IsESolution<double>> testXesol;
+static_assert(XBaseSolution<IsSolution<double>,
+                            double>);  // TestBaseSol<IsSolution<double>> test;
+static_assert(
+    XSolution<IsSolution<double>>);  // TestXSol<IsSolution<double>> testXsol;
+static_assert(
+    XRSolution<IsSolution<double>,
+               double>);  // TestXRSolution<double, IsSolution<double>> testxrs;
+static_assert(
+    XEvaluation<IsEvaluation<int>>);  // TestEv<IsEvaluation<short>> testev;
+// static_assert(XEvaluation<IsEvaluation<short>>); //
+// TestEv<IsEvaluation<short>> testev; // won't work wth 'short' on C++20
+//  XESolution tests
+static_assert(
+    XESolution<IsESolution<double>>);  // TestXESol<IsESolution<double>>
+                                       // testXesol;
 
 struct optframe_test_debug_testsol_issolution_disable_runtime {
   /*
@@ -175,7 +182,8 @@ TestXESol<IsESolution<double>> testXesol;
     std::pair<IsSolution<double>, IsEvaluation<double>> pp;
     std::cout << pp << std::endl;
   }
-  //TestXESol<std::pair<IsSolution<double>,IsEvaluation<double>>> testXesol_pair;
+  // TestXESol<std::pair<IsSolution<double>,IsEvaluation<double>>>
+  // testXesol_pair;
 };
 
 // =========================================================
@@ -198,7 +206,14 @@ struct IsPopulation {
 };
 
 // compilation test
-static_assert(X2ESolution<IsPopulation<IsESolution<double>>, IsESolution<double>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+static_assert(
+    X2ESolution<
+        IsPopulation<IsESolution<double>>,
+        IsESolution<
+            double>>);  // TestPopOrPareto<IsSolution<double>,
+                        // IsEvaluation<int>,
+                        // IsPopulation<IsSolution<double>,IsEvaluation<int>>
+                        // > testLocal1;
 
 // ---------
 
@@ -211,16 +226,25 @@ struct IsPareto {
 };
 
 // compilation test
-static_assert(X2ESolution<IsPareto<IsESolution<double>>, IsESolution<double>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+static_assert(
+    X2ESolution<
+        IsPareto<IsESolution<double>>,
+        IsESolution<
+            double>>);  // TestPopOrPareto<IsSolution<double>,
+                        // IsEvaluation<int>,
+                        // IsPopulation<IsSolution<double>,IsEvaluation<int>>
+                        // > testLocal1;
 
 // perform instantiation tests
 struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime {
-  TestPopOrPareto<IsESolution<double>, IsPopulation<IsESolution<double>>> testLocal1;
-  TestPopOrPareto<IsESolution<double>, IsPareto<IsESolution<double>>> testLocal2;
+  TestPopOrPareto<IsESolution<double>, IsPopulation<IsESolution<double>>>
+      testLocal1;
+  TestPopOrPareto<IsESolution<double>, IsPareto<IsESolution<double>>>
+      testLocal2;
 };
 
 #endif  // NDEBUG clause
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_BASECONCEPTS_CTEST_HPP
+#endif  // OPTFRAME_CONCEPTS_BASECONCEPTS_CTEST_HPP_

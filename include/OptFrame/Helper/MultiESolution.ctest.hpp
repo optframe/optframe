@@ -23,7 +23,7 @@
 #ifndef OPTFRAME_MULTIESOLUTION_CTEST_HPP_
 #define OPTFRAME_MULTIESOLUTION_CTEST_HPP_
 
-#include <OptFrame/BaseConcepts.ctest.hpp>
+#include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 
 #ifndef NDEBUG
@@ -31,8 +31,10 @@
 namespace optframe {
 
 // basic compilation test (TODO: improve)
-//static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsSolution<double>, IsEvaluation<int>, IsESolution<double>>);
-static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsESolution<double>>);
+// static_assert(X2ESolution<MultiESolution<IsESolution<double>>,
+// IsSolution<double>, IsEvaluation<int>, IsESolution<double>>);
+static_assert(
+    X2ESolution<MultiESolution<IsESolution<double>>, IsESolution<double>>);
 
 }  // namespace optframe
 

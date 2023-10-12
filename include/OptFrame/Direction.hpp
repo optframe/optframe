@@ -15,8 +15,8 @@
 #include <utility>
 //
 // Base concepts
-#include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Move.hpp>
 #include <OptFrame/MoveCost.hpp>
