@@ -37,7 +37,10 @@ concept
   X2ESolution<typename Self::BestType, XES>;
 };
 
-template <XESolution XMES, XESolution XMES2 = XMES,
+// EASY ON XMES2... FOR NOW! NOT REQUIRING XEMSolution, BUT WE SHOULD...
+// MUST FIX IndividualNSGAII and other problematic implementations...
+// BASE TYPE XMES IS NOW FINALLY REQUIRED TO BE XEMSolution!
+template <XEMSolution XMES, XESolution XMES2 = XMES,
           XSearch<XMES2> XMSH2 = XMES2>
 class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
   using XMSH = Pareto<XMES>;  // PRIMARY/BEST search space

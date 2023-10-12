@@ -40,15 +40,17 @@ using scannerpp::Scanner;
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES>
+template <XSolution S, XEvaluation XEv, XESSolution XESS,
+          X2ESolution<XESS> X2ES>
 class HeuristicFactory;
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ComponentBuilder : public Component {
  public:
-  virtual ~ComponentBuilder() {
-  }
+  virtual ~ComponentBuilder() {}
 
   virtual Component* buildComponent(Scanner& scanner,
                                     HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -64,9 +66,7 @@ class ComponentBuilder : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

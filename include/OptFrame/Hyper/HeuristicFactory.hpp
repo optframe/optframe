@@ -66,7 +66,7 @@ namespace optframe {
 // CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>> template<class R, class
 // ADS, XSolution S> template<XSolution S, XEvaluation XEv = Evaluation<>>
 template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
+          XESSolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class HeuristicFactory {
   // TODO: must add to template!!!
@@ -703,22 +703,22 @@ class HeuristicFactory {
                                                          scanner.rest());
   }
 
-  pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(
+  pair<MultiObjSearch<XMES>*, std::string> createMultiObjSearch(
       std::string str) {
     Scanner scanner(str);
 
     // No heuristic!
     if (!scanner.hasNext())
-      return pair<MultiObjSearch<XES>*, std::string>(nullptr, "");
+      return pair<MultiObjSearch<XMES>*, std::string>(nullptr, "");
 
     string h = scanner.next();
 
-    if (h == MultiObjSearch<XES>::idComponent()) {
+    if (h == MultiObjSearch<XMES>::idComponent()) {
       unsigned int id = *scanner.nextInt();
 
       MultiObjSearch<XES>* mtd = nullptr;
 
-      assign(mtd, id, MultiObjSearch<XES>::idComponent());
+      assign(mtd, id, MultiObjSearch<XMES>::idComponent());
 
       if (!mtd) return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
@@ -733,7 +733,7 @@ class HeuristicFactory {
                    "MultiObjSearch '"
                 << h << "' found! ignoring..." << std::endl;
 
-    return pair<MultiObjSearch<XES>*, std::string>(nullptr, scanner.rest());
+    return pair<MultiObjSearch<XMES>*, std::string>(nullptr, scanner.rest());
   }
 };
 

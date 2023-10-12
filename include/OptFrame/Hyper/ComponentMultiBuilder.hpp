@@ -41,7 +41,8 @@ using scannerpp::Scanner;
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES>
+template <XSolution S, XEvaluation XEv, XESSolution XESS,
+          X2ESolution<XESS> X2ES>
 class HeuristicFactory;
 
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
