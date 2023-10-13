@@ -28,7 +28,7 @@ So, **XESSolution** denotes the pair **(XSolution, XSEvaluation)**.
     Most CXX Concepts in OptFrame begin with letter **X**, to not confuse with standard classes.
 
 On the other hand, the **XEMSolution** space denotes the pair **(XSolution, XMEvaluation)**,
-where **XMEvaluation** requires multiple elements of *total order* to exist, like :math:`2^XEvaluation`.
+where **XMEvaluation** requires multiple elements of *total order* to exist, like :math:`2^{XEvaluation}`.
 This is very useful in multi-objective problems and it does not constrain the type of every
 individual **XEvaluation** element, as long as they individually form a *total order* (for
 example, one may be an *int*, while the other is a *double*).
@@ -40,14 +40,14 @@ example, one may be an *int*, while the other is a *double*).
     possibility of adopting different types as a tuple, if necessary.
 
 Some spaces contain a `Power Set <https://en.wikipedia.org/wiki/Power_set>_` of
-other spaces, such as the **X2Solution**, which is equivalent to a set of solutions of type :math:`2^XSolution`,
-and the **X2ESolution**, which is a set of **XESolution** pairs, like :math:`2^XESolution`.
+other spaces, such as the **X2Solution**, which is equivalent to a set of solutions of type :math:`2^{XSolution}`,
+and the **X2ESolution**, which is a set of **XESolution** pairs, like :math:`2^{XESolution}`.
 
 .. hint::
     One can regard a **X2Solution** as a *population of individuals*, in Genetic Algorithm notation,
     and a **X2ESolution** as a *population of individuals together with their fitness values*.
 
-Finally, a **X2EMSolution** denotes a set of **EMSolution** spaces, like :math:`2^XEMSolution`.
+Finally, a **X2EMSolution** denotes a set of **EMSolution** spaces, like :math:`2^{XEMSolution}`.
 
 .. hint::
     One can regard a **X2EMSolution** as a *Pareto Set together with a Pareto Front*,
