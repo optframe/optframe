@@ -19,7 +19,9 @@ lint:
 
 docs:
 	# apt-get install python3-sphinx
-	cd docs && python3 -m pip install -r requirements.txt && make clean && make html
+	# apt-get install texlive texlive-latex-extra latexmk texlive-science
+	python3 -m pip install -r docs/requirements.txt
+	cd docs && make clean && make html && make latexpdf
 
 clean:
 	cd Examples && make clean

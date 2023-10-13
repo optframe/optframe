@@ -157,6 +157,9 @@ using ParetoSolTest0 = std::vector<int>;
 using EMSolution_Test0 = std::pair<ParetoSolTest0, MultiEvaluation<double>>;
 // compilation tests
 static_assert(X2ESolution<BasicPareto<EMSolution_Test0>, EMSolution_Test0>);
+static_assert(XEMSolution<EMSolution_Test0>);
+static_assert(X2EMSolution<BasicPareto<EMSolution_Test0>, EMSolution_Test0>);
+
 }  // namespace optframe
 
 #endif  // OPTFRAME_BASICPARETO_HPP_

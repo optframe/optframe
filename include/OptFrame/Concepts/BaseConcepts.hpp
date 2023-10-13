@@ -644,6 +644,14 @@ concept
         XEMSolution =
             XESolution<Self> && XMEvaluation<typename Self::second_type>;
 
+template <class Self,
+          class XMES>  // fixes gcc bug! "XESolution<XES>&&..." is good!
+concept
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
+#endif
+        X2EMSolution = XEMSolution<XMES> && XPowerSet<Self, XMES>;
+
 // ===================
 
 // XFamily concept
