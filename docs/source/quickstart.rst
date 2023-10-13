@@ -121,9 +121,19 @@ Let's consider a classic problem: the 0-1 Knapsack Problem (KP).
 |knapsack|
 By: Dake `CC BY-SA 2.5 <https://commons.wikimedia.org/wiki/File:Knapsack.svg>`_
 
-.. |knapsack| image:: _figs/Knapsack.svg
-   :width: 300
-   :alt: A knapsack and some items (from wikipedia)
+
+.. only:: html
+
+    .. |knapsack| image:: _figs/Knapsack.svg
+        :width: 300
+        :alt: A knapsack and some items (from wikipedia)
+
+.. only:: latex
+
+    .. |knapsack| image:: _figs/Knapsack.pdf
+        :width: 300
+        :alt: A knapsack and some items (from wikipedia)
+
 
 Given a set of items :math:`I`, the KP consists in selecting some items :math:`S \subseteq I`,
 such that the sum of weights :math:`w_i` (for each selected item) do not exceed knapsack

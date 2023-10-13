@@ -67,3 +67,11 @@ html_theme_options = {
 }
 
 numfig = True  # needed for pseudocode
+
+latex_elements = {
+    'preamble': r'''
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{algpseudocode}
+''',
+}

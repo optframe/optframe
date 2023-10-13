@@ -74,7 +74,7 @@ Pseudocode
 
 .. only:: latex
 
-   .. code-block:: latex
+   .. raw:: latex
 
         \begin{algorithm}
         \caption{BasicSimulatedAnnealing}

@@ -45,3 +45,6 @@ RUN python3 -m pip install bumpver
 # ValueError: ZoneInfo keys may not be absolute paths, got: /UTC
 #RUN rm -f /etc/localtime
 #RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+     && apt-get -y install --no-install-recommends texlive texlive-latex-extra latexmk texlive-science
