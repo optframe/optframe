@@ -24,6 +24,7 @@ author = 'OptFrame Core Developers'
 # The full version, including alpha/beta/rc tags
 release = '5.0.14'
 
+language = 'en'
 
 # -- General configuration ---------------------------------------------------
 
