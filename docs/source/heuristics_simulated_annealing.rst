@@ -248,7 +248,7 @@ The pseudocode below details the extension possibilities on BasicSimulatedAnneal
 
 .. only:: latex
 
-   .. code-block:: latex
+   .. raw:: latex
 
         \begin{algorithm}
         \caption{BasicSimulatedAnnealingCallbacks}

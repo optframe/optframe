@@ -118,19 +118,22 @@ First Example: 0-1 Knapsack Problem and Simulated Annealing
 
 Let's consider a classic problem: the 0-1 Knapsack Problem (KP).
 
-|knapsack|
-By: Dake `CC BY-SA 2.5 <https://commons.wikimedia.org/wiki/File:Knapsack.svg>`_
 
+.. only:: html
 
-.. only: html
+    |knapsack1|
+    By: Dake `CC BY-SA 2.5 <https://commons.wikimedia.org/wiki/File:Knapsack.svg>`_
 
-    .. |knapsack| image:: _figs/Knapsack.svg
+    .. |knapsack1| image:: _figs/Knapsack.svg
         :width: 300
         :alt: A knapsack and some items (from wikipedia)
 
-.. only: pdf
+.. only:: pdf
 
-    .. |knapsack| image:: _figs/Knapsack.pdf
+    |knapsack2|
+    By: Dake `CC BY-SA 2.5 <https://commons.wikimedia.org/wiki/File:Knapsack.svg>`_
+
+    .. |knapsack2| image:: _figs/Knapsack.pdf
         :width: 300
         :alt: A knapsack and some items (from wikipedia)
 
