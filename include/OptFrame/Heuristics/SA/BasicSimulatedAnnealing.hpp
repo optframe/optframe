@@ -103,6 +103,18 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     }
   };
 
+  // GlobalSearch
+  bool (*onBestCtx)(SearchContextSA<XSH>& ctx, const XSH& best) =
+      [](SearchContextSA<XSH>& ctx, const XSH& best) {
+        return ctx.self.onBest(ctx.self, best);
+      };
+
+  // ITrajectory
+  bool (*onIncumbentCtx)(SearchContextSA<XSH>& ctx, const XSH& inc) =
+      [](SearchContextSA<XSH>& ctx, const XSH& inc) {
+        return ctx.self.onIncumbent(ctx.self, inc);
+      };
+
   // ILoop
   bool onLoop(const SearchContextSA<XES>& ctx,
               const StopCriteria<XEv>& sosc) override {
@@ -121,7 +133,6 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       std::cout << "SA search(" << sosc.timelimit << ")" << std::endl;
 
     std::optional<XSH> star = _best;
-    std::optional<XSH> incumbent;  // do not set "= star" here!
 
     // -------------------------------------------------------------------
     // assuming trajectory implementation (XES = XSH = XBest = XIncumbent)
@@ -130,8 +141,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       std::cout << "SA: will build initialSearch" << std::endl;
 
     // disable 'constructive' if star is given
-    if (!incumbent)
-      incumbent = star ? star : constructive->initialSearch(sosc).first;
+    std::optional<XSH> incumbent =
+        star ? star : constructive->initialSearch(sosc).first;
 
     if (Component::verbose)
       std::cout << "SA: post build initialSearch" << std::endl;
@@ -171,6 +182,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       std::cout << "incumbent? " << (bool)incumbent << std::endl;
 
     XSH& se = *incumbent;
+    this->onIncumbentCtx(ctx, *incumbent);
+    this->onBestCtx(ctx, *star);
 
     ctx.T = Ti;
     ctx.iterT = 0;
@@ -228,6 +241,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
       // and use 'se.second' to compare directly if(eCurrent.betterStrict(e))
       if (evaluator->betterStrict(current.second, se.second)) {
         se = current;
+        this->onIncumbentCtx(ctx, se);
 
         if (evaluator->betterStrict(se.second, star->second)) {
           star = make_optional(se);
@@ -237,6 +251,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
                       << " Found on Iter = " << ctx.iterT
                       << " and T = " << ctx.T;
             std::cout << endl;
+            this->onBestCtx(ctx, *star);
           }
         }
       } else {
@@ -247,6 +262,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
         if (x < ::exp(-delta / ctx.T)) {
           se = current;
+          this->onIncumbentCtx(ctx, se);
         }
       }
 
