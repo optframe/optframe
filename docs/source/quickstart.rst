@@ -128,7 +128,7 @@ By: Dake `CC BY-SA 2.5 <https://commons.wikimedia.org/wiki/File:Knapsack.svg>`_
         :width: 300
         :alt: A knapsack and some items (from wikipedia)
 
-.. only:: latex
+.. only:: pdf
 
     .. |knapsack| image:: _figs/Knapsack.pdf
         :width: 300
