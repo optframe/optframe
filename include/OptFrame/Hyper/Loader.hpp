@@ -78,6 +78,7 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/MultiStart.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/SimulatedAnnealingAC.hpp>
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/Heuristics/VNS/BasicVNS.hpp>
@@ -184,6 +185,8 @@ class Loader {
     factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv>);
     factory.builders.push_back(
         new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
+    factory.builders.push_back(
+        new SimulatedAnnealingACBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(new MultiStartBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(new BasicTabuSearchBuilder<S, XEv>);
     factory.builders.push_back(new BasicIteratedLocalSearchBuilder<S, XEv>);

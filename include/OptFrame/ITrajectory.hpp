@@ -19,14 +19,19 @@ class ITrajectory {
   using XEv = typename XES::second_type;
 
  public:
-  // global search method (maybe, someday, create some abstract IGlobalSearch..
-  // not now)
-  virtual SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& stopCriteria,
-                                          std::optional<XSH> best) = 0;
+  using IncumbentType = XSH;
+
+  // callback when a new incumbent solution starts processing
+  bool (*onIncumbent)(ITrajectory<XES, XSH>& self, const IncumbentType& inc) =
+      [](ITrajectory<XES, XSH>& self, const IncumbentType& inc) {
+        return true;
+      };
 
   // virtual method with search signature for trajectory methods
-  virtual SearchOutput<XES, XSH> searchByIncumbent(
-      XSH& _best, XSH& _inc, const StopCriteria<XEv>& stopCriteria) = 0;
+  //
+  // REMOVED! Method 'searchByIncumbent' is meaningless if XBest = XIncumbent!!
+  // virtual SearchOutput<XES, XSH> searchByIncumbent(
+  //   XSH& _best, XSH& _inc, const StopCriteria<XEv>& stopCriteria) = 0;
 };
 
 }  // namespace optframe

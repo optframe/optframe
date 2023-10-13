@@ -20,18 +20,14 @@
 #include <OptFrame/StopCriteria.hpp>
 
 namespace optframe {
-// REMEMBER: XES = (S, E)
+// REMEMBER: XES = (some Solution Type, some Evaluation Type)
 //
 // 'XES' is the "base concept" for the primary search component.
 // 'XSH' is the primary search type ('best' has type XSH)
-// 'XES2' is the "base concept" for the secondary search component.
-// 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 //
-// We need to make all methods compatible, and too many templates is polluting
-// this... 1) Explicitly renaming XSH to XBest 2) Keeping XSH2 as XIncumbent on
-// specific searchBy methods (Trajectory? Populational?)
 template <XESolution XES, XSearch<XES> XSH = XES>
 class GlobalSearch : public Component {
+  // not necessarily mono objective XEv... remember this!
   using XEv = typename XES::second_type;
 
  public:

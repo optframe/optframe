@@ -71,27 +71,16 @@ class IteratedLocalSearch : public ILS,
       std::cout << "ILS opt search(" << stopCriteria.timelimit << ")"
                 << std::endl;
     //
-    op<XES> star;  // TODO: receive on 'searchBy'
+    op<XES> opstar;  // TODO: receive on 'searchBy'
 
     if (Component::debug)
       std::cout << "ILS::build initial solution" << std::endl;
 
     // star = star ?: constructive->initialSearch(stopCriteria).first;
-    if (!star) star = constructive->initialSearch(stopCriteria).first;
-    if (!star) return SearchStatus::NO_SOLUTION;
+    if (!opstar) opstar = constructive->initialSearch(stopCriteria).first;
+    if (!opstar) return SearchStatus::NO_SOLUTION;
 
-    XEv& eStar = star->second;
-    if (Component::information) {
-      std::cout << "ILS::starting with evaluation:" << std::endl;
-      eStar.print();
-    }
-
-    return searchByIncumbent(*star, *star, stopCriteria);
-  }
-
-  // for ILS: incumbent is always derived from star, ignoring 'incumbent'
-  SearchOutput<XES> searchByIncumbent(
-      XES& star, XES&, const StopCriteria<XEv>& stopCriteria) override {
+    XES& star = *opstar;
     if (Component::information)
       std::cout << "ILS opt searchBy(" << stopCriteria.timelimit << ")"
                 << std::endl;

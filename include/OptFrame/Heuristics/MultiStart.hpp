@@ -81,17 +81,6 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
     return {SearchStatus::NO_REPORT, star};
   }
 
-  // reimplementing searchBy, just to make it more explicit (visible)
-  // maybe add some specific logs?
-  SearchOutput<XES, XSH> searchByIncumbent(
-      XES& _best, XES& _inc, const StopCriteria<XEv>& stop) override {
-    assert(false);  // TODO: implement... and check if 'best' and 'incumbent'
-                    // are both useful and necessary!
-    // this->best = _best;
-    // this->incumbent = _inc;
-    return SingleObjSearch<XES>::search(stop);
-  }
-
   // =======================================
   //               Component
   // =======================================

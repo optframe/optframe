@@ -39,7 +39,7 @@ struct SearchContextSA_AC {
 template <XESolution XES>
 class SimulatedAnnealingAC : public SingleObjSearch<XES>,
                              public SA,
-                             public ILoop<SearchContextSA<XES>, XES>,
+                             public ILoop<SearchContextSA_AC<XES>, XES>,
                              public ITrajectory<XES> {
  public:
   using XEv = typename XES::second_type;
@@ -69,13 +69,13 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
   virtual ~SimulatedAnnealingAC() = default;
 
   // callback to handle main loop and stop criteria
-  bool (*onLoopCtx)(const SearchContextSA<XES>& ctx,
+  bool (*onLoopCtx)(const SearchContextSA_AC<XES>& ctx,
                     const StopCriteria<XEv>& sosc) = [](auto& ctx, auto& sosc) {
     return (ctx.T >= 0.000001) && !sosc.shouldStop(ctx.best->second);
   };
 
   // callback to update local variables
-  void (*onBeforeLoopCtx)(SearchContextSA<XES>& ctx) = [](auto& ctx) {
+  void (*onBeforeLoopCtx)(SearchContextSA_AC<XES>& ctx) = [](auto& ctx) {
     if (ctx.iterT < ctx.self.SAmax) {
       ctx.iterT++;
     } else {
@@ -85,13 +85,13 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
   };
 
   // ILoop
-  bool onLoop(const SearchContextSA<XES>& ctx,
+  bool onLoop(const SearchContextSA_AC<XES>& ctx,
               const StopCriteria<XEv>& sosc) override {
     return onLoopCtx(ctx, sosc);
   }
 
   // ILoop
-  void onBeforeLoop(SearchContextSA<XES>& ctx) override {
+  void onBeforeLoop(SearchContextSA_AC<XES>& ctx) override {
     onBeforeLoopCtx(ctx);
   }
 
@@ -149,9 +149,9 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
       std::stringstream ss;
       ss << star->second.evaluation();
       star->first.listAC.push_back(
-          ContextAC{.id{"SA_NEW_STAR"},
-                    .message{ss.str()},
-                    .payload{star->first.sharedClone()}});
+          ContextAC_AC{.id{"SA_NEW_STAR"},
+                       .message{ss.str()},
+                       .payload{star->first.sharedClone()}});
     }
     //
     // star->first.printListAC();
@@ -166,7 +166,7 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
     }
 
     // initialize search context for Simulated Annealing
-    SearchContextSA<XES> ctx{
+    SearchContextSA_AC<XES> ctx{
         .self = *this, .best = star, .incumbent = incumbent};
 
     if (Component::verbose) std::cout << "SA: begin SearchContext" << std::endl;
@@ -415,17 +415,6 @@ XSH::first_type::typeR>);
     return {SearchStatus::NO_REPORT, star};
   }
 
-  // reimplementing searchBy, just to make it more explicit (visible)
-  // maybe add some specific logs?
-  SearchOutput<XES, XSH> searchByIncumbent(
-      XES& _best, XES& _inc, const StopCriteria<XEv>& stop) override {
-    assert(false);  // TODO: implement... and check if 'best' and 'incumbent'
-                    // are both useful and necessary!
-    // this->best = _best;
-    // this->incumbent = _inc;
-    return SingleObjSearch<XES>::search(stop);
-  }
-
   // =======================================
   //               Component
   // =======================================
@@ -449,14 +438,14 @@ XSH::first_type::typeR>);
   static string idComponent() {
     stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
-       << "BasicSA";
+       << "SimulatedAnnealingAC";
     return ss.str();
   }
 };
 
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
-class BasicSimulatedAnnealingBuilder
+class SimulatedAnnealingACBuilder
     : public SA,
       public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
@@ -466,7 +455,7 @@ class BasicSimulatedAnnealingBuilder
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~BasicSimulatedAnnealingBuilder() {}
+  virtual ~SimulatedAnnealingACBuilder() = default;
 
   // has sptr instead of sref, is that on purpose or legacy class?
   GlobalSearch<XES>* build(Scanner& scanner,
@@ -563,8 +552,8 @@ class BasicSimulatedAnnealingBuilder
       std::cout << "\tTi=" << Ti << std::endl;
     }
 
-    return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha,
-                                            SAmax, Ti, hf.getRandGen());
+    return new SimulatedAnnealingAC<XES>(ge, constructive, hlist, alpha, SAmax,
+                                         Ti, hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -592,13 +581,13 @@ class BasicSimulatedAnnealingBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicSimulatedAnnealing<XES>::idComponent();
+    return component == SimulatedAnnealingAC<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
     ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent()
-       << SA::family() << "BasicSA";
+       << SA::family() << "SimulatedAnnealingAC";
     return ss.str();
   }
 
