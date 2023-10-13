@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'optframe'
-copyright = '2007-2022, OptFrame Core Developers'
+copyright = '2007-2023, OptFrame Core Developers'
 author = 'OptFrame Core Developers'
 
 # The full version, including alpha/beta/rc tags
@@ -32,7 +32,8 @@ release = '5.0.14'
 # ones.
 extensions = [
     'recommonmark',
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'sphinxcontrib.pseudocode'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -63,3 +64,5 @@ html_theme_options = {
     'logo_only': True,
     'display_version': False,
 }
+
+numfig = True  # needed for pseudocode

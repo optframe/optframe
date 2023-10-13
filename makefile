@@ -18,12 +18,10 @@ lint:
 .PHONY: docs
 
 docs:
-	cd docs && make clean && make html
+	# apt-get install python3-sphinx
+	cd docs && python3 -m pip install -r requirements.txt && make clean && make html
 
 clean:
 	cd Examples && make clean
 	bazel clean --expunge
 
-install_sphinx:
-	# apt-get install python3-sphinx
-	(cd docs && python3 -m pip install requirements.txt )

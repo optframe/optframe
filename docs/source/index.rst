@@ -21,6 +21,7 @@ Welcome to OptFrame Documentation, please select the desired content section.
    debugging
    advanced
    advanced_checkmodule
+   heuristics
    license
 
 

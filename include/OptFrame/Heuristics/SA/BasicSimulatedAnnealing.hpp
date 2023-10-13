@@ -23,10 +23,10 @@
 namespace optframe {
 
 // forward declaration
-template <XESolution XES>
+template <XESSolution XES>
 class BasicSimulatedAnnealing;
 
-template <XESolution XES>
+template <XESSolution XES>
 struct SearchContextSA {
   BasicSimulatedAnnealing<XES>& self;
   std::optional<XES>& best;
@@ -36,7 +36,7 @@ struct SearchContextSA {
   int iterT;
 };
 
-template <XESolution XES>
+template <XESSolution XES>
 class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
                                 public SA,
                                 public ILoop<SearchContextSA<XES>, XES>,
@@ -308,8 +308,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 class BasicSimulatedAnnealingBuilder
-    : public SA,
-      public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
+    : public GlobalSearchBuilder<XES, XES, XES2, X2ES>,
+      public SA {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
