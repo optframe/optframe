@@ -40,3 +40,8 @@ RUN pip install cpplint
 
 # bumpver
 RUN python3 -m pip install bumpver
+
+# TEMPORARY FIX TO PYTHON BABEL: https://github.com/python-babel/babel/issues/990
+# ValueError: ZoneInfo keys may not be absolute paths, got: /UTC
+#RUN rm -f /etc/localtime
+#RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime
