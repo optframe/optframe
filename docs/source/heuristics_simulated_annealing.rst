@@ -23,52 +23,102 @@ Parameters
 Pseudocode
 ^^^^^^^^^^
 
-.. pcode::
-    :linenos:
+.. only:: html
 
-    \begin{algorithm}
-    \caption{BasicSimulatedAnnealing}
-    \begin{algorithmic}
-    \Procedure{BasicSimulatedAnnealing}{$stop(.)$, $g(.)$, $initsol()$, $\mathcal{N}_k(.)$, $\alpha$, $SAmax$, $Ti$, $\xi(.)$}
-        \State $\langle s,e \rangle  \gets initsol(stop)$
-        \If{$\not\exists \langle s,e \rangle $}
-            \State \textbf{return} $NO\_SOLUTION$, $\langle \rangle$
-        \EndIf
-        \State $\langle s^*,e^*\rangle \gets \langle s,e \rangle$
-        \State $T \gets Ti$
-        \State $iterT \gets 0$
-        \While{$T \geq 0.0001$ \textbf{and} \textbf{not} $stop(e^*)$}
-            \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
-            \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
-            \If{$\not\exists m$}
-                \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+    .. pcode::
+        :linenos:
+
+        \begin{algorithm}
+        \caption{BasicSimulatedAnnealing}
+        \begin{algorithmic}
+        \Procedure{BasicSimulatedAnnealing}{$stop(.)$, $g(.)$, $initsol()$, $\mathcal{N}_k(.)$, $\alpha$, $SAmax$, $Ti$, $\xi(.)$}
+            \State $\langle s,e \rangle  \gets initsol(stop)$
+            \If{$\not\exists \langle s,e \rangle $}
+                \State \textbf{return} $NO\_SOLUTION$, $\langle \rangle$
             \EndIf
-            \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
-            \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
-            \State $\langle s_1', e_1'\rangle  \gets g( \langle s_1', e_1^\circ \rangle )$
-            \If{$g_<(e_1', e_1)$}
-                \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
-                \If{$g_<(e, e^*)$}
-                    \State $\langle s^*,e^*\rangle  \gets \langle s, e\rangle $
-                \EndIf
-            \Else
-                \State $x \gets \xi^{\mathbb{R}}(0, 1)$
-                \State $\Delta \gets |e_1' - e|$
-                \If{$x < e^{\frac{-\Delta}{T}}$}
-                    \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
-                \EndIf
-            \EndIf
-            \If{$iterT < SAmax$}
-            \State $iterT \gets iterT + 1$
-            \Else
+            \State $\langle s^*,e^*\rangle \gets \langle s,e \rangle$
+            \State $T \gets Ti$
             \State $iterT \gets 0$
-            \State $T \gets \alpha \cdot T$
+            \While{$T \geq 0.0001$ \textbf{and} \textbf{not} $stop(e^*)$}
+                \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
+                \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
+                \If{$\not\exists m$}
+                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                \EndIf
+                \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
+                \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
+                \State $\langle s_1', e_1'\rangle  \gets g( \langle s_1', e_1^\circ \rangle )$
+                \If{$g_<(e_1', e_1)$}
+                    \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                    \If{$g_<(e, e^*)$}
+                        \State $\langle s^*,e^*\rangle  \gets \langle s, e\rangle $
+                    \EndIf
+                \Else
+                    \State $x \gets \xi^{\mathbb{R}}(0, 1)$
+                    \State $\Delta \gets |e_1' - e|$
+                    \If{$x < e^{\frac{-\Delta}{T}}$}
+                        \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                    \EndIf
+                \EndIf
+                \If{$iterT < SAmax$}
+                \State $iterT \gets iterT + 1$
+                \Else
+                \State $iterT \gets 0$
+                \State $T \gets \alpha \cdot T$
+                \EndIf
+            \EndWhile
+            \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle $
+        \EndProcedure
+        \end{algorithmic}
+        \end{algorithm}
+
+.. only:: pdf
+
+   .. code-block:: latex
+
+        \begin{algorithm}
+        \caption{BasicSimulatedAnnealing}
+        \begin{algorithmic}
+        \Procedure{BasicSimulatedAnnealing}{$stop(.)$, $g(.)$, $initsol()$, $\mathcal{N}_k(.)$, $\alpha$, $SAmax$, $Ti$, $\xi(.)$}
+            \State $\langle s,e \rangle  \gets initsol(stop)$
+            \If{$\not\exists \langle s,e \rangle $}
+                \State \textbf{return} $NO\_SOLUTION$, $\langle \rangle$
             \EndIf
-        \EndWhile
-        \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle $
-    \EndProcedure
-    \end{algorithmic}
-    \end{algorithm}
+            \State $\langle s^*,e^*\rangle \gets \langle s,e \rangle$
+            \State $T \gets Ti$
+            \State $iterT \gets 0$
+            \While{$T \geq 0.0001$ \textbf{and} \textbf{not} $stop(e^*)$}
+                \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
+                \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
+                \If{$\not\exists m$}
+                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                \EndIf
+                \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
+                \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
+                \State $\langle s_1', e_1'\rangle  \gets g( \langle s_1', e_1^\circ \rangle )$
+                \If{$g_<(e_1', e_1)$}
+                    \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                    \If{$g_<(e, e^*)$}
+                        \State $\langle s^*,e^*\rangle  \gets \langle s, e\rangle $
+                    \EndIf
+                \Else
+                    \State $x \gets \xi^{\mathbb{R}}(0, 1)$
+                    \State $\Delta \gets |e_1' - e|$
+                    \If{$x < e^{\frac{-\Delta}{T}}$}
+                        \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                    \EndIf
+                \EndIf
+                \If{$iterT < SAmax$}
+                \State $iterT \gets iterT + 1$
+                \Else
+                \State $iterT \gets 0$
+                \State $T \gets \alpha \cdot T$
+                \EndIf
+            \EndWhile
+            \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle $
+        \EndProcedure
+        \end{algorithmic}
+        \end{algorithm}
 
 Alternative Parameters
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -147,52 +197,102 @@ by configuring its callbacks and using alternative component builders.
 
 The pseudocode below details the extension possibilities on BasicSimulatedAnnealing.
 
-.. pcode::
-    :linenos:
+.. only:: html
+        
+    .. pcode::
+        :linenos:
 
-    \begin{algorithm}
-    \caption{BasicSimulatedAnnealingCallbacks}
-    \begin{algorithmic}
-    \Procedure{BasicSimulatedAnnealingCallbacks}{$stop(.)$, $g(.)$, $initsol()$, $\mathcal{N}_k(.)$, $Ti$, $\xi(.)$, $onBest(.)$, $onIncumbent(.)$, $onLoop(.)$, $onBeforeLoop(.)$}
-        \State $\langle s,e \rangle  \gets initsol(stop)$
-        \If{$\not\exists \langle s,e \rangle $}
-            \State \textbf{return} $NO\_SOLUTION$, $\langle \rangle$
-        \EndIf
-        \State $onIncumbent(\langle s,e\rangle)$
-        \State $\langle s^*,e^*\rangle \gets \langle s,e \rangle$
-        \State $onBest(\langle s^*,e^*\rangle)$
-        \State $context.T \gets Ti$
-        \State $context.iterT \gets 0$
-        \While{$onLoop(context, stop)$}
-            \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
-            \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
-            \If{$\not\exists m$}
-                \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+        \begin{algorithm}
+        \caption{BasicSimulatedAnnealingCallbacks}
+        \begin{algorithmic}
+        \Procedure{BasicSimulatedAnnealingCallbacks}{$stop(.)$, $g(.)$, $initsol()$, $\mathcal{N}_k(.)$, $Ti$, $\xi(.)$, $onBest(.)$, $onIncumbent(.)$, $onLoop(.)$, $onBeforeLoop(.)$}
+            \State $\langle s,e \rangle  \gets initsol(stop)$
+            \If{$\not\exists \langle s,e \rangle $}
+                \State \textbf{return} $NO\_SOLUTION$, $\langle \rangle$
             \EndIf
-            \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
-            \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
-            \State $\langle s_1', e_1'\rangle  \gets g( \langle s_1', e_1^\circ \rangle )$
-            \If{$g_<(e_1', e_1)$}
-                \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
-                \State $onIncumbent(\langle s,e\rangle)$
-                \If{$g_<(e, e^*)$}
-                    \State $\langle s^*,e^*\rangle  \gets \langle s, e\rangle $
-                    \State $onBest(\langle s^*,e^*\rangle)$
+            \State $onIncumbent(\langle s,e\rangle)$
+            \State $\langle s^*,e^*\rangle \gets \langle s,e \rangle$
+            \State $onBest(\langle s^*,e^*\rangle)$
+            \State $context.T \gets Ti$
+            \State $context.iterT \gets 0$
+            \While{$onLoop(context, stop)$}
+                \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
+                \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
+                \If{$\not\exists m$}
+                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
                 \EndIf
-            \Else
-                \State $x \gets \xi^{\mathbb{R}}(0, 1)$
-                \State $\Delta \gets |e_1' - e|$
-                \If{$x < e^{\frac{-\Delta}{T}}$}
+                \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
+                \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
+                \State $\langle s_1', e_1'\rangle  \gets g( \langle s_1', e_1^\circ \rangle )$
+                \If{$g_<(e_1', e_1)$}
                     \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
                     \State $onIncumbent(\langle s,e\rangle)$
+                    \If{$g_<(e, e^*)$}
+                        \State $\langle s^*,e^*\rangle  \gets \langle s, e\rangle $
+                        \State $onBest(\langle s^*,e^*\rangle)$
+                    \EndIf
+                \Else
+                    \State $x \gets \xi^{\mathbb{R}}(0, 1)$
+                    \State $\Delta \gets |e_1' - e|$
+                    \If{$x < e^{\frac{-\Delta}{T}}$}
+                        \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                        \State $onIncumbent(\langle s,e\rangle)$
+                    \EndIf
                 \EndIf
+                \State $context \gets onBeforeLoop(context)$
+            \EndWhile
+            \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle $
+        \EndProcedure
+        \end{algorithmic}
+        \end{algorithm}
+
+.. only:: pdf
+
+   .. code-block:: latex
+
+        \begin{algorithm}
+        \caption{BasicSimulatedAnnealingCallbacks}
+        \begin{algorithmic}
+        \Procedure{BasicSimulatedAnnealingCallbacks}{$stop(.)$, $g(.)$, $initsol()$, $\mathcal{N}_k(.)$, $Ti$, $\xi(.)$, $onBest(.)$, $onIncumbent(.)$, $onLoop(.)$, $onBeforeLoop(.)$}
+            \State $\langle s,e \rangle  \gets initsol(stop)$
+            \If{$\not\exists \langle s,e \rangle $}
+                \State \textbf{return} $NO\_SOLUTION$, $\langle \rangle$
             \EndIf
-            \State $context \gets onBeforeLoop(context)$
-        \EndWhile
-        \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle $
-    \EndProcedure
-    \end{algorithmic}
-    \end{algorithm}
+            \State $onIncumbent(\langle s,e\rangle)$
+            \State $\langle s^*,e^*\rangle \gets \langle s,e \rangle$
+            \State $onBest(\langle s^*,e^*\rangle)$
+            \State $context.T \gets Ti$
+            \State $context.iterT \gets 0$
+            \While{$onLoop(context, stop)$}
+                \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
+                \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
+                \If{$\not\exists m$}
+                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                \EndIf
+                \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
+                \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
+                \State $\langle s_1', e_1'\rangle  \gets g( \langle s_1', e_1^\circ \rangle )$
+                \If{$g_<(e_1', e_1)$}
+                    \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                    \State $onIncumbent(\langle s,e\rangle)$
+                    \If{$g_<(e, e^*)$}
+                        \State $\langle s^*,e^*\rangle  \gets \langle s, e\rangle $
+                        \State $onBest(\langle s^*,e^*\rangle)$
+                    \EndIf
+                \Else
+                    \State $x \gets \xi^{\mathbb{R}}(0, 1)$
+                    \State $\Delta \gets |e_1' - e|$
+                    \If{$x < e^{\frac{-\Delta}{T}}$}
+                        \State $\langle s,e\rangle  \gets \langle s_1', e_1'\rangle $
+                        \State $onIncumbent(\langle s,e\rangle)$
+                    \EndIf
+                \EndIf
+                \State $context \gets onBeforeLoop(context)$
+            \EndWhile
+            \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle $
+        \EndProcedure
+        \end{algorithmic}
+        \end{algorithm}
 
 SearchContext
 ^^^^^^^^^^^^^
