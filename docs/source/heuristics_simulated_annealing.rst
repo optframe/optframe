@@ -72,7 +72,7 @@ Pseudocode
         \end{algorithmic}
         \end{algorithm}
 
-.. only:: pdf
+.. only:: latex
 
    .. code-block:: latex
 
@@ -246,7 +246,7 @@ The pseudocode below details the extension possibilities on BasicSimulatedAnneal
         \end{algorithmic}
         \end{algorithm}
 
-.. only:: pdf
+.. only:: latex
 
    .. code-block:: latex
 
