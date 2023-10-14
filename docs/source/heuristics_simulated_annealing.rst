@@ -1,16 +1,30 @@
 Simulated Annealing metaheuristic
 =================================
 
+General Concepts and Theory
+---------------------------
+
 Simulated Annealing is a popular metaheuristic, proposed by Kirkpatrick et al. in 1983::
 
     S. Kirkpatrick, D.C. Gellat, and M.P. Vecchi. Optimization by Simulated
     Annealing. Science, 220:671-680, 1983.
 
-Definition of a basic version
-------------------------------
+To learn more, we recommend the following classic books:
+
+- Handbook of Metaheuristics
+- Metaheuristics: from Design to Implementation
+
+In Portuguese, we recommend the textbook by prof. Marcone Jamilson Freitas Souza.
+
+BasicSimulatedAnnealing
+-----------------------
+
+1. Main Definition
+~~~~~~~~~~~~~~~~~~
 
 Parameters
 ^^^^^^^^^^
+
 - :math:`stop(.)`: reference to StopCriteria component
 - :math:`g(.)`: shared reference to GeneralEvaluator component
 - :math:`initsol()`: shared reference to InitialSearch component
@@ -120,15 +134,10 @@ Pseudocode
         \end{algorithmic}
         \end{algorithm}
 
-Alternative Parameters
-^^^^^^^^^^^^^^^^^^^^^^
+SearchStatus return codes
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Some possibilities may appear only in C++ constructors,
-such as passing a single neighborhood instead of a list.
-
-.. important::
-    The **searchBy** method inherited from *GlobalSearch* allows directly passing a primary XESolution element,
-    thus *overriding the initsol() component*.
+There are two return codes being currently used: :math:`NO\_SOLUTION` and :math:`NO\_REPORT`.
 
 
 Primary and Secondary search spaces
@@ -146,13 +155,9 @@ and also ITrajectory, that requires XSH=XSH2.
 To better understand these notations, see `Concepts <./concepts.html>`_
 
 
-SearchStatus return codes
-^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are two return codes being currently used: :math:`NO\_SOLUTION` and :math:`NO\_REPORT`.
-
-Component Builder string syntax
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Primary ComponentBuilder string syntax
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 One may build BasicSimulatedAnnealing on C++ by using its constructors from `BasicSimulatedAnnealing.hpp` header file.
 
@@ -188,9 +193,17 @@ A simple example could be::
 
 See Examples folder for real examples on C++ and OptFrame Python examples for using component builder string syntax.
 
+2. Helpers
+~~~~~~~~~~
 
-Extended versions of BasicSimulatedAnnealing
---------------------------------------------
+Simulated Annealing family includes a special method to estimate the 
+initial temperature :code:`estimateInitialTemperature`.
+
+This method is found in textbook by prof. Marcone Jamilson Freitas Souza (In Portuguese).
+
+
+3. Extended Versions and Callbacks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One may build extended versions of BasicSimulatedAnnealing, 
 by configuring its callbacks and using alternative component builders.
@@ -293,6 +306,18 @@ The pseudocode below details the extension possibilities on BasicSimulatedAnneal
         \EndProcedure
         \end{algorithmic}
         \end{algorithm}
+
+Alternative Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+
+Some possibilities may appear only in C++ constructors,
+such as passing a single neighborhood instead of a list.
+
+.. important::
+    The **searchBy** method inherited from *GlobalSearch* allows directly passing a primary XESolution element,
+    thus *overriding the initsol() component*.
+
+
 
 SearchContext
 ^^^^^^^^^^^^^
