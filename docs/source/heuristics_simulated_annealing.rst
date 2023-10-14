@@ -34,8 +34,8 @@ Parameters
 - :math:`Ti`: initial temperature (double)
 - :math:`\xi(.)`: shared reference to RandGen component
 
-Pseudocode
-^^^^^^^^^^
+Pseudocode for Main Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. only:: html
 
@@ -208,6 +208,27 @@ This method is found in textbook by prof. Marcone Jamilson Freitas Souza (In Por
 One may build extended versions of BasicSimulatedAnnealing, 
 by configuring its callbacks and using alternative component builders.
 
+SearchContext
+^^^^^^^^^^^^^
+
+BasicSimulatedAnnealing defines a SearchContext called SearchContextSA, 
+with the following data:
+
+- `BasicSimulatedAnnealing<XES>& self``: reference to self (to get parameters)
+- `double T`: current temperature
+- `int iterT`: current iteration (per temperature)
+
+Must double check these in the future (unstable to use):
+
+- `std::optional<XES>& best`: reference to best solution, if exists
+- `std::optional<XES>& incumbent`: reference to incumbent solution, if exists
+
+BasicSimulatedAnnealing allows manipulation of its SearchContextSA in callbacks,
+in order to change/personalize its search behavior.
+
+Pseudocode for Extended Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The pseudocode below details the extension possibilities on BasicSimulatedAnnealing.
 
 .. only:: html
@@ -307,37 +328,6 @@ The pseudocode below details the extension possibilities on BasicSimulatedAnneal
         \end{algorithmic}
         \end{algorithm}
 
-Alternative Parameters
-^^^^^^^^^^^^^^^^^^^^^^
-
-Some possibilities may appear only in C++ constructors,
-such as passing a single neighborhood instead of a list.
-
-.. important::
-    The **searchBy** method inherited from *GlobalSearch* allows directly passing a primary XESolution element,
-    thus *overriding the initsol() component*.
-
-
-
-SearchContext
-^^^^^^^^^^^^^
-
-BasicSimulatedAnnealing defines a SearchContext called SearchContextSA, 
-with the following data:
-
-- `BasicSimulatedAnnealing<XES>& self``: reference to self (to get parameters)
-- `double T`: current temperature
-- `int iterT`: current iteration (per temperature)
-
-Must double check these in the future (unstable to use):
-
-- `std::optional<XES>& best`: reference to best solution, if exists
-- `std::optional<XES>& incumbent`: reference to incumbent solution, if exists
-
-BasicSimulatedAnnealing allows manipulation of its SearchContextSA in callbacks,
-in order to change/personalize its search behavior.
-
-
 Callbacks
 ^^^^^^^^^
 
@@ -356,6 +346,17 @@ and *onBeforeLoopCtx*.
 
 By overriding *onLoopCtx* and *onBeforeLoopCtx* one may manipulate SearchContextSA,
 for example, to implement alternative cooling schemes for Simulated Annealing.
+
+
+Alternative Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+
+Some possibilities may appear only in C++ constructors,
+such as passing a single neighborhood instead of a list.
+
+.. important::
+    The **searchBy** method inherited from *GlobalSearch* allows directly passing a primary XESolution element,
+    thus *overriding the initsol() component*.
 
 
 .. warning::
