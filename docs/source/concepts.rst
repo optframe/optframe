@@ -39,9 +39,11 @@ example, one may be an *int*, while the other is a *double*).
     This makes it simpler to code multi-objective metaheuristics, but does not exclude the
     possibility of adopting different types as a tuple, if necessary.
 
-Some spaces contain a `Power Set <https://en.wikipedia.org/wiki/Power_set>_` of
+Some spaces contain a `Power Set`_ of
 other spaces, such as the **X2Solution**, which is equivalent to a set of solutions of type :math:`2^{XSolution}`,
 and the **X2ESolution**, which is a set of **XESolution** pairs, like :math:`2^{XESolution}`.
+
+.. _Power Set: https://en.wikipedia.org/wiki/Power_set
 
 .. hint::
     One can regard a **X2Solution** as a *population of individuals*, in Genetic Algorithm notation,
