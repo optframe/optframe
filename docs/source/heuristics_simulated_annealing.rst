@@ -57,7 +57,7 @@ Pseudocode for Main Version
                 \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
                 \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
                 \If{$\not\exists m$}
-                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                    \State \textbf{return} $EARLY\_STOP, \langle s^*, e^*\rangle$
                 \EndIf
                 \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
                 \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
@@ -105,7 +105,7 @@ Pseudocode for Main Version
                 \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
                 \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
                 \If{$\not\exists m$}
-                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                    \State \textbf{return} $EARLY\_STOP, \langle s^*, e^*\rangle$
                 \EndIf
                 \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
                 \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
@@ -137,8 +137,8 @@ Pseudocode for Main Version
 SearchStatus return codes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are two return codes being currently used: :math:`NO\_SOLUTION` and :math:`NO\_REPORT`.
-
+There are return codes being currently used: :math:`NO\_SOLUTION`, :math:`EARLY\_STOP` and :math:`NO\_REPORT`.
+The return :math:`EARLY\_STOP` will trigger warnings.
 
 Primary and Secondary search spaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -193,7 +193,7 @@ A simple example could be::
 
 See Examples folder for real examples on C++ and OptFrame Python examples for using component builder string syntax.
 
-2. Helpers
+1. Helpers
 ~~~~~~~~~~
 
 Simulated Annealing family includes a special method to estimate the 
@@ -253,7 +253,7 @@ The pseudocode below details the extension possibilities on BasicSimulatedAnneal
                 \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
                 \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
                 \If{$\not\exists m$}
-                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                    \State \textbf{return} $EARLY\_STOP, \langle s^*, e^*\rangle$
                 \EndIf
                 \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
                 \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $
@@ -301,7 +301,7 @@ The pseudocode below details the extension possibilities on BasicSimulatedAnneal
                 \State $j \gets \xi^{\mathbb{Z}}(0, k-1)$
                 \State $m \gets \mathcal{N}^{ANY}_j( \langle s,e\rangle  )$
                 \If{$\not\exists m$}
-                    \State \textbf{return} $NO\_REPORT, \langle s^*, e^*\rangle$
+                    \State \textbf{return} $EARLY\_STOP, \langle s^*, e^*\rangle$
                 \EndIf
                 \State $\langle s_1, e_1\rangle  \gets \langle s,e\rangle $
                 \State $\langle s_1', e_1^\circ\rangle, \bar m  \gets m \oplus \langle s_1,e_1\rangle $

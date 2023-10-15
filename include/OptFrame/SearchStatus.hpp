@@ -24,16 +24,16 @@ enum class SearchStatus : uint8_t {
   // informs that method is running
   // if flag is NOT set, we assume method is stopped
   //
-  // RESERVED = 0x04, // flag 0x04 is RESERVED
-  //
-  // stops can be checked directly by the logs
-  //
-  // flag GENERAL_STOP = timelimit OR memory
-  // GENERAL_STOP = 0x04, // removed!
-  // stop by memory limit: intended stops only! out-of-memory errors should use
-  // FAILED flag only. if stop by time/memory is not set, it means method
+  EARLY_STOP = 0x04,
+  // Indicates that some issue stopped method prematurely.
+  // If SET, it should trigger some WARNING regarding the problem.
+  // Intended stops only! out-of-memory errors should use FAILED flag only.
+  // if NOT set, it means method
   // stopped by any other parameter: target, evaluation count, population count,
   // ... user must verify information logs in this case
+  // We also consider TIMELIMIT stop as a Correct (NO_REPORT) stop, not Early.
+  // We assume that typically EARLY_STOP will not come with NO_SOLUTION...
+  // So, if no solution is found, do not put it as early stop, just NO_SOLUTION.
   //
   // ---------------
   // Problem Status
@@ -51,6 +51,9 @@ enum class SearchStatus : uint8_t {
   NO_SOLUTION = 0x10,
   // informs that no solution has been found (problem may or may not be
   // impossible) if this flag is not set, some solution is expected as return
+  // Use this is algorithm is Technically unable to give solution... even if
+  // some solution could exist! If it could not exist,
+  // put NO_SOLUTION & IMPOSSIBLE
   //
   IMPROVEMENT = 0x20,
   // strict improvement flag

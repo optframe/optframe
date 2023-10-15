@@ -191,7 +191,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     if (Component::verbose)
       std::cout << "SA(verbose): BEGIN se: " << se << std::endl;
 
-    assert(!se.second.isOutdated());  // SANITY CHECK
+    assert(!se.second.isOutdated());  // CXX CONTRACT C++26
 
     while (onLoop(ctx, sosc)) {
       if (Component::verbose)
@@ -204,7 +204,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
         if (Component::warning)
           cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T
                << "! cannot continue..." << endl;
-        return {SearchStatus::NO_REPORT, star};
+        // This is not normal... but not catastrophic stop either.
+        return {SearchStatus::EARLY_STOP, star};
       }
 
       if (Component::verbose)
@@ -228,7 +229,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
       evaluator->reevaluate(current);
 
-      assert(!current.second.isOutdated());  // SANITY CHECK
+      assert(!current.second.isOutdated());  // CXX CONTRACT C++26
 
       if (Component::verbose)
         std::cout << "SA(verbose): after reevaluate. current=" << current
