@@ -17,8 +17,9 @@ enum class SearchStatus : uint32_t {
   // no information to give (no good or bad news)
   // this flag should only be used when no other situation applies.
   //
-  // RESERVED: FAILED = 0x01,
+  FAILED = 0x01,
   // fail flag: this is meant only for non-intended stops, i.e., crashes
+  // other example is POOR implementation... if breaks assumptions, FAILED!
   // if this flag IS NOT set, it means everything was fine.
   // if this flag IS set, no other flag should be used.
   //
@@ -76,6 +77,7 @@ enum class SearchStatus : uint32_t {
   // local optimum (if not set, no information is given).
   // this flag is NOT required when it's GLOBAL_OPT (but method designer may
   // also provide this information, if useful)
+  // ========== IF COST IS ESTIMATED... THEN IS IT AN "ESTIMATED LOCAL_OPT"?
   //
   // RESERVED: GLOBAL_OPT = 0x80
   // global optimum (if not set, it may be LOCAL_OPT)

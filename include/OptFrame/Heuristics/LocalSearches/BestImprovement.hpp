@@ -57,7 +57,7 @@ class BestImprovement : public LocalSearch<XES> {
     // uptr<NSIterator<XES, XSH>> it = nsSeq.getIterator(s);
     uptr<NSIterator<XES, XSH>> it = nsSeq->getIterator(se);
     //
-    if (!it) return SearchStatus::EARLY_STOP;
+    if (!it) return SearchStatus::FAILED;  // poor implementation
     //
     if (Component::information) std::cout << "BI::first()" << std::endl;
     //
@@ -65,7 +65,7 @@ class BestImprovement : public LocalSearch<XES> {
 
     if (it->isDone()) {
       sum_time += t.inMilliSecs();
-      return SearchStatus::NO_REPORT;
+      return SearchStatus::NO_REPORT;  // Is it LOCAL_OPT?
     }
 
     uptr<Move<XES, XSH>> bestMove = it->current();
@@ -83,20 +83,18 @@ class BestImprovement : public LocalSearch<XES> {
     op<XEv> bestCost = nullopt;
 
     while (true) {
-      // while (!bestMove->canBeApplied(s))
       while (!bestMove->canBeApplied(se)) {
         it->next();
         if (!it->isDone()) {
           bestMove = it->current();
         } else {
           sum_time += t.inMilliSecs();
-          return SearchStatus::NO_REPORT;  // NO_IMPROVEMENT_POSSIBLE ?
+          return SearchStatus::NO_REPORT;  // Is it LOCAL_OPT ?
         }
       }
 
       bestCost = eval->moveCost(*bestMove, se);
-      // if (eval.isImprovement(*bestCost))
-      // if (bestCost->isImprovingStrict())
+
       if (eval->isStrictImprovement(*bestCost)) {
         it->next();
         break;
@@ -107,7 +105,7 @@ class BestImprovement : public LocalSearch<XES> {
           bestMove = it->current();
         } else {
           sum_time += t.inMilliSecs();
-          return SearchStatus::NO_REPORT;  // NO_IMPROVEMENT_POSSIBLE ?
+          return SearchStatus::NO_REPORT;  // Is it LOCAL_OPT ?
         }
       }
     }
@@ -123,27 +121,19 @@ class BestImprovement : public LocalSearch<XES> {
         // if (eval.betterThan(*cost, *bestCost))
         // if (cost->betterStrict(*bestCost))
         if (eval->betterStrict(*cost, *bestCost)) {
-          /////delete bestMove;
-          /////delete bestCost;
-          //
-          // bestMove = move;
-          // bestCost = cost;
           bestMove = std::move(move);
           move = nullptr;
           bestCost = cost;  // TODO: std::move?
         } else {
-          // delete move;
-          // delete cost;
+          // ?
         }
       } else {
-        // delete move;
+        // ?
       }
 
       it->next();
     }
 
-    // if (eval.isImprovement(*bestCost))
-    // if (bestCost->isImprovingStrict())
     if (eval->isStrictImprovement(*bestCost)) {
       // cout << "MOVE IS IMPROVEMENT! cost=";
       // bestCost->print();

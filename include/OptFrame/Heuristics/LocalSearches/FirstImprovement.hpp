@@ -45,7 +45,7 @@ class FirstImprovement : public LocalSearch<XES> {
     if (!it) {
       if (Component::warning)
         std::cout << "FI(WARNING): getIterator FAILED!" << std::endl;
-      return SearchStatus::EARLY_STOP;
+      return SearchStatus::FAILED;  // poor implementation
     }
     //
     string bestMoveId = "";
@@ -65,7 +65,7 @@ class FirstImprovement : public LocalSearch<XES> {
       if (!move) {
         if (Component::warning)
           std::cout << "FI(WARNING): it->current() FAILED!" << std::endl;
-        return SearchStatus::EARLY_STOP;
+        return SearchStatus::FAILED;  // poor implementation
       }
 
       // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
