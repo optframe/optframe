@@ -116,6 +116,8 @@ Briefly, these are the supported default domains:
 - :code:`"<XRKf32>"`: only solution of random-keys with 32-bit floating-point (no evaluation)
 - :code:`"<XRKf64Ef64>"`: only solution of random-keys with 64-bit floating-point and also 64-bit evaluation
 - :code:`"<X2RKf64Ef64>"`: only population of :code:`XRKf64Ef64` elements
+- :code:`"<XRKf64EMi32>"`: only solution of random-keys with 64-bit floating-point and multiple 32-bit integer evaluation
+- and so on...
 
 This can (CERTAINLY) look confusing, so don't worry too much about it!
 It is not common to have these, specially for common mono objective optimization problems.
