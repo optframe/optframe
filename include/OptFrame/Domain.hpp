@@ -43,6 +43,10 @@ class Domain {
                            std::numeric_limits<T>::is_iec559> {};
 
   template <typename T>
+  struct is_i32
+      : std::bool_constant<std::is_same_v<T, int32_t> && sizeof(T) == 4> {};
+
+  template <typename T>
   struct is_i64
       : std::bool_constant<std::is_same_v<T, int64_t> && sizeof(T) == 8> {};
 
@@ -131,6 +135,18 @@ class Domain {
             XESolution<XMES> &&
             is_f64<typename XMES::second_type::XEv::objType>::value> {};
 
+  // for i32 multievaluation
+
+  template <typename XMES, typename = void, typename = void>
+  struct is_XMESi32 : std::false_type {};
+
+  template <typename XMES>
+  struct is_XMESi32<XMES, std::void_t<typename XMES::second_type>,
+                    std::void_t<typename XMES::second_type::XEv>>
+      : std::bool_constant<
+            XESolution<XMES> &&
+            is_i32<typename XMES::second_type::XEv::objType>::value> {};
+
   // ===========
   // REMEMBER: X2MES = 2^(S,[E])
 
@@ -173,6 +189,27 @@ class Domain {
                            is_f64<typename XES::second_type::objType>::value> {
   };
 
+  // XRKf64Ei32 = (RKf64, Ei32)
+  template <typename XES, typename = void>
+  struct is_XRKf64Ei32 : std::false_type {};
+
+  template <typename XES>
+  struct is_XRKf64Ei32<XES, std::void_t<typename XES::second_type>>
+      : std::bool_constant<XESolution<XES> &&
+                           is_rkf64<typename XES::first_type>::value &&
+                           is_i32<typename XES::second_type::objType>::value> {
+  };
+
+  // XRKf64EMi32 = (RKf64, [Ei32])  [aka, MultiEvaluation<int>]
+  template <typename XES, typename = void>
+  struct is_XRKf64EMi32 : std::false_type {};
+
+  template <typename XES>
+  struct is_XRKf64EMi32<XES, std::void_t<typename XES::second_type>>
+      : std::bool_constant<XESolution<XES> &&
+                           is_rkf64<typename XES::first_type>::value &&
+                           is_XMESi32<XES>::value> {};
+
   // X2RKf64Ef64 = 2^(RKf64, Ef64)
 
   template <typename X2ES, typename = void, typename = void>
@@ -187,6 +224,35 @@ class Domain {
          std::bool_constant<X2ESolution<X2ES, typename X2ES::value_type> &&
                             is_XRKf64Ef64<typename X2ES::value_type>::value> {};
 
+  // X2RKf64Ei32 = 2^(RKf64, Ei32)
+
+  template <typename X2ES, typename = void, typename = void>
+  struct is_X2RKf64Ei32 : std::false_type {};
+
+  template <typename X2ES>
+  struct is_X2RKf64Ei32<X2ES,
+                        std::void_t<typename X2ES::value_type>,  // for type
+                                                                 // deduction
+                        std::void_t<typename X2ES::value_type::second_type>>
+      :  // for type deduction
+         std::bool_constant<X2ESolution<X2ES, typename X2ES::value_type> &&
+                            is_XRKf64Ei32<typename X2ES::value_type>::value> {};
+
+  // X2RKf64EMi32 = 2^(RKf64, [Ei32])
+
+  template <typename X2ES, typename = void, typename = void>
+  struct is_X2RKf64EMi32 : std::false_type {};
+
+  template <typename X2ES>
+  struct is_X2RKf64EMi32<X2ES,
+                         std::void_t<typename X2ES::value_type>,  // for type
+                                                                  // deduction
+                         std::void_t<typename X2ES::value_type::second_type>>
+      :  // for type deduction
+         std::bool_constant<X2ESolution<X2ES, typename X2ES::value_type> &&
+                            is_XRKf64EMi32<typename X2ES::value_type>::value> {
+  };
+
   // ===============
 
   template <typename X>
@@ -198,6 +264,14 @@ class Domain {
       return "<XRKf64Ef64>";
     else if constexpr (is_X2RKf64Ef64<X>::value)
       return "<X2RKf64Ef64>";
+    else if constexpr (is_XRKf64Ei32<X>::value)
+      return "<XRKf64Ei32>";
+    else if constexpr (is_X2RKf64Ei32<X>::value)
+      return "<X2RKf64Ei32>";
+    else if constexpr (is_XRKf64EMi32<X>::value)
+      return "<XRKf64EMi32>";
+    else if constexpr (is_X2RKf64EMi32<X>::value)
+      return "<X2RKf64EMi32>";
     else if constexpr (is_XESf64<X>::value)
       return "<XESf64>";
     else if constexpr (is_XESf32<X>::value)
@@ -208,6 +282,8 @@ class Domain {
       return "<X2ESf64>";
     else if constexpr (is_XMESf64<X>::value)
       return "<XMESf64>";
+    else if constexpr (is_XMESi32<X>::value)
+      return "<XMESi32>";
     else if constexpr (is_X2MESf64<X>::value)
       return "<X2MESf64>";
     else if constexpr (XESolution<X>)
@@ -229,7 +305,7 @@ class Domain {
   }
 };
 
-#ifndef NDEBUG
+//#ifndef NDEBUGclassroom
 static_assert(Domain::getNamedDomain<void*>() == std::string_view{"<XS>"});
 //
 static_assert(Domain::getNamedDomain<std::vector<float>>() ==
@@ -267,7 +343,7 @@ static_assert(Domain::getNamedDomain<EMSolution_Test1>() ==
               std::string_view("<XMESf64>"));
 static_assert(Domain::getNamedDomain<BasicPareto<EMSolution_Test1>>() ==
               std::string_view("<X2MESf64>"));
-#endif
+//#endif
 
 }  // namespace optframe
 

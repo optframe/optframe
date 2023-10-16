@@ -8,10 +8,15 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <utility>
+#include <vector>
 //
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>
+#include <OptFrame/Domain.hpp>
+#include <OptFrame/Heuristics/EA/RK/InitialEPopulationRK.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
+#include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 #include <OptFrame/Pareto.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
@@ -50,14 +55,13 @@ optframe::evgoal<Self>&&
 
 */
 
-hasUpdateDiff auto global_ev1 = MultiEvaluation<int>();
+// hasUpdateDiff auto global_ev1 = MultiEvaluation<int>();
+auto global_ev1 = MultiEvaluation<int>();
 
-optframe::evgoal auto global_ev = MultiEvaluation<int>();
+// optframe::evgoal auto global_ev = MultiEvaluation<int>();
+auto global_ev = MultiEvaluation<int>();
 
 static_assert(optframe::evgoal<MultiEvaluation<int>>);
-
-static_assert(XEvaluation<MultiEvaluation<int>>);
-
 static_assert(XEvaluation<MultiEvaluation<int>>);
 static_assert(XEvaluation<typename ESolutionBTSP::second_type>);
 static_assert(XESolution<ESolutionBTSP>);
@@ -318,6 +322,111 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
 };          // nsseq2
 
 vsref<NS<ESolutionBTSP>> nslist{nsseq2};
+
+using ESolutionBTSP_RSK = std::pair<std::vector<double>, MultiEvaluation<int>>;
+
+static_assert(optframe::Domain::is_XMESi32<ESolutionBTSP_RSK>::value);
+static_assert(optframe::Domain::is_XRKf64EMi32<ESolutionBTSP_RSK>::value);
+
+class MyRandomKeysInitEPop
+    : public InitialEPopulationRK<ESolutionBTSP_RSK, double> {
+  using RSK = std::vector<double>;
+
+ private:
+  int sz;
+  sref<RandGen> rg;
+
+ public:
+  explicit MyRandomKeysInitEPop(int size, sref<RandGen> _rg = new RandGen)
+      : sz{size}, rg{_rg} {}
+
+  // copy constructor
+  // MyRandomKeysInitEPop(const MyRandomKeysInitEPop& self)
+  //     : sz{self.sz}, rg{self.rg} {}
+
+  // this generator cannot evaluate solutions
+  bool canEvaluate() const override { return false; }
+
+  VEPopulation<std::pair<RSK, MultiEvaluation<int>>> generateEPopulation(
+      unsigned populationSize, double timelimit) override {
+    VEPopulation<std::pair<RSK, MultiEvaluation<int>>> pop;
+
+    for (unsigned i = 0; i < populationSize; i++) {
+      vector<double> vd(sz);
+      for (int j = 0; j < sz; j++) vd[j] = (rg->rand() % 100000) / 100000.0;
+      // assert(!this->canEvaluate());
+      std::pair<RSK, MultiEvaluation<int>> ind{vd, MultiEvaluation<int>{}};
+      pop.push_back(ind);
+    }
+
+    return pop;
+  }
+};
+
+pair<MultiEvaluation<int>, vector<int>> fDecodeBiEval(
+    sref<Evaluator<typename ESolutionBTSP::first_type,
+                   typename ESolutionBTSP::second_type, ESolutionBTSP>>
+        eval,
+    const vector<double>& rk) {
+  vector<pair<double, int>> v(rk.size());
+  //
+  for (unsigned i = 0; i < v.size(); i++) v[i] = pair<double, int>(rk[i], i);
+
+  sort(v.begin(), v.end(),
+       [](const pair<double, int>& i, const pair<double, int>& j) -> bool {
+         return i.first < j.first;
+       });
+
+  // R = vector<int>
+  vector<int> p(v.size());
+  for (unsigned i = 0; i < v.size(); i++) p[i] = v[i].second;
+
+  /*
+  // ========== CHECKER ========
+  vector<bool> vb(v.size(), false);
+  for (unsigned i = 0; i < p.size(); i++)
+     vb[p[i]] = true;
+  for (unsigned i = 0; i < vb.size(); i++) {
+     if (!vb[i]) {
+        std::cout << "ERROR rk:" << rk << std::endl;
+        std::cout << "ERROR v:" << v << std::endl;
+        std::cout << "ERROR p:" << p << std::endl;
+        std::cout << "ERROR vb:" << vb << std::endl;
+     }
+     assert(vb[i]);
+  }
+  // ===== end CHECKER =====
+*/
+
+  MultiEvaluation<int> e = eval->evaluate(p);
+  return make_pair(e, p);
+}
+
+class OptFrameCoreBTSP {
+ public:
+  using S = typename ESolutionBTSPSingle::first_type;
+  using XEv = typename ESolutionBTSPSingle::second_type;
+  FConstructive<std::vector<int>> crand;
+  //
+  sref<Evaluator<S, XEv>> ev0;
+  sref<Evaluator<S, XEv>> ev1;
+  vsref<Evaluator<S, XEv>> ev_list;
+  sref<MultiEvaluator<ESolutionBTSP>> ev;
+  //
+  FNS<ESolutionBTSP> nsswap;
+
+  explicit OptFrameCoreBTSP(sref<ProblemContextBTSP> p)
+      : crand{frandom},
+        ev0{new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{
+            fevaluate0}},
+        ev1{new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{
+            fevaluate1}},
+        ev_list{ev0, ev1},
+        ev{new MultiEvaluator<ESolutionBTSP>(ev_list)},
+        nsswap{fRandomSwap} {
+    //
+  }
+};
 
 }  // namespace BTSP_fcore
 
