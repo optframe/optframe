@@ -164,7 +164,7 @@ class BestImprovement : public LocalSearch<XES> {
       // e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local
       // Optimum
       sum_time += t.inMilliSecs();
-      return SearchStatus::NO_IMPROVEMENT_POSSIBLE;
+      return SearchStatus::LOCAL_OPT;
     }
     // cout << "#" << num_calls << " out_bi:";
     // bestMove->print();

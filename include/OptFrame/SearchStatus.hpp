@@ -66,11 +66,13 @@ enum class SearchStatus : uint32_t {
   // evolution). this flag SHOULD still be used when necessary, sometimes with
   // or without LOCAL_OPT / GLOBAL_OPT flags.
   //
-  NO_IMPROVEMENT_POSSIBLE = 0x40,
+  LOCAL_OPT = 0x40,
+  // NO_IMPROVEMENT_POSSIBLE = 0x40
   // This denotes that no improvement is possible in a re-execution of this
   // method with same input solution. Stochastic methods typically cannot
   // guarantee this, so this is likely to be used by deterministic methods.
-  // RESERVED: LOCAL_OPT = 0x80,
+  // ===== THIS IS CURRENTLY THE SAME AS: LOCAL_OPT = 0x40 =====
+  // IF ONE BELIEVES TWO FLAGS CAN BE USEFUL, FEEL FREE TO ADD MORE...
   // local optimum (if not set, no information is given).
   // this flag is NOT required when it's GLOBAL_OPT (but method designer may
   // also provide this information, if useful)

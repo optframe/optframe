@@ -100,7 +100,7 @@ class FirstImprovement : public LocalSearch<XES> {
     // if(bestMoveId != "")
     //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local
     // Optimum
-    return SearchStatus::NO_IMPROVEMENT_POSSIBLE;
+    return SearchStatus::LOCAL_OPT;
   }
 
   // used on FirstImprovement
