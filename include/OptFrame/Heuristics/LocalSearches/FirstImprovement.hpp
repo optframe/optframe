@@ -21,7 +21,7 @@ class FirstImprovement : public LocalSearch<XES> {
                    sref<NSSeq<XES, XSH>> _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~FirstImprovement() {}
+  virtual ~FirstImprovement() = default;
 
   // DEPRECATED
   // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
@@ -45,7 +45,7 @@ class FirstImprovement : public LocalSearch<XES> {
     if (!it) {
       if (Component::warning)
         std::cout << "FI(WARNING): getIterator FAILED!" << std::endl;
-      return SearchStatus::FAILED;
+      return SearchStatus::EARLY_STOP;
     }
     //
     string bestMoveId = "";
@@ -65,7 +65,7 @@ class FirstImprovement : public LocalSearch<XES> {
       if (!move) {
         if (Component::warning)
           std::cout << "FI(WARNING): it->current() FAILED!" << std::endl;
-        return SearchStatus::FAILED;
+        return SearchStatus::EARLY_STOP;
       }
 
       // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
@@ -100,7 +100,7 @@ class FirstImprovement : public LocalSearch<XES> {
     // if(bestMoveId != "")
     //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local
     // Optimum
-    return SearchStatus::NO_REPORT;
+    return SearchStatus::NO_IMPROVEMENT_POSSIBLE;
   }
 
   // used on FirstImprovement

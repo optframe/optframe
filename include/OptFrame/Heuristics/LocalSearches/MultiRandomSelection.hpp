@@ -102,14 +102,14 @@ class MultiRandomSelection : public LocalSearch<XES> {
     std::vector<Move<XES, XSH>*> allMoves;
     while (((int)allMoves.size()) < countMoves) {
       Move<XES, XSH>* m = ns->randomMove(se).release();
-      if (m->canBeApplied(se))
+      if (m->canBeApplied(se)) {
         allMoves.push_back(m);
-      else {
+      } else {
         delete m;
         tries--;
         if (tries == 0) {
           std::cout << "MIRS warning: not enough moves! aborting...";
-          return SearchStatus::FAILED;
+          return SearchStatus::EARLY_STOP;
         }
       }
     }

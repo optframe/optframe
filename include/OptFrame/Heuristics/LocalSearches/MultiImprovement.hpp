@@ -82,7 +82,7 @@ class MultiImprovement : public LocalSearch<XES> {
     if (!it) {
       if (Component::warning)
         std::cout << "MI::warning: empty iterator" << std::endl;
-      return SearchStatus::FAILED;
+      return SearchStatus::EARLY_STOP;
     }
     //
 

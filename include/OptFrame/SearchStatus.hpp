@@ -5,8 +5,10 @@
 
 namespace optframe {
 
-// enum class SearchStatus : int
-enum class SearchStatus : uint8_t {
+// ADOPTING ENUM TO THINK ABOUT THE FUTURE...
+// ONLY FEW FLAGS NOW BUT WHO KNOWS!!
+// ONLY ENABLE FLAGS THAT ARE REALLY USED!!!
+enum class SearchStatus : uint32_t {
   // ----------------------
   // General Method Reports
   // ----------------------
@@ -15,12 +17,12 @@ enum class SearchStatus : uint8_t {
   // no information to give (no good or bad news)
   // this flag should only be used when no other situation applies.
   //
-  FAILED = 0x01,
+  // RESERVED: FAILED = 0x01,
   // fail flag: this is meant only for non-intended stops, i.e., crashes
   // if this flag IS NOT set, it means everything was fine.
   // if this flag IS set, no other flag should be used.
   //
-  RUNNING = 0x02,
+  // RESERVED: RUNNING = 0x02,
   // informs that method is running
   // if flag is NOT set, we assume method is stopped
   //
@@ -39,7 +41,7 @@ enum class SearchStatus : uint8_t {
   // Problem Status
   // ---------------
   // problem is infeasible (or unbounded)
-  IMPOSSIBLE = 0x08,
+  // RESERVED: IMPOSSIBLE = 0x08,
   // or INFEASIBLE
   // if this flag is not set, it means problem is FEASIBLE / POSSIBLE, or
   // unknown to solver.
@@ -64,12 +66,16 @@ enum class SearchStatus : uint8_t {
   // evolution). this flag SHOULD still be used when necessary, sometimes with
   // or without LOCAL_OPT / GLOBAL_OPT flags.
   //
-  LOCAL_OPT = 0x40,
+  NO_IMPROVEMENT_POSSIBLE = 0x40,
+  // This denotes that no improvement is possible in a re-execution of this
+  // method with same input solution. Stochastic methods typically cannot
+  // guarantee this, so this is likely to be used by deterministic methods.
+  // RESERVED: LOCAL_OPT = 0x80,
   // local optimum (if not set, no information is given).
   // this flag is NOT required when it's GLOBAL_OPT (but method designer may
   // also provide this information, if useful)
   //
-  GLOBAL_OPT = 0x80
+  // RESERVED: GLOBAL_OPT = 0x80
   // global optimum (if not set, it may be LOCAL_OPT)
   //
   // TODO: do we need more? which?

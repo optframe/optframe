@@ -16,10 +16,10 @@ class SearchOutput {
   SearchOutput(SearchStatus status, std::optional<XSH>& best)
       : status{status}, best{best} {}
 
-  // move semantics or nothing
+  // move semantics or nothing (DO NOT MAKE IT explicit!)
+  // NOLINTNEXTLINE
   SearchOutput(SearchStatus status, std::optional<XSH>&& best = std::nullopt)
       : status{status}, best{best} {}
-
 };  // SearchOutput
 
 }  // namespace optframe

@@ -30,7 +30,7 @@ class BestImprovement : public LocalSearch<XES> {
     num_calls = 0;
   }
 
-  virtual ~BestImprovement() {}
+  virtual ~BestImprovement() = default;
 
   // DEPRECATED
   // virtual void exec(S& s, const StopCriteria<XEv>& sosc) override
@@ -57,7 +57,7 @@ class BestImprovement : public LocalSearch<XES> {
     // uptr<NSIterator<XES, XSH>> it = nsSeq.getIterator(s);
     uptr<NSIterator<XES, XSH>> it = nsSeq->getIterator(se);
     //
-    if (!it) return SearchStatus::FAILED;
+    if (!it) return SearchStatus::EARLY_STOP;
     //
     if (Component::information) std::cout << "BI::first()" << std::endl;
     //
@@ -90,7 +90,7 @@ class BestImprovement : public LocalSearch<XES> {
           bestMove = it->current();
         } else {
           sum_time += t.inMilliSecs();
-          return SearchStatus::NO_REPORT;
+          return SearchStatus::NO_REPORT;  // NO_IMPROVEMENT_POSSIBLE ?
         }
       }
 
@@ -107,7 +107,7 @@ class BestImprovement : public LocalSearch<XES> {
           bestMove = it->current();
         } else {
           sum_time += t.inMilliSecs();
-          return SearchStatus::NO_REPORT;
+          return SearchStatus::NO_REPORT;  // NO_IMPROVEMENT_POSSIBLE ?
         }
       }
     }
@@ -157,18 +157,19 @@ class BestImprovement : public LocalSearch<XES> {
       eval->reevaluate(se);  // updates 'e'
                              // e.setLocalOptimumStatus(bestMove->id(), false);
                              // //set NS 'id' out of Local Optimum
+      sum_time += t.inMilliSecs();
+      return SearchStatus::IMPROVEMENT;
     } else {
       // bestMove->updateNeighStatus(s.getADS());
       // e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local
       // Optimum
+      sum_time += t.inMilliSecs();
+      return SearchStatus::NO_IMPROVEMENT_POSSIBLE;
     }
     // cout << "#" << num_calls << " out_bi:";
     // bestMove->print();
     // nsSeq.print();
     // e.print();
-
-    sum_time += t.inMilliSecs();
-    return SearchStatus::NO_REPORT;
   }
 
   bool compatible(std::string s) override {

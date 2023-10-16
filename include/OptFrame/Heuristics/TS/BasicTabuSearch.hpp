@@ -121,7 +121,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
       uptr<Move<XES, XSH>> bestMove =
           tabuBestMoveWithAspiration(se, tabuList, cmpA);
-      if (!bestMove) return SearchStatus::FAILED;
+      if (!bestMove) return SearchStatus::EARLY_STOP;
 
       // =====================================================
       //        's' <- 's1';
