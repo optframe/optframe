@@ -5,7 +5,7 @@ app_applyupdate: TSP-fcore-part5-applyupdate.hpp
 	./join.sh
 	mv TSP-fcore-applyupdate.hpp TSP-fcore.hpp
 	echo "WILL COMPILE"
-	g++ -g -O3 --std=c++17 -fconcepts -I../../include -Wfatal-errors  main_checkmodule.cpp -o app_check
+	g++ -g -O3 --std=c++17 -I../../include -Wfatal-errors  main_checkmodule.cpp -o app_check
 	echo "WILL RUN"
 	./app_check
 
@@ -14,7 +14,7 @@ app_cost: TSP-fcore-part5-cost.hpp
 	./join.sh
 	mv TSP-fcore-cost.hpp TSP-fcore.hpp
 	echo "WILL COMPILE"
-	g++ -g -O3 --std=c++17 -fconcepts -I../../include -Wfatal-errors  main_checkmodule.cpp -o app_check
+	g++ -g -O3 --std=c++17 -I../../include -Wfatal-errors  main_checkmodule.cpp -o app_check
 	echo "WILL RUN"
 	./app_check
 

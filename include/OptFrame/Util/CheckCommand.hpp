@@ -152,10 +152,17 @@ struct AllDataCheckCommand {
 //
 // NOTE THAT, HERE, XES denotes the pair <S,XEv>, while S can be <REP,ADS>, if
 // desired
+//
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSolution S = typename XES::first_type,
           XRepresentation REP = S, class ADS = int,
           X2ESolution<XES> X2ES = MultiESolution<XES>,
           XSearch<XES> XSH = std::pair<S, typename XES::second_type>>
+#else
+template <typename XES, typename S = typename XES::first_type, typename REP = S,
+          class ADS = int, typename X2ES = MultiESolution<XES>,
+          typename XSH = std::pair<S, typename XES::second_type>>
+#endif
 class CheckCommand : public Component {  // NOLINT
   using XEv = typename XES::second_type;
 
@@ -207,7 +214,7 @@ class CheckCommand : public Component {  // NOLINT
   vector<std::shared_ptr<Move<XES, XSH>>> lMove;
   vector<std::shared_ptr<NS<XES, XSH>>> lNS;
   vector<std::shared_ptr<NSSeq<XES>>> lNSSeq;
-  vector<std::shared_ptr<NSEnum<XES>>> lNSEnum;
+  vector<std::shared_ptr<NSEnum<XES, XSH>>> lNSEnum;
 
 #ifdef LEGACY_ADS
   std::shared_ptr<ADSManager<REP, ADS, S>> adsMan;
@@ -350,7 +357,7 @@ class CheckCommand : public Component {  // NOLINT
 
   void addNSSeq(sref<NSSeq<XES>> c) { add(c); }
 
-  void add(sref<NSEnum<XES>> c) {
+  void add(sref<NSEnum<XES, XSH>> c) {
     lNSEnum.push_back(c.sptr());
     if (verbose)
       (*this->logdata) << "checkcommand: NSEnum " << lNSEnum.size() << " added!"
@@ -358,7 +365,7 @@ class CheckCommand : public Component {  // NOLINT
     if (paramConvertNS) add((sref<NSSeq<XES>>)c);
   }
 
-  void addNSEnum(sref<NSEnum<XES>> c) { add(c); }
+  void addNSEnum(sref<NSEnum<XES, XSH>> c) { add(c); }
 
   void message(Component* c, int iter, string text) {
     if (verbose) message(c->id(), iter, text);
@@ -1396,7 +1403,7 @@ class CheckCommand : public Component {  // NOLINT
     // vCountMovePairsEnumSamples = countData.vCountMovePairsEnumSamples;
 
     for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++) {
-      std::shared_ptr<NSEnum<XES>> nsenum = lNSEnum.at(id_nsenum);
+      std::shared_ptr<NSEnum<XES, XSH>> nsenum = lNSEnum.at(id_nsenum);
       if (this->information) {
         (*this->logdata) << "checkcommand: testing NSEnum " << id_nsenum
                          << " => " << nsenum->toString();

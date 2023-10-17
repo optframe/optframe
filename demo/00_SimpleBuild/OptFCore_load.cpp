@@ -1,4 +1,5 @@
-
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2023 - OptFrame - https://github.com/optframe/optframe
 
 // C++
 #include <iostream>
