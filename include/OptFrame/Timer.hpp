@@ -50,8 +50,7 @@ class Timer : public Component {
 #endif
 
  public:
-  Timer(bool m = false)
-      : showMessageOnDestroy(m) {
+  Timer(bool m = false) : showMessageOnDestroy(m) {
 #ifdef WIN32
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&tstart);
@@ -62,21 +61,14 @@ class Timer : public Component {
   }
 
   virtual ~Timer() {
-    if (showMessageOnDestroy)
-      printf("Spent time: %f secs\n", now());
+    if (showMessageOnDestroy) printf("Spent time: %f secs\n", now());
   }
 
-  double now() const {
-    return inSecs();
-  }
+  double now() const { return inSecs(); }
 
-  double inSecs() const {
-    return inMicroSecs() * 0.000001;
-  }
+  double inSecs() const { return inMicroSecs() * 0.000001; }
 
-  double inMilliSecs() const {
-    return inMicroSecs() * 0.001;
-  }
+  double inMilliSecs() const { return inMicroSecs() * 0.001; }
 
   double inMicroSecs() const {
     double start;
@@ -106,24 +98,26 @@ class Timer : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class TimerBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~TimerBuilder() {
-  }
+  virtual ~TimerBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -146,13 +140,9 @@ class TimerBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

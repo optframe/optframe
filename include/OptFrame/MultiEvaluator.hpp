@@ -21,7 +21,11 @@ namespace optframe {
 // MultiEvaluator implements IEvaluator and GeneralEvaluator
 // just a bunch/pack of evaluators...
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XMES, XSearch<XMES> XSH = XMES>
+#else
+template <typename XMES, typename XSH = XMES>
+#endif
 class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
                        public IEvaluator<XMES> {
   // XESolution XES = pair<S, XMEv>,
@@ -219,9 +223,14 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>,
           X2ESolution<XMES> X2MES = VEPopulation<XMES>>
+#else
+template <typename S, typename XMEv = MultiEvaluation<>,
+          typename XMES = pair<S, XMEv>, typename X2MES = VEPopulation<XMES>>
+#endif
 class MultiEvaluatorMultiBuilder
     : public ComponentMultiBuilder<S, XMEv, XMES, X2MES> {
   // using XMEv = MultiEvaluation<typename XEv::objType>;

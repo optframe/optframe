@@ -61,10 +61,12 @@ auto global_ev1 = MultiEvaluation<int>();
 // optframe::evgoal auto global_ev = MultiEvaluation<int>();
 auto global_ev = MultiEvaluation<int>();
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 static_assert(optframe::evgoal<MultiEvaluation<int>>);
 static_assert(XEvaluation<MultiEvaluation<int>>);
 static_assert(XEvaluation<typename ESolutionBTSP::second_type>);
 static_assert(XESolution<ESolutionBTSP>);
+#endif
 
 // TSP problem context and data reads
 class ProblemContextBTSP {

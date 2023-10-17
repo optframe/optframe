@@ -193,11 +193,15 @@ class CopySolution : public Component {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 template <XRepresentation R, class ADS = _ADS,
           XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
 struct _Testing {
   S s;
 };
+
+#endif
 
 }  // namespace optframe
 

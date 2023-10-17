@@ -306,8 +306,12 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+#else
+template <typename XES, typename XES2, typename X2ES = MultiESolution<XES2>>
+#endif
 class BasicSimulatedAnnealingBuilder
     : public GlobalSearchBuilder<XES, XES, XES2, X2ES>,
       public SA {

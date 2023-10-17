@@ -20,7 +20,11 @@ namespace optframe {
 // - onLoop(SCTX, StopCriteria)
 // - onUpdateLoop(SCTX)
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <class SCTX, XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <class SCTX, typename XES, typename XSH = XES>
+#endif
 class ILoop  // do not inherit here!
 {
   using XEv = typename XES::second_type;

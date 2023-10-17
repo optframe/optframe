@@ -27,6 +27,7 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <class Self, class XES>
 concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
@@ -36,20 +37,29 @@ concept
   XESolution<XES>;
   X2ESolution<typename Self::BestType, XES>;
 };
+#endif  // cpp_concepts
 
 // EASY ON XMES2... FOR NOW! NOT REQUIRING XEMSolution, BUT WE SHOULD...
 // MUST FIX IndividualNSGAII and other problematic implementations...
 // BASE TYPE XMES IS NOW FINALLY REQUIRED TO BE XEMSolution!
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XEMSolution XMES, XESolution XMES2 = XMES,
           XSearch<XMES2> XMSH2 = XMES2>
+#else
+template <typename XMES, typename XMES2 = XMES, typename XMSH2 = XMES2>
+#endif
 class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
   using XMSH = Pareto<XMES>;  // PRIMARY/BEST search space
   //
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   static_assert(XEvaluation<typename XMEv::XEv>);
+#endif
   using XEv = typename XMEv::XEv;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   static_assert(XEvaluation<XEv>);
+#endif
 
  public:
   // ========================================

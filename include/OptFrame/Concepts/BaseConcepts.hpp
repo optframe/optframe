@@ -685,6 +685,8 @@ concept
 #define XEvaluation typename
 #define XSolution typename
 #define XSolutionOrIncomplete typename  // TODO: remove
+#define XSearchMethod typename
+#define XESSolution typename
 
 #endif  // __cpp_concepts
 

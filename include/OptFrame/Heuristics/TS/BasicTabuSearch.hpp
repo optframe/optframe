@@ -321,10 +321,15 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>,
           XSearch<XES> XSH = std::pair<S, XEv>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>, typename XSH = std::pair<S, XEv>>
+#endif
 class BasicTabuSearchBuilder : public TS,
                                public SingleObjSearchBuilder<S, XEv, XES> {
  public:

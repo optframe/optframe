@@ -45,9 +45,14 @@ namespace optframe {
 
 using scannerpp::Scanner;
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv, XESSolution XESS,
           X2ESolution<XESS> X2ES>
 class HeuristicFactory;
+#else
+template <typename S, typename XEv, typename XESS, typename X2ES>
+class HeuristicFactory;
+#endif
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,

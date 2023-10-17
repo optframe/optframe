@@ -285,7 +285,7 @@ public:
 };
 */
 
-#ifndef NDEBUG
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 using TestIsMultiEv = MultiEvaluation<double>;
 using TestIsSolutionMultiEv = vector<int>;
@@ -294,7 +294,7 @@ using TestXMES_MOS_Ind = std::pair<TestIsSolutionMultiEv, TestIsMultiEv>;
 
 static_assert(XESolution<MOSIndividual<TestXMES_MOS_Ind>>);
 
-#endif
+#endif  // cpp_concepts
 
 }  // namespace optframe
 

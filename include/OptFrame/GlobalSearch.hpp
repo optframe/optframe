@@ -98,10 +98,13 @@ class GlobalSearch : public Component {
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH, XESolution XES2,
-          X2ESolution<XES2> X2ES =
-              MultiESolution<XES2>>  //, XESolution XES2, XSearch<XES> XSH2 =
-                                     // XSH>
+          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+#else
+template <typename XES, typename XSH, typename XES2,
+          typename X2ES = MultiESolution<XES2>>
+#endif
 class GlobalSearchBuilder
     : public ComponentBuilder<typename XES::first_type,
                               typename XES::second_type, XSH> {

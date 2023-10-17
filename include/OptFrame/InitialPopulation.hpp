@@ -33,7 +33,11 @@ namespace optframe {
 // X2ES is the REAL TYPE
 // By default, VEPopulation is std::vector<XES>
 //
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
+#else
+template <typename XES, typename X2ES = VEPopulation<XES>>
+#endif
 class InitialEPopulation : public Component {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -74,7 +78,11 @@ class InitialEPopulation : public Component {
 // X2S is the REAL TYPE
 // By default, VPopulation is std::vector<XS>
 //
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, X2Solution<S> X2S = VPopulation<S>>
+#else
+template <typename S, typename X2S = VPopulation<S>>
+#endif
 class InitialPopulation : public Component {
  public:
   ~InitialPopulation() override = default;
@@ -93,7 +101,11 @@ class InitialPopulation : public Component {
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, X2Solution<S> X2S = VPopulation<S>>
+#else
+template <typename S, typename X2S = VPopulation<S>>
+#endif
 class BasicInitialPopulation : public InitialPopulation<S, X2S> {
  public:
   Constructive<S>& constructive;
@@ -124,7 +136,11 @@ class BasicInitialPopulation : public InitialPopulation<S, X2S> {
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, X2Solution<S> X2S = VPopulation<S>>
+#else
+template <typename S, typename X2S = VPopulation<S>>
+#endif
 class GRInitialPopulation : public InitialPopulation<S, X2S> {
  public:
   GRConstructive<S>& constructive;

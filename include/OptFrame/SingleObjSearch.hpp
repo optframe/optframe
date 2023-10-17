@@ -23,6 +23,8 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 template <class Self>
 concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
@@ -32,13 +34,19 @@ concept
   XESolution<typename Self::BestType>;
 };
 
+#endif  // cpp_concepts
+
 // REMEMBER: XES = (S, E)
 //
 // (Primary) Search space (implicit XSH) is decided by XES
 // Secondary search space XSH2 is undecided... could be trajectory-based (as
 // default) or population-based
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESSolution XESS, XESSolution XESS2 = XESS,
           XSearch<XESS2> XSH2 = XESS2>
+#else
+template <typename XESS, typename XESS2 = XESS, typename XSH2 = XESS2>
+#endif
 class SingleObjSearch : public GlobalSearch<XESS, XESS> {
   // NOTE THAT: XSearch<XES> XSH = XES (IMPLICIT!)
   using XSH = XESS;

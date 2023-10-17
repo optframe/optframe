@@ -41,13 +41,23 @@ using scannerpp::Scanner;
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv, XESSolution XESS,
           X2ESolution<XESS> X2ES>
 class HeuristicFactory;
+#else
+template <typename S, typename XEv, typename XESS, typename X2ES>
+class HeuristicFactory;
+#endif
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>,
           X2ESolution<XMES> X2MES = VEPopulation<XMES>>
+#else
+template <typename S, typename XMEv = MultiEvaluation<>,
+          typename XMES = pair<S, XMEv>, typename X2MES = VEPopulation<XMES>>
+#endif
 class ComponentMultiBuilder : public Component {
   // TODO: pass these as templates as well
   using XEv = typename XMEv::XEv;

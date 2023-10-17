@@ -268,12 +268,12 @@ class ESolution final
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XRepresentation R, class ADS = int, XEvaluation XEv = Evaluation<>>
 void static_check() {
   static_assert(XSolution<ESolution<R, ADS, XEv>>);
 }
-// template<XRepresentation R, class ADS = int, XEvaluation XEv = Evaluation<>>
-// static_assert(XSolution<ESolution<R, ADS, XEv>>);
+#endif
 
 }  // namespace optframe
 

@@ -19,7 +19,9 @@ class SA {
   // virtual ~SA() {}
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 static_assert(XFamily<SA>);
+#endif
 
 }  // namespace optframe
 
