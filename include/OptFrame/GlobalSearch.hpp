@@ -25,7 +25,11 @@ namespace optframe {
 // 'XES' is the "base concept" for the primary search component.
 // 'XSH' is the primary search type ('best' has type XSH)
 //
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class GlobalSearch : public Component {
   // not necessarily mono objective XEv... remember this!
   using XEv = typename XES::second_type;

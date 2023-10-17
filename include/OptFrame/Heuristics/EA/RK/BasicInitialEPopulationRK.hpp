@@ -67,9 +67,14 @@ class BasicInitialEPopulationRK
   string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicInitialEPopulationRKBuilder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
   using KeyType = double;

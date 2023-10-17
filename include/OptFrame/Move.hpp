@@ -20,8 +20,11 @@ namespace optframe {
 //
 // Future will tell if this was indeed necessary.
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
-
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class Move : public Component {
   using XEv = typename XES::second_type;
   using mvObjType = typename XEv::objType;

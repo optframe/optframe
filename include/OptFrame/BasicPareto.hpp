@@ -29,10 +29,14 @@ template <XEMSolution XMES>
 class BasicPareto {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   static_assert(XEvaluation<typename XMEv::XEv>);
+#endif
   // static_assert(std::is_same_v<XMEv, MultiEvaluation<>>);
   using XEv = typename XMEv::XEv;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   static_assert(XEvaluation<XEv>);
+#endif
 
  public:
   using value_type = XMES;
@@ -152,6 +156,7 @@ class BasicPareto {
 
 }  // namespace optframe
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 namespace optframe {
 using ParetoSolTest0 = std::vector<int>;
 using EMSolution_Test0 = std::pair<ParetoSolTest0, MultiEvaluation<double>>;
@@ -161,5 +166,6 @@ static_assert(XEMSolution<EMSolution_Test0>);
 static_assert(X2EMSolution<BasicPareto<EMSolution_Test0>, EMSolution_Test0>);
 
 }  // namespace optframe
+#endif  // cpp_concepts
 
 #endif  // OPTFRAME_BASICPARETO_HPP_

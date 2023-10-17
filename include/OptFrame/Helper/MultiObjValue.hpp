@@ -1,6 +1,9 @@
 #ifndef OPTFRAME_MULTI_OBJ_VALUE_HPP
 #define OPTFRAME_MULTI_OBJ_VALUE_HPP
 
+// Check if C++20 Concepts is supported
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 // C
 #include <assert.h>
 // C++
@@ -410,5 +413,9 @@ struct optframe_debug_example_test_mov {
 #endif
 
 }  // namespace optframe
+
+#else  // NO CONCEPTS!!!
+
+#endif  // cpp_concepts
 
 #endif  // OPTFRAME_MULTI_OBJ_VALUE_HPP

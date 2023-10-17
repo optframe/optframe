@@ -286,9 +286,14 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicGeneticAlgorithmBuilder
     : public EA,
       public SingleObjSearchBuilder<S, XEv, XES> {

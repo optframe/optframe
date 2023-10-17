@@ -49,6 +49,10 @@ using VEPopulation = std::vector<XES>;
 
 }  // namespace optframe
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 #include "VEPopulation.test.hpp"
+
+#endif  // cpp_concepts
 
 #endif /* OPTFRAME_VEPOPULATION_HPP_ */

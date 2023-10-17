@@ -40,14 +40,24 @@ using scannerpp::Scanner;
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv, XESSolution XESS,
           X2ESolution<XESS> X2ES>
 class HeuristicFactory;
+#else
+template <typename S, typename XEv, typename XESS, typename X2ES>
+class HeuristicFactory;
+#endif
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class ComponentBuilder : public Component {
  public:
   virtual ~ComponentBuilder() {}

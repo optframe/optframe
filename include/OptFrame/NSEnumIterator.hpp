@@ -30,10 +30,18 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH>
+#else
+template <typename XES, typename XSH>
+#endif
 class NSEnum;
 
-template <XESolution XES, XESolution XSH = XES>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class NSEnumIterator : public NSIterator<XES, XSH> {
  private:
   NSEnum<XES, XSH>& ns;

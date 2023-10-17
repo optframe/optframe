@@ -203,9 +203,14 @@ significantly higher and, in most cases, independent of the seed size.
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class RandGenBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
   virtual ~RandGenBuilder() {}

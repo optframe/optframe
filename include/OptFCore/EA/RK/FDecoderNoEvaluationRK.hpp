@@ -14,7 +14,7 @@
 
 namespace optframe {
 
-template <XSolution S, optframe::comparability KeyType>
+template <XSolution S, ConceptsComparability KeyType>
 class FDecoderNoEvaluationRK final
     : public DecoderRandomKeysNoEvaluation<S, KeyType> {
  public:

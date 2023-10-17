@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-
 #ifndef OPTFRAME_MULTIESOLUTION_HPP_
 #define OPTFRAME_MULTIESOLUTION_HPP_
 
@@ -159,11 +158,10 @@ class MultiESolution : public Component {
 
 }  // namespace optframe
 
-#ifndef NDEBUG
-
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 // TODO: only in unit tests (or somehow prevent #include "printable.h")
 #include "MultiESolution.ctest.hpp"
 
-#endif
+#endif  // cpp_concepts
 
 #endif /* OPTFRAME_MULTISOLUTION_HPP_ */

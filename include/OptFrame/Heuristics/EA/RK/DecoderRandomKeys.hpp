@@ -4,6 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_DECODERRANDOMKEYS_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_EA_RK_DECODERRANDOMKEYS_HPP_  // NOLINT
 
+#include <algorithm>
 // #include "../../../Evaluation.hpp"
 // #include "../../../Evaluator.hpp"
 // #include "../../../Solution.hpp"
@@ -16,23 +17,7 @@ namespace optframe {
 
 typedef vector<double> random_keys;
 
-////using RSK = std::vector<KeyType>;
-
-// XRepresentation R is NOT random_keys... it's something else, related to
-// original problem
-// template<XRepresentation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv
-// = Evaluation<>>
-// XRS is not good to be default, as it must come from outside, and be
-// compatible
-//
-//
-// template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv,
-// XRepresentation RKeys = optframe::random_keys>
-//
-// template<XSolution S, XEvaluation XEv, optframe::comparability KeyType>
-template <XESolution XES, optframe::comparability KeyType>
-// XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
-// X2ESolution<XES2> X2ES = VEPopulation<XES2>>
+template <XESolution XES, ConceptsComparability KeyType>
 class DecoderRandomKeys : public Component {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -103,7 +88,7 @@ class DecoderRandomKeys : public Component {
 // template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv,
 // XRepresentation RKeys = optframe::random_keys>
 //
-template <XSolution S, XEvaluation XEv, optframe::comparability KeyType,
+template <XSolution S, XEvaluation XEv, ConceptsComparability KeyType,
           XESolution XES = pair<S, XEv>>
 class DecoderRandomKeysEvaluator : public DecoderRandomKeys<XES, KeyType> {
   using RSK = std::vector<KeyType>;
@@ -132,7 +117,7 @@ class DecoderRandomKeysEvaluator : public DecoderRandomKeys<XES, KeyType> {
 // Evaluator<XRS, XEv> to generate output XEv
 // template<XRSolution<vector<int>> XRS, XEvaluation XEv>
 //
-template <XEvaluation XEv, optframe::comparability KeyType = double,
+template <XEvaluation XEv, ConceptsComparability KeyType = double,
           XESolution XES = pair<std::vector<int>, XEv>>
 class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   using RSK = std::vector<KeyType>;
@@ -175,13 +160,13 @@ class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
     return pair<XEv, op<std::vector<int>>>(e, make_optional(p));
   }
 
-  virtual bool isMinimization() const override { return ev.isMinimization(); }
+  bool isMinimization() const override { return ev.isMinimization(); }
 };
 
 // implementation of decoder for subset function (vector<bool>)
 // template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
 //
-template <XEvaluation XEv, optframe::comparability KeyType,
+template <XEvaluation XEv, ConceptsComparability KeyType,
           XESolution XES = pair<std::vector<bool>, XEv>>
 class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   using RSK = std::vector<KeyType>;

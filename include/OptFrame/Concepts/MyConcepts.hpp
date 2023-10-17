@@ -15,6 +15,9 @@
 // "optional_view" library (local copy!)
 #include <OptFrame/opview/optional_view.hpp>
 
+// Check if C++20 Concepts is supported
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 #if __cplusplus <= 201703L  // after c++20, #include<concepts>
 // no concepts library, yet...
 #define AUTO_CONCEPTS
@@ -23,6 +26,8 @@
 #include <concepts>
 #define AUTO_CONCEPTS auto
 #endif
+
+#endif  // cpp_concepts
 
 // =========== OUTSIDE optframe scope (to make error tracking easier...)
 // ========== "not null shared pointer" shortcuts
@@ -74,6 +79,9 @@ using op = std::optional<T>;
 
 // id type for move id, neighborhood id, etc.
 using id_type = std::size_t;
+
+// ================ BEGIN CONCEPTS ================
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 // https://en.cppreference.com/w/cpp/concepts/boolean
 /*
@@ -310,12 +318,16 @@ concept
   {os << obj};  //-> my_same_as<std::ostream&>; // or 'my_convertible_to'
 };
 
+#endif  // cpp_concepts
+
 }  // namespace optframe
 
 // ====================
 // BEGIN compile tests
 // (disable with NDEBUG)
 // ====================
+
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 #ifndef NDEBUG
 // class that passes total order
@@ -412,5 +424,16 @@ struct MyConceptsLocalTestBedArithmetics {
 };
 
 #endif  // NDEBUG
+
+#define ConceptsBasicArithmetics optframe::basic_arithmetics
+#define ConceptsComparability optframe::comparability
+
+#else  // NO CONCEPTS
+
+// disable!
+#define ConceptsBasicArithmetics typename
+#define ConceptsComparability typename
+
+#endif  // cpp_concepts
 
 #endif  // OPTFRAME_CONCEPTS_MYCONCEPTS_HPP_

@@ -11,10 +11,10 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Domain.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Heuristics/EA/GeneralCrossover.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
-#include <OptFrame/Domain.hpp>
 
 namespace optframe {
 
@@ -40,8 +40,8 @@ class MOPopulationManagement : public Component {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent()
-    << ":MOPopulationManagement" << Domain::getAlternativeDomain<XMES2>("<XMESf64>");
+    ss << Component::idComponent() << ":MOPopulationManagement"
+       << Domain::getAlternativeDomain<XMES2>("<XMESf64>");
     return ss.str();
   }
 
@@ -304,9 +304,14 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   std::string toString() const override { return id(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicMOPopulationManagementBuilder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
   using XMEv = MultiEvaluation<typename XEv::objType>;

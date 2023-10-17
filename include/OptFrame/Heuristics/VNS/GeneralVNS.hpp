@@ -17,7 +17,11 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class GeneralVNS : public VariableNeighborhoodSearch<XES> {
  public:
   typedef VariableNeighborhoodSearch<XES> super;
@@ -50,9 +54,14 @@ class GeneralVNS : public VariableNeighborhoodSearch<XES> {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class GeneralVNSBuilder : public ILS,
                           public SingleObjSearchBuilder<S, XEv, XES> {
   using XSH = XES;  // primary-based search type only (BestType)

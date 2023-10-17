@@ -10,6 +10,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <utility>
 //
 #include <OptFrame/Component.hpp>
@@ -64,7 +65,9 @@ namespace optframe {
 
 // THIS IS FOCUSED SINGLE DIRECTION PERSPECTIVE (TOTAL ORDER).
 // SEE PARAM 'isMini'
-template <optframe::basic_arithmetics ObjType = evtype>
+//
+// template <optframe::basic_arithmetics ObjType = evtype>
+template <ConceptsBasicArithmetics ObjType = evtype>
 class Evaluation final : public Component {
  public:
   // exporting 'objType' type, based on template 'ObjType'
@@ -103,8 +106,10 @@ class Evaluation final : public Component {
       : objFunction(obj),
         infMeasure(inf)  //, isMini(_isMini)
   {
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
+#endif
 
     optframe::numeric_zero(objValZero);
 
@@ -116,8 +121,10 @@ class Evaluation final : public Component {
   // TODO(IGOR): I am removing 'explicit' to allow StopCriteria "seamless"
   // passing of Evaluation object.
   Evaluation(const ObjType& obj) : objFunction(obj) {
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
+#endif
 
     optframe::numeric_zero(objValZero);
     optframe::numeric_zero(infMeasure);
@@ -128,10 +135,10 @@ class Evaluation final : public Component {
   }
 
   explicit Evaluation() {
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
-    // this SHOULD work... don't know why it's not!
-    // static_assert(XEvaluation<decltype(*this)>);
     static_assert(XEvaluation<Evaluation<ObjType>>);
+#endif
 
     optframe::numeric_zero(objValZero);
     optframe::numeric_zero(objFunction);
@@ -155,8 +162,10 @@ class Evaluation final : public Component {
   //,
   // isMini(e.isMini)
   {
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
+#endif
 
     optframe::numeric_zero(objValZero);
   }
@@ -326,6 +335,7 @@ class Evaluation final : public Component {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 // compilation test (for concepts)
 // debugging error on XEvaluation for IsEvaluation<int>
 static_assert(optframe::evgoal<Evaluation<>>);
@@ -335,7 +345,7 @@ static_assert(HasGetObj<Evaluation<>>);
 static_assert(optframe::ostreamable<Evaluation<>>);
 //
 static_assert(XEvaluation<Evaluation<>>);  // check default
-
+#endif
 // ==================== end Evaluation ===========
 
 }  // namespace optframe
@@ -347,8 +357,10 @@ struct basic_ev_test_copy {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 // Compilation tests for XEvaluation concepts
 // These are NOT unit tests... Unit Tests are on tests/ folder
 #include <OptFrame/Evaluation.test.hpp>
+#endif
 
 #endif  // OPTFRAME_EVALUATION_HPP_

@@ -29,11 +29,11 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Constructive.hpp>
+#include <OptFrame/Domain.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
-#include <OptFrame/Domain.hpp>
 
 // #include "EA.hpp"
 
@@ -59,7 +59,7 @@ class InitialMultiESolution : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":InitialMultiESolution"
-    << Domain::getAlternativeDomain<X2ES>("<X2ESf64>");
+       << Domain::getAlternativeDomain<X2ES>("<X2ESf64>");
     return ss.str();
   }
 
@@ -125,9 +125,14 @@ class BasicInitialMultiESolution
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicInitialMultiESolutionBuilder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
   using XMEv = MultiEvaluation<typename XEv::objType>;

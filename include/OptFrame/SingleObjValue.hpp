@@ -51,13 +51,15 @@ class NumericBasics {
 
 // =========== num_zero ============
 
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
 num_zero() {
   return 0;
 }
 
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 constexpr inline
     typename std::enable_if<std::is_same<T, double>::value, double>::type
     num_zero() {
@@ -68,14 +70,16 @@ constexpr inline
 // number zero for that arithmetic type
 
 // stores numeric_zero value on 't'
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, int>::value, void>::type
 numeric_zero(T& t) {
   t = 0;
 }
 
 // stores numeric_zero value on 't'
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, void>::type
 numeric_zero(T& t) {
   t = 0.0;
@@ -83,13 +87,15 @@ numeric_zero(T& t) {
 
 // =========== num_zero ============
 
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
 num_zero_precision() {
   return 0;
 }
 
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 constexpr inline
     typename std::enable_if<std::is_same<T, double>::value, double>::type
     num_zero_precision() {
@@ -102,13 +108,15 @@ constexpr inline
 // ===============
 // define limits where value of type is to considered zero
 
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, int>::value, bool>::type
 numeric_is_zero(const T& t) {
   return t == 0;
 }
 
-template <optframe::basic_arithmetics T>
+// template <optframe::basic_arithmetics T>
+template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, bool>::type
 numeric_is_zero(const T& t) {
   return ::fabs(t) <= num_zero_precision<T>();

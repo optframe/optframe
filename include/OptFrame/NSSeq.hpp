@@ -16,7 +16,11 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class NSSeq : public NSFind<XES, XSH> {
   using XEv = typename XES::second_type;
   using S = typename XES::first_type;
@@ -169,10 +173,11 @@ class NSSeq : public NSFind<XES, XSH> {
 
 }  // namespace optframe
 
-#ifndef NDEBUG
-
 // General test for NSSeq
 // TODO: only if not #include "printable.h"
+
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 
@@ -182,6 +187,6 @@ using nsseq_test_base =
     NSSeq<pair<IsSolution<vector<int>, short>, Evaluation<>>>;
 
 }  // namespace optframe
-#endif
+#endif  // cpp_concepts
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

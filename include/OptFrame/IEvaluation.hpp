@@ -40,7 +40,8 @@
 
 namespace optframe {
 
-template <optframe::basic_arithmetics ObjType = evtype>
+// template <optframe::basic_arithmetics ObjType = evtype>
+template <ConceptsBasicArithmetics ObjType = evtype>
 class IEvaluation {
  public:
   // too bad, cannot just put deduced type here (virtual function)

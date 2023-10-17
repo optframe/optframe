@@ -99,9 +99,14 @@ class BasicILSPerturbation : public ILS, public Component {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   using XSH = XES;  // primary-based search type only (BestType)
 

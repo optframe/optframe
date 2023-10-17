@@ -14,7 +14,11 @@ namespace optframe {
 // 'XES2' is the "base concept" for the secondary search component.
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 // for trajectory methods, XSH2 = XSH
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class ITrajectory {
   using XEv = typename XES::second_type;
 

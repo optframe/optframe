@@ -79,9 +79,14 @@ class SingleObjSearch : public GlobalSearch<XESS, XESS> {
   std::string toString() const override { return id(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
   virtual ~SingleObjSearchBuilder() = default;
@@ -117,9 +122,14 @@ class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 // template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S =
 // CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>> template<XESolution XES,
 // XEvaluation XEv = Evaluation<>>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class SingleObjSearchAction : public Action<S, XEv, X2ES> {
  public:
   virtual ~SingleObjSearchAction() = default;

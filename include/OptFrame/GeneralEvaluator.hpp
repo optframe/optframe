@@ -23,7 +23,11 @@ namespace optframe {
 // template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
 // template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH =
 // XES> // defaults to single obj.
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>  // defaults to single obj.
+#else
+template <typename XES, typename XSH = XES>  // defaults to single obj.
+#endif
 class GeneralEvaluator : public Component {
   using XEv = typename XES::second_type;
   // using S = decltype(declval<XES>.first); // error: insufficient contextual

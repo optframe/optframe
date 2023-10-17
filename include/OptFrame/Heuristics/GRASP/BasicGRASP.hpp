@@ -134,9 +134,14 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicGRASPBuilder : public GRASP,
                           public SingleObjSearchBuilder<S, XEv, XES> {
  public:

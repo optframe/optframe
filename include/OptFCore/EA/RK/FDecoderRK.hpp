@@ -14,7 +14,7 @@
 
 namespace optframe {
 
-template <XESolution XES, optframe::comparability KeyType, MinOrMax Minimizing>
+template <XESolution XES, ConceptsComparability KeyType, MinOrMax Minimizing>
 class FDecoderRK final : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;

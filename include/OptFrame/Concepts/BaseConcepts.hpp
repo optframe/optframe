@@ -16,13 +16,6 @@
 #include <cstddef>  // nullptr_t
 #include <string>
 
-// this is NOT official c++20 concepts... just some for OptFrame! (based on lite
-// concepts g++ 7)
-#include <OptFrame/Concepts/MyConcepts.hpp>
-
-// may require some basic printing capabilities
-//#include <OptFrame/printable/printable.hpp>
-
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
 // if not used, it can be ignored with few impacts (hoping compiler will help
@@ -30,6 +23,16 @@
 typedef std::nullptr_t OPTFRAME_DEFAULT_ADS;
 typedef OPTFRAME_DEFAULT_ADS OptFrameADS;  // more beautiful :)
 typedef OPTFRAME_DEFAULT_ADS _ADS;         // more beautiful :)
+
+// Check if C++20 Concepts is supported
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
+// this is NOT official c++20 concepts... just some for OptFrame! (based on lite
+// concepts g++ 7)
+#include <OptFrame/Concepts/MyConcepts.hpp>
+
+// may require some basic printing capabilities
+//#include <OptFrame/printable/printable.hpp>
 
 namespace optframe {
 
@@ -672,5 +675,17 @@ concept
 // compilation tests for concepts (these are NOT unit tests)
 // TODO: put on unit tests or directly here (without #include "printable.h")
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+
+#else  // No Concepts!!!
+
+// disable
+#define XEMSolution typename
+#define XESolution typename
+#define XRepresentation typename
+#define XEvaluation typename
+#define XSolution typename
+#define XSolutionOrIncomplete typename  // TODO: remove
+
+#endif  // __cpp_concepts
 
 #endif  // OPTFRAME_CONCEPTS_BASECONCEPTS_HPP_

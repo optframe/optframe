@@ -17,7 +17,11 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class InitialSearch : public Component {
   // PRIMARY/BEST search type is XSH (note that XES is only helper for XSH)
   using XEv = typename XES::second_type;
@@ -48,7 +52,11 @@ class InitialSearch : public Component {
   std::string toString() const override { return id(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>
+#else
+template <typename XES, typename XSH = XES>
+#endif
 class BasicInitialSearch : public InitialSearch<XES, XSH> {
   using XEv = typename XES::second_type;
 

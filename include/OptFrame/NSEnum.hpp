@@ -12,7 +12,11 @@
 
 namespace optframe {
 
-template <XESolution XES, XSearch<XES> XSH = XES>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+template <XESolution XES, XSearch<XES> XSH>
+#else
+template <typename XES, typename XSH>
+#endif
 class NSEnum : public NSSeq<XES, XSH> {
   using XEv = typename XES::second_type;
 

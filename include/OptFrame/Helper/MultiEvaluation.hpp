@@ -17,7 +17,11 @@ namespace optframe {
 
 // evtype is default (double?)
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <optframe::objval ObjType = evtype>
+#else
+template <typename ObjType = evtype>
+#endif
 class MultiEvaluation : public Component {
  public:
   // internal Evaluation type
@@ -34,11 +38,17 @@ class MultiEvaluation : public Component {
   // bool outdated{true};
 
  public:
-  MultiEvaluation() { static_assert(XEvaluation<MultiEvaluation<ObjType>>); }
+  MultiEvaluation() {
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+    static_assert(XEvaluation<MultiEvaluation<ObjType>>);
+#endif
+  }
 
   explicit MultiEvaluation(Evaluation<ObjType> ev) {
     vev.push_back(ev);
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     static_assert(XEvaluation<MultiEvaluation<ObjType>>);
+#endif
   }
 
   explicit MultiEvaluation(const vector<ObjType>& vd) {
@@ -155,6 +165,7 @@ class MultiEvaluation : public Component {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 /*
 optframe::evgoal<Self>&&
    HasClone<Self>&&
@@ -172,6 +183,7 @@ static_assert(optframe::evgoal<MultiEvaluation<double>>);
 // TODO: remove this
 static_assert(XEvaluation<MultiEvaluation<double>>);
 static_assert(XMEvaluation<MultiEvaluation<double>>);
+#endif
 
 //#ifndef NDEBUG
 struct optframe_debug_test_multievaluation {

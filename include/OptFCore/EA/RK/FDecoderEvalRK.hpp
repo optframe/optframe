@@ -15,7 +15,7 @@
 
 namespace optframe {
 
-template <XESolution XES, optframe::comparability KeyType>
+template <XESolution XES, ConceptsComparability KeyType>
 class FDecoderEvalRK final : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
