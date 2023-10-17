@@ -12,12 +12,14 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-//
-
+// optframe stuff
+#include <OptFrame/BasicPareto.hpp>
+#include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-
-#include "Component.hpp"
-#include "Evaluation.hpp"
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Helper/EPopulation.hpp>
+#include <OptFrame/Helper/MultiESolution.hpp>
+#include <OptFrame/Helper/MultiEvaluation.hpp>
 
 // for test only
 #ifndef NDEBUG

@@ -169,8 +169,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     }
 
     // initialize search context for Simulated Annealing
-    SearchContextSA<XES> ctx{
-        .self = *this, .best = star, .incumbent = incumbent};
+    SearchContextSA<XES> ctx{*this, star, incumbent};
 
     if (Component::verbose) std::cout << "SA: begin SearchContext" << std::endl;
 

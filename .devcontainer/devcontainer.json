@@ -11,12 +11,37 @@
 	// "postCreateCommand": "gcc -v",
 	// Configure tool-specific properties.
 	// "customizations": {},
-	"extensions": [
-		"mine.cpplint",
-		"DevonDCarew.bazel-code",
-		"llvm-vs-code-extensions.vscode-clangd",
-		"matepek.vscode-catch2-test-adapter"
-	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mine.cpplint",
+				"DevonDCarew.bazel-code",
+				"matepek.vscode-catch2-test-adapter",
+				"ms-vscode.cmake-tools",
+				"llvm-vs-code-extensions.vscode-clangd",
+				// "-ms-vscode.cpptools-extension-pack"
+			],
+			"settings": {
+				"C_Cpp.intelliSenseEngine": "disabled",
+				"clangd.arguments": [
+					"-log=verbose",
+					"-pretty",
+					"--background-index",
+					"--compile-commands-dir=${workspaceFolder}/build/"
+				],
+				"editor.formatOnSave": true,
+				"cpplint.cpplintPath": "/usr/local/bin/cpplint",
+				"cpplint.root": "${workspaceFolder}/include",
+				"cpplint.repository": "${workspaceFolder}",
+				"testMate.cpp.test.advancedExecutables": [
+					{
+						//"pattern": "{bazel-bin}/**/*{test}*"
+						"pattern": "{build}/**/*{test}*"
+					}
+				]
+			}
+		}
+	},
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root",
 	"postCreateCommand": "bazel --version && test -e .clang-format && cp .clang-format ~/.cache"
