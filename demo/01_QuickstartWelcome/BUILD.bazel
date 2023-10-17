@@ -3,5 +3,9 @@ cc_binary(
     name = "demo_welcome",
     srcs = ["mytest.cpp"],
     deps=["@OptFrame//include:OptFCore"],
-    ##copts = ['--std=c++17', '-fconcepts']
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++17"],
+        "@bazel_tools//src/conditions:darwin": ["--std=c++17"],
+        "//conditions:default": ["--std=c++17"],
+    }),
 )

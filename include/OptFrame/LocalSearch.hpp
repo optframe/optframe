@@ -24,7 +24,11 @@ namespace optframe {
 // differs from GlobalSearch, that manages primary/best types and eventually
 // some secondary/incumbent types.
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES2, XSearch<XES2> XSH2 = XES2>
+#else
+template <typename XES2, typename XSH2 = XES2>
+#endif
 class LocalSearch : public Component {
  public:
   using IncumbentType = XSH2;  // defaults to XES
@@ -75,9 +79,14 @@ class LocalSearch : public Component {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>, typename XSH = XES>
+#endif
 class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
   virtual ~LocalSearchBuilder() = default;

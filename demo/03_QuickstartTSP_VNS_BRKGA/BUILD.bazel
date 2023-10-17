@@ -7,13 +7,21 @@ package(
 cc_binary(
     name = "app_TSPfcore-ils",
     srcs = ["mainTSP-fcore-ils.cpp", "TSP-fcore.hpp"],
-    ##copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
-    deps = ["@OptFrame//include:OptFCore"]
+    deps = ["@OptFrame//include:OptFCore"],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++17"],
+        "@bazel_tools//src/conditions:darwin": ["--std=c++17"],
+        "//conditions:default": ["--std=c++17", "-Wfatal-errors"],
+    }),
 )
 
 cc_binary(
     name = "app_TSPfcore-brkga",
     srcs = ["mainTSP-fcore-brkga.cpp", "TSP-fcore.hpp"],
-    ##copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
-    deps = ["@OptFrame//include:OptFCore"]
+    deps = ["@OptFrame//include:OptFCore"],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++17"],
+        "@bazel_tools//src/conditions:darwin": ["--std=c++17"],
+        "//conditions:default": ["--std=c++17", "-Wfatal-errors"],
+    }),
 )

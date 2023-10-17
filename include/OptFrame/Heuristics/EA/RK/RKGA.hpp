@@ -19,6 +19,7 @@
 #include "../Mutation.hpp"
 #include "../Selection.hpp"
 #include "DecoderRandomKeys.hpp"
+#include "OptFrame/Concepts/MyConcepts.hpp"
 
 // RKGA - Random Key Genetic Algorithms
 // Bean, J.C.: Genetic algorithms and random keys for
@@ -31,7 +32,7 @@ namespace optframe {
 // XEv = Evaluation<>>
 //
 template <XEvaluation XEv = Evaluation<>,
-          optframe::comparability KeyType = double>
+          ConceptsComparability KeyType = double>
 class RandomKeysInitEPop
     : public InitialEPopulation<std::pair<std::vector<KeyType>, XEv>> {
   using RSK = std::vector<KeyType>;
@@ -97,7 +98,7 @@ class RandomKeysInitEPop
 // template<XSolution S, XEvaluation XEv, optframe::comparability KeyType =
 // double, XESolution XES = pair<S, XEv>>
 //
-template <XESolution XES, optframe::comparability KeyType = double,
+template <XESolution XES, ConceptsComparability KeyType = double,
           XESolution XES2 =
               std::pair<std::vector<KeyType>, typename XES::second_type>>
 class RKGA : public Populational<XES, XES, XES2> {

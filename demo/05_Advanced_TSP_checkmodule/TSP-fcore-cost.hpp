@@ -108,6 +108,14 @@ class MoveSwap : public Move<ESolutionTSP> {
     return uptr<Move<ESolutionTSP>>(new MoveSwap{j, i});  // return a reverse move ('undo' move)s
   }
 
+  virtual op<Evaluation<int>> cost(const ESolutionTSP& se, bool allowEstimated) override {
+    assert(!se.second.isOutdated());
+    auto& s = se.first;
+    int diff = -pTSP.dist(s[i - 1], s[i]) - pTSP.dist(s[i], s[(i + 1) % pTSP.n]) - pTSP.dist(s[j - 1], s[j]) - pTSP.dist(s[j], s[(j + 1) % pTSP.n]);
+    diff += pTSP.dist(s[i - 1], s[j]) + pTSP.dist(s[j], s[(i + 1) % pTSP.n]) + pTSP.dist(s[j - 1], s[i]) + pTSP.dist(s[i], s[(j + 1) % pTSP.n]);
+    return std::make_optional(Evaluation<int>(diff));
+  }
+
   bool
   operator==(const Move<ESolutionTSP>& other) const override {
     auto& fmove = (MoveSwap&)other;

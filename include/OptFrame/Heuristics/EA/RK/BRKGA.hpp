@@ -15,6 +15,8 @@
 #include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 
+#include "OptFrame/Concepts/MyConcepts.hpp"
+
 // BRKGA - Biased-Random Key Genetic Algorithms
 
 namespace optframe {
@@ -31,12 +33,9 @@ namespace optframe {
 // already deals with that User may also want to "decode" the ADS from keys, if
 // necessary...
 //
-template <XESolution XES, optframe::comparability KeyType = double,
+template <XESolution XES, ConceptsComparability KeyType = double,
           XESolution XES2 =
-              std::pair<std::vector<KeyType>,
-                        typename XES::second_type>>  //,
-                                                     // XSearch<XES2> XSH2 =
-                                                     // VEPopulation<XES2>>
+              std::pair<std::vector<KeyType>, typename XES::second_type>>
 class BRKGA : public RKGA<XES, KeyType, XES2> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -109,10 +108,12 @@ class BRKGA : public RKGA<XES, KeyType, XES2> {
 // make sense?
 // TODO: only time can tell...
 //
-// template<XESolution XES, XESolution XES2_Factory = XES,
-// X2ESolution<XES2_Factory> X2ES_Factory = MultiESolution<XES2_Factory>>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XESolution XES2_Factory,
           XSearch<XES2_Factory> X2ES_Factory>
+#else
+template <typename XES, XESolution XES2_Factory, typename X2ES_Factory>
+#endif
 class BRKGABuilder
     : public GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory> {
   using S = typename XES::first_type;

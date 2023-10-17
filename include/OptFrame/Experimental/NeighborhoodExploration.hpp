@@ -121,9 +121,14 @@ class NeighborhoodExploration : public LocalSearch<XES, XSH> {
   std::string id() const override { return idComponent(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>, typename XSH = XES>
+#endif
 class NeighborhoodExplorationBuilder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:

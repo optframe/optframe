@@ -5,11 +5,10 @@ package(default_visibility = ["//visibility:public"])
 cc_binary(
     name = "app_demo_opt",
     srcs = ["OptFCore_load.cpp"],
-    deps = ["@OptFrame//:optfcore"],
-    ##copts = ['--std=c++17', '-fconcepts', '-Wfatal-errors']
-)
-
-filegroup(
-    name = "srcs",
-    srcs = glob(["**"]),
+    deps = ["@OptFrame//include:OptFCore"],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++17"],
+        "@bazel_tools//src/conditions:darwin": ["--std=c++17"],
+        "//conditions:default": ["--std=c++17"],
+    }),
 )
