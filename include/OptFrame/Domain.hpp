@@ -12,21 +12,15 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-// optframe stuff
-#include <OptFrame/BasicPareto.hpp>
+// important stuff
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
+// for testing
+#include <OptFrame/BasicPareto.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
-
-// for test only
-#ifndef NDEBUG
-#include "BasicPareto.hpp"  // for testing only!
-#include "Helper/EPopulation.hpp"
-#include "Helper/MultiESolution.hpp"
-#endif
 
 namespace optframe {
 class Domain {
