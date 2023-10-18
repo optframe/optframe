@@ -14,8 +14,13 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, class KeyType = double,
           X2ESolution<XES> X2ES = VEPopulation<XES>>
+#else
+template <typename XES, class KeyType = double,
+          typename X2ES = VEPopulation<XES>>
+#endif
 class BasicInitialEPopulationRK
     : public InitialEPopulationRK<XES, KeyType, X2ES> {
   using S = typename XES::first_type;

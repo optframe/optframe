@@ -344,12 +344,15 @@ class NSPopulationBasedMultiObjSearch
 
       if (improved) {
         tImp = -1;
-        if (Component::verbose)
-          std::cout << "t=" << t << " improved bounds: " << bestObj
-                    << std::endl;
+        if (Component::verbose) {
+          // std::cout << "t=" << t << " improved bounds: " << bestObj << std::endl;
+          std::cout << "t=" << t << " improved bounds: (TODO PRINT VECTOR)" << std::endl;
+        }
       } else {
-        if (Component::verbose)
-          std::cout << "DID NOT IMPROVE ANY BOUNDS " << bestObj << std::endl;
+        if (Component::verbose) {
+          // std::cout << "DID NOT IMPROVE ANY BOUNDS " << bestObj << std::endl;
+          std::cout << "DID NOT IMPROVE ANY BOUNDS (TODO PRINT VECTOR)" << std::endl;
+        }
       }
 
       // generating next population

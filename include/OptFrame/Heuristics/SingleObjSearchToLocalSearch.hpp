@@ -40,8 +40,8 @@ class SingleObjSearchToLocalSearch : public LocalSearch<XES> {
 
   virtual SearchStatus searchFrom(XES& se,
                                   const StopCriteria<XEv>& sosc) override {
-    XSolution AUTO_CONCEPTS& s = se.first;
-    XEv& e = se.second;
+    auto& s = se.first;
+    auto& e = se.second;
 
     // will ignore 'se'
     // maybe ALL SingleObjSearch should inherit from LocalSearch!

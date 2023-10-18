@@ -44,8 +44,11 @@ namespace optframe {
 // IMPORTANT: by default, MultiESolution is generating VEPopulation types
 // Because MultiESolution class is currently broken... Too bad!
 
-// template <XESolution XES, X2ESolution<XES> X2ES  = MultiESolution<XES>>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
+#else
+template <XESolution XES, typename X2ES = VEPopulation<XES>>
+#endif
 class InitialMultiESolution : public Component {
  public:
   virtual ~InitialMultiESolution() {}

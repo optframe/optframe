@@ -148,8 +148,8 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     // star = star ?: constructive->initialSearch(sosc).first;
     if (!star) star = constructive->initialSearch(sosc).first;
     //
-    XSolution AUTO_CONCEPTS& sStar = star->first;
-    Evaluation<>& eStar = star->second;
+    auto& sStar = star->first;
+    auto& eStar = star->second;
 
     if (Component::information)
       cout << "VNS starts: " << eStar.evaluation() << endl;

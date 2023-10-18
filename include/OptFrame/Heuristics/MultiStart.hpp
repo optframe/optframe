@@ -108,8 +108,13 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+#else
+template <typename XES, XESolution XES2,
+          typename X2ES = MultiESolution<XES2>>
+#endif
 class MultiStartBuilder : public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;

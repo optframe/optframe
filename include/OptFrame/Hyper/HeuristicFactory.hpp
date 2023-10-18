@@ -62,12 +62,15 @@
 
 namespace optframe {
 
-// template<XRepresentation R, class ADS = _ADS, XBaseSolution<S, XEv> S =
-// CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>> template<class R, class
-// ADS, XSolution S> template<XSolution S, XEvaluation XEv = Evaluation<>>
+//
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESSolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class HeuristicFactory {
   // TODO: must add to template!!!
   using XMEv = MultiEvaluation<typename XEv::objType>;

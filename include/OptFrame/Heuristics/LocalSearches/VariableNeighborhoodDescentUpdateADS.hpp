@@ -17,10 +17,13 @@
 
 namespace optframe {
 
-// template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S =
-// CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+#else
+template <typename R, typename ADS, typename S,
+          typename XEv = Evaluation<>, typename XES = pair<S, XEv>>
+#endif
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES>> ev;
@@ -118,9 +121,17 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
 // template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S =
 // CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 //  passing 'S' manually, for safety
+//
+//
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename R, class ADS, typename S,
+          typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class VariableNeighborhoodDescentUpdateADSBuilder
     : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:

@@ -208,7 +208,8 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
             if (P[m[z]].mev.at(1).evaluation() <= P[r].mev.at(1).evaluation()) {
               if (Component::verbose) {
                 cout << "r: " << r << " dominated by ";
-                cout << m[z] << " m=" << m << endl;
+                // cout << m[z] << " m=" << m << endl;
+                cout << m[z] << " m=(TODO PRINT VECTOR)" << endl;
               }
               nonDom = false;
               break;
@@ -222,7 +223,8 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
               cout << "*r:" << r << " ";
               cout << "rank: " << rank << " to ";
               cout << "P[" << r << "]:" << P[r] << endl;
-              cout << "m=" << m << endl;
+              // cout << "m=" << m << endl;
+              cout << "m=(TODO PRINT VECTOR)" << endl;
             }
             count_x++;
             m.push_back(r);
@@ -236,7 +238,8 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
         }
 
       if (Component::verbose) {
-        cout << "FINISHED RANK " << rank << " WITH m=" << m << " ";
+        // cout << "FINISHED RANK " << rank << " WITH m=" << m << " ";
+        cout << "FINISHED RANK " << rank << " WITH m=(TODO PRINT VECTOR)" << " ";
         cout << "ID_LIST on m: [";
         for (unsigned i = 0; i < m.size(); i++) cout << P[m[i]].idx << " ";
         cout << "]" << endl;

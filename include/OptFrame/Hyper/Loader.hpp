@@ -115,8 +115,15 @@ template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           XSearch<XES> XSH = XES, XESolution XES2 = XES,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 #else
+
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+#else
+template <typename XES, typename XSH = XES, typename XES2 = XES,
+          typename X2ES = MultiESolution<XES2>>
+#endif // cpp_concepts
+
 #endif
 class Loader {
 

@@ -167,7 +167,7 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
 
     // initialize search context for Simulated Annealing
     SearchContextSA_AC<XES> ctx{
-        .self = *this, .best = star, .incumbent = incumbent};
+        *this, star, incumbent};
 
     if (Component::verbose) std::cout << "SA: begin SearchContext" << std::endl;
 
@@ -443,8 +443,13 @@ XSH::first_type::typeR>);
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+#else
+template <typename XES, XESolution XES2,
+          typename X2ES = MultiESolution<XES2>>
+#endif
 class SimulatedAnnealingACBuilder
     : public SA,
       public GlobalSearchBuilder<XES, XES, XES2, X2ES> {

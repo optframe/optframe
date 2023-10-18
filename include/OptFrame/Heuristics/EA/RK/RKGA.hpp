@@ -240,7 +240,7 @@ class RKGA : public Populational<XES, XES, XES2> {
   //
   SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
                              std::optional<XSH> _best) override {
-    ExecutionContext ctx{.self = this};
+    ExecutionContext ctx{this};
 
     if (Component::debug)
       (*Component::logdata)

@@ -37,7 +37,12 @@ namespace optframe {
 
 //template<class R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
 // force manual passing (for safety)
+//
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <class R, class ADS, XBaseSolution<R, ADS> S>
+#else 
+template <class R, class ADS, typename S>
+#endif
 class ADSManager : public Component {
  public:
   ADSManager() {

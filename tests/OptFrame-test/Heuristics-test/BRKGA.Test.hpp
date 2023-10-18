@@ -21,6 +21,7 @@
 #include <OptFrame-Core-Examples/FCore-KP/KP-fcore.hpp>
 #include <OptFrame-Core-Examples/FCore-bTSP/BTSP-fcore.hpp>
 // #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+#include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/InitialSearch.hpp>
 
