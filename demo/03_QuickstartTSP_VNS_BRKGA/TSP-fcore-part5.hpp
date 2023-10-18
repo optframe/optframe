@@ -1,5 +1,6 @@
 
-std::pair<int, int> fApplySwap(const std::pair<int, int>& moveData,
+std::pair<int, int> fApplySwap(sref<ProblemContext>,
+                               const std::pair<int, int>& moveData,
                                ESolutionTSP& se) {
   int i = moveData.first;
   int j = moveData.second;
@@ -11,8 +12,8 @@ std::pair<int, int> fApplySwap(const std::pair<int, int>& moveData,
 }
 
 // Swap move
-using MoveSwap = FMove<std::pair<int, int>, ESolutionTSP>;
+using MoveSwap = FMoveP<std::pair<int, int>, ESolutionTSP, ProblemContext>;
 
-uptr<Move<ESolutionTSP>> makeMoveSwap(int i, int j) {
-  return uptr<Move<ESolutionTSP>>(new MoveSwap{make_pair(i, j), fApplySwap});
+uptr<Move<ESolutionTSP>> makeMoveSwap(sref<ProblemContext> p, int i, int j) {
+  return uptr<Move<ESolutionTSP>>(new MoveSwap{p, make_pair(i, j), fApplySwap});
 }

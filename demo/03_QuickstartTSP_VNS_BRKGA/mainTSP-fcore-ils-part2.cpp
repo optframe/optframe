@@ -23,7 +23,7 @@ int main() {
   esol.second.print();  // print evaluation
 
   // swap 0 with 1
-  MoveSwap move{make_pair(0, 1), fApplySwap};
+  MoveSwap move{demo.pTSP, make_pair(0, 1), fApplySwap};
   move.print();
 
   // NSSwap nsswap;

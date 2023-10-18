@@ -230,10 +230,10 @@ class Evaluation final : public Component {
     objFunction = obj;
     // I THINK this is right... but let's warn, for now!
     // Otherwise, where else could we set outdated to false??
-    if (Component::warning)
-      std::cout << "WARNING: setObjFunction sets outdated=false" << std::endl;
+    // if (Component::warning)
+    //  std::cout << "WARNING: setObjFunction sets outdated=false" << std::endl;
 
-    outdated = false;
+    outdated = false;  // this is natural and should be allowed
   }
 
   void setInfMeasure(ObjType inf) { infMeasure = inf; }

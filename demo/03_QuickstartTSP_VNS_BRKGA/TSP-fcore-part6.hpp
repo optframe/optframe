@@ -7,7 +7,7 @@ uptr<Move<ESolutionTSP>> fRandomSwap(sref<ProblemContext> pTSP,
     i = rand() % pTSP->n;
     j = rand() % pTSP->n;
   }
-  return uptr<Move<ESolutionTSP>>(makeMoveSwap(i, j));
+  return uptr<Move<ESolutionTSP>>(makeMoveSwap(pTSP, i, j));
 }
 
 // Swap move (NS)

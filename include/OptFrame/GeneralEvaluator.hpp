@@ -26,7 +26,7 @@ namespace optframe {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>  // defaults to single obj.
 #else
-template <typename XES, typename XSH = XES>  // defaults to single obj.
+template <typename XES, typename XSH = XES>           // defaults to single obj.
 #endif
 class GeneralEvaluator : public Component {
   using XEv = typename XES::second_type;
@@ -250,7 +250,11 @@ class GeneralEvaluator : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GeneralEvaluator"
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
        << Domain::getAlternativeDomain<XES>("<XESf64>");
+#else
+       << Domain::getAlternativeDomain<XES>("<X?>");  // unsupported domain
+#endif
     return ss.str();
   }
 };

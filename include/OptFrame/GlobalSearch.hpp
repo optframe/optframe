@@ -87,7 +87,11 @@ class GlobalSearch : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GlobalSearch"
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
        << Domain::getAlternativeDomain<XES>("<XESf64>");
+#else
+       << Domain::getAlternativeDomain<XES>("<X?>");  // unsupported domain
+#endif
     // NOTE THAT: PRIMARY/BEST IS TYPICALLY XESf64
     // WE IGNORE SECONDARY TYPE FOR NOW...
     return ss.str();

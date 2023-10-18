@@ -28,13 +28,21 @@ int main() {
     ss << i << "\t" << rand() % 1000 << "\t" << rand() % 1000 << std::endl;
   // Scanner scanner{ std::string(instance5) };
   Scanner scanner{ss.str()};
-  pTSP.load(scanner);
+  sref<ProblemContext> pTSP{new ProblemContext{}};
+  pTSP->load(scanner);
 
   // REQUIRE(pTSP.n == 5);
-  assert(pTSP.n == 50);
+  assert(pTSP->n == 50);
 
   // set random seed for std::random_shuffle
   srand(1000000);
+
+  FConstructive<std::vector<int>, ProblemContext> crand{pTSP, frandom};
+  FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE, ProblemContext> eval{pTSP,
+                                                                    fevaluate};
+  FNS<ESolutionTSP, ProblemContext> nsswap{pTSP, fRandomSwap};
+  sref<FNSSeq<std::pair<int, int>, ESolutionTSP, ProblemContext>> nsseq2{
+      make_nsseq(pTSP)};
 
   sref<InitialSearch<ESolutionTSP>> initRand{
       new BasicInitialSearch<ESolutionTSP>(crand, eval)};
