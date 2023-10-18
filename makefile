@@ -1,5 +1,9 @@
 all: test
 
+check: test demos
+
+demos:
+	cd demo && make
 
 test:
 	cd tests && make test && ./build/OptFrame_test

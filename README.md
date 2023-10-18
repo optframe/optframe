@@ -81,6 +81,7 @@ To install gcc-10.1, see these [Instructions](libs/gcc-10-install/INSTRUCTIONS.m
 
 To learn more about bazel build, versioning and general development requirements, see [DEVEL.md](DEVEL.md).
 
+**IMPORTANT:** *Run `make check` for full check (need Bazel Build).*
 
 ## Concepts General
 

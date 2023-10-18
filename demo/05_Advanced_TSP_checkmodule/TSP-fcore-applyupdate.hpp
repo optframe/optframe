@@ -184,6 +184,7 @@ auto make_nsseq(sref<ProblemContext> p) {
 
 class OptFrameDemoTSP {
  public:
+  sref<ProblemContext> pTSP;
   sref<FConstructive<std::vector<int>, ProblemContext>> randomConstructive;
   sref<FEvaluator<ESolutionTSP, MINIMIZE, ProblemContext>> eval;
   sref<FNS<ESolutionTSP, ProblemContext>> nsSwap;
@@ -191,8 +192,9 @@ class OptFrameDemoTSP {
   sptr<DecoderRandomKeys<ESolutionTSP, double>> decoder;
 
   explicit OptFrameDemoTSP(sref<ProblemContext> p)
-      : randomConstructive{new FConstructive<std::vector<int>, ProblemContext>{
-            p, frandom}},
+      : pTSP{p},
+        randomConstructive{
+            new FConstructive<std::vector<int>, ProblemContext>{p, frandom}},
         eval{new FEvaluator<ESolutionTSP, MINIMIZE, ProblemContext>{p,
                                                                     fevaluate}},
         nsSwap{new FNS<ESolutionTSP, ProblemContext>{p, fRandomSwap}},

@@ -78,9 +78,14 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   std::string toString() const override { return id(); }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
+          typename X2ES = MultiESolution<XES>>
+#endif
 class BasicDecoderRandomKeysBuilder
     : public ComponentBuilder<S, XEv, XES, X2ES> {
   using KeyType = double;
