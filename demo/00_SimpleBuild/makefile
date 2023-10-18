@@ -1,7 +1,12 @@
 #CC=g++-10.1
-CC=clang++-12
-CPPSTD=-std=c++20 -Wfatal-errors
-#CPPSTD=--std=c++17 -fconcepts -Wfatal-errors
+#CC=clang++-12
+CC=g++
 
-all:
-	$(CC) $(CPPSTD)  OptFCore_load.cpp -I../../include -o app_demo_opt
+
+all: cpp_17 cpp_20
+
+cpp_17:
+	$(CC) --std=c++17 OptFCore_load.cpp -I../../include -o app_demo_opt
+
+cpp_20:
+	$(CC) --std=c++20 OptFCore_load.cpp -I../../include -o app_demo_opt_20
