@@ -1,5 +1,5 @@
 
-GCC_FLAGS=-O3 --std=c++17 -fconcepts
+GCC_FLAGS=-O3 --std=c++20
 
 examples:
 	make -C ../Examples/

@@ -73,7 +73,7 @@ OptFrame Functional Core (FCore) is also provided (strict `c++20`):
 
 The following requirements apply for projects (and subprojects):
 
-* OptFrame - `c++17` - tested on `gcc-7` with flags `-fconcepts`
+* OptFrame - `c++17` - tested on `gcc-7` (without flags `-fconcepts`)
 * FCore - `c++20` - tested on `gcc-10.1` with flags `-fcoroutines`
 * Scanner++ - `c++11` - tested on `gcc-7`
 

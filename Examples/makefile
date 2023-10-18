@@ -3,7 +3,7 @@ all: pmedcap examples kp tsp hfvrpmt
 examples: mitsp kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
 
 mitsp:
-	#g++ --std=c++17 -fconcepts mainMImpTSP.cpp -o app_MiTSP 2> error-gcc.err 
+	#g++ --std=c++20 mainMImpTSP.cpp -o app_MiTSP 2> error-gcc.err 
 	cd MITSP && make
 
 fix_examples: svrpdsp modm

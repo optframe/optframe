@@ -42,7 +42,7 @@ Build with make
 
 One way to compile it locally is just copy src/ folder inside your project and see the results (using GCC C++ compiler)::
 
-    g++ --std=c++17 -fconcepts mytest.cpp -o fcore_mytest
+    g++ --std=c++20 mytest.cpp -o fcore_mytest
     ./fcore_mytest
     # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
 
@@ -51,7 +51,7 @@ to the compiler (*considering relative location of ./optframe/src/*):
 
 ..
     # COMMENTED!!
-    g++ --std=c++17 -fconcepts -I./optframe/src mytest.cpp -o fcore_localtest
+    g++ --std=c++20 -I./optframe/src mytest.cpp -o fcore_localtest
     ./fcore_localtest
     # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
 
@@ -93,7 +93,7 @@ And use the following *BUILD.bazel* file (with dependency to @OptFrame):
         name = "fcore_localtest",
         srcs = ["mytest.cpp"],
         deps=["@OptFrame//include:OptFCore"],
-        copts = ['--std=c++17', '-fconcepts']
+        copts = ['--std=c++20']
     )
 
 :code:`File 'BUILD.bazel' located in 'demo/01_QuickstartWelcome/'`
@@ -489,6 +489,6 @@ Example is divided in two files: :code:`KP-fcore-ex.hpp` and :code:`mainKP-fcore
 
 To compile it (generates binary `app_KP`)::
 
-    g++ -g -O3 --std=c++17 -fconcepts -I../../include  mainKP-fcore-ex.cpp -o app_KP
+    g++ -g -O3 --std=c++20 -I../../include  mainKP-fcore-ex.cpp -o app_KP
 
 

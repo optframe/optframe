@@ -4,7 +4,6 @@ all: build/app_Example
 #CC=clang++-12
 CC=g++
 CPPSTD=-std=c++20 -Wfatal-errors
-#CPPSTD=--std=c++17 -fconcepts -Wfatal-errors
 
 CXXFLAGS= -I../../include -Wfatal-errors  -fno-exceptions -O3 -Wall $(CPPSTD) #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)

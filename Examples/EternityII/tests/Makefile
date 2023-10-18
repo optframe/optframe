@@ -11,7 +11,7 @@ test:  build/Example_test
 	
 # the wildcards just track .h and .cpp for changes (avoiding 'clean')
 build/Example_test : Example.Test.cpp $(wildcard $(MY_PATH)/*.h) $(wildcard $(MY_PATH)/*.cpp)
-	g++ --coverage -g -O0 -fconcepts --std=c++17 -I$(MY_PATH) -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN -o $@ $< 
+	g++ --coverage -g -O0 --std=c++20  -I$(MY_PATH) -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN -o $@ $< 
 
 test-coverage:
 	mkdir -p reports

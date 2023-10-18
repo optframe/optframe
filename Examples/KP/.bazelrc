@@ -1,2 +1,2 @@
-build --cxxopt='-std=c++17' --cxxopt='-fconcepts' --cxxopt='-Ofast'
+build --cxxopt='-std=c++20'  --cxxopt='-Ofast'
 

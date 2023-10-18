@@ -1,7 +1,7 @@
 all: build/app_Example
 
 CC=g++
-CXXFLAGS= -I../../include  -fno-exceptions -O3 -Wfatal-errors --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../include  -fno-exceptions -O3 -Wfatal-errors --std=c++20 #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src

@@ -1,1 +1,1 @@
-build --cxxopt='-std=c++17' --cxxopt='-Ofast' --cxxopt='-fconcepts' --cxxopt='-fopenmp' --linkopt='-lgomp'
+build --cxxopt='-std=c++20' --cxxopt='-Ofast' --cxxopt='-fopenmp' --linkopt='-lgomp'

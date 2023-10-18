@@ -1,4 +1,4 @@
-#build --cxxopt='-std=c++17' --cxxopt='-fconcepts'
+#build --cxxopt='-std=c++20' 
 #build --action_env=CC=g++-10 //:app_TSPfxcore 
 build --cxxopt='-std=c++20'
 build --cxxopt='-Wno-macro-redefined'

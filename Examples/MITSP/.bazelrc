@@ -1,1 +1,1 @@
-build --cxxopt='-std=c++17' --cxxopt='-fconcepts'
+build --cxxopt='-std=c++20' 
