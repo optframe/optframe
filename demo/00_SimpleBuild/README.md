@@ -21,7 +21,9 @@ related as `../../`
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 $ bash -i -c "nvm install --lts"
 $ bash -i -c "sudo npm install -g @bazel/bazelisk"
-```### Learning more
+```
+
+### Learning more
 
 For more information, check [OptFrame Quickstart on ReadTheDocs](https://optframe.readthedocs.io/en/latest/quickstart.html).
 

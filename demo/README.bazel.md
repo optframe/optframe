@@ -12,3 +12,4 @@ $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bas
 $ bash -i -c "nvm install --lts"
 $ bash -i -c "sudo npm install -g @bazel/bazelisk"
 ```
+
