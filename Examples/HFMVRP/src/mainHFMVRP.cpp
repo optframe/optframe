@@ -6,10 +6,10 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/CloneConstructive.hpp>
+#include <OptFrame/Helper/CloneConstructive.hpp>
+#include <OptFrame/Heuristics/EA/ESContinuous.hpp>
+#include <OptFrame/Heuristics/EA/NGES.hpp>
 #include <OptFrame/Heuristics/Empty.hpp>
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/ESContinuous.hpp>
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>

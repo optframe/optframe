@@ -1,7 +1,8 @@
 all: build/app_Example
 
 #CC=g++-10.1
-CC=clang++-12
+#CC=clang++-12
+CC=g++
 CPPSTD=-std=c++20 -Wfatal-errors
 #CPPSTD=--std=c++17 -fconcepts -Wfatal-errors
 

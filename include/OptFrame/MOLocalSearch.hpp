@@ -29,11 +29,11 @@
 using namespace std;
 
 #include "Component.hpp"
-#include "ComponentBuilder.h"
 #include "Evaluation.hpp"
+#include "Helper/Solution.hpp"
+#include "Hyper/ComponentBuilder.hpp"
 #include "MultiObjSearch.hpp"
 #include "ParetoManager.hpp"
-#include "Solution.hpp"
 
 namespace optframe {
 
@@ -44,28 +44,27 @@ class MOLocalSearch : public Component {
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
  public:
-  MOLocalSearch() {
-  }
+  MOLocalSearch() {}
 
-  virtual ~MOLocalSearch() {
-  }
+  virtual ~MOLocalSearch() {}
 
   // core methods
 
   // 1
-  //virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
+  // virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv,
+  // XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
   // removed this method.. now only pair XMES!
 
   // 2
-  virtual void moSearchFrom(Pareto<XMES>& p, XMES& smev, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
+  virtual void moSearchFrom(Pareto<XMES>& p, XMES& smev,
+                            paretoManager<S, XMEv, XMES>& pManager,
+                            const StopCriteria<XMEv>& stopCriteria) = 0;
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
   static string idComponent() {
     stringstream ss;
@@ -73,9 +72,7 @@ class MOLocalSearch : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

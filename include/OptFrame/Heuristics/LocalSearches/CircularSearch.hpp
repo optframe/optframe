@@ -21,12 +21,13 @@ class CircularSearch : public LocalSearch<XES> {
 
  private:
   sref<GeneralEvaluator<XES>> eval;
-  sref<NSEnum<XES>> ns;
+  sref<NSEnum<XES, XSH>> ns;
 
   int initial_w;
 
  public:
-  CircularSearch(sref<GeneralEvaluator<XES>> _eval, sref<NSEnum<XES>> _nsEnum)
+  CircularSearch(sref<GeneralEvaluator<XES>> _eval,
+                 sref<NSEnum<XES, XSH>> _nsEnum)
       : eval(_eval), ns(_nsEnum) {
     initial_w = 0;
   }
@@ -116,7 +117,7 @@ class CircularSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    sptr<NSEnum<XES>> nsenum;
+    sptr<NSEnum<XES, XES>> nsenum;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsenum, id2, comp_id2);
@@ -130,7 +131,7 @@ class CircularSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(NSEnum<XES>::idComponent(), "neighborhood structure"));
+        make_pair(NSEnum<XES, XES>::idComponent(), "neighborhood structure"));
 
     return params;
   }

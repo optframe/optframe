@@ -27,7 +27,7 @@
 
 #include <vector>
 
-#include "../../../ComponentBuilder.h"
+#include "../../../Hyper/ComponentBuilder.hpp"
 #include "../../../MultiEvaluator.hpp"
 #include "../../../MultiObjSearch.hpp"
 #include "../../../NS.hpp"

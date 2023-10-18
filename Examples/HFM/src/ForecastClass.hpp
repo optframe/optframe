@@ -10,8 +10,8 @@
 
 #include <OptFrame/Heuristics/LocalSearches/VND.h>
 
+#include <OptFrame/Heuristics/EA/NGES.hpp>
 #include <OptFrame/Heuristics/Empty.hpp>
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
@@ -52,20 +52,21 @@ class ForecastClass {
   HFMParams& methodParam;
 
   HFMProblemInstance* p;
-  //HFMEvaluator* eval;
+  // HFMEvaluator* eval;
   sref<HFMEvaluator> eval;
-  sref<GeneralEvaluator<ESolutionHFM>> evalGeneral;  // unused, just redirecting to 'eval'
+  sref<GeneralEvaluator<ESolutionHFM>>
+      evalGeneral;  // unused, just redirecting to 'eval'
 
-  //Constructive<SolutionHFM>* c;
+  // Constructive<SolutionHFM>* c;
   sptr<InitialSearch<ESolutionHFM, EvaluationHFM>> c;    // for single obj
   InitialSearch<EMSolutionHFM, MultiEvaluationHFM>* cm;  // for multi obj
   //
   vector<NSSeq<ESolutionHFM>*> vNS;
 
   EmptyLocalSearch<ESolutionHFM> emptyLS;
-  //vector<NSSeq<ESolutionHFM>*>* vNSeq;
+  // vector<NSSeq<ESolutionHFM>*>* vNSeq;
   vsref<NSSeq<ESolutionHFM>> vNSeq;
-  //vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>* vNSeqMO;
+  // vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>* vNSeqMO;
   vsref<NSSeq<EMSolutionHFM, MultiEvaluationHFM>> vNSeqMO;
 
   //	EFPESContinous* EsCOpt;
@@ -74,7 +75,7 @@ class ForecastClass {
 
   vsref<LocalSearch<ESolutionHFM>> vLS;
 
-  //sptr<VariableNeighborhoodDescent<ESolutionHFM>> vnd;
+  // sptr<VariableNeighborhoodDescent<ESolutionHFM>> vnd;
   sptr<LocalSearch<ESolutionHFM>> vnd;
   sptr<IteratedLocalSearchLevels<ESolutionHFM>> ils;
 
@@ -84,74 +85,117 @@ class ForecastClass {
   sptr<ILSLPerturbation<ESolutionHFM, EvaluationHFM>> ilsPert;
   //
   // MO versions
-  //MOILSLPerturbationLPlus2<SolutionHFM>* moILSPert;
-  //sptr<MOILSLPerturbationLPlus2<EMSolutionHFM, MultiEvaluationHFM>> moILSPert;
+  // MOILSLPerturbationLPlus2<SolutionHFM>* moILSPert;
+  // sptr<MOILSLPerturbationLPlus2<EMSolutionHFM, MultiEvaluationHFM>>
+  // moILSPert;
   sptr<MOILSLPerturbation<EMSolutionHFM, MultiEvaluationHFM>> moILSPert;
   //
-  //BasicMOILSPerturbation<SolutionHFM>* basicMOILSPert;
-  sptr<BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>> basicMOILSPert;
+  // BasicMOILSPerturbation<SolutionHFM>* basicMOILSPert;
+  sptr<BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>>
+      basicMOILSPert;
 
-  //OptimalLinearRegression* olr;
+  // OptimalLinearRegression* olr;
   //	MultiEvaluator<RepEFP>* mev;
   sptr<HFMMultiEvaluator> mev;
-  CheckCommand<ESolutionHFM, SolutionHFM, RepHFM, OPTFRAME_DEFAULT_ADS> checkModule;
+  CheckCommand<ESolutionHFM, SolutionHFM, RepHFM, OPTFRAME_DEFAULT_ADS>
+      checkModule;
 
  public:
-  ForecastClass(vector<vector<double>>& _tForecastings, ProblemParameters& _problemParam, sref<RandGen> _rg, HFMParams& _methodParam)
-      : tForecastings(_tForecastings), problemParam(_problemParam), rg(_rg), methodParam(_methodParam), p{new HFMProblemInstance(tForecastings)}, eval{new HFMEvaluator(*p, problemParam, methodParam.getEvalFOMinimizer(), methodParam.getEvalAprox())}, evalGeneral{eval} {
-    //p = new HFMProblemInstance(tForecastings);
-    //eval = new HFMEvaluator(*p, problemParam, methodParam.getEvalFOMinimizer(), methodParam.getEvalAprox());
+  ForecastClass(vector<vector<double>>& _tForecastings,
+                ProblemParameters& _problemParam, sref<RandGen> _rg,
+                HFMParams& _methodParam)
+      : tForecastings(_tForecastings),
+        problemParam(_problemParam),
+        rg(_rg),
+        methodParam(_methodParam),
+        p{new HFMProblemInstance(tForecastings)},
+        eval{new HFMEvaluator(*p, problemParam,
+                              methodParam.getEvalFOMinimizer(),
+                              methodParam.getEvalAprox())},
+        evalGeneral{eval} {
+    // p = new HFMProblemInstance(tForecastings);
+    // eval = new HFMEvaluator(*p, problemParam,
+    // methodParam.getEvalFOMinimizer(), methodParam.getEvalAprox());
 
-    //NSSeqHFMModifyRules* nsModifyFuzzyRules = new NSSeqHFMModifyRules(*p, rg);
+    // NSSeqHFMModifyRules* nsModifyFuzzyRules = new NSSeqHFMModifyRules(*p,
+    // rg);
     //
-    //auto nsModifyFuzzyRulesSO = new NSSeqHFMModifyRules<>(*p, rg);
-    sref<NSSeq<ESolutionHFM>> nsModifyFuzzyRulesSO = new NSSeqHFMModifyRules<>(*p, rg);
+    // auto nsModifyFuzzyRulesSO = new NSSeqHFMModifyRules<>(*p, rg);
+    sref<NSSeq<ESolutionHFM>> nsModifyFuzzyRulesSO =
+        new NSSeqHFMModifyRules<>(*p, rg);
 
-    auto nsModifyFuzzyRulesMO = new NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>(*p, rg);
+    auto nsModifyFuzzyRulesMO =
+        new NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>(*p, rg);
 
-    sref<NSSeq<ESolutionHFM>> nsChangeSingleInput = new NSSeqHFMChangeSingleInput<>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
-    auto nsChangeSingleInputMO = new NSSeqHFMChangeSingleInput<EMSolutionHFM, MultiEvaluationHFM>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+    sref<NSSeq<ESolutionHFM>> nsChangeSingleInput =
+        new NSSeqHFMChangeSingleInput<>(*p, rg, problemParam.getVMaxLag(),
+                                        problemParam.getVMaxUpperLag());
+    auto nsChangeSingleInputMO =
+        new NSSeqHFMChangeSingleInput<EMSolutionHFM, MultiEvaluationHFM>(
+            *p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
 
-    sref<NSSeq<ESolutionHFM>> nsRemoveSingleInput = new NSSeqHFMRemoveSingleInput<>(rg);
-    auto nsRemoveSingleInputMO = new NSSeqHFMRemoveSingleInput<EMSolutionHFM, MultiEvaluationHFM>(rg);
+    sref<NSSeq<ESolutionHFM>> nsRemoveSingleInput =
+        new NSSeqHFMRemoveSingleInput<>(rg);
+    auto nsRemoveSingleInputMO =
+        new NSSeqHFMRemoveSingleInput<EMSolutionHFM, MultiEvaluationHFM>(rg);
 
-    sref<NSSeq<ESolutionHFM>> nsAddSingleInput = new NSSeqNEIGHAddSingleInput<>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
-    auto nsAddSingleInputMO = new NSSeqNEIGHAddSingleInput<EMSolutionHFM, MultiEvaluationHFM>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+    sref<NSSeq<ESolutionHFM>> nsAddSingleInput = new NSSeqNEIGHAddSingleInput<>(
+        *p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+    auto nsAddSingleInputMO =
+        new NSSeqNEIGHAddSingleInput<EMSolutionHFM, MultiEvaluationHFM>(
+            *p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
     //
     //		NSSeqNEIGHVAlpha* nsVAlpha = new NSSeqNEIGHVAlpha(*p, rg, 5);
 
     //		NSSeqNEIGHAddX* nsAddMean01 = new NSSeqNEIGHAddX(*p, rg, 0.1);
     //		NSSeqNEIGHAddX* nsAddMean1 = new NSSeqNEIGHAddX(*p, rg, 1);
-    //		NSSeqNEIGHAddX* nsAddMeanD15 = new NSSeqNEIGHAddX(*p, rg, p->getMean(0) / 15);
-    //		NSSeqNEIGHAddX* nsAddMeanD6 = new NSSeqNEIGHAddX(*p, rg, p->getMean(0) / 6);
-    //		NSSeqNEIGHAddX* nsAddMeanD2 = new NSSeqNEIGHAddX(*p, rg, p->getMean(0) / 2);
-    //		NSSeqNEIGHAddX* nsAddMean = new NSSeqNEIGHAddX(*p, rg, p->getMean(0));
-    //		NSSeqNEIGHAddX* nsAddMeanM2 = new NSSeqNEIGHAddX(*p, rg, 2 * p->getMean(0));
-    //		NSSeqNEIGHAddX* nsAddMeanM5 = new NSSeqNEIGHAddX(*p, rg, 5 * p->getMean(0));
-    //		NSSeqNEIGHAddX* nsAddMeanBigM = new NSSeqNEIGHAddX(*p, rg, 100 * p->getMean(0));
+    //		NSSeqNEIGHAddX* nsAddMeanD15 = new NSSeqNEIGHAddX(*p, rg,
+    //p->getMean(0) / 15); 		NSSeqNEIGHAddX* nsAddMeanD6 = new NSSeqNEIGHAddX(*p,
+    //rg, p->getMean(0) / 6); 		NSSeqNEIGHAddX* nsAddMeanD2 = new
+    //NSSeqNEIGHAddX(*p, rg, p->getMean(0) / 2); 		NSSeqNEIGHAddX* nsAddMean = new
+    //NSSeqNEIGHAddX(*p, rg, p->getMean(0)); 		NSSeqNEIGHAddX* nsAddMeanM2 = new
+    //NSSeqNEIGHAddX(*p, rg, 2 * p->getMean(0)); 		NSSeqNEIGHAddX* nsAddMeanM5 =
+    //new NSSeqNEIGHAddX(*p, rg, 5 * p->getMean(0)); 		NSSeqNEIGHAddX*
+    //nsAddMeanBigM = new NSSeqNEIGHAddX(*p, rg, 100 * p->getMean(0));
 
     int cMethod = methodParam.getConstrutiveMethod();
     int cPre = methodParam.getConstrutivePrecision();
 
     if (cMethod == 0) {
       c = sptr<InitialSearch<ESolutionHFM, EvaluationHFM>>{
-          new ConstructiveRandom<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre)};
-      cm = new ConstructiveRandom<EMSolutionHFM, MultiEvaluationHFM>(*p, problemParam, rg, cPre);
+          new ConstructiveRandom<ESolutionHFM, EvaluationHFM>(*p, problemParam,
+                                                              rg, cPre)};
+      cm = new ConstructiveRandom<EMSolutionHFM, MultiEvaluationHFM>(
+          *p, problemParam, rg, cPre);
     }
     if (cMethod == 2) {
       c = sptr<InitialSearch<ESolutionHFM, EvaluationHFM>>{
-          new ConstructiveACF<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF())};
-      cm = new ConstructiveACF<EMSolutionHFM, MultiEvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
+          new ConstructiveACF<ESolutionHFM, EvaluationHFM>(
+              *p, problemParam, rg, cPre,
+              methodParam.getConstrutiveLimitAlphaACF())};
+      cm = new ConstructiveACF<EMSolutionHFM, MultiEvaluationHFM>(
+          *p, problemParam, rg, cPre,
+          methodParam.getConstrutiveLimitAlphaACF());
     }
 
-    //FirstImprovement<SolutionHFM>* fiModifyFuzzyRules = new FirstImprovement<SolutionHFM>(*eval, *nsModifyFuzzyRules);
-    //FirstImprovement<SolutionHFM>* fiChangeSingleInput = new FirstImprovement<SolutionHFM>(*eval, *nsChangeSingleInput);
-    sref<RandomDescentMethod<ESolutionHFM>> rdmRemove = new RandomDescentMethod<ESolutionHFM>(eval, nsRemoveSingleInput, 500);  //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
-    sref<RandomDescentMethod<ESolutionHFM>> rdmAdd = new RandomDescentMethod<ESolutionHFM>(eval, nsAddSingleInput, 500);        //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
-                                                                                                                                //		int maxRDM = 100;
-                                                                                                                                //
-                                                                                                                                //		//rdm->setMessageLevel(3);
-                                                                                                                                //		vLS.push_back(fiVAlpha);
+    // FirstImprovement<SolutionHFM>* fiModifyFuzzyRules = new
+    // FirstImprovement<SolutionHFM>(*eval, *nsModifyFuzzyRules);
+    // FirstImprovement<SolutionHFM>* fiChangeSingleInput = new
+    // FirstImprovement<SolutionHFM>(*eval, *nsChangeSingleInput);
+    sref<RandomDescentMethod<ESolutionHFM>> rdmRemove =
+        new RandomDescentMethod<ESolutionHFM>(
+            eval, nsRemoveSingleInput,
+            500);  //		FirstImprovement<RepEFP>* fiVAlpha = new
+                   //FirstImprovement<RepEFP>(*eval, *nsVAlpha);
+    sref<RandomDescentMethod<ESolutionHFM>> rdmAdd =
+        new RandomDescentMethod<ESolutionHFM>(
+            eval, nsAddSingleInput,
+            500);  //		FirstImprovement<RepEFP>* fiVAlpha = new
+                   //FirstImprovement<RepEFP>(*eval, *nsVAlpha); 		int maxRDM =
+                   //100;
+                   //
+                   //		//rdm->setMessageLevel(3);
+                   //		vLS.push_back(fiVAlpha);
     vLS.push_back(rdmRemove);
     vLS.push_back(rdmAdd);
     //		vLS.push_back(fiModifyFuzzyRules);
@@ -160,43 +204,51 @@ class ForecastClass {
         new VariableNeighborhoodDescent<ESolutionHFM>(eval, vLS)};
     //		vnd->setVerbose();
 
-    //		ilsPert = new ILSLPerturbationLPlus2<RepEFP,OPTFRAME_DEFAULT_ADS>(*eval, 50, *nsModifyFuzzyRules, rg); //TODO check why 50 was removed
+    //		ilsPert = new
+    //ILSLPerturbationLPlus2<RepEFP,OPTFRAME_DEFAULT_ADS>(*eval, 50,
+    //*nsModifyFuzzyRules, rg); //TODO check why 50 was removed
 
-    //ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRules, rg);
+    // ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval,
+    // *nsModifyFuzzyRules, rg);
     ilsPert = sptr<ILSLPerturbationLPlus2<ESolutionHFM, EvaluationHFM>>{
-        new ILSLPerturbationLPlus2<ESolutionHFM>(eval, nsModifyFuzzyRulesSO, rg)};
+        new ILSLPerturbationLPlus2<ESolutionHFM>(eval, nsModifyFuzzyRulesSO,
+                                                 rg)};
     //		ilsPert->add_ns(*nsChangeSingleInput);
     //		nsVAlpha
 
-    //GeneralEvaluator<ESolutionHFM>& geval = *eval;
-    //InitialSearch<XES>& constructive
+    // GeneralEvaluator<ESolutionHFM>& geval = *eval;
+    // InitialSearch<XES>& constructive
 
     sref<LocalSearch<ESolutionHFM>> _vnd = vnd;
     sref<ILSLPerturbation<ESolutionHFM>> _ilsPert = ilsPert;
     ils = sptr<IteratedLocalSearchLevels<ESolutionHFM>>{
-        new IteratedLocalSearchLevels<ESolutionHFM>(eval, c, _vnd, _ilsPert, 100, 10)};
+        new IteratedLocalSearchLevels<ESolutionHFM>(eval, c, _vnd, _ilsPert,
+                                                    100, 10)};
 
     int mu = methodParam.getESMU();
     int lambda = methodParam.getESLambda();
     int esGMaxWithoutImp = methodParam.getESMaxG();
-    //		int initialDesv = methodParam.getESInitialDesv(); //Parameter for ESContinous - Used in Clemson's Paper
-    //		int mutationDesv = methodParam.getESMutationDesv(); //Parameter for ESContinous - Used in Clemson's Paper
+    //		int initialDesv = methodParam.getESInitialDesv(); //Parameter for
+    //ESContinous - Used in Clemson's Paper 		int mutationDesv =
+    //methodParam.getESMutationDesv(); //Parameter for ESContinous - Used in
+    //Clemson's Paper
 
-    //cout<<mu<<"\t"<<lambda<<"\t"<<esMaxG<<"\t"<<initialDesv<<"\t"<<mutationDesv<<endl;
-    //getchar();
+    // cout<<mu<<"\t"<<lambda<<"\t"<<esMaxG<<"\t"<<initialDesv<<"\t"<<mutationDesv<<endl;
+    // getchar();
 
-    //Old continous Evolution Strategy - Deprecated
-    //		EsCOpt = new EFPESContinous(*eval, *c, vNSeq, emptyLS, mu, lambda, esMaxG, rg, initialDesv, mutationDesv);
+    // Old continous Evolution Strategy - Deprecated
+    //		EsCOpt = new EFPESContinous(*eval, *c, vNSeq, emptyLS, mu, lambda,
+    //esMaxG, rg, initialDesv, mutationDesv);
 
-    //olr = new OptimalLinearRegression(*eval, *p);
+    // olr = new OptimalLinearRegression(*eval, *p);
     //
-    //vNSeq = new vector<NSSeq<ESolutionHFM>*>;
+    // vNSeq = new vector<NSSeq<ESolutionHFM>*>;
     vNSeq.push_back(nsModifyFuzzyRulesSO);
     vNSeq.push_back(nsChangeSingleInput);
     vNSeq.push_back(nsRemoveSingleInput);
     vNSeq.push_back(nsAddSingleInput);
     //
-    //vNSeqMO = new vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>;
+    // vNSeqMO = new vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>;
     vNSeqMO.push_back(nsModifyFuzzyRulesMO);
     vNSeqMO.push_back(nsChangeSingleInputMO);
     vNSeqMO.push_back(nsRemoveSingleInputMO);
@@ -213,7 +265,8 @@ class ForecastClass {
     //		vNSeq.push_back(nsAddMeanM5);
     //		vNSeq.push_back(nsAddMeanBigM);
 
-    //TODO check why ES goes more generations some time when we do not have improvements.
+    // TODO check why ES goes more generations some time when we do not have
+    // improvements.
 
     vector<int> vNSeqMax(vNSeq.size(), 1000);
     double mutationRate = 0.1;
@@ -226,42 +279,49 @@ class ForecastClass {
 
     string outputFile = "LogPopFOPlus";
     ngesParams = sptr<NGESParams>{
-        new NGESParams(vNSeqMax, selectionType, mutationRate, mu, lambda, esGMaxWithoutImp, outputFile, 0)};
-    es = sptr<NGES<ESolutionHFM>>{
-        new NGES<ESolutionHFM>(eval, c, vNSSeqForNGES, emptyLS, rg, *ngesParams)};
+        new NGESParams(vNSeqMax, selectionType, mutationRate, mu, lambda,
+                       esGMaxWithoutImp, outputFile, 0)};
+    es = sptr<NGES<ESolutionHFM>>{new NGES<ESolutionHFM>(
+        eval, c, vNSSeqForNGES, emptyLS, rg, *ngesParams)};
     es->setMessageLevel(LogLevel::Info);
 
-    //MO -- HFM MULTI IS ABLE TO ONLY "EVALUATE" once
+    // MO -- HFM MULTI IS ABLE TO ONLY "EVALUATE" once
     //		vector<Evaluator<RepEFP>*> v_e;
-    //		v_e.push_back(new EFPEvaluator(*p, problemParam, MAPE_INDEX, 0));
-    //		v_e.push_back(new EFPEvaluator(*p, problemParam, MAPE_INV_INDEX, 0));
-    //		v_e.push_back(new EFPEvaluator(*p, problemParam, RMSE_INDEX, 0));
-    //		v_e.push_back(new EFPEvaluator(*p, problemParam, SMAPE_INDEX, 0));
-    ////		v_e.push_back(new EFPEvaluator(*p, problemParam, WMAPE_INDEX, 0));
-    ////		v_e.push_back(new EFPEvaluator(*p, problemParam, MMAPE_INDEX, 0));
+    //		v_e.push_back(new EFPEvaluator(*p, problemParam, MAPE_INDEX,
+    //0)); 		v_e.push_back(new EFPEvaluator(*p, problemParam, MAPE_INV_INDEX, 0));
+    //		v_e.push_back(new EFPEvaluator(*p, problemParam, RMSE_INDEX,
+    //0)); 		v_e.push_back(new EFPEvaluator(*p, problemParam, SMAPE_INDEX, 0));
+    ////		v_e.push_back(new EFPEvaluator(*p, problemParam, WMAPE_INDEX,
+    ///0)); /		v_e.push_back(new EFPEvaluator(*p, problemParam,
+    ///MMAPE_INDEX, 0));
     //		mev = new MultiEvaluator<RepEFP>(v_e);
     //
     // Base to Derived
-    sptr<HFMEvaluator> _hfmeval = std::static_pointer_cast<HFMEvaluator>(eval.sptr());
+    sptr<HFMEvaluator> _hfmeval =
+        std::static_pointer_cast<HFMEvaluator>(eval.sptr());
     //
     //
-    mev = sptr<HFMMultiEvaluator>{
-        new HFMMultiEvaluator(_hfmeval)};
+    mev = sptr<HFMMultiEvaluator>{new HFMMultiEvaluator(_hfmeval)};
     //
     sptr<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>> _sptrmev =
-        std::static_pointer_cast<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>>(mev);
+        std::static_pointer_cast<
+            GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>>(mev);
     //
-    sref<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>> gmev = _sptrmev;  //mev;
+    sref<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>> gmev =
+        _sptrmev;  // mev;
     //
     moILSPert = sptr<MOILSLPerturbation<EMSolutionHFM, MultiEvaluationHFM>>{
-        new MOILSLPerturbationLPlus2<EMSolutionHFM, MultiEvaluationHFM>(gmev, nsModifyFuzzyRulesMO, rg)};
+        new MOILSLPerturbationLPlus2<EMSolutionHFM, MultiEvaluationHFM>(
+            gmev, nsModifyFuzzyRulesMO, rg)};
     //		moILSPert->add_ns(*nsChangeSingleInput);
 
-    basicMOILSPert = sptr<BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>>{
-        new BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>(gmev, 2, 10, nsModifyFuzzyRulesMO, rg)};
+    basicMOILSPert =
+        sptr<BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>>{
+            new BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>(
+                gmev, 2, 10, nsModifyFuzzyRulesMO, rg)};
     //		basicMOILSPert->add_ns(*nsChangeSingleInput);
 
-    //Trying to checkmodule
+    // Trying to checkmodule
     checkModule.add(c);
 
     sptr<Evaluator<SolutionHFM, EvaluationHFM, ESolutionHFM>> eval1 = _hfmeval;
@@ -271,7 +331,9 @@ class ForecastClass {
     checkModule.add(nsModifyFuzzyRulesSO);
     checkModule.add(nsRemoveSingleInput);
     checkModule.add(nsChangeSingleInput);
-    checkModule.add(nsAddSingleInput);  //This move has dynamic components - Thus SimpleCost does not work properly
+    checkModule.add(
+        nsAddSingleInput);  // This move has dynamic components - Thus
+                            // SimpleCost does not work properly
 
     //		checkModule.run(5,2);
     //		getchar();
@@ -281,54 +343,59 @@ class ForecastClass {
     //		tForecastings.clear();
 
     delete p;
-    //delete eval;
-    //delete c;
+    // delete eval;
+    // delete c;
 
-    //for (int i = 0; i < (int)vLS.size(); i++)
-    //   delete vLS[i];
+    // for (int i = 0; i < (int)vLS.size(); i++)
+    //    delete vLS[i];
     vLS.clear();
 
-    //for (int i = 0; i < (int)vNSeq.size(); i++)
-    //   delete vNSeq->at(i);
-    //delete vNSeq;
+    // for (int i = 0; i < (int)vNSeq.size(); i++)
+    //    delete vNSeq->at(i);
+    // delete vNSeq;
     vNSeq.clear();
 
-    //delete ilsPert; //todo verify
-    //delete ils;     //todo verify
-    //delete vnd;
+    // delete ilsPert; //todo verify
+    // delete ils;     //todo verify
+    // delete vnd;
     //		delete EsCOpt;
 
     //		mev->clear();
-    //delete mev;
-    //delete es;
-    //delete ngesParams;
-    //delete basicMOILSPert;
-    //delete moILSPert;
+    // delete mev;
+    // delete es;
+    // delete ngesParams;
+    // delete basicMOILSPert;
+    // delete moILSPert;
   }
 
-  //	//add solution to pareto front evaluating with forecasting class evaluators
-  //	void addSolToParetoWithFCMEV(Solution<RepEFP>& s, Pareto<RepEFP>& pf)
+  //	//add solution to pareto front evaluating with forecasting class
+  //evaluators 	void addSolToParetoWithFCMEV(Solution<RepEFP>& s, Pareto<RepEFP>&
+  //pf)
   //	{
   //		pf.push_back(s, *mev);
   //	}
 
-  //add solution to pareto front evaluating with forecasting class evaluators
-  void addSolToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf, const SolutionHFM& candidateS) {
+  // add solution to pareto front evaluating with forecasting class evaluators
+  void addSolToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf,
+                                       const SolutionHFM& candidateS) {
     paretoManager<SolutionHFM> paretoMan(*mev);
     paretoMan.addSolution(pf, candidateS);
   }
 
-  //add solution to pareto front evaluating with forecasting class evaluators
-  //void addSolWithMevToParetoWithParetoManager(Pareto<SolutionHFM>& pf, const SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
-  void addSolWithMevToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf, const EMSolutionHFM& cand_smev) {
+  // add solution to pareto front evaluating with forecasting class evaluators
+  // void addSolWithMevToParetoWithParetoManager(Pareto<SolutionHFM>& pf, const
+  // SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
+  void addSolWithMevToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf,
+                                              const EMSolutionHFM& cand_smev) {
     paretoManager<SolutionHFM> paretoMan(*mev);
-    //paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
+    // paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
     paretoMan.addSolutionWithMEV(pf, cand_smev);
   }
 
-  //Pareto<SolutionHFM> runMultiObjSearch(double timeGPLS, Pareto<SolutionHFM>* _pf = nullptr)
+  // Pareto<SolutionHFM> runMultiObjSearch(double timeGPLS, Pareto<SolutionHFM>*
+  // _pf = nullptr)
   void runMultiObjSearch(double timeGPLS, op<Pareto<EMSolutionHFM>> ioPF) {
-    //Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
+    // Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
 
     //		if (vS != nullptr)
     //		{
@@ -348,20 +415,26 @@ class ForecastClass {
 
     int initial_population_size = 30;
     //		GRInitialPopulation<RepEFP,OPTFRAME_DEFAULT_ADS> bip(*c, rg, 1);
-    //		MOVNSLevels<RepEFP> multiobjectvns(v_e, bip, initial_population_size, vNSeq, rg, 10, 10);
-    //		GRInitialPareto<RepEFP,OPTFRAME_DEFAULT_ADS> grIP(*c, rg, 1, *mev);
+    //		MOVNSLevels<RepEFP> multiobjectvns(v_e, bip, initial_population_size,
+    //vNSeq, rg, 10, 10); 		GRInitialPareto<RepEFP,OPTFRAME_DEFAULT_ADS> grIP(*c,
+    //rg, 1, *mev);
 
-    //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, GeneralEvaluator<XMES, XMEv>& _mev) :
+    // BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive,
+    // GeneralEvaluator<XMES, XMEv>& _mev) :
 
-    paretoManager<SolutionHFM>* paretoMan = new paretoManager<SolutionHFM>(*mev);
-    //BasicInitialPareto<SolutionHFM, EvaluationHFM, MultiEvaluationHFM, EMSolutionHFM> grIP(*cm, *mev);
+    paretoManager<SolutionHFM>* paretoMan =
+        new paretoManager<SolutionHFM>(*mev);
+    // BasicInitialPareto<SolutionHFM, EvaluationHFM, MultiEvaluationHFM,
+    // EMSolutionHFM> grIP(*cm, *mev);
     BasicInitialPareto<EMSolutionHFM, MultiEvaluationHFM> grIP(*cm, *paretoMan);
 
     sptr<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>> _sptrmev =
-        std::static_pointer_cast<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>>(mev);
+        std::static_pointer_cast<
+            GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>>(mev);
     //
-    //GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>* gmev = mev;
-    sref<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>> gmev = _sptrmev;  //mev;
+    // GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>* gmev = mev;
+    sref<GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>> gmev =
+        _sptrmev;  // mev;
 
     int maxTriesRI = 100;
     MORandomImprovement<EMSolutionHFM> moriMFR(gmev, vNSeqMO.at(0), maxTriesRI);
@@ -379,27 +452,20 @@ class ForecastClass {
         mev;  // std::static_pointer_cast<HFMEvaluator>(eval.sptr());
 
     GeneralParetoLocalSearch<EMSolutionHFM, MultiEvaluation<>> generalPLS(
-        _mev,
-        grIP,
-        initial_population_size,
-        vMOLS);
+        _mev, grIP, initial_population_size, vMOLS);
 
-    BasicMOILS<EMSolutionHFM, MultiEvaluationHFM> basicMOILS(_mev, grIP, initial_population_size, moriASI, rg, basicMOILSPert, 100);
+    BasicMOILS<EMSolutionHFM, MultiEvaluationHFM> basicMOILS(
+        _mev, grIP, initial_population_size, moriASI, rg, basicMOILSPert, 100);
 
     // for testing OptFrame v4
-    //BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
+    // BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP,
+    // initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
 
     int moIlslevelMax = 10;
     int moIlsIterMax = 100;
     MOILSLevels<EMSolutionHFM, MultiEvaluationHFM> moILSLevels(
-        _mev,
-        grIP,
-        initial_population_size,
-        moriASI,
-        rg,
-        moILSPert,
-        moIlsIterMax,
-        moIlslevelMax);
+        _mev, grIP, initial_population_size, moriASI, rg, moILSPert,
+        moIlsIterMax, moIlslevelMax);
     //		moILSLevels.setMessageLevel(3);
 
     StopCriteria<MultiEvaluationHFM> moStopCriteriaGPLS;
@@ -414,7 +480,8 @@ class ForecastClass {
       } else {
          //delete pf;
          pfs = generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, _pf);
-         //			pf = moILSLevels.search(moStopCriteriaGPLS, _pf);
+         //			pf = moILSLevels.search(moStopCriteriaGPLS,
+      _pf);
       }
 */
     generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, ioPF);
@@ -427,17 +494,19 @@ class ForecastClass {
     //		{
     //			//vector<double> solEvaluations;
     //			for (int e = 0; e < vEval[i]->size(); e++)
-    //				cout << vEval[i]->at(e).getObjFunction() << "\t";
-    //			cout << endl;
+    //				cout << vEval[i]->at(e).getObjFunction() <<
+    //"\t"; 			cout << endl;
     //
     //		}
 
     //		mev->clear();
-    //return pfs;
+    // return pfs;
   }
 
-  std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP, int nSol) {
-    StopCriteria<EvaluationHFM>* stopCriteria = new StopCriteria<EvaluationHFM>(timeGRASP);
+  std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP,
+                                                          int nSol) {
+    StopCriteria<EvaluationHFM>* stopCriteria =
+        new StopCriteria<EvaluationHFM>(timeGRASP);
     std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
     delete stopCriteria;
     //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, nSol);
@@ -448,30 +517,32 @@ class ForecastClass {
   }
 
   std::optional<ESolutionHFM> run(int timeES, int timeVND, int timeILS) {
-    if (timeES == 0)
-      timeES = 1;
+    if (timeES == 0) timeES = 1;
 
     double targetValue = 3.879748973;
     targetValue = 0;
 
-    //StopCriteria<EvaluationHFM> stopCriteria(timeES, Evaluation<>(targetValue));
+    // StopCriteria<EvaluationHFM> stopCriteria(timeES,
+    // Evaluation<>(targetValue));
     StopCriteria<EvaluationHFM> stopCriteria(timeES);
     stopCriteria.target_f = Evaluation<>(targetValue);
     //
     SearchOutput<ESolutionHFM> sout = es->search(stopCriteria);
-    std::optional<ESolutionHFM> finalSol = sout.best;  //es->getBestSolution();
+    std::optional<ESolutionHFM> finalSol = sout.best;  // es->getBestSolution();
 
-    //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
+    // finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
 
     //		vnd->setMessageLevel(3);
     //		if (timeVND > 0)
-    //			vnd->searchFrom(finalSol->first, finalSol->second, timeVND, 0);
+    //			vnd->searchFrom(finalSol->first, finalSol->second, timeVND,
+    //0);
     //
     //		const Solution<RepEFP> solVND = finalSol->first;
     //		const Evaluation<> evaluationVND = finalSol->second;
     //		evaluationVND.print();
     //		if (timeILS > 0)
-    //			finalSol = ils->search(timeILS, 0, &solVND, &evaluationVND);
+    //			finalSol = ils->search(timeILS, 0, &solVND,
+    //&evaluationVND);
 
     return finalSol;
   }
@@ -489,23 +560,26 @@ class ForecastClass {
     std::optional<ESolutionHFM> finalSol = std::nullopt;
     StopCriteria<EvaluationHFM> stopCriteria;
     stopCriteria.timelimit = timeILS;
-    //stopCriteria.target_f(Evaluation<>(0));
+    // stopCriteria.target_f(Evaluation<>(0));
     //
     ils->setMessageLevel(LogLevel::Info);
     if (timeILS > 0) {
-      //ils->best = finalSol;
-      std::cout << "TODO: MUST IMPLEMENT SearchBy to inject parameter 'finalSol' into ils" << std::endl;
+      // ils->best = finalSol;
+      std::cout << "TODO: MUST IMPLEMENT SearchBy to inject parameter "
+                   "'finalSol' into ils"
+                << std::endl;
       SearchOutput<ESolutionHFM> sout = ils->search(stopCriteria);
 
-      finalSol = *sout.best;  //ils->getBestSolution();
+      finalSol = *sout.best;  // ils->getBestSolution();
     }
-    //		finalSol = ils->search(stopCriteria, &solGRASP, &evaluationGrasp);
+    //		finalSol = ils->search(stopCriteria, &solGRASP,
+    //&evaluationGrasp);
 
     return finalSol;
   }
 
-  //Mathematical model for finding optimal weights between models, ensemble forecasting TODO
-  //	pair<Solution<RepEFP>&, Evaluation<>&>* runOLR()
+  // Mathematical model for finding optimal weights between models, ensemble
+  // forecasting TODO 	pair<Solution<RepEFP>&, Evaluation<>&>* runOLR()
   //	{
   //
   //		pair<Solution<RepEFP>&, Evaluation<>&>* finalSol = nullptr;
@@ -513,17 +587,24 @@ class ForecastClass {
   //		return finalSol;
   //	}
 
-  //return blind forecasts for the required steps ahead of problemParam class
-  //this function feed a trainedModel with the last samples from the vector of TimeSeries
-  vector<double>* returnBlind(const RepHFM& trainedModel, vector<vector<double>>& vTimeSeries) {
-    return eval->returnForecasts(trainedModel, vTimeSeries, vTimeSeries[problemParam.getTargetFile()].size(), problemParam.getStepsAhead());
+  // return blind forecasts for the required steps ahead of problemParam class
+  // this function feed a trainedModel with the last samples from the vector of
+  // TimeSeries
+  vector<double>* returnBlind(const RepHFM& trainedModel,
+                              vector<vector<double>>& vTimeSeries) {
+    return eval->returnForecasts(
+        trainedModel, vTimeSeries,
+        vTimeSeries[problemParam.getTargetFile()].size(),
+        problemParam.getStepsAhead());
   }
 
-  vector<double>* returnErrors(const RepHFM& rep, vector<vector<double>>& vForecastingsValidation) {
+  vector<double>* returnErrors(
+      const RepHFM& rep, vector<vector<double>>& vForecastingsValidation) {
     return eval->evaluateAll(rep, ALL_EVALUATIONS, &vForecastingsValidation);
 
     //		(NMETRICS, 0);
-    //		vector<double> estimatedValues = returnForecasts(sol, vForecastingsValidation);
+    //		vector<double> estimatedValues = returnForecasts(sol,
+    //vForecastingsValidation);
     //
     //		int maxLag = problemParam.getMaxLag();
     //		vector<double> targetValues;
@@ -533,29 +614,38 @@ class ForecastClass {
     //
     ////		cout << validationSetValues << endl;
     ////		getchar();
-    //		foIndicatorNew = returnErrorsCallGetAccuracy(targetValues, estimatedValues);
+    //		foIndicatorNew = returnErrorsCallGetAccuracy(targetValues,
+    //estimatedValues);
     ////		cout << "insideForecastClassNew" << endl;
     ////		cout << foIndicatorNew << endl;
 
     //		return foIndicatorNew;
   }
 
-  //return all possible forecasting measures
-  vector<double>* callEvalGetAccuracy(vector<double> targetValues, vector<double> estimatedValues) {
+  // return all possible forecasting measures
+  vector<double>* callEvalGetAccuracy(vector<double> targetValues,
+                                      vector<double> estimatedValues) {
     return eval->getAccuracy(targetValues, estimatedValues, ALL_EVALUATIONS);
   }
   //
 
-  //Return forecasts with pre-defined sliding window strategy with FH
-  vector<double>* returnForecasts(pair<SolutionHFM, Evaluation<>>& sol, vector<vector<double>> vForecastingsValidation) {
-    pair<vector<double>*, vector<double>*>* targetAndForecasts = eval->generateSWMultiRoundForecasts(sol.first.getR(), vForecastingsValidation, problemParam.getStepsAhead());
+  // Return forecasts with pre-defined sliding window strategy with FH
+  vector<double>* returnForecasts(
+      pair<SolutionHFM, Evaluation<>>& sol,
+      vector<vector<double>> vForecastingsValidation) {
+    pair<vector<double>*, vector<double>*>* targetAndForecasts =
+        eval->generateSWMultiRoundForecasts(sol.first.getR(),
+                                            vForecastingsValidation,
+                                            problemParam.getStepsAhead());
     return targetAndForecasts->second;
   }
 
   /*Target and forecasts
-	 Return forecasts with pre-defined sliding window strategy with FH*/
-  pair<vector<double>*, vector<double>*>* returnForecastsAndTargets(const RepHFM& rep, const vector<vector<double>> vForecastingsValidation) {
-    return eval->generateSWMultiRoundForecasts(rep, vForecastingsValidation, problemParam.getStepsAhead());
+         Return forecasts with pre-defined sliding window strategy with FH*/
+  pair<vector<double>*, vector<double>*>* returnForecastsAndTargets(
+      const RepHFM& rep, const vector<vector<double>> vForecastingsValidation) {
+    return eval->generateSWMultiRoundForecasts(rep, vForecastingsValidation,
+                                               problemParam.getStepsAhead());
   }
 
   vector<double>* returnErrorsPersistance(vector<double> targetValues, int fH) {
@@ -563,8 +653,7 @@ class ForecastClass {
     int nSamples = targetValues.size();
     for (int s = 1; s < nSamples; s += fH)
       for (int k = 0; k < fH; k++) {
-        if (s + k < nSamples)
-          estimatedValues.push_back(targetValues[s - 1]);
+        if (s + k < nSamples) estimatedValues.push_back(targetValues[s - 1]);
       }
 
     //		cout<<targetValues<<endl;
