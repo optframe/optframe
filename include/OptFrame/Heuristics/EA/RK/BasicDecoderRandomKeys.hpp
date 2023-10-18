@@ -28,12 +28,13 @@
 #include <OptFrame/Helper/VEPopulation.hpp>
 
 #include "DecoderRandomKeysNoEvaluation.hpp"
+#include "OptFrame/Concepts/MyConcepts.hpp"
 
 namespace optframe {
 
 // this is an adapter based on Evaluator and DecoderRandomKeysNoEvaluation
 
-template <XESolution XES, optframe::comparability KeyType>
+template <XESolution XES, ConceptsComparability KeyType>
 class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -45,13 +46,12 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   sref<Evaluator<S, XEv, XES>> evaluator;
   sref<DecoderRandomKeysNoEvaluation<S, KeyType>> decoderSol;
 
-  BasicDecoderRandomKeys(sref<Evaluator<S, XEv, XES>> _evaluator,
-                         sref<DecoderRandomKeysNoEvaluation<S, KeyType>> _decoderSol)
-      : evaluator{_evaluator}, decoderSol{_decoderSol} {
-  }
+  BasicDecoderRandomKeys(
+      sref<Evaluator<S, XEv, XES>> _evaluator,
+      sref<DecoderRandomKeysNoEvaluation<S, KeyType>> _decoderSol)
+      : evaluator{_evaluator}, decoderSol{_decoderSol} {}
 
-  virtual ~BasicDecoderRandomKeys() {
-  }
+  virtual ~BasicDecoderRandomKeys() {}
 
   virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
     if (!needsSolution) {
@@ -63,36 +63,33 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
     return pair<XEv, op<S>>{e, op<S>{s}};
   }
 
-  bool isMinimization() const override {
-    return evaluator->isMinimization();
-  }
+  bool isMinimization() const override { return evaluator->isMinimization(); }
 
  public:
   static std::string idComponent() {
     std::stringstream ss;
-    ss << DecoderRandomKeys<XES, KeyType>::idComponent() << ":BasicDecoderRandomKeys";
+    ss << DecoderRandomKeys<XES, KeyType>::idComponent()
+       << ":BasicDecoderRandomKeys";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class BasicDecoderRandomKeysBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+class BasicDecoderRandomKeysBuilder
+    : public ComponentBuilder<S, XEv, XES, X2ES> {
   using KeyType = double;
   using RealS = std::vector<KeyType>;
   using RealXEv = Evaluation<>;
   using RealXES = std::pair<RealS, RealXEv>;
 
  public:
-  virtual ~BasicDecoderRandomKeysBuilder() {
-  }
+  virtual ~BasicDecoderRandomKeysBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -112,8 +109,11 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 
   vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
-    params.push_back(make_pair(DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent(), "decoder_no_eval"));
+    params.push_back(
+        make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
+    params.push_back(
+        make_pair(DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent(),
+                  "decoder_no_eval"));
 
     return params;
   }
@@ -124,17 +124,14 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << EA::family() << ":" << RK::family() << "BasicDecoderRandomKeysBuilder";
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << EA::family()
+       << ":" << RK::family() << "BasicDecoderRandomKeysBuilder";
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

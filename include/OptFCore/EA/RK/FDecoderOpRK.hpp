@@ -12,9 +12,11 @@
 #include <OptFCore/FDirection.hpp>
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp>
 
+#include "OptFrame/Concepts/MyConcepts.hpp"
+
 namespace optframe {
 
-template <XESolution XES, optframe::comparability KeyType, MinOrMax Minimizing>
+template <XESolution XES, ConceptsComparability KeyType, MinOrMax Minimizing>
 class FDecoderOpRK final : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
