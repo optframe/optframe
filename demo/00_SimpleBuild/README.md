@@ -1,4 +1,4 @@
-## OptFrame Demo 01 - Quickstart Welcome
+## OptFrame Demo 00 - Simple Build
 
 This demo is intended to work with bazel remote OptFrame repository, instead of local.
 

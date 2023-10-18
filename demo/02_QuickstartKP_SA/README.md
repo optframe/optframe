@@ -1,12 +1,8 @@
-## OptFrame Demo 01 - Quickstart Welcome
+## OptFrame Demo 02 - Knapsack Problem with Simulated Annealing
 
-This demo is intended to work with bazel remote OptFrame repository, instead of local.
+This demo is intended to work with bazel local OptFrame repository `../..`.
 
-Note that [WORKSPACE.bazel](./WORKSPACE.bazel) includes `git_repository` pointing to `master` branch of
-`https://github.com/optframe/optframe.git`.
 
-Other demos do not have this behavior, as they are intended to run on local copies of OptFrame,
-related as `../../`
 
 ### Installing Bazel Build
 

@@ -1,13 +1,6 @@
-## OptFrame Demo 01 - Quickstart Welcome
+## OptFrame Demo 03 - Traveling Salesman Problem with ILS/VNS and BRKGA
 
-This demo is intended to work with bazel remote OptFrame repository, instead of local.
-
-Note that [WORKSPACE.bazel](./WORKSPACE.bazel) includes `git_repository` pointing to `master` branch of
-`https://github.com/optframe/optframe.git`.
-
-Other demos do not have this behavior, as they are intended to run on local copies of OptFrame,
-related as `../../`
-
+This demo is intended to work with bazel local OptFrame repository `../..`.
 ### Installing Bazel Build
 
 - For windows, you can use Chocolatey: `choco install bazelisk`
