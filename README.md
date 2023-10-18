@@ -15,6 +15,9 @@ OptFrame
 
 [![Documentation Status](https://readthedocs.org/projects/optframe/badge/?version=latest)](https://optframe.readthedocs.io/en/latest/?badge=latest)
 
+![C++17](https://img.shields.io/badge/std-c%2B%2B17-blue) ![C++20](https://img.shields.io/badge/std-c%2B%2B20-blue)
+
+
 ## OptFrame - C++ Optimization Framework
 
 OptFrame `5.0.15` is released.
