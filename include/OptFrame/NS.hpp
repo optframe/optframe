@@ -80,11 +80,8 @@ class NS : public Component {
   static string idComponent() {
     stringstream ss;
     ss << Component::idComponent() << ":NS"
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
        << Domain::getAlternativeDomain<XES>("<XESf64>");
-#else
-       << Domain::getAlternativeDomain<XES>("<X?>");  // unsupported domain
-#endif
     return ss.str();
   }
 

@@ -30,7 +30,13 @@ class Constructive : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     std::string s = Component::idComponent();
-    ss << s << ":Constructive" << Domain::getAlternativeDomain<S>("<XS>");
+
+    ss << s << ":Constructive" 
+    #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+    << Domain::getAlternativeDomain<S>("<XS>");
+    #else
+    << Domain::getAlternativeDomain<S>("<X?>");
+    #endif
 
     return ss.str();
   }

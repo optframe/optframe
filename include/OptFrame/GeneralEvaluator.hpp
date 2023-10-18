@@ -250,11 +250,7 @@ class GeneralEvaluator : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GeneralEvaluator"
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
        << Domain::getAlternativeDomain<XES>("<XESf64>");
-#else
-       << Domain::getAlternativeDomain<XES>("<X?>");  // unsupported domain
-#endif
     return ss.str();
   }
 };

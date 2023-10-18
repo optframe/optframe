@@ -260,11 +260,8 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
     stringstream ss;
     // ss << Component::idComponent() << ":Evaluator";
     ss << GeneralEvaluator<XES>::idComponent() << ":Evaluator"
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
        << Domain::getAlternativeDomain<XES>("<XESf64>");
-#else
-       << Domain::getAlternativeDomain<XES>("<X?>");  // unsupported domain
-#endif
     // TODO: this will require multiple idComponent()!! NOT ANYMORE (no
     // diamonds...)
     // ss << "OptFrame:GeneralEvaluator:Direction:Evaluator"; // DEPRECATED!
