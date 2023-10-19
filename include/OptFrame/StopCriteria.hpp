@@ -79,7 +79,14 @@ class StopCriteria final : public Component {
     return timelimit == 0.0 ? false : getTime() >= timelimit;
   }
 
+  // get spent time
   double getTime() const { return localTimer.now(); }
+
+  // get remaining time (always non-negative or zero if expired)
+  double remTime() const {
+    double d = timelimit - localTimer.now();
+    return (d < 0) ? 0 : d;
+  }
 
   // helper method: returns true if evaluation count expired (TODO: maybe move
   // this to inheritance...)

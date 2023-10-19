@@ -78,6 +78,7 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/MultiStart.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/GeometricSimulatedAnnealing.hpp>
 #include <OptFrame/Heuristics/SA/SimulatedAnnealingAC.hpp>
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
@@ -122,7 +123,7 @@ template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
 #else
 template <typename XES, typename XSH = XES, typename XES2 = XES,
           typename X2ES = MultiESolution<XES2>>
-#endif // cpp_concepts
+#endif  // cpp_concepts
 
 #endif
 class Loader {
@@ -192,6 +193,8 @@ class Loader {
     factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv>);
     factory.builders.push_back(
         new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
+    factory.builders.push_back(
+        new GeometricSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(
         new SimulatedAnnealingACBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(new MultiStartBuilder<XSH, XES2, X2ES>);
