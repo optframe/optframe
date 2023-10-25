@@ -6,8 +6,10 @@
 
 // C++
 #include <iostream>
+#include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
@@ -84,6 +86,10 @@ class HeuristicFactory {
   sref<RandGen> rg;
 
  public:
+  // output stream (defaults to cout)
+  std::ostream* logdata{&std::cout};
+
+ public:
   map<string, vector<sptr<Component>>> components;
   vector<ComponentBuilder<S, XEv, XES, X2ES>*> builders;
   vector<ComponentMultiBuilder<S, XMEv, XMES, X2MES>*> xmes_builders;
@@ -99,8 +105,6 @@ class HeuristicFactory {
 
   virtual ~HeuristicFactory() {
     clear();
-
-    // delete &rg; // shared reference 'sref'
 
     for (unsigned i = 0; i < builders.size(); i++) delete builders.at(i);
     builders.clear();
@@ -166,9 +170,8 @@ class HeuristicFactory {
         string name = iter->first;
 
         int p = name.find(id, 0);
-        if ((p > 0) && (p + id.length() ==
-                        name.length()))  // exact match after position 'p'
-        {
+        if ((p > 0) && (p + id.length() == name.length())) {
+          // exact match after position 'p'
           component = iter->second.at(number);
           id = name;
           break;
@@ -261,9 +264,10 @@ class HeuristicFactory {
 
     if (componentLists.count(listId) > 0) {
       vector<vector<sptr<Component>>>& vv = componentLists[listId];
-      if (number < vv.size())
+      if (number < vv.size()) {
         for (unsigned i = 0; i < vv[number].size(); i++)
           cList.push_back(sptr<T>((std::shared_ptr<T>&)vv[number][i]));
+      }
     } else {
       if (loglevel >= LogLevel::Warning)
         std::cout << "'" << listId << " " << number << "' not found!"
@@ -408,7 +412,7 @@ class HeuristicFactory {
     return addComponentList(sptrList, _listId);
   }
 
-  int addComponentList(vector<sptr<Component>>& cList, string _listId) {
+  int addComponentList(vector<sptr<Component>>& cList, std::string _listId) {
     // type checking for safety!
     string noList = ComponentHelper::typeOfList(_listId);
     string listId = noList;
@@ -416,11 +420,9 @@ class HeuristicFactory {
 
     for (unsigned i = 0; i < cList.size(); i++)
       if ((cList[i] == nullptr) || (!cList[i]->compatible(noList))) {
-        if (loglevel >= LogLevel::Warning) {
-          std::cout << "Warning: incompatible components '";
-          std::cout << cList[i]->id() << "' and '"
-                    << ComponentHelper::typeOfList(listId) << "'!" << std::endl;
-        }
+        Component::logWarn(loglevel, "HeuristicFactory", *logdata)
+            << "incompatible components '" << cList[i]->id() << "' and '"
+            << ComponentHelper::typeOfList(listId) << "'!" << std::endl;
 
         return -1;
       }
@@ -428,14 +430,11 @@ class HeuristicFactory {
     vector<vector<sptr<Component>>>& v = componentLists[listId];
     v.push_back(cList);
 
-    if (loglevel >= LogLevel::Info)
-      std::cout << "HeuristicFactory: adding to list id '" << listId << "'"
-                << std::endl;
-
     int idx = componentLists[listId].size() - 1;
 
-    // cout << "HeuristicFactory: added component list '" << listId << " " <<
-    // idx << "'" << endl;
+    Component::logInfo(loglevel, "HeuristicFactory", *logdata)
+        << "adding to list type '" << listId << "' id " << idx << " size "
+        << cList.size() << std::endl;
 
     return idx;
   }
@@ -446,8 +445,9 @@ class HeuristicFactory {
       listId += "[]";
 
       return addComponentList(cList, listId);
-    } else
+    } else {
       return -1;
+    }
   }
 
   //! \english listComponents lists all available components that match a given
@@ -540,17 +540,15 @@ class HeuristicFactory {
     if (components.count(type) > 0) {
       vector<sptr<Component>> v = components[type];
 
-      if (id < ((int)v.size()))  // else return false?
-      {
-        if (v[id] != nullptr)  // else return false?
-        {
+      if (id < ((int)v.size())) {
+        if (v[id] != nullptr) {
           // delete v[id];
           v[id] = nullptr;
           components[type] = v;
 
           return true;
-        }
-      }
+        }  // else return false?
+      }    // else return false?
     }
 
     return false;

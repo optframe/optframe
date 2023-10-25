@@ -74,10 +74,11 @@ class Component {
 
   static bool safe_delete(Component* c) {
     if (c) {
-      delete c;
+      delete c;  // NOLINT
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   static void safe_print(std::ostream& os, Component* c) {
@@ -89,6 +90,28 @@ class Component {
   }
 
  public:
+  static std::ostream& logInfo(LogLevel ll, std::string prefix = "",
+                               std::ostream& os = std::cout) {
+    if (ll >= LogLevel::Info) {
+      if (prefix.length() > 0)
+        os << "INFO(" << prefix << "): ";  // add prefix if non-empty
+      return os;
+    } else {
+      return osNull;
+    }
+  }
+
+  static std::ostream& logWarn(LogLevel ll, std::string prefix = "",
+                               std::ostream& os = std::cout) {
+    if (ll >= LogLevel::Warning) {
+      if (prefix.length() > 0)
+        os << "WARN(" << prefix << "): ";  // add prefix if non-empty
+      return os;
+    } else {
+      return osNull;
+    }
+  }
+
   // Set user log stream recursive: must be implemented on each component.
   // Returns 'false' is not implemented.
   virtual bool setLogR(std::ostream* _logdata) {

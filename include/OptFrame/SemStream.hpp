@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 namespace optframe {
 
@@ -45,10 +46,33 @@ struct SemStream : private std::streambuf, public std::ostream {
   }
 };
 
+//  null semantic streams
+struct NullSemStream : private std::streambuf, public std::ostream {
+ private:
+  // nothing stored locally
+
+ public:
+  // ignore parameter
+  explicit NullSemStream(std::ostream& _os) : std::ostream{this} {}
+  NullSemStream() : std::ostream{this} {}
+
+ private:
+  int overflow(int c) override { return c; }
+
+ public:
+  // ignore
+  void setStream(std::ostream& _os) {}
+
+  std::string dump() {
+    return "";  // always empty
+  }
+};
+
 // extern SemStream cjson; // only in .cpp
 // extern SemStream ctxt;  // only in .cpp
-inline SemStream cjson{};  // (C++17 extern linkage is implicit)
-inline SemStream ctxt{};   // (C++17 extern linkage is implicit)
+inline SemStream cjson{};       // (C++17 extern linkage is implicit)
+inline SemStream ctxt{};        // (C++17 extern linkage is implicit)
+inline NullSemStream osNull{};  // (C++17 extern linkage is implicit)
 
 }  // namespace optframe
 
