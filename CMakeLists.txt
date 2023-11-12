@@ -13,6 +13,20 @@ target_include_directories(OptFrameAll INTERFACE include/)
 add_executable(app_demo_opt demo/00_SimpleBuild/OptFCore_load.cpp)
 target_link_libraries(app_demo_opt PRIVATE OptFrameAll)
 
+# ==================================
+# trying to build .so / .dll library
+
+# Create the shared library
+add_library(optframe_lib MODULE src/OptFrameLib/OptFrameLib.cpp)
+target_link_libraries(optframe_lib PRIVATE OptFrameAll)
+#
+set_target_properties(optframe_lib PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build/library
+    LIBRARY_OUTPUT_NAME optframe_lib
+)
+set_target_properties(optframe_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+
 # ===== check if external catch2 library is used ===== 
 option(DISABLE_OPTFRAME_TESTING "Build tests")
 if(NOT DISABLE_OPTFRAME_TESTING)

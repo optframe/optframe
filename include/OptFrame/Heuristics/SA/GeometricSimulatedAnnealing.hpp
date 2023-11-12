@@ -38,7 +38,7 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
   //
   sref<Evaluator<S, XEv, XES>> evaluator;
   sref<Constructive<S>> constructive;
-  vsref<NS<XES>> ns;
+  sref<NS<XES>> ns;
   double alpha;
   int SAmax;
   double Ti;
@@ -96,8 +96,8 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
         assert(!se.second.isOutdated());  // CXX CONTRACT C++26
         if (evaluator->betterStrict(se.second, eOld)) {
           // ok, 'se' is current already
-          if (evaluator->betterStrict(se.second, star->second)) {
-            star = make_optional(se);
+          if (evaluator->betterStrict(se.second, star.second)) {
+            star = se;  // copy
 
             if (Component::information) {
               std::cout << "Best fo: " << se.second.evaluation()
