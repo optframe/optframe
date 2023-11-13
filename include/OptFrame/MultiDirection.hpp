@@ -1,44 +1,23 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MULTI_DIRECTION_HPP_
-#define OPTFRAME_MULTI_DIRECTION_HPP_
+#ifndef OPTFRAME_MULTIDIRECTION_HPP_
+#define OPTFRAME_MULTIDIRECTION_HPP_
 
 // C
 #include <float.h>
 // C++
+#include <algorithm>
 #include <iostream>
 #include <limits>
+#include <string>
 //
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Direction.hpp>
 #include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Move.hpp>
 #include <OptFrame/MoveCost.hpp>
-// #include "Solution.hpp"
-
-#include <OptFrame/Component.hpp>
-#include <OptFrame/Hyper/Action.hpp>
-
-// using namespace std;
-// using namespace scannerpp;
 
 namespace optframe {
 
@@ -48,27 +27,21 @@ namespace optframe {
 
 template <XEvaluation XEv = Evaluation<>>
 class MultiDirection : public Component {
-  // using XEv = Evaluation<>;
-
  protected:
   vsref<Direction<XEv>> vDir;
 
  public:
-  unsigned nObjectives;
+  uint32_t nObjectives;
 
-  explicit MultiDirection(vsref<Direction<XEv>>& _vDir) : vDir{_vDir} {
-    // for (unsigned i = 0; i < _vDir.size(); i++)
-    //  if (_vDir[i])
-    //    vDir.push_back(_vDir[i]);
-    nObjectives = vDir.size();
-  }
+  explicit MultiDirection(vsref<Direction<XEv>>& _vDir)
+      : vDir{_vDir}, nObjectives{(uint32_t)vDir.size()} {}
 
   MultiDirection(MultiDirection& mDir)
-      : vDir(mDir.vDir), nObjectives(mDir.nObjectives) {}
+      : vDir{mDir.vDir}, nObjectives{mDir.nObjectives} {}
 
-  MultiDirection() { nObjectives = 0; }
+  MultiDirection() : nObjectives{0} {}
 
-  virtual ~MultiDirection() {}
+  ~MultiDirection() override = default;
 
   virtual MultiDirection& addObjective(Direction<XEv>* ds) {
     if (ds) vDir.push_back(ds);
@@ -141,7 +114,7 @@ class MultiDirection : public Component {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  virtual std::string toString() const override { return id(); }
+  std::string toString() const override { return id(); }
 
   static string idComponent() {
     stringstream ss;
@@ -154,4 +127,4 @@ class MultiDirection : public Component {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_MULTI_DIRECTION_HPP_*/
+#endif  // OPTFRAME_MULTIDIRECTION_HPP_
