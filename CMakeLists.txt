@@ -21,7 +21,7 @@ add_library(optframe_lib MODULE src/OptFrameLib/OptFrameLib.cpp)
 target_link_libraries(optframe_lib PRIVATE OptFrameAll)
 #
 set_target_properties(optframe_lib PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build/library
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build
     LIBRARY_OUTPUT_NAME optframe_lib
 )
 set_target_properties(optframe_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
