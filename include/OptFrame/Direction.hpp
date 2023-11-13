@@ -135,9 +135,9 @@ class Direction : public Component {
   virtual objType ideal() {
     if (!opIdeal) {
       if (isMinimization())
-        opIdeal = min();
+        opIdeal = dmin();
       else
-        opIdeal = max();
+        opIdeal = dmax();
     }
     return *opIdeal;
   }
@@ -146,15 +146,16 @@ class Direction : public Component {
   virtual objType nadir() {
     if (!opNadir) {
       if (isMinimization())
-        opNadir = max();
+        opNadir = dmax();
       else
-        opNadir = min();
+        opNadir = dmin();
     }
     return *opNadir;
   }
 
   // set min possible value: caching opMax
-  virtual objType min() {
+  // do not use 'min' as it breaks on windows... using 'dmin'
+  virtual objType dmin() {
     if (!opMin) {
       if (numeric_limits<objType>::has_infinity)
         opMin = -numeric_limits<objType>::infinity();
@@ -165,7 +166,8 @@ class Direction : public Component {
   }
 
   // set max possible value: caching opMax
-  virtual objType max() {
+  // do not use 'max' as it breaks on windows... using 'dmax'
+  virtual objType dmax() {
     if (!opMax) {
       if (numeric_limits<objType>::has_infinity)
         opMax = numeric_limits<objType>::infinity();

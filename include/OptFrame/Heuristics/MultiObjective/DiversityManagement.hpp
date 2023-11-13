@@ -35,21 +35,19 @@
 
 namespace optframe {
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class DiversityManagement : public Component {
  public:
-  DiversityManagement() {
-  }
+  DiversityManagement() {}
 
-  virtual ~DiversityManagement() {
-  }
+  virtual ~DiversityManagement() {}
 
   // assign diversity to individual 's' according to population 'P'
   virtual void assignDiversityIndividual(
       // MOSIndividual<XMES2>& s,
-      int id_s,
-      vector<MOSIndividual<XMES2>>& P) {
+      int id_s, vector<MOSIndividual<XMES2>>& P) {
     // VEPopulation<MOSIndividual<XMES2>> v;
     std::vector<int> v_id;
     v_id.push_back(id_s);
@@ -61,20 +59,16 @@ class DiversityManagement : public Component {
     // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
 
     std::vector<int> v_id;
-    for (unsigned i = 0; i < P.size(); i++)
-      v_id.push_back(i);
+    for (unsigned i = 0; i < P.size(); i++) v_id.push_back(i);
     assignDiversityGroup(v_id, P);
   }
 
   // assign diversity to group of individuals 'g' according to population 'P'
   virtual void assignDiversityGroup(
       // vector<MOSIndividual<XMES2>>& g,
-      const std::vector<int>& g,
-      vector<MOSIndividual<XMES2>>& P) = 0;
+      const std::vector<int>& g, vector<MOSIndividual<XMES2>>& P) = 0;
 
-  void print() const override {
-    cout << "DiversityManagement" << endl;
-  }
+  void print() const override { cout << "DiversityManagement" << endl; }
 };
 
 // template <class DS = OPTFRAME_DEFAULT_DS>
@@ -92,11 +86,11 @@ struct DiversityIndividual {
   }
 
   DiversityIndividual(int _idx, double _diversity, XMEv _mev)
-      : idx(_idx), diversity(_diversity), mev(_mev) {
-  }
+      : idx(_idx), diversity(_diversity), mev(_mev) {}
 };
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class CrowdingDistance : public DiversityManagement<XMES2> {
  public:
@@ -104,12 +98,9 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
   using XEv = typename XMEv::XEv;
   vsref<Direction<XEv>> vDir;
 
-  explicit CrowdingDistance(vsref<Direction<XEv>> _vDir)
-      : vDir{_vDir} {
-  }
+  explicit CrowdingDistance(vsref<Direction<XEv>> _vDir) : vDir{_vDir} {}
 
-  virtual ~CrowdingDistance() {
-  }
+  virtual ~CrowdingDistance() {}
 
   static bool compare(const pair<double, int>& p1,
                       const pair<double, int>& p2) {
@@ -118,8 +109,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
 
   void assignDiversityGroup(
       // vector<MOSIndividual<XMES2>>& g,
-      const std::vector<int>& g,
-      vector<MOSIndividual<XMES2>>& P) override {
+      const std::vector<int>& g, vector<MOSIndividual<XMES2>>& P) override {
     // for now, only accept ALL in g
     assert(g.size() == P.size());
     // const int INF = 10000000;
@@ -129,8 +119,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
       I[s] = DiversityIndividual<XMEv>(s, 0, P[s].second);
 
     int l = I.size();
-    if (l == 0)
-      return;
+    if (l == 0) return;
 
     // for each objective 'm'
     for (unsigned m = 0; m < vDir.size(); m++) {
@@ -147,9 +136,10 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
       // I[1] dist = I[l] dist = 'infinity'
       // ADAPTATION
       /*
-			 r[fitness[0].second]->diversity = numeric_limits<double>::infinity();
-			 r[fitness[l - 1].second]->diversity = numeric_limits<double>::infinity();
-			 */
+                         r[fitness[0].second]->diversity =
+         numeric_limits<double>::infinity(); r[fitness[l - 1].second]->diversity
+         = numeric_limits<double>::infinity();
+                         */
 
       ////cout << "ORDER: (rank=" << r << ") " << fitness << endl;
       // for i=2 to l-1
@@ -174,13 +164,12 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
         // I[i] dist += (I[i+1].m - I[i-1].m)/(fmax_m - fmin_m)
         // ADAPTATION
         I[i].diversity += abs(fitness[ip1].first - fitness[im1].first) /
-                          abs(vDir[m]->max() - vDir[m]->min());
+                          abs(vDir[m]->dmax() - vDir[m]->dmin());
       }
     }  // for each objective
 
     assert(I.size() == P.size());
-    for (unsigned i = 0; i < I.size(); i++)
-      P[i].diversity = I[i].diversity;
+    for (unsigned i = 0; i < I.size(); i++) P[i].diversity = I[i].diversity;
 
     // ignoring group parameter for now
     /*
@@ -193,9 +182,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
         */
   }  // end function
 
-  std::string toString() const override {
-    return "CrowdingDistance";
-  }
+  std::string toString() const override { return "CrowdingDistance"; }
 };
 
 }  // namespace optframe

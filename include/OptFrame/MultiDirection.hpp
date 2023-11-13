@@ -18,6 +18,7 @@
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Move.hpp>
 #include <OptFrame/MoveCost.hpp>
+//
 
 namespace optframe {
 
@@ -104,9 +105,11 @@ class MultiDirection : public Component {
   // inline double worst(unsigned obj)
   inline double nadir(unsigned obj) { return vDir[obj]->nadir(); }
 
-  inline double min(unsigned obj) { return vDir[obj]->min(); }
+  // do not use 'min' as it breaks on windows... using 'dmin'
+  inline double dmin(unsigned obj) { return vDir[obj]->dmin(); }
 
-  inline double max(unsigned obj) { return vDir[obj]->max(); }
+  // do not use 'max' as it breaks on windows... using 'dmax'
+  inline double dmax(unsigned obj) { return vDir[obj]->dmax(); }
 
   // ============= Component ===============
 
