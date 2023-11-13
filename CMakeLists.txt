@@ -25,6 +25,8 @@ set_target_properties(optframe_lib PROPERTIES
     LIBRARY_OUTPUT_NAME optframe_lib
 )
 set_target_properties(optframe_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
+# https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
+target_compile_definitions(optframe_lib PRIVATE _HAS_STD_BYTE=0)
 
 
 # ===== check if external catch2 library is used ===== 
