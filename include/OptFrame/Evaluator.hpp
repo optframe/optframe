@@ -51,12 +51,14 @@ namespace optframe {
 // pair<S, XEv>>
 //
 // TODO: adopt XES or XESS only
-template <XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
+template <XSolution _S, XEvaluation _XEv, XESolution XES = pair<_S, _XEv>>
 class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
   //
   // static_assert(is_same<S, typename XES::first_type>::value);
   // static_assert(is_same<XEv, typename XES::second_type>::value);
   //
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
   using XSH = XES;  // primary-type based structure (BestType always here)
 
  public:
