@@ -52,15 +52,14 @@ class GeneralEvaluator : public Component {
     // num_calls = 0;
   }
 
-  virtual ~GeneralEvaluator() {}
+  ~GeneralEvaluator() override = default;
 
  public:
   // general evaluation for Search Space element.
   // now user is free to update evaluation, and even solution during the
   // process. note that intention is to only change evaluation, but now it's up
   // to user.
-  virtual void reevaluate(
-      XSH&) = 0;  // TODO: rename to something more general, 'xevaluate' ?
+  virtual void reevaluate(XSH&) = 0;
 
   // ====================
   // direction primitives

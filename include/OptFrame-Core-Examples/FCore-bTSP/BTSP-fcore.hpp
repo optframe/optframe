@@ -368,10 +368,7 @@ class MyRandomKeysInitEPop
 };
 
 pair<MultiEvaluation<int>, vector<int>> fDecodeBiEval(
-    sref<Evaluator<typename ESolutionBTSP::first_type,
-                   typename ESolutionBTSP::second_type, ESolutionBTSP>>
-        eval,
-    const vector<double>& rk) {
+    sref<IEvaluator<ESolutionBTSP>> eval, const vector<double>& rk) {
   vector<pair<double, int>> v(rk.size());
   //
   for (unsigned i = 0; i < v.size(); i++) v[i] = pair<double, int>(rk[i], i);

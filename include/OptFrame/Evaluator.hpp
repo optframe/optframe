@@ -7,22 +7,15 @@
 // C++
 #include <iostream>
 #include <string>
+#include <utility>
 //
-//#include "ADSManager.hpp"
-//#include "Action.hpp"
 #include <OptFrame/Direction.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/GeneralEvaluator.hpp>
 #include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/ICompare.hpp>
 #include <OptFrame/IEvaluator.hpp>
 #include <OptFrame/Move.hpp>
-// #include <OptFrame/MoveCost.hpp>
-//#include "Solution.hpp"
-
-//#define OPTFRAME_EPSILON 0.0001
-
-// using namespace std;
-// using namespace scannerpp;
 
 namespace optframe {
 
@@ -52,7 +45,9 @@ namespace optframe {
 //
 // TODO: adopt XES or XESS only
 template <XSolution _S, XEvaluation _XEv, XESolution XES = pair<_S, _XEv>>
-class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
+class Evaluator : public GeneralEvaluator<XES, XES>,
+                  public IEvaluator<XES>,
+                  public ICompare<typename XES::second_type> {
   //
   // static_assert(is_same<S, typename XES::first_type>::value);
   // static_assert(is_same<XEv, typename XES::second_type>::value);
@@ -216,7 +211,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
     return r;
   }
 
-  virtual bool betterThan(const XEv& e1, const XEv& e2) {
+  bool betterThan(const XEv& e1, const XEv& e2) override {
     return direction->betterThan(e1, e2);
   }
 

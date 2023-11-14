@@ -17,17 +17,17 @@
 // Base concepts
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
+#include <OptFrame/ICompare.hpp>
 #include <OptFrame/Move.hpp>
-
-#include "OptFrame/Concepts/MyConcepts.hpp"
 // #include <OptFrame/MoveCost.hpp>
 
 namespace optframe {
 
 // Direction 'betterThan' depends on a 'totally_ordered' type XEv::objType
 template <XEvaluation XEv>
-class Direction : public Component {
+class Direction : public Component, public ICompare<XEv> {
   using objType = typename XEv::objType;
 
  public:
@@ -51,31 +51,8 @@ class Direction : public Component {
 
   // ============ betterThan ===========
 
-  //! abstract method betterThan: true when a < b for minimization problems; and
-  //! true when a > b for maximization problems.
-  /*!
-         betterThan is the method in OptFrame used to guide the search methods
-     into the solution space. with betterThan the search methods are able to
-     compare good and poor solutions, in one of the two directions: minimization
-     and maximization. It must be implemented by the final user in one of these
-     ways:
-         - for minimization problems, returns a < b;
-         - for maximization problems, returns a > b.
-         */
-
-  /*
-    // true if 'mc1' is better than 'mc2'
-    virtual bool betterThan(const MoveCost<XEv>& mc1, const MoveCost<XEv>& mc2)
-    { if (isMinimization()) return (mc2.cost() - mc1.cost()) >=
-               optframe::num_zero<typename XEv::objType>();
-      else
-        return (mc1.cost() - mc2.cost()) >=
-               optframe::num_zero<typename XEv::objType>();
-    }
-  */
-
   // true if 'e1' is (strictly) better than 'e2'
-  virtual inline bool betterThan(const XEv& e1, const XEv& e2) {
+  bool betterThan(const XEv& e1, const XEv& e2) override {
     evtype diff;
     if (isMinimization())
       diff = e2.evaluation() - e1.evaluation();
@@ -100,7 +77,7 @@ class Direction : public Component {
     return true;
   }
 
-  bool betterOrEquals(const XEv& e1, const XEv& e2) {
+  virtual bool betterOrEquals(const XEv& e1, const XEv& e2) {
     return betterThan(e1, e2) || equals(e1, e2);
   }
 
