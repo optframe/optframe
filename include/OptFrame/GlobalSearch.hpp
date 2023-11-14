@@ -32,7 +32,7 @@ template <typename XES, typename XSH = XES>
 #endif
 class GlobalSearch : public Component {
   // not necessarily mono objective XEv... remember this!
-  using XEv = typename XES::second_type;
+  using _XEv = typename XES::second_type;
 
  public:
   using BestType = XSH;
@@ -68,14 +68,14 @@ class GlobalSearch : public Component {
   // Now, we can easily use flag SearchStatus::RUNNING.
   // NOLINTNEXTLINE
   virtual SearchOutput<XES, BestType> search(
-      const StopCriteria<XEv>& stop) final {
+      const StopCriteria<_XEv>& stop) final {
     return searchBy(stop, std::nullopt);
   }
   // 'searchBy': Optionally start with some solution (best type XSH)
   // Note this is a copy, not reference, so solution will be moved to the
   // output or even destroyed. SearchOutput MUST hold a solution which is,
   // AT LEAST as good as input 'best', and never worsen it.
-  virtual SearchOutput<XES, BestType> searchBy(const StopCriteria<XEv>& stop,
+  virtual SearchOutput<XES, BestType> searchBy(const StopCriteria<_XEv>& stop,
                                                std::optional<XSH> best) = 0;
 
   virtual std::string log() const { return "Empty heuristic log."; }
