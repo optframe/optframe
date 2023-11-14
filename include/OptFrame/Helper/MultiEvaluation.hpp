@@ -61,7 +61,7 @@ class MultiEvaluation : public Component {
 
   MultiEvaluation(MultiEvaluation<ObjType>&& mev) : vev(std::move(mev.vev)) {}
 
-  virtual ~MultiEvaluation() { this->clear(); }
+  ~MultiEvaluation() override { this->clear(); }
 
   // ===============
   // getters/setters
@@ -108,6 +108,11 @@ class MultiEvaluation : public Component {
     return r;
   }
 
+  MultiEvaluation<ObjType> operator-(
+      const MultiEvaluation<ObjType>& other) const {
+    return this->diff(other);
+  }
+
   XEv& operator[](unsigned index) { return vev[index]; }
 
   const XEv& operator[](unsigned index) const { return vev[index]; }
@@ -116,8 +121,7 @@ class MultiEvaluation : public Component {
     vev[index].outdated = status;
   }
 
-  virtual MultiEvaluation<ObjType>& operator=(
-      const MultiEvaluation<ObjType>& mev) {
+  MultiEvaluation<ObjType>& operator=(const MultiEvaluation<ObjType>& mev) {
     if (&mev == this)  // auto ref check
       return *this;
 
