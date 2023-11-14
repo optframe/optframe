@@ -155,9 +155,11 @@ sref<MultiEvaluator<ESolutionBTSP>> ev{
 
 std::vector<int> frandom() {
   vector<int> v(pBTSP.n, -1);  // get information from context
-  for (unsigned i = 0; i < v.size(); i++) v[i] = i;
+  for (auto i = 0; i < (int)v.size(); i++) v[i] = i;
   // leave 0 on first position and shuffle the rest
-  std::random_shuffle(v.begin() + 1, v.end());
+  std::random_device rd;
+  std::mt19937 g(rd());
+  std::shuffle(v.begin() + 1, v.end(), g);
   return v;
 }
 

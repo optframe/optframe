@@ -45,6 +45,9 @@ target_include_directories(catch2 INTERFACE tests/thirdparty/)
 #
 add_executable(my_test tests/all.Test.cpp  tests/thirdparty/catch2/catch_amalgamated.cpp)
 target_link_libraries(my_test PRIVATE OptFrameAll catch2)#Catch2::Catch2WithMain)
+# https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
+target_compile_definitions(my_test PRIVATE _HAS_STD_BYTE=0)
+
 #catch_discover_tests(my_test)
 #enable_testing()
 endif()
