@@ -20,7 +20,7 @@ template <XESolution XES, XSearch<XES> XSH = XES>
 template <typename XES, typename XSH = XES>
 #endif
 class ITrajectory {
-  using XEv = typename XES::second_type;
+  // using XEv = typename XES::second_type;
 
  public:
   using IncumbentType = XSH;

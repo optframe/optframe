@@ -50,8 +50,8 @@ template <typename XESS, typename XESS2 = XESS, typename XSH2 = XESS2>
 class SingleObjSearch : public GlobalSearch<XESS, XESS> {
  public:
   // NOTE THAT: XSearch<XES> XSH = XES (IMPLICIT!)
-  using XSH = XESS;
-  using XEv = typename XESS::second_type;
+  using _XSH = XESS;
+  using _XEv = typename XESS::second_type;
 
   // ========================================
   // THIS CLASS IS USELESS! WHAT'S THE POINT?
@@ -66,8 +66,8 @@ class SingleObjSearch : public GlobalSearch<XESS, XESS> {
   // search method try to find a feasible solution within timelimit, if there is
   // no such solution it returns nullptr.
 
-  SearchOutput<XESS> searchBy(const StopCriteria<XEv>& stopCriteria,
-                              std::optional<XSH> best) override = 0;
+  SearchOutput<XESS> searchBy(const StopCriteria<_XEv>& stopCriteria,
+                              std::optional<_XSH> best) override = 0;
 
   std::string log() const override { return "Empty heuristic log."; }
 
