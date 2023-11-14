@@ -25,10 +25,15 @@ class MultiESolution : public Component {
 
  public:
   using value_type = XES;
+
   MultiESolution() {}
 
   MultiESolution(const MultiESolution& pop) {
-    for (unsigned i = 0; i < pop.size(); i++) p.push_back(new S(pop.at(i)));
+    for (unsigned i = 0; i < pop.size(); i++) {
+      // NOLINTNEXTLINE
+      S* s = new S{pop.at(i)};
+      p.push_back(s);
+    }
   }
 
   ~MultiESolution() override { clear(); }

@@ -391,9 +391,11 @@ static_assert(
     Domain::getNamedDomain<std::pair<void*, optframe::Evaluation<int>>>() ==
     std::string_view("<X?>"));
 #endif
+// -------------------------------------------------------------------
+// DO NOT USE: MultiESolution (BAD CLASS!): ONLY USE EPopulation NOW.
+// static_assert(Domain::getNamedDomain<MultiESolution<TestXES1>>() ==
+//               std::string_view("<X2ESf64>"));
 //
-static_assert(Domain::getNamedDomain<MultiESolution<TestXES1>>() ==
-              std::string_view("<X2ESf64>"));
 static_assert(Domain::getNamedDomain<EPopulation<TestXES1>>() ==
               std::string_view("<X2ESf64>"));
 using EMSolution_Test1 = std::pair<void*, MultiEvaluation<double>>;

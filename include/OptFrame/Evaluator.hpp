@@ -163,7 +163,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
       */
 
     /// MoveCost<>* p = new MoveCost<>(obj, inf);
-    op<XEv> p = make_optional(XEv(obj, inf));
+    op<XEv> p = std::make_optional(XEv{obj, inf});
 
     // p->setAlternativeCosts(alternatives);
 
