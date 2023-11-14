@@ -16,7 +16,7 @@
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/IEvaluator.hpp>
 #include <OptFrame/Move.hpp>
-#include <OptFrame/MoveCost.hpp>
+// #include <OptFrame/MoveCost.hpp>
 //#include "Solution.hpp"
 
 //#define OPTFRAME_EPSILON 0.0001

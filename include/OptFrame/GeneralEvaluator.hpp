@@ -11,7 +11,7 @@
 #include "Domain.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
-#include "MoveCost.hpp"
+// #include "MoveCost.hpp"
 
 // This evaluator intends to run for both Single and MultiObj
 
@@ -26,7 +26,7 @@ namespace optframe {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES>  // defaults to single obj.
 #else
-template <typename XES, typename XSH = XES>           // defaults to single obj.
+template <typename XES, typename XSH = XES>  // defaults to single obj.
 #endif
 class GeneralEvaluator : public Component {
   using XEv = typename XES::second_type;

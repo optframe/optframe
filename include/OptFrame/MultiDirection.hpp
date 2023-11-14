@@ -17,7 +17,7 @@
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Move.hpp>
-#include <OptFrame/MoveCost.hpp>
+// #include <OptFrame/MoveCost.hpp>
 //
 
 namespace optframe {

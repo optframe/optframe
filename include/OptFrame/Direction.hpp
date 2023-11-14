@@ -19,7 +19,7 @@
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Move.hpp>
-#include <OptFrame/MoveCost.hpp>
+// #include <OptFrame/MoveCost.hpp>
 
 namespace optframe {
 
@@ -61,15 +61,16 @@ class Direction : public Component {
          - for maximization problems, returns a > b.
          */
 
-  // true if 'mc1' is better than 'mc2'
-  virtual bool betterThan(const MoveCost<XEv>& mc1, const MoveCost<XEv>& mc2) {
-    if (isMinimization())
-      return (mc2.cost() - mc1.cost()) >=
-             optframe::num_zero<typename XEv::objType>();
-    else
-      return (mc1.cost() - mc2.cost()) >=
-             optframe::num_zero<typename XEv::objType>();
-  }
+  /*
+    // true if 'mc1' is better than 'mc2'
+    virtual bool betterThan(const MoveCost<XEv>& mc1, const MoveCost<XEv>& mc2)
+    { if (isMinimization()) return (mc2.cost() - mc1.cost()) >=
+               optframe::num_zero<typename XEv::objType>();
+      else
+        return (mc1.cost() - mc2.cost()) >=
+               optframe::num_zero<typename XEv::objType>();
+    }
+  */
 
   // true if 'e1' is (strictly) better than 'e2'
   virtual inline bool betterThan(const XEv& e1, const XEv& e2) {
@@ -157,10 +158,10 @@ class Direction : public Component {
   // do not use 'min' as it breaks on windows... using 'dmin'
   virtual objType dmin() {
     if (!opMin) {
-      if (numeric_limits<objType>::has_infinity)
-        opMin = -numeric_limits<objType>::infinity();
+      if (std::numeric_limits<objType>::has_infinity)
+        opMin = -std::numeric_limits<objType>::infinity();
       else
-        opMin = -numeric_limits<objType>::max();
+        opMin = -std::numeric_limits<objType>::max();
     }
     return *opMin;
   }
@@ -169,10 +170,10 @@ class Direction : public Component {
   // do not use 'max' as it breaks on windows... using 'dmax'
   virtual objType dmax() {
     if (!opMax) {
-      if (numeric_limits<objType>::has_infinity)
-        opMax = numeric_limits<objType>::infinity();
+      if (std::numeric_limits<objType>::has_infinity)
+        opMax = std::numeric_limits<objType>::infinity();
       else
-        opMax = numeric_limits<objType>::max();
+        opMax = std::numeric_limits<objType>::max();
     }
     return *opMax;
   }
