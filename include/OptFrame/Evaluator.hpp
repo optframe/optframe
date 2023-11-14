@@ -49,10 +49,14 @@ namespace optframe {
 // Evaluation may need to be S dependent, while GeneralEvaluator is not.
 // template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES =
 // pair<S, XEv>>
+//
+// TODO: adopt XES or XESS only
 template <XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
 class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
-  static_assert(is_same<S, typename XES::first_type>::value);
-  static_assert(is_same<XEv, typename XES::second_type>::value);
+  //
+  // static_assert(is_same<S, typename XES::first_type>::value);
+  // static_assert(is_same<XEv, typename XES::second_type>::value);
+  //
   using XSH = XES;  // primary-type based structure (BestType always here)
 
  public:
@@ -65,8 +69,8 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
   evtype weight;    // defaults to 1
 
  public:
-  Evaluator(sref<Direction<XEv>> _direction, bool _allowCosts = true,
-            evtype w = 1)
+  explicit Evaluator(sref<Direction<XEv>> _direction, bool _allowCosts = true,
+                     evtype w = 1)
       : direction{_direction}, allowCosts{_allowCosts}, weight{w} {}
 
   virtual ~Evaluator() = default;
@@ -92,7 +96,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
   // TODO: verify if 'e.outdated' must be required at all times, or just
   // specific cases
   // virtual void reevaluate(XEv& e, const XES& s) override
-  virtual void reevaluate(XES& se) override {
+  void reevaluate(XES& se) override {
     S& s = se.first;
     XEv& e = se.second;
     if (e.isOutdated()) e = evaluate(s);
@@ -217,7 +221,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
   // =======================================
 
   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
-  virtual bool betterStrict(const XEv& e1, const XEv& e2) override {
+  bool betterStrict(const XEv& e1, const XEv& e2) override {
     assert(!e1.isOutdated());
     assert(!e2.isOutdated());
     return direction->betterThan(e1, e2);
@@ -225,17 +229,17 @@ class Evaluator : public GeneralEvaluator<XES, XES>, public IEvaluator<XES> {
 
   // returns 'true' if this 'cost' (represented by this Evaluation) is
   // improvement
-  virtual bool isStrictImprovement(const XEv& e) override {
+  bool isStrictImprovement(const XEv& e) override {
     return direction->isImprovement(e);
   }
 
   // returns 'true' if this 'cost' (represented by this Evaluation) is
   // improvement
-  virtual bool isNonStrictImprovement(const XEv& e) override {
+  bool isNonStrictImprovement(const XEv& e) override {
     return isStrictImprovement(e) || direction->equals(e, direction->nullCost);
   }
 
-  virtual bool equals(const XEv& e1, const XEv& e2) override {
+  bool equals(const XEv& e1, const XEv& e2) override {
     return direction->equals(e1, e2);
   }
 

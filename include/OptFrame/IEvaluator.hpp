@@ -30,6 +30,7 @@ namespace optframe {
 template <XESolution XES>
 class IEvaluator  // NO INHERITANCE HERE!
 {
+ private:
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
