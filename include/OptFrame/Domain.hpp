@@ -19,7 +19,7 @@
 // for testing
 #include <OptFrame/BasicPareto.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
-#include <OptFrame/Helper/MultiESolution.hpp>
+// #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 
 namespace optframe {
@@ -367,8 +367,11 @@ static_assert(Domain::getNamedDomain<std::vector<double>>() ==
 using TestXRKf64Ef64 = std::pair<std::vector<double>, optframe::Evaluation<>>;
 static_assert(Domain::getNamedDomain<TestXRKf64Ef64>() ==
               std::string_view{"<XRKf64Ef64>"});
-static_assert(Domain::getNamedDomain<MultiESolution<TestXRKf64Ef64>>() ==
-              std::string_view("<X2RKf64Ef64>"));
+// ------------------------
+// DO NOT USE MultiESolution
+// static_assert(Domain::getNamedDomain<MultiESolution<TestXRKf64Ef64>>() ==
+//              std::string_view("<X2RKf64Ef64>"));
+// -------------------------------------------
 //
 static_assert(
     Domain::getNamedDomain<std::pair<void*, optframe::Evaluation<float>>>() ==
