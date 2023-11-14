@@ -48,6 +48,7 @@ template <XESSolution XESS, XESSolution XESS2 = XESS,
 template <typename XESS, typename XESS2 = XESS, typename XSH2 = XESS2>
 #endif
 class SingleObjSearch : public GlobalSearch<XESS, XESS> {
+ public:
   // NOTE THAT: XSearch<XES> XSH = XES (IMPLICIT!)
   using XSH = XESS;
   using XEv = typename XESS::second_type;
