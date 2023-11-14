@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MULTIESOLUTION_HPP_
-#define OPTFRAME_MULTIESOLUTION_HPP_
+#ifndef OPTFRAME_HELPER_MULTIESOLUTION_HPP_
+#define OPTFRAME_HELPER_MULTIESOLUTION_HPP_
 
 #include <vector>
 //
@@ -13,17 +13,15 @@
 
 namespace optframe {
 
-// template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES =
-// pair<S, XEv>>
-//
+// Pointer-based "EPopulation" structure
 template <XESolution XES>
 class MultiESolution : public Component {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
  protected:
-  vector<S*> p;
-  vector<XEv*> pev;
+  std::vector<S*> p;
+  std::vector<XEv*> pev;
 
  public:
   using value_type = XES;
@@ -33,7 +31,7 @@ class MultiESolution : public Component {
     for (unsigned i = 0; i < pop.size(); i++) p.push_back(new S(pop.at(i)));
   }
 
-  virtual ~MultiESolution() { clear(); }
+  ~MultiESolution() override { clear(); }
 
   unsigned size() const { return p.size(); }
 
@@ -44,23 +42,19 @@ class MultiESolution : public Component {
     return *p;
   }
 
+  // CANNOT IMPLEMENT THIS!
   XES& at(size_t i) {
-    // return make_pair(uptr<S>(),uptr<XEv>());
-    XES* p;
+    XES* p = nullptr;
+    assert(false);
     return *p;
   }
 
-  /*
-   S& at(unsigned c)
-   {
-      return (*p.at(c));
-   }
-
-   const S& at(unsigned c) const
-   {
-      return (*p.at(c));
-   }
-   */
+  // CANNOT IMPLEMENT THIS!
+  const XES& at(size_t i) const {
+    XES* p = nullptr;
+    assert(false);
+    return *p;
+  }
 
   void insert(unsigned pos, S& c) { p.insert(p.begin() + pos, new S(c)); }
 
@@ -97,15 +91,15 @@ class MultiESolution : public Component {
 
   bool empty() { return p.empty(); }
 
-  virtual MultiESolution<XES>& operator=(const MultiESolution<XES>& p) {
+  MultiESolution<XES>& operator=(const MultiESolution<XES>& p) {
     if (&p == this)  // auto ref check
       return *this;
 
     unsigned sizePop = this->p.size();
 
     for (unsigned i = 0; i < sizePop; i++) {
-      if (this->p.at(i))  // If no nullptr pointing.
-      {
+      if (this->p.at(i)) {
+        // If no nullptr pointing.
         delete this->p.at(i);
       }
     }
@@ -164,4 +158,4 @@ class MultiESolution : public Component {
 
 #endif  // cpp_concepts
 
-#endif /* OPTFRAME_MULTISOLUTION_HPP_ */
+#endif  // OPTFRAME_HELPER_MULTIESOLUTION_HPP_
