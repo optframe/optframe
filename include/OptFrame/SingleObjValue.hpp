@@ -115,6 +115,12 @@ numeric_is_zero(const T& t) {
   return t == 0;
 }
 
+template <ConceptsBasicArithmetics T>
+inline typename std::enable_if<std::is_same<T, int64_t>::value, bool>::type
+numeric_is_zero(const T& t) {
+  return t == 0;
+}
+
 // template <optframe::basic_arithmetics T>
 template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, bool>::type
