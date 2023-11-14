@@ -53,9 +53,24 @@ class NumericBasics {
 
 // template <optframe::basic_arithmetics T>
 template <ConceptsBasicArithmetics T>
-constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
-num_zero() {
+constexpr inline
+    typename std::enable_if<std::is_same<T, int32_t>::value, int32_t>::type
+    num_zero() {
   return 0;
+}
+
+template <ConceptsBasicArithmetics T>
+constexpr inline
+    typename std::enable_if<std::is_same<T, int64_t>::value, int64_t>::type
+    num_zero() {
+  return 0;
+}
+
+template <ConceptsBasicArithmetics T>
+constexpr inline
+    typename std::enable_if<std::is_same<T, float>::value, float>::type
+    num_zero() {
+  return 0.0;
 }
 
 // template <optframe::basic_arithmetics T>
@@ -72,9 +87,21 @@ constexpr inline
 // stores numeric_zero value on 't'
 // template <optframe::basic_arithmetics T>
 template <ConceptsBasicArithmetics T>
-inline typename std::enable_if<std::is_same<T, int>::value, void>::type
+inline typename std::enable_if<std::is_same<T, int32_t>::value, void>::type
 numeric_zero(T& t) {
   t = 0;
+}
+
+template <ConceptsBasicArithmetics T>
+inline typename std::enable_if<std::is_same<T, int64_t>::value, void>::type
+numeric_zero(T& t) {
+  t = 0;
+}
+
+template <ConceptsBasicArithmetics T>
+inline typename std::enable_if<std::is_same<T, float>::value, void>::type
+numeric_zero(T& t) {
+  t = 0.0;
 }
 
 // stores numeric_zero value on 't'
@@ -89,8 +116,16 @@ numeric_zero(T& t) {
 
 // template <optframe::basic_arithmetics T>
 template <ConceptsBasicArithmetics T>
-constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
-num_zero_precision() {
+constexpr inline
+    typename std::enable_if<std::is_same<T, int32_t>::value, int32_t>::type
+    num_zero_precision() {
+  return 0;
+}
+
+template <ConceptsBasicArithmetics T>
+constexpr inline
+    typename std::enable_if<std::is_same<T, int64_t>::value, int64_t>::type
+    num_zero_precision() {
   return 0;
 }
 
@@ -103,6 +138,14 @@ constexpr inline
   return p;
 }
 
+template <ConceptsBasicArithmetics T>
+constexpr inline
+    typename std::enable_if<std::is_same<T, float>::value, float>::type
+    num_zero_precision() {
+  float p = 0.0001;
+  return p;
+}
+
 // ===============
 // is_zero section
 // ===============
@@ -110,7 +153,7 @@ constexpr inline
 
 // template <optframe::basic_arithmetics T>
 template <ConceptsBasicArithmetics T>
-inline typename std::enable_if<std::is_same<T, int>::value, bool>::type
+inline typename std::enable_if<std::is_same<T, int32_t>::value, bool>::type
 numeric_is_zero(const T& t) {
   return t == 0;
 }
@@ -124,6 +167,12 @@ numeric_is_zero(const T& t) {
 // template <optframe::basic_arithmetics T>
 template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, bool>::type
+numeric_is_zero(const T& t) {
+  return ::fabs(t) <= num_zero_precision<T>();
+}
+
+template <ConceptsBasicArithmetics T>
+inline typename std::enable_if<std::is_same<T, float>::value, bool>::type
 numeric_is_zero(const T& t) {
   return ::fabs(t) <= num_zero_precision<T>();
 }
