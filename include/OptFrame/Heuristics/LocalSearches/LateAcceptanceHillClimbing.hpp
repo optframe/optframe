@@ -174,21 +174,19 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class LateAcceptanceHillClimbingBuilder
-    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~LateAcceptanceHillClimbingBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -213,8 +211,8 @@ class LateAcceptanceHillClimbingBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     stringstream ss;
     ss << NS<XES>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of NS"));
@@ -231,7 +229,7 @@ class LateAcceptanceHillClimbingBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":LAHC";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":LAHC";
     return ss.str();
   }
 

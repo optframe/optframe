@@ -25,6 +25,8 @@ namespace optframe {
 // remember that XMES = (S, [E])
 // BasicPareto is a X2MES implementation, or simply, 2^XMES
 //
+// WORKAROUND FOR XES... SAME AS PARETO!
+//
 template <XEMSolution XMES>
 class BasicPareto {
   using S = typename XMES::first_type;

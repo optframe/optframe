@@ -21,8 +21,8 @@ namespace optframe {
 template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 #else
-template <typename R, typename ADS, typename S,
-          typename XEv = Evaluation<>, typename XES = pair<S, XEv>>
+template <typename R, typename ADS, typename S, typename XEv = Evaluation<>,
+          typename XES = pair<S, XEv>>
 #endif
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
  private:
@@ -128,18 +128,16 @@ template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 #else
-template <typename R, class ADS, typename S,
-          typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename R, class ADS, typename S, typename XEv = Evaluation<>,
+          typename XES = pair<S, XEv>, typename X2ES = MultiESolution<XES>>
 #endif
 class VariableNeighborhoodDescentUpdateADSBuilder
-    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+    : public LocalSearchBuilder<XES> {
  public:
   virtual ~VariableNeighborhoodDescentUpdateADSBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -165,8 +163,8 @@ class VariableNeighborhoodDescentUpdateADSBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
 
     params.push_back(
         make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
@@ -185,7 +183,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":VNDUpdateADS";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":VNDUpdateADS";
     return ss.str();
   }
 

@@ -32,18 +32,20 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Heuristics/MultiObjective/FitnessAssignment.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
+#include <OptFrame/Pareto.hpp>
 
 namespace optframe {
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
-// OPTFRAME_DEFAULT_DS>
-template <XESolution XMES2>
+// WORKAROUND FOR XES... SAME AS PARETO!
+template <XEMSolution XMES2>
 class NonDominatedSort : public FitnessAssignment<XMES2> {
  public:
   using XMEv = typename XMES2::second_type;
   using XEv = typename XMEv::XEv;
+  using S = typename XMES2::first_type;
+  using XES = DEFAULT_PARETO_XES;
 
-  sref<MultiEvaluator<XMES2>> mev;
+  sref<MultiEvaluator<XES, XMES2>> mev;
   vsref<Direction<XEv>> vDir;
 
   /*
@@ -52,7 +54,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
   }
   */
 
-  explicit NonDominatedSort(sref<MultiEvaluator<XMES2>> _mev)
+  explicit NonDominatedSort(sref<MultiEvaluator<XES, XMES2>> _mev)
       : mev{_mev}, vDir{_mev->vDir} {
     assert(mev->vDir.size() > 0);
   }
@@ -62,7 +64,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
   void assignFitnessGroup(
       // vector<MOSIndividual<XMES2>>& g,
       const vector<int>& g, vector<MOSIndividual<XMES2>>& Pop) override {
-    ParetoDominance<XMES2> pDominance{mev};
+    ParetoDominance<XES, XMES2> pDominance{mev};
     //
     // for now, ignore 'g' (assume only "ALL" can be executed here!)
     assert(g.size() == Pop.size());

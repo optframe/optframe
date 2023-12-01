@@ -16,6 +16,7 @@
 #include <iostream>
 #include <map>
 #include <ostream>
+#include <string>
 #include <utility>
 #include <vector>
 //
@@ -117,17 +118,22 @@ template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 #else
 
+// ==============================================
+// Which is better?
+// = VEPopulation<XES2> vs = MultiESolution<XES2>
+// ==============================================
+
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
-          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+          X2ESolution<XES2> X2ES = VEPopulation<XES2>>
 #else
 template <typename XES, typename XSH = XES, typename XES2 = XES,
-          typename X2ES = MultiESolution<XES2>>
+          typename X2ES = VEPopulation<XES2>>
+
 #endif  // cpp_concepts
 
 #endif
 class Loader {
-
 #ifdef OPTFRAME_LEGACY_R_ADS
 //
 #else
@@ -141,26 +147,26 @@ class Loader {
   using X2MES = VEPopulation<XMES>;
 
  public:
-  HeuristicFactory<S, XEv, XES, X2ES> factory;
+  HeuristicFactory<XES> factory;
   map<string, string> dictionary;
   map<string, vector<string>> ldictionary;
 
   Loader() { loadComponentBuilders(); }
 
-  Loader(RandGen _rg) : factory(HeuristicFactory<S, XEv, XES, X2ES>(_rg)) {
+  explicit Loader(sref<RandGen> _rg) : factory{HeuristicFactory<XES>{_rg}} {
     loadComponentBuilders();
   }
 
   void loadComponentBuilders() {
     // Independent components
-    factory.builders.push_back(new RandGenBuilder<S, XEv>);
-    factory.builders.push_back(new TimerBuilder<S, XEv>);
+    factory.builders.push_back(new RandGenBuilder<XES>);
+    factory.builders.push_back(new TimerBuilder<XES>);
 
     // Base
-    factory.builders.push_back(new CloneConstructiveBuilder<S, XEv>);
+    factory.builders.push_back(new CloneConstructiveBuilder<XES>);
 
     // official
-    factory.builders.push_back(new MultiEvaluatorBuilder<S, XEv>);
+    factory.builders.push_back(new MultiEvaluatorBuilder<XES>);
     // alternative on 'xmes_builders'... TODO: think about it.
     //
     // we don't REALLY need xmes, as long as we can DEDUCE it from S, XEv.
@@ -169,28 +175,28 @@ class Loader {
         new MultiEvaluatorMultiBuilder<S, XMEv, XMES, X2MES>{};
     factory.xmes_builders.push_back(meb);
     //
-    factory.builders.push_back(new BasicInitialMultiESolutionBuilder<S, XEv>);
+    factory.builders.push_back(new BasicInitialMultiESolutionBuilder<XES>);
 
-    factory.builders.push_back(new BasicMOPopulationManagementBuilder<S, XEv>);
+    factory.builders.push_back(new BasicMOPopulationManagementBuilder<XES>);
 
     // LocalSearch
-    factory.builders.push_back(new EmptyLocalSearchBuilder<S, XEv>);
-    factory.builders.push_back(new BestImprovementBuilder<S, XEv>);
-    factory.builders.push_back(new FirstImprovementBuilder<S, XEv>);
-    factory.builders.push_back(new RandomDescentMethodBuilder<S, XEv>);
-    factory.builders.push_back(new CircularSearchBuilder<S, XEv>);
-    factory.builders.push_back(new VariableNeighborhoodDescentBuilder<S, XEv>);
+    factory.builders.push_back(new EmptyLocalSearchBuilder<XES>);
+    factory.builders.push_back(new BestImprovementBuilder<XES>);
+    factory.builders.push_back(new FirstImprovementBuilder<XES>);
+    factory.builders.push_back(new RandomDescentMethodBuilder<XES>);
+    factory.builders.push_back(new CircularSearchBuilder<XES>);
+    factory.builders.push_back(new VariableNeighborhoodDescentBuilder<XES>);
 #ifdef OPTFRAME_LEGACY_R_ADS
     factory.builders.push_back(
         new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);
 #endif
-    // factory.builders.push_back(new RVNDBuilder<S, XEv> );
-    factory.builders.push_back(new HillClimbingBuilder<S, XEv>);
-    factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<S, XEv>);
-    factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<S, XEv>);
+    // factory.builders.push_back(new RVNDBuilder<XES> );
+    factory.builders.push_back(new HillClimbingBuilder<XES>);
+    factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<XES>);
+    factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<XES>);
 
     // SingleObjSearch + Parameters
-    factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv>);
+    factory.builders.push_back(new SimpleLocalSearchBuilder<XES>);
     factory.builders.push_back(
         new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(
@@ -198,16 +204,16 @@ class Loader {
     factory.builders.push_back(
         new SimulatedAnnealingACBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(new MultiStartBuilder<XSH, XES2, X2ES>);
-    factory.builders.push_back(new BasicTabuSearchBuilder<S, XEv>);
-    factory.builders.push_back(new BasicIteratedLocalSearchBuilder<S, XEv>);
-    factory.builders.push_back(new BasicILSPerturbationBuilder<S, XEv>);
-    factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<S, XEv>);
-    factory.builders.push_back(new ILSLPerturbationLPlus2Builder<S, XEv>);
-    factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<S, XEv>);
-    factory.builders.push_back(new BasicGRASPBuilder<S, XEv>);
-    factory.builders.push_back(new BasicVNSBuilder<S, XEv>);
-    factory.builders.push_back(new ReducedVNSBuilder<S, XEv>);
-    factory.builders.push_back(new GeneralVNSBuilder<S, XEv>);
+    factory.builders.push_back(new BasicTabuSearchBuilder<XES>);
+    factory.builders.push_back(new BasicIteratedLocalSearchBuilder<XES>);
+    factory.builders.push_back(new BasicILSPerturbationBuilder<XES>);
+    factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<XES>);
+    factory.builders.push_back(new ILSLPerturbationLPlus2Builder<XES>);
+    factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<XES>);
+    factory.builders.push_back(new BasicGRASPBuilder<XES>);
+    factory.builders.push_back(new BasicVNSBuilder<XES>);
+    factory.builders.push_back(new ReducedVNSBuilder<XES>);
+    factory.builders.push_back(new GeneralVNSBuilder<XES>);
 
     // RK family (random keys)
     // static_assert(X2ESolution<XES, MultiESolution<XES>>);
@@ -222,12 +228,12 @@ class Loader {
     // such as ITrajectory or IPopulational (if users want to have specific
     // features, like onIncumbent(...) callback. For Multi Objective, must see
     // benefits.
-    factory.builders.push_back(new BRKGABuilder<XES, XES, X2ES>);
-    factory.builders.push_back(new BasicInitialEPopulationRKBuilder<S, XEv>);
-    factory.builders.push_back(new BasicDecoderRandomKeysBuilder<S, XEv>);
+    factory.builders.push_back(new BRKGABuilder<XES>);
+    factory.builders.push_back(new BasicInitialEPopulationRKBuilder<XES>);
+    factory.builders.push_back(new BasicDecoderRandomKeysBuilder<XES>);
 
     // test local searches
-    factory.builders.push_back(new CompareLocalSearchBuilder<S, XEv>);
+    factory.builders.push_back(new CompareLocalSearchBuilder<XES>);
   }
 };
 

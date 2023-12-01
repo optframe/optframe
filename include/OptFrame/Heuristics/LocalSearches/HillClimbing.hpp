@@ -92,20 +92,19 @@ class HillClimbing : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class HillClimbingBuilder : public LocalSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~HillClimbingBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -122,13 +121,13 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     scanner = Scanner(method.second);
 
     // NOLINTNEXTLINE
-    return new HillClimbing<XES, XEv>(eval, h);
+    return new HillClimbing<XES>(eval, h);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
 
@@ -141,7 +140,7 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   static std::string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":HC";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":HC";
     return ss.str();
   }
 

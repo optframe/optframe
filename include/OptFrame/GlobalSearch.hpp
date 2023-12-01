@@ -100,15 +100,11 @@ class GlobalSearch : public Component {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH, XESolution XES2,
-          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH, typename XES2,
-          typename X2ES = MultiESolution<XES2>>
+template <typename XES, typename XSH = XES>
 #endif
-class GlobalSearchBuilder
-    : public ComponentBuilder<typename XES::first_type,
-                              typename XES::second_type, XSH> {
+class GlobalSearchBuilder : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
@@ -117,11 +113,10 @@ class GlobalSearchBuilder
 
   // NOLINTNEXTLINE
   virtual GlobalSearch<XES, XSH>* build(Scanner& scanner,
-                                        HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                        HeuristicFactory<XES>& hf,
                                         string family = "") = 0;
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -134,7 +129,7 @@ class GlobalSearchBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XSH>::idComponent() << "GlobalSearch:";
+    ss << ComponentBuilder<XES>::idComponent() << "GlobalSearch:";
     return ss.str();
   }
 
@@ -143,4 +138,4 @@ class GlobalSearchBuilder
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_GLOBALSEARCH_HPP_
+#endif  // OPTFRAME_GLOBALSEARCH_HPP_ // NOLINT

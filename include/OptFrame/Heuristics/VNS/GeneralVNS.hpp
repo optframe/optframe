@@ -55,22 +55,17 @@ class GeneralVNS : public VariableNeighborhoodSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class GeneralVNSBuilder : public ILS,
-                          public SingleObjSearchBuilder<S, XEv, XES> {
+class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~GeneralVNSBuilder() {}
 
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     std::shared_ptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -125,8 +120,7 @@ class GeneralVNSBuilder : public ILS,
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family()
-       << "GVNS";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family() << "GVNS";
     return ss.str();
   }
 

@@ -11,20 +11,21 @@
 #include <OptFrame/Heuristics/MultiObjective/BiObjNonDominatedSort.hpp>
 #include <OptFrame/Heuristics/MultiObjective/NonDominatedSort.hpp>
 
+#include "OptFrame/Pareto.hpp"
+
 namespace optframe {
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
-// OPTFRAME_DEFAULT_DS>
-//
-template <XESolution XMES>
+template <XEMSolution XMES>
 class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   using XEv = typename XMEv::XEv;
+  // Using same WORKAROUND AS PARETO
+  using XES = DEFAULT_PARETO_XES;
 
  protected:
   //
-  sref<MultiEvaluator<XMES>> mevr;
+  sref<MultiEvaluator<XES, XMES>> mevr;
   sptr<MultiDirection<XEv>> mdir;
   //
   sref<FitnessAssignment<XMES>> fa;
@@ -32,7 +33,7 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
   sref<MOSSelection<XMES>> sel;
 
  public:
-  ClassicNSGAII(sref<MultiEvaluator<XMES>> _mevr,
+  ClassicNSGAII(sref<MultiEvaluator<XES, XMES>> _mevr,
                 // sref<MultiDirection<XEv>> _mDir,
                 sref<MOPopulationManagement<XMES>> _popMan, unsigned popSize,
                 int maxIter, int maxGen = 100000000)

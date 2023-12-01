@@ -6,7 +6,9 @@
 
 // C++
 #include <iostream>
+#include <utility>
 //
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Hyper/Action.hpp>
@@ -14,7 +16,7 @@
 #include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
 #include <OptFrame/IEvaluator.hpp>
 #include <OptFrame/MultiDirection.hpp>
-// #include "Solution.hpp"
+#include <OptFrame/MultiEvaluator.hpp>
 
 namespace optframe {
 
@@ -22,18 +24,15 @@ namespace optframe {
 // just a bunch/pack of evaluators...
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XMES, XSearch<XMES> XSH = XMES>
+template <XESolution XES, XEMSolution XMES, XSearch<XMES> XSH = XMES>
 #else
-template <typename XMES, typename XSH = XMES>
+template <typename XES, typename XMES, typename XSH = XMES>
 #endif
 class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
                        public IEvaluator<XMES> {
-  // XESolution XES = pair<S, XMEv>,
-  using S = typename XMES::first_type;
+  using S = typename XES::first_type;
   using XMEv = typename XMES::second_type;
   using XEv = typename XMEv::XEv;
-  // XES is only useful on (single-obj) Evaluator helpers
-  using XES = pair<S, XEv>;
 
   using myObjType = typename XMEv::XEv::objType;
 
@@ -167,22 +166,20 @@ class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
   using XMEv = MultiEvaluation<typename XEv::objType>;
   using XMES = std::pair<S, XMEv>;
 
  public:
   virtual ~MultiEvaluatorBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     //
     vsptr<Evaluator<S, XEv, XES>> _evlist;
@@ -195,7 +192,7 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
       evlist.push_back(x);
     }
 
-    return new MultiEvaluator<XMES>(evlist);
+    return new MultiEvaluator<XES, XMES>(evlist);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -208,12 +205,12 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == MultiEvaluator<XMES>::idComponent();
+    return component == MultiEvaluator<XES, XMES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << ComponentBuilder<XES>::idComponent();
     ss << "MultiEvaluator";
     return ss.str();
   }
@@ -242,8 +239,7 @@ class MultiEvaluatorMultiBuilder
  public:
   virtual ~MultiEvaluatorMultiBuilder() {}
 
-  Component* buildMultiComponent(Scanner& scanner,
-                                 HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildMultiComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                                  string family = "") override {
     vsptr<Evaluator<S, XEv, XES>> _evlist;
     std::string sid_0 = scanner.next();
@@ -255,7 +251,7 @@ class MultiEvaluatorMultiBuilder
       evlist.push_back(x);
     }
 
-    return new MultiEvaluator<XMES>(evlist);
+    return new MultiEvaluator<XES, XMES>(evlist);
   }
 
   vector<pair<string, string>> parameters() override {
@@ -267,7 +263,7 @@ class MultiEvaluatorMultiBuilder
   }
 
   bool canBuild(string component) override {
-    return component == MultiEvaluator<XMES>::idComponent();
+    return component == MultiEvaluator<XES, XMES>::idComponent();
   }
 
   static string idComponent() {
@@ -283,14 +279,14 @@ class MultiEvaluatorMultiBuilder
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES, XEMSolution XMES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES, typename XMES>
 #endif
-class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
+class MultiEvaluatorAction : public Action<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~MultiEvaluatorAction() {}
 
@@ -300,12 +296,12 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
   }
 
   virtual bool handleComponent(string type) {
-    return ComponentHelper::compareBase(MultiEvaluator<S, XEv>::idComponent(),
-                                        type);
+    return ComponentHelper::compareBase(
+        MultiEvaluator<XES, XMES>::idComponent(), type);
   }
 
   virtual bool handleComponent(Component& component) {
-    return component.compatible(MultiEvaluator<S, XEv>::idComponent());
+    return component.compatible(MultiEvaluator<XES, XMES>::idComponent());
   }
 
   virtual bool handleAction(string action) {
@@ -314,8 +310,7 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
   }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                      map<string, string>& d) {
+                      HeuristicFactory<XES>& hf, map<string, string>& d) {
     cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
     return false;
 
@@ -345,7 +340,7 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
     // cast object to lower type
     Component* final = nullptr;
 
-    if (type == Evaluator<XES, XEv>::idComponent()) {
+    if (type == Evaluator<S, XEv, XES>::idComponent()) {
       final = (Evaluator<XES, XEv>*)comp;
     } else {
       cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'"
@@ -355,10 +350,10 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
 
     // add new component
     Scanner scanner(variable);
-    return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
+    return ComponentAction<XES>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
                         map<string, string>& dictionary,
                         map<string, vector<string>>& ldictionary) {
     cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
@@ -391,7 +386,7 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
 
       XEv& e = ev->evaluate(*s);
 
-      return Action<S, XEv, X2ES>::addAndRegister(scanner, e, hf, dictionary);
+      return Action<XES>::addAndRegister(scanner, e, hf, dictionary);
     }
 
     // no action found!

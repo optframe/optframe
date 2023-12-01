@@ -30,13 +30,21 @@
 
 namespace optframe {
 
-// template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES =
-// pair<S, XMEv>>
+// NOTE: Pareto should be XMES only, theoretically...
+// however, ParetoDominance<XES, XMES> is contaminated...
+// due to MultiEvaluator<XES, XMES> dependency.
+// Must fix ParetoDominance or create cleaner alternative,
+// to finally have XMES only here.
 //
-template <XESolution XMES>
+// WORKAROUND FOR NOW! Just use DEFAULT_PARETO_XES!!!
+
+#define DEFAULT_PARETO_XES std::pair<S, XEv>
+
+template <XEMSolution XMES>
 class Pareto {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
+
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   static_assert(XEvaluation<typename XMEv::XEv>);
 #endif
@@ -45,6 +53,7 @@ class Pareto {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   static_assert(XEvaluation<XEv>);
 #endif
+  using XES = DEFAULT_PARETO_XES;
 
  public:
   using value_type = XMES;
@@ -307,12 +316,12 @@ class Pareto {
     fclose(fPF);
   }
 
-  static vector<XMEv> filterDominatedMEV(sref<MultiEvaluator<XMES>> mev,
+  static vector<XMEv> filterDominatedMEV(sref<IEvaluator<XMES>> mev,
                                          const vector<XMEv>& candidates) {
     vector<XMEv> nonDom;
 
-    ParetoDominance<XMES> pDom(mev);
-    ParetoDominanceWeak<XMES> pDomWeak(mev);
+    ParetoDominance<XES, XMES> pDom(mev);
+    ParetoDominanceWeak<XES, XMES> pDomWeak(mev);
 
     for (unsigned i = 0; i < candidates.size(); i++)
       addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -320,13 +329,13 @@ class Pareto {
     return nonDom;
   }
 
-  static vector<XMES> filterDominated(sref<MultiEvaluator<XMES>> mev,
+  static vector<XMES> filterDominated(sref<MultiEvaluator<XES, XMES>> mev,
                                       const vector<XMES>& candidates) {
     // store non dominated on 'nonDom'
     vector<XMES> nonDom;
     //
-    ParetoDominance<XMES> pDom(mev);
-    ParetoDominanceWeak<XMES> pDomWeak(mev);
+    ParetoDominance<XES, XMES> pDom(mev);
+    ParetoDominanceWeak<XES, XMES> pDomWeak(mev);
 
     for (unsigned i = 0; i < candidates.size(); i++)
       addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -346,14 +355,14 @@ class Pareto {
   //	static bool addSolution(vector<Direction*>& vDir, vector<T*>& nonDom, T*
   // candidate)
   //	{
-  //		ParetoDominance<XMES> dom(vDir);
-  //		ParetoDominanceWeak<XMES> domWeak(vDir);
+  //		ParetoDominance<XES, XMES> dom(vDir);
+  //		ParetoDominanceWeak<XES, XMES> domWeak(vDir);
   //		return addSolution(dom, domWeak, nonDom, candidate);
   //	}
   //
   // template <class T>
-  static bool addSolution(ParetoDominance<XMES>& dom,
-                          ParetoDominanceWeak<XMES>& domWeak,
+  static bool addSolution(ParetoDominance<XES, XMES>& dom,
+                          ParetoDominanceWeak<XES, XMES>& domWeak,
                           vector<XMES>& nonDom, const XMES& candidate) {
     for (int ind = 0; ind < (int)nonDom.size(); ind++) {
       if (domWeak.dominates(nonDom.at(ind).second, candidate.second))
@@ -369,8 +378,9 @@ class Pareto {
     return true;
   }
 
-  //	static bool addSolution(ParetoDominance<XMES>& dom,
-  // ParetoDominanceWeak<XMES>& domWeak, Pareto<XMES>& p, S* candidate)
+  //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, Pareto<XMES>& p, S*
+  // candidate)
   //	{
   //		MultiEvaluator<S, XEv>& mEval = dom.getMultiEvaluator();
   //		MultiEvaluation<>& mevCandidate = mEval.evaluate(*candidate);
@@ -413,8 +423,9 @@ class Pareto {
   //		return added;
   //	}
 
-  //	static bool addSolution(ParetoDominance<XMES>& dom,
-  // ParetoDominanceWeak<XMES>& domWeak, pair<Pareto<XMES>, vector<vector<bool>
+  //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, pair<Pareto<XMES>,
+  // vector<vector<bool>
   // >
   //>& p, S* candidate, int neighboorsSize)
   //
@@ -475,8 +486,8 @@ class Pareto {
   //	}
 
   //	template<class T>
-  //	static bool addSolution(ParetoDominance<XMES>& dom,
-  // ParetoDominanceWeak<XMES>& domWeak, vector<T>& nonDom, T candidate)
+  //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, vector<T>& nonDom, T candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{
@@ -494,8 +505,8 @@ class Pareto {
   //		return true;
   //	}
 
-  //	static bool addSolution(ParetoDominance<XMES>& dom,
-  // ParetoDominanceWeak<XMES>& domWeak, Population<XES>& p, S& s)
+  //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, Population<XES>& p, S& s)
   //	{
   //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
   //		vector<double> fitnessNewInd;
@@ -536,8 +547,8 @@ class Pareto {
   //	}
 
   // Special addSolution used in the 2PPLS speedUp
-  //	static bool addSolution(ParetoDominance<XMES>& dom,
-  // ParetoDominanceWeak<XMES>& domWeak, pair<Population<XES>,
+  //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, pair<Population<XES>,
   // vector<vector<bool> > >& p, S& s, int neighboorsSize)
   //	{
   //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
@@ -586,9 +597,9 @@ class Pareto {
   //		return added;
   //	}
   //
-  //	static void addSolution(ParetoDominance<XMES>& dom,
-  // ParetoDominanceWeak<XMES>& domWeak, vector<pair<S*, MultiEvaluation<>*> >&
-  // nonDom, pair<S*, MultiEvaluation<>*> candidate)
+  //	static void addSolution(ParetoDominance<XES, XMES>& dom,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, vector<pair<S*,
+  // MultiEvaluation<>*> >& nonDom, pair<S*, MultiEvaluation<>*> candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{

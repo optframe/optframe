@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_ACTION_HPP_
 #define OPTFRAME_ACTION_HPP_
@@ -46,21 +27,17 @@ namespace optframe {
 using scannerpp::Scanner;
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv, XESSolution XESS,
-          X2ESolution<XESS> X2ES>
+template <XESolution XES>
 class HeuristicFactory;
 #else
-template <typename S, typename XEv, typename XESS, typename X2ES>
+template <typename XES>
 class HeuristicFactory;
 #endif
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
 class Action {
  public:
@@ -74,16 +51,15 @@ class Action {
 
   virtual bool handleAction(string action) = 0;
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
                         map<string, string>& dictionary,
                         map<string, vector<string>>& ldictionary) = 0;
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                      map<string, string>& d) = 0;
+                      HeuristicFactory<XES>& hf, map<string, string>& d) = 0;
 
   static bool addAndRegister(Scanner& scanner, Component& comp,
-                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                             HeuristicFactory<XES>& hf,
                              map<string, string>& d) {
     int index = hf.addComponent(comp);
 
@@ -142,14 +118,11 @@ class Action {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class ComponentAction : public Action<S, XEv, X2ES> {
+class ComponentAction : public Action<XES> {
  public:
   virtual ~ComponentAction() {}
 
@@ -171,8 +144,7 @@ class ComponentAction : public Action<S, XEv, X2ES> {
   }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                      map<string, string>& d) {
+                      HeuristicFactory<XES>& hf, map<string, string>& d) {
     if (!handleComponent(type)) {
       cout << "ComponentAction::doCast error: can't handle component type '"
            << type << " " << id << "'" << endl;
@@ -203,10 +175,10 @@ class ComponentAction : public Action<S, XEv, X2ES> {
 
     // add new component
     Scanner scanner(variable);
-    return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
+    return ComponentAction<XES>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
                         map<string, string>& dictionary,
                         map<string, vector<string>>& ldictionary) {
     // cout << "Evaluation::doAction '" << content << "'" << endl;

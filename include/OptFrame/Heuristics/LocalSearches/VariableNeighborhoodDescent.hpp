@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 #define OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 
+#include <vector>
+//
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
 #include "../../NSEnum.hpp"
@@ -113,20 +115,15 @@ class VariableNeighborhoodDescent : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class VariableNeighborhoodDescentBuilder
-    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<XES> {
  public:
   virtual ~VariableNeighborhoodDescentBuilder() {}
 
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     if (this->verbose)
       std::cout << "Debug: VariableNeighborhoodDescentBuilder::build()"
@@ -144,7 +141,7 @@ class VariableNeighborhoodDescentBuilder
     vsref<LocalSearch<XES>> hlist;
     for (auto x : _hlist) hlist.push_back(x);
 
-    return new VariableNeighborhoodDescent<XES, XEv>(eval, hlist);
+    return new VariableNeighborhoodDescent<XES>(eval, hlist);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -159,12 +156,12 @@ class VariableNeighborhoodDescentBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == VariableNeighborhoodDescent<XES, XEv>::idComponent();
+    return component == VariableNeighborhoodDescent<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":VND";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":VND";
     return ss.str();
   }
 

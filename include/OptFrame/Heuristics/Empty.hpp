@@ -55,23 +55,19 @@ class EmptyLocalSearch : public LocalSearch<XES> {
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  string id() const override { return idComponent(); }
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class EmptyLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class EmptyLocalSearchBuilder : public LocalSearchBuilder<XES> {
  public:
   virtual ~EmptyLocalSearchBuilder() {}
 
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     return new EmptyLocalSearch<XES>;
   }
@@ -88,7 +84,7 @@ class EmptyLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":Empty";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":Empty";
     return ss.str();
   }
 

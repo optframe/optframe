@@ -204,19 +204,15 @@ significantly higher and, in most cases, independent of the seed size.
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class RandGenBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class RandGenBuilder : public ComponentBuilder<XES> {
  public:
   virtual ~RandGenBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     if (!scanner.hasNext()) return nullptr;
 
@@ -237,7 +233,7 @@ class RandGenBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "RandGen";
+    ss << ComponentBuilder<XES>::idComponent() << "RandGen";
     return ss.str();
   }
 

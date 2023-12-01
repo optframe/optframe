@@ -49,11 +49,12 @@ TEST_CASE("OptFrameTests: pareto_dominance") {
         return TestXEv{obj};
       }});
 
-  sref<MultiEvaluator<TestXMES>> mev{new MultiEvaluator<TestXMES>{veval}};
+  sref<MultiEvaluator<TestXES, TestXMES>> mev{
+      new MultiEvaluator<TestXES, TestXMES>{veval}};
   //
   REQUIRE(mev->vDir.size() == 3);
   //
-  ParetoDominance<TestXMES> pDom{mev};
+  ParetoDominance<TestXES, TestXMES> pDom{mev};
   //
   //
   MultiEvaluation<int> A{vector<int>{1, 2, 3}};

@@ -112,10 +112,9 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #else
-template <typename XES, XESolution XES2,
-          typename X2ES = MultiESolution<XES2>>
+template <typename XES, XESolution XES2, typename X2ES = MultiESolution<XES2>>
 #endif
-class MultiStartBuilder : public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
+class MultiStartBuilder : public GlobalSearchBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
@@ -123,8 +122,7 @@ class MultiStartBuilder : public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
   virtual ~MultiStartBuilder() = default;
 
   // NOLINTNEXTLINE
-  GlobalSearch<XES>* build(Scanner& scanner,
-                           HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                            string family = "") override {
     if (Component::debug)
       std::cout << "MultiStart Builder Loading Parameter #0" << std::endl;
@@ -212,8 +210,7 @@ class MultiStartBuilder : public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent()
-       << "MultiStart";
+    ss << GlobalSearchBuilder<XES>::idComponent() << "MultiStart";
     return ss.str();
   }
 

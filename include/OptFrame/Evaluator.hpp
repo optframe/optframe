@@ -48,6 +48,7 @@ template <XSolution _S, XEvaluation _XEv, XESolution XES = pair<_S, _XEv>>
 class Evaluator : public GeneralEvaluator<XES, XES>,
                   public IEvaluator<XES>,
                   public ICompare<typename XES::second_type> {
+  using my_evtype = typename _XEv::objType;
   //
   // static_assert(is_same<S, typename XES::first_type>::value);
   // static_assert(is_same<XEv, typename XES::second_type>::value);
@@ -143,8 +144,8 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
 
     // Difference: new - original
 
-    evtype obj = rev.second.getObjFunction() - ini.second.getObjFunction();
-    evtype inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
+    my_evtype obj = rev.second.getObjFunction() - ini.second.getObjFunction();
+    my_evtype inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
 
     /*
       vector<pair<evtype, evtype>>

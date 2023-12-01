@@ -122,9 +122,9 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
       std::stringstream ss;
       ss << incumbent->second.evaluation();
       incumbent->first.listAC.push_back(
-          ContextAC{.id{"SA_INIT"},
-                    .message{ss.str()},
-                    .payload{incumbent->first.sharedClone()}});
+          ContextAC{.id{"SA_INIT"}, .message{ss.str()}, .payload {
+                      incumbent->first.sharedClone()
+                    }});
     }
 #endif
 
@@ -149,9 +149,9 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
       std::stringstream ss;
       ss << star->second.evaluation();
       star->first.listAC.push_back(
-          ContextAC_AC{.id{"SA_NEW_STAR"},
-                       .message{ss.str()},
-                       .payload{star->first.sharedClone()}});
+          ContextAC_AC{.id{"SA_NEW_STAR"}, .message{ss.str()}, .payload {
+                         star->first.sharedClone()
+                       }});
     }
     //
     // star->first.printListAC();
@@ -166,8 +166,7 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
     }
 
     // initialize search context for Simulated Annealing
-    SearchContextSA_AC<XES> ctx{
-        *this, star, incumbent};
+    SearchContextSA_AC<XES> ctx{*this, star, incumbent};
 
     if (Component::verbose) std::cout << "SA: begin SearchContext" << std::endl;
 
@@ -280,9 +279,10 @@ XSH::first_type::typeR>);
         {
           std::stringstream ss;
           ss << move->toString();
-          se.first.listAC.push_back(ContextAC{.id{"SA_MOVE_APPLY_GOOD"},
-                                              .message{ss.str()},
-                                              .payload{move->sharedClone()}});
+          se.first.listAC.push_back(ContextAC{
+              .id{"SA_MOVE_APPLY_GOOD"}, .message{ss.str()}, .payload {
+                move->sharedClone()
+              }});
         }
         //
         // star->first.printListAC();
@@ -339,9 +339,9 @@ XSH::first_type::typeR>);
             std::stringstream ss;
             ss << star->second.evaluation();
             star->first.listAC.push_back(
-                ContextAC{.id{"SA_NEW_STAR"},
-                          .message{ss.str()},
-                          .payload{star->first.sharedClone()}});
+                ContextAC{.id{"SA_NEW_STAR"}, .message{ss.str()}, .payload {
+                            star->first.sharedClone()
+                          }});
           }
           //
           // star->first.printListAC();
@@ -378,9 +378,10 @@ XSH::first_type::typeR>);
           {
             std::stringstream ss;
             ss << move->toString();
-            se.first.listAC.push_back(ContextAC{.id{"SA_MOVE_APPLY_BAD"},
-                                                .message{ss.str()},
-                                                .payload{move->sharedClone()}});
+            se.first.listAC.push_back(ContextAC{
+                .id{"SA_MOVE_APPLY_BAD"}, .message{ss.str()}, .payload {
+                  move->sharedClone()
+                }});
           }
           //
           // star->first.printListAC();
@@ -403,9 +404,9 @@ XSH::first_type::typeR>);
       std::stringstream ss;
       ss << star->second.evaluation();
       star->first.listAC.push_back(
-          ContextAC{.id{"SA_FINAL"},
-                    .message{ss.str()},
-                    .payload{star->first.sharedClone()}});
+          ContextAC{.id{"SA_FINAL"}, .message{ss.str()}, .payload {
+                      star->first.sharedClone()
+                    }});
     }
     //
     // std::cout << "SA: final star" << std::endl;
@@ -447,12 +448,9 @@ XSH::first_type::typeR>);
 template <XESolution XES, XESolution XES2,
           X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #else
-template <typename XES, XESolution XES2,
-          typename X2ES = MultiESolution<XES2>>
+template <typename XES, XESolution XES2, typename X2ES = MultiESolution<XES2>>
 #endif
-class SimulatedAnnealingACBuilder
-    : public SA,
-      public GlobalSearchBuilder<XES, XES, XES2, X2ES> {
+class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
@@ -463,8 +461,7 @@ class SimulatedAnnealingACBuilder
   virtual ~SimulatedAnnealingACBuilder() = default;
 
   // has sptr instead of sref, is that on purpose or legacy class?
-  GlobalSearch<XES>* build(Scanner& scanner,
-                           HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                            string family = "") override {
     if (Component::debug)
       std::cout << "BasicSA Builder Loading Parameter #0" << std::endl;
@@ -591,8 +588,8 @@ class SimulatedAnnealingACBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent()
-       << SA::family() << "SimulatedAnnealingAC";
+    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family()
+       << "SimulatedAnnealingAC";
     return ss.str();
   }
 

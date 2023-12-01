@@ -136,7 +136,7 @@ struct IndividualNSGAII {
   }
 };
 
-template <XEMSolution XMES>
+template <XESolution XES, XEMSolution XMES>
 class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
                                      VEPopulation<IndividualNSGAII<XMES>>> {
   // typedef vector<Evaluation<>*> FitnessValues;
@@ -153,7 +153,7 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
   sref<InitialMultiESolution<XMES>> init_epop;
   int init_pop_size;
 
-  sref<ParetoDominance<XMES>> pDominance;
+  sref<ParetoDominance<XES, XMES>> pDominance;
   int gMax;
 
   static bool compare(pair<double, int> p1, pair<double, int> p2) {
@@ -172,7 +172,7 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
       : v_e(_v_e),
         init_epop(_init_epop),
         init_pop_size(_init_pop_size),
-        pDominance{new ParetoDominance<XMES>{_v_e}},
+        pDominance{new ParetoDominance<XES, XMES>{_v_e}},
         rg(_rg) {
     // TODO(igormcoelho): why put again the evaluators? seems wrong...
     // assert(false);

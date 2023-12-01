@@ -141,22 +141,18 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>,
-          XSearch<XES> XSH = std::pair<S, XEv>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>, typename XSH = std::pair<S, XEv>>
+template <typename XES>
 #endif
 class FirstImprovingNeighborBuilder
-    : public NeighborhoodExplorationBuilder<S, XEv, XES, X2ES> {
+    : public NeighborhoodExplorationBuilder<XES> {
  public:
   virtual ~FirstImprovingNeighborBuilder() = default;
 
   // NOLINTNEXTLINE
   NeighborhoodExploration<XES>* build(Scanner& scanner,
-                                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                      HeuristicFactory<XES>& hf,
                                       string family = "") override {
     //
     GeneralEvaluator<XES>* eval;
@@ -189,8 +185,7 @@ class FirstImprovingNeighborBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent()
-       << ":FirstImprovingNeighbor";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":FirstImprovingNeighbor";
     return ss.str();
   }
 

@@ -31,8 +31,9 @@ namespace optframe {
 typedef int BasicHistory;
 
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-//template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
-class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, XMEv, XMES> {
+// template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
+class BasicMOILS
+    : public MultiObjILS<BasicHistory, typename XMES::first_type, XMEv, XMES> {
   using S = typename XMES::first_type;
   static_assert(is_same<S, typename XMES::first_type>::value);
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
@@ -42,15 +43,21 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, X
   int iterMax;
 
  public:
-  BasicMOILS(sref<MultiEvaluator<XMES>> _mev, sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size, sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg, sref<BasicMOILSPerturbation<XMES, XMEv>> _p, int _iterMax)
-      :  //BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
-        MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev, _init_pareto, _init_pop_size, _ls, _rg),
+  BasicMOILS(sref<IEvaluator<XMES>> _mev,
+             sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size,
+             sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg,
+             sref<BasicMOILSPerturbation<XMES, XMEv>> _p, int _iterMax)
+      :  // BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XES,
+         // XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>*
+         // _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int
+         // _iterMax)
+         // :
+        MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev, _init_pareto,
+                                                 _init_pop_size, _ls, _rg),
         p(_p),
-        iterMax(_iterMax) {
-  }
+        iterMax(_iterMax) {}
 
-  virtual ~BasicMOILS() {
-  }
+  virtual ~BasicMOILS() {}
 
   virtual BasicHistory& initializeHistory() override {
     int& iter = *new int;
@@ -59,7 +66,8 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, X
     return iter;
   }
 
-  virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, BasicHistory& history) override {
+  virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+                            BasicHistory& history) override {
     int iter = history;
 
     p->perturb(smev, stopCriteria);
@@ -71,7 +79,8 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, X
     history = iter;
   }
 
-  virtual void acceptanceCriterion(const Pareto<XMES>& pf, BasicHistory& history) override {
+  virtual void acceptanceCriterion(const Pareto<XMES>& pf,
+                                   BasicHistory& history) override {
     if (pf.getNewNonDominatedSolutionsStatus()) {
       cout << "New Pareto size: is " << pf.size();
       cout << " on [iter without improvement " << history << "]" << endl;
@@ -93,9 +102,7 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, X
     return (s == idComponent()) || (MultiObjSearch<XMES>::compatible(s));
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;

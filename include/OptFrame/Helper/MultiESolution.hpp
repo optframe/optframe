@@ -13,7 +13,7 @@
 
 namespace optframe {
 
-// Pointer-based "EPopulation" structure
+// Pointer-based "EPopulation" structure (DEPRECATED!)
 template <XESolution XES>
 class MultiESolution : public Component {
   using S = typename XES::first_type;

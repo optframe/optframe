@@ -19,21 +19,21 @@ namespace optframe {
 
 typedef int BasicHistory;
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class BasicIteratedLocalSearch
-    : public IteratedLocalSearch<BasicHistory, XES, XEv> {
+template <XESolution XES>
+class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
+  using XEv = typename XES::second_type;
+
  protected:
   sref<LocalSearch<XES>> ls;
-  sref<BasicILSPerturbation<XES, XEv>> p;
+  sref<BasicILSPerturbation<XES>> p;
   int iterMax;
 
  public:
   BasicIteratedLocalSearch(sref<GeneralEvaluator<XES>> e,
                            sref<InitialSearch<XES>> constructive,
                            sref<LocalSearch<XES>> _ls,
-                           sref<BasicILSPerturbation<XES, XEv>> _p,
-                           int _iterMax)
-      : IteratedLocalSearch<BasicHistory, XES, XEv>(e, constructive),
+                           sref<BasicILSPerturbation<XES>> _p, int _iterMax)
+      : IteratedLocalSearch<BasicHistory, XES>(e, constructive),
         ls(_ls),
         p(_p),
         iterMax(_iterMax) {}
@@ -110,21 +110,16 @@ class BasicIteratedLocalSearch
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicIteratedLocalSearchBuilder
-    : public ILS,
-      public SingleObjSearchBuilder<S, XEv, XES> {
+class BasicIteratedLocalSearchBuilder : public ILS,
+                                        public SingleObjSearchBuilder<XES> {
  public:
   ~BasicIteratedLocalSearchBuilder() override = default;
 
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -145,7 +140,7 @@ class BasicIteratedLocalSearchBuilder
 
     scanner = Scanner(method.second);
 
-    sptr<BasicILSPerturbation<XES, XEv>> pert;
+    sptr<BasicILSPerturbation<XES>> pert;
     std::string comp_id3 = scanner.next();
     int id3 = *scanner.nextInt();
     hf.assign(pert, id3, comp_id3);
@@ -165,7 +160,7 @@ class BasicIteratedLocalSearchBuilder
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
-    params.push_back(make_pair(BasicILSPerturbation<XES, XEv>::idComponent(),
+    params.push_back(make_pair(BasicILSPerturbation<XES>::idComponent(),
                                "ils perturbation"));
     params.push_back(make_pair("OptFrame:int",
                                "max number of iterations without improvement"));
@@ -179,7 +174,7 @@ class BasicIteratedLocalSearchBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << ILS::family()
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << ILS::family()
        << "BasicILS";
     return ss.str();
   }

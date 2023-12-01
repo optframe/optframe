@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-
 #ifndef OPTFRAME_PARETODOMINANCE_HPP_  // NOLINT
 #define OPTFRAME_PARETODOMINANCE_HPP_  // NOLINT
 
@@ -20,25 +19,27 @@
 
 namespace optframe {
 
-template <XESolution XMES>
+template <XESolution XES, XEMSolution XMES>
 class ParetoDominance {
-  using S = typename XMES::first_type;
+  using S = typename XES::first_type;
   using XMEv = typename XMES::second_type;
   using XEv = typename XMEv::XEv;
-  using XES = std::pair<S, XEv>;
 
  public:
   //
   // TODO: why we need v_d???
   // vsref<Direction<XEv>> v_d;
+  // ======================================================================
+  // STRANGE: Requires MultiEvaluator instead of IEvaluator
+  // It performs comparisons with betterThanAt... but never calls 'evaluate'
   //
-  sref<MultiEvaluator<XMES>> mev;
+  sref<MultiEvaluator<XES, XMES>> mev;
 
  public:
-  explicit ParetoDominance(sref<MultiEvaluator<XMES>> _mev) : mev(_mev) {}
+  explicit ParetoDominance(sref<MultiEvaluator<XES, XMES>> _mev) : mev(_mev) {}
 
   explicit ParetoDominance(vsref<Evaluator<S, XEv, XES>> _v_e)
-      : mev{new MultiEvaluator<XMES>{_v_e}} {}
+      : mev{new MultiEvaluator<XES, XMES>{_v_e}} {}
 
   virtual ~ParetoDominance() = default;
 
@@ -52,7 +53,7 @@ class ParetoDominance {
   //    return v_e;
   // }
 
-  sref<MultiEvaluator<XMES>> getMultiEvaluator() { return mev; }
+  sref<MultiEvaluator<XES, XMES>> getMultiEvaluator() { return mev; }
 
   /*
    // true if 's1' dominates 's2'

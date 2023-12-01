@@ -34,26 +34,22 @@
 
 namespace optframe {
 
-//template<XSolution S, XEvaluation XEv=Evaluation<>>
+// template<XSolution S, XEvaluation XEv=Evaluation<>>
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 class MOILSLPerturbation : public Component, public MOILS {
  public:
-  virtual ~MOILSLPerturbation() {
-  }
+  virtual ~MOILSLPerturbation() {}
 
-  virtual void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) = 0;
+  virtual void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+                       int level) = 0;
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
   static string idComponent() {
     stringstream ss;
@@ -62,7 +58,8 @@ class MOILSLPerturbation : public Component, public MOILS {
   }
 };
 
-//template<XSolution S, XEvaluation XEv=Evaluation<>, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+// template<XSolution S, XEvaluation XEv=Evaluation<>, XEvaluation
+// XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
  private:
@@ -71,21 +68,21 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
   sref<RandGen> rg;
 
  public:
-  MOILSLPerturbationLPlus2(sref<GeneralEvaluator<XMES, XMEv>> _e, sref<NS<XMES, XMEv>> _ns, sref<RandGen> _rg)
+  MOILSLPerturbationLPlus2(sref<GeneralEvaluator<XMES, XMEv>> _e,
+                           sref<NS<XMES, XMEv>> _ns, sref<RandGen> _rg)
       : evaluator(_e), rg(_rg) {
     ns.push_back(_ns);
   }
 
-  virtual ~MOILSLPerturbationLPlus2() {
-  }
+  virtual ~MOILSLPerturbationLPlus2() {}
 
-  void add_ns(sref<NS<XMES, XMEv>> _ns) {
-    ns.push_back(_ns);
-  }
+  void add_ns(sref<NS<XMES, XMEv>> _ns) { ns.push_back(_ns); }
 
-  //void perturb(S& s, XMEv& mev, const StopCriteria<XEv>& stopCriteria, int level)
-  void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) override {
-    //XES se = make_pair(s, Evaluation<>()); // TODO: multiev
+  // void perturb(S& s, XMEv& mev, const StopCriteria<XEv>& stopCriteria, int
+  // level)
+  void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+               int level) override {
+    // XES se = make_pair(s, Evaluation<>()); // TODO: multiev
 
     int a = 0;  // number of appliable moves
 
@@ -98,20 +95,22 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
 
       if (m) {
         a++;
-        //Component::safe_delete(m->applyMEVUpdate(mev, s));
-        //m->applyMEVUpdate(mev, se);
+        // Component::safe_delete(m->applyMEVUpdate(mev, s));
+        // m->applyMEVUpdate(mev, se);
         m->applyUpdate(smev);
       } else if (Component::warning)
-        cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
+        cout << "ILS Warning: perturbation had no effect in level " << a << "!"
+             << endl;
 
-      //delete m;
+      // delete m;
     }
 
     evaluator->reevaluate(smev);  // updates 'mev'
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (MOILSLPerturbation<XMES, XMEv>::compatible(s));
+    return (s == idComponent()) ||
+           (MOILSLPerturbation<XMES, XMEv>::compatible(s));
   }
 
   static string idComponent() {
@@ -120,39 +119,37 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-//template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
-template <XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+// template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S,
+// XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
  private:
   vector<NS<XMES, XMEv>*> ns;
   vector<pair<int, double>> pNS;
-  MultiEvaluator<XMES>& evaluator;
+  IEvaluator<XMES>& evaluator;
   RandGen& rg;
 
  public:
-  MOILSLPerturbationLPlus2Prob(MultiEvaluator<XMES>& _e, NS<XMES, XMEv>& _ns, RandGen& _rg)
+  MOILSLPerturbationLPlus2Prob(IEvaluator<XMES>& _e, NS<XMES, XMEv>& _ns,
+                               RandGen& _rg)
       : evaluator(_e), rg(_rg) {
     ns.push_back(&_ns);
     pNS.push_back(make_pair(1, 1));
   }
 
-  virtual ~MOILSLPerturbationLPlus2Prob() {
-  }
+  virtual ~MOILSLPerturbationLPlus2Prob() {}
 
   void add_ns(NS<XMES, XMEv>& _ns) {
     ns.push_back(&_ns);
     pNS.push_back(make_pair(1, 1));
 
     double soma = 0;
-    for (int i = 0; i < ns.size(); i++)
-      soma += pNS[i].first;
-    for (int i = 0; i < ns.size(); i++)
-      pNS[i].second = pNS[i].first / soma;
+    for (int i = 0; i < ns.size(); i++) soma += pNS[i].first;
+    for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
   }
 
   void changeProb(vector<int> pri) {
@@ -168,17 +165,19 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
       soma += pri[i];
     }
 
-    for (int i = 0; i < ns.size(); i++)
-      pNS[i].second = pNS[i].first / soma;
+    for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
 
     cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << endl;
     for (int i = 0; i < ns.size(); i++)
-      cout << "pNS[i].first: " << pNS[i].first << "\t pNS[i].second: " << pNS[i].second << endl;
+      cout << "pNS[i].first: " << pNS[i].first
+           << "\t pNS[i].second: " << pNS[i].second << endl;
     cout << endl;
   }
 
-  //void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level) override
-  void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) override {
+  // void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>&
+  // stopCriteria, int level) override
+  void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+               int level) override {
     int a = 0;  // number of appliable moves
 
     level += 2;  // level 0 applies 2 moves
@@ -197,15 +196,16 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
 
       if (m) {
         a++;
-        //Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
+        // Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
         m->applyUpdate(smev);
       } else if (Component::warning)
-        cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
+        cout << "ILS Warning: perturbation had no effect in level " << a << "!"
+             << endl;
 
       delete m;
     }
 
-    //evaluator.reevaluateMEV(mev, s); // updates 'e'
+    // evaluator.reevaluateMEV(mev, s); // updates 'e'
     evaluator.reevaluate(smev);  // updates 'mev'
   }
 
@@ -215,9 +215,7 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

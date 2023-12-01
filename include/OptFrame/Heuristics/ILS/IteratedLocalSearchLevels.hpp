@@ -160,21 +160,16 @@ class IteratedLocalSearchLevels
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class IteratedLocalSearchLevelsBuilder
-    : public ILS,
-      public SingleObjSearchBuilder<S, XEv, XES> {
+class IteratedLocalSearchLevelsBuilder : public ILS,
+                                         public SingleObjSearchBuilder<XES> {
  public:
-  virtual ~IteratedLocalSearchLevelsBuilder() {}
+  ~IteratedLocalSearchLevelsBuilder() override = default;
 
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval = nullptr;
     std::string sid_0 = scanner.next();
@@ -199,7 +194,7 @@ class IteratedLocalSearchLevelsBuilder
     scanner = Scanner(method.second);
     if (!h) return nullptr;
 
-    sptr<ILSLPerturbation<XES, XEv>> pert;
+    sptr<ILSLPerturbation<XES>> pert;
     std::string sid_3 = scanner.next();
     int id_3 = *scanner.nextInt();
     hf.assign(pert, id_3, sid_3);
@@ -225,8 +220,8 @@ class IteratedLocalSearchLevelsBuilder
 
     levelMax = *olevelMax;
 
-    return new IteratedLocalSearchLevels<XES, XEv>(eval, constructive, h, pert,
-                                                   iterMax, levelMax);
+    return new IteratedLocalSearchLevels<XES>(eval, constructive, h, pert,
+                                              iterMax, levelMax);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -239,8 +234,8 @@ class IteratedLocalSearchLevelsBuilder
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
-    params.push_back(make_pair(ILSLPerturbation<XES, XEv>::idComponent(),
-                               "ilsL perturbation"));
+    params.push_back(
+        make_pair(ILSLPerturbation<XES>::idComponent(), "ilsL perturbation"));
     params.push_back(
         make_pair("int", "max number of iterations without improvement"));
     params.push_back(make_pair("int", "levelMax of perturbation"));
@@ -249,12 +244,12 @@ class IteratedLocalSearchLevelsBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == IteratedLocalSearchLevels<XES, XEv>::idComponent();
+    return component == IteratedLocalSearchLevels<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << ILS::family()
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << ILS::family()
        << "ILSLevels";
     return ss.str();
   }

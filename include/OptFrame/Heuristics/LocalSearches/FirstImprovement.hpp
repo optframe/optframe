@@ -210,20 +210,15 @@ class FirstImprovement : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>,
-          XSearch<XES> XSH = std::pair<S, XEv>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>, typename XSH = std::pair<S, XEv>>
+template <typename XES>
 #endif
-class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class FirstImprovementBuilder : public LocalSearchBuilder<XES> {
  public:
   virtual ~FirstImprovementBuilder() {}
 
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     if (this->verbose)
       std::cout << "Debug: FirstImprovementBuilder::build()" << std::endl;
@@ -233,12 +228,12 @@ class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     int id_0 = *scanner.nextInt();
     hf.assign(eval, id_0, sid_0);
 
-    sptr<NSSeq<XES, XSH>> nsseq;
+    sptr<NSSeq<XES>> nsseq;
     std::string sid_1 = scanner.next();
     int id_1 = *scanner.nextInt();
     hf.assign(nsseq, id_1, sid_1);
 
-    return new FirstImprovement<XES, XEv, XSH>(eval, nsseq);
+    return new FirstImprovement<XES>(eval, nsseq);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -246,18 +241,18 @@ class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
+        make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
 
     return params;
   }
 
   bool canBuild(std::string component) override {
-    return component == FirstImprovement<XES, XEv>::idComponent();
+    return component == FirstImprovement<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":FI";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":FI";
     return ss.str();
   }
 

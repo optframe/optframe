@@ -41,37 +41,33 @@
 // using namespace std;
 
 template <XESolution XMES>
-class ParetoDominanceStrict : public ParetoDominance<XMES> {
+class ParetoDominanceStrict : public ParetoDominance<XES, XMES> {
  public:
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   using XEv = typename XMEv::XEv;
   using XES = std::pair<S, XEv>;
 
-  using ParetoDominance<XMES>::dominates;
-  using ParetoDominance<XMES>::birelation;
+  using ParetoDominance<XES, XMES>::dominates;
+  using ParetoDominance<XES, XMES>::birelation;
 
-  ParetoDominanceStrict(vector<Evaluator<S, XEv>*> _v_e)
-      : ParetoDominance<XMES>(_v_e) {
-  }
+  ParetoDominanceStrict(vector<Evaluator<S, XEv, XES>*> _v_e)
+      : ParetoDominance<XES, XMES>(_v_e) {}
 
   ParetoDominanceStrict(vector<Direction<>*> _v_d)
-      : ParetoDominance<XMES>(_v_d) {
-  }
+      : ParetoDominance<XES, XMES>(_v_d) {}
 
-  ParetoDominanceStrict() {
-  }
+  ParetoDominanceStrict() {}
 
-  virtual ~ParetoDominanceStrict() {
-  }
+  virtual ~ParetoDominanceStrict() {}
 
   void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e) {
-    ParetoDominance<XMES>::v_e = _v_e;
+    ParetoDominance<XES, XMES>::v_e = _v_e;
   }
 
   // true if 's1' weakly dominates 's2'
   virtual bool dominates(const vector<double>& v1, const vector<double>& v2) {
-    vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<XMES>::v_e;
+    vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<XES, XMES>::v_e;
 
     if (!((v_e.size() == v1.size()) && (v1.size() == v2.size()))) {
       cout << "WARNING in ParetoDominanceStrict: different sizes." << endl;
@@ -79,26 +75,25 @@ class ParetoDominanceStrict : public ParetoDominance<XMES> {
     }
 
     int better = 0;
-    //int equals = 0;
+    // int equals = 0;
 
     // TODO: make inheritance!
     if (v_e.size() == v1.size()) {
       for (int e = 0; e < v1.size(); e++) {
-        if (v_e[e]->betterThan(v1[e], v2[e]))
-          better++;
+        if (v_e[e]->betterThan(v1[e], v2[e])) better++;
       }
 
     } else {
       for (int e = 0; e < v1.size(); e++) {
-        if (this->v_d[e]->betterThan(v1[e], v2[e]))
-          better++;
+        if (this->v_d[e]->betterThan(v1[e], v2[e])) better++;
       }
     }
 
     return (better == v_e.size());
   }
 
-  virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2) {
+  virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1,
+                                      const vector<Evaluation<DS>*>& v2) {
     return make_pair(dominates(v1, v2), dominates(v2, v1));
   }
 };

@@ -305,15 +305,13 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicMOPopulationManagementBuilder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
+class BasicMOPopulationManagementBuilder : public ComponentBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
   using XMEv = MultiEvaluation<typename XEv::objType>;
   using XMES = std::pair<S, XMEv>;
 
@@ -321,8 +319,7 @@ class BasicMOPopulationManagementBuilder
   virtual ~BasicMOPopulationManagementBuilder() {}
 
   // has sptr instead of sref, is that on purpose or legacy class?
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     if (Component::debug)
       std::cout << "BasicMOPopulationBuilder Loading Parameter #0" << std::endl;
@@ -394,8 +391,7 @@ class BasicMOPopulationManagementBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
-    ss << "BasicMOPopulationManagement";
+    ss << ComponentBuilder<XES>::idComponent() << "BasicMOPopulationManagement";
     return ss.str();
   }
 

@@ -41,8 +41,8 @@ class BasicVNS : public VariableNeighborhoodSearch<XES> {
   virtual ~BasicVNS() = default;
 
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
-    return *new BestImprovement<XES, XEv>(super::evaluator,
-                                          super::vsearch.at(k_search));
+    return *new BestImprovement<XES>(super::evaluator,
+                                     super::vsearch.at(k_search));
   }
 
   std::string id() const override { return idComponent(); }
@@ -55,22 +55,18 @@ class BasicVNS : public VariableNeighborhoodSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
+class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   ~BasicVNSBuilder() override = default;
 
   // NOLINTNEXTLINE
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -126,7 +122,7 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family()
+    ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family()
        << "BasicVNS";
     return ss.str();
   }

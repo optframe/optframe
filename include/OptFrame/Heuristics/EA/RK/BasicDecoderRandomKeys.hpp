@@ -2,7 +2,6 @@
 // Copyright (C) 2007-2022 - OptFrame developers
 // https://github.com/optframe/optframe
 
-
 #ifndef OPTFRAME_HEURISTICS_EA_RK_BASICDECODERRANDOMKEYS_HPP_
 #define OPTFRAME_HEURISTICS_EA_RK_BASICDECODERRANDOMKEYS_HPP_
 //
@@ -39,7 +38,7 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
 
   virtual ~BasicDecoderRandomKeys() {}
 
-  virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
+  pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
     if (!needsSolution) {
       if (Component::debug)
         std::cout << "DEBUG: cannot disable solution decoding!" << std::endl;
@@ -65,15 +64,14 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicDecoderRandomKeysBuilder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
+class BasicDecoderRandomKeysBuilder : public ComponentBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+  //
   using KeyType = double;
   using RealS = std::vector<KeyType>;
   using RealXEv = Evaluation<>;
@@ -82,8 +80,7 @@ class BasicDecoderRandomKeysBuilder
  public:
   virtual ~BasicDecoderRandomKeysBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     sptr<Evaluator<S, XEv, XES>> evaluator;
     std::string sid_0 = scanner.next();
@@ -115,8 +112,8 @@ class BasicDecoderRandomKeysBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << EA::family()
-       << ":" << RK::family() << "BasicDecoderRandomKeysBuilder";
+    ss << ComponentBuilder<XES>::idComponent() << EA::family() << ":"
+       << RK::family() << "BasicDecoderRandomKeysBuilder";
     return ss.str();
   }
 

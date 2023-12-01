@@ -31,32 +31,33 @@
 
 namespace optframe {
 
-// template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+// template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES
+// = pair<S, XMEv>>
 template <XESolution XMES>
 class ParetoManager {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   using XEv = typename XMEv::XEv;
   using XES = std::pair<S, XEv>;
-  // using XEv = Evaluation<>;  // hardcoding this... TODO: solve by having a GeneralEvaluator down here!
+  // using XEv = Evaluation<>;  // hardcoding this... TODO: solve by having a
+  // GeneralEvaluator down here!
  public:
-  MultiEvaluator<XMES>& multiEval;
-  //GeneralEvaluator<XMES, XMEv>& multiEval;
-  //MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
-  ParetoDominance<XMES> dom;
-  ParetoDominanceWeak<XMES> domWeak;
+  IEvaluator<XMES>& multiEval;
+  // GeneralEvaluator<XMES, XMEv>& multiEval;
+  // MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
+  ParetoDominance<XES, XMES> dom;
+  ParetoDominanceWeak<XES, XMES> domWeak;
   //	Pareto<XMES> x_e;
 
  public:
-  explicit ParetoManager(MultiEvaluator<XMES>& _multiEval)
-      :  //paretoManager(GeneralEvaluator<XMES, XMEv>& _multiEval) : // cannot be this, for now!
+  explicit ParetoManager(IEvaluator<XMES>& _multiEval)
+      :  // paretoManager(GeneralEvaluator<XMES, XMEv>& _multiEval) : // cannot
+         // be this, for now!
         multiEval(_multiEval),
-        dom(ParetoDominance<XMES>(_multiEval)),
-        domWeak(ParetoDominanceWeak<XMES>(_multiEval)) {
-  }
+        dom(ParetoDominance<XES, XMES>(_multiEval)),
+        domWeak(ParetoDominanceWeak<XES, XMES>(_multiEval)) {}
 
-  virtual ~ParetoManager() {
-  }
+  virtual ~ParetoManager() {}
 
   //	virtual Pareto<XMES>& getParetoInsideManager()
   //	{
@@ -77,31 +78,32 @@ class ParetoManager {
   //		return added;
   //	}
   //
-  //	virtual bool addSolution(const S* candidate, const MultiEvaluation<>* mev)
+  //	virtual bool addSolution(const S* candidate, const MultiEvaluation<>*
+  // mev)
   //	{
-  //		cout << "Something wrong has happen! \n It is inside addSolution candidate,mev! \n This should be reimplemented" << endl;
-  //		getchar();
-  //		exit(1);
+  //		cout << "Something wrong has happen! \n It is inside addSolution
+  // candidate,mev! \n This should be reimplemented" << endl; getchar();
+  // exit(1);
   ////		return false;
   //	}
 
   bool addSolution(Pareto<XMES>& p, const S& candidate) {
     MultiEvaluation<> mev = multiEval.evaluate(candidate);
     XMES cand_smev = make_pair(candidate, mev);
-    //bool added = addSolutionWithMEV(p, candidate, mev);
+    // bool added = addSolutionWithMEV(p, candidate, mev);
     bool added = addSolutionWithMEV(p, cand_smev);
 
     return added;
   }
 
-  //virtual bool addSolutionWithMEV(Pareto<XMES>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+  // virtual bool addSolutionWithMEV(Pareto<XMES>& p, const S& candidate,
+  // const MultiEvaluation<>& candidateMev)
   virtual bool addSolutionWithMEV(Pareto<XMES>& p, const XMES& cand_smev) {
     bool added = true;
     for (int ind = 0; ind < (int)p.size(); ind++) {
       const MultiEvaluation<>& popIndFitness = p.getIndMultiEvaluation(ind);
 
-      if (domWeak.dominates(popIndFitness, cand_smev.second))
-        return false;
+      if (domWeak.dominates(popIndFitness, cand_smev.second)) return false;
 
       if (dom.dominates(cand_smev.second, popIndFitness)) {
         p.erase(ind);
@@ -109,13 +111,14 @@ class ParetoManager {
       }
     }
     if (added)
-      //p.add_indWithMev(candidate, candidateMev);
+      // p.add_indWithMev(candidate, candidateMev);
       p.add_indWithMev(cand_smev);
 
     return added;
   }
 
-  bool addSolutionWithMEVReevaluation(Pareto<XMES>& p, S& candidate, MultiEvaluation<>& candidateMev) {
+  bool addSolutionWithMEVReevaluation(Pareto<XMES>& p, S& candidate,
+                                      MultiEvaluation<>& candidateMev) {
     multiEval.reevaluateMEV(candidateMev, candidate);
     bool added = addSolutionWithMEV(p, candidate, candidateMev);
 
@@ -126,18 +129,21 @@ class ParetoManager {
     Pareto<XMES> pFiltered;
     int nInd = p.size();
     for (int ind = 0; ind < nInd; ind++)
-      //addSolutionWithMEV(pFiltered, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
+      // addSolutionWithMEV(pFiltered, p.getNonDominatedSol(ind),
+      // p.getIndMultiEvaluation(ind));
       addSolutionWithMEV(pFiltered, p.getP(ind));
 
-    if ((int)pFiltered.size() == nInd)
-      return true;
+    if ((int)pFiltered.size() == nInd) return true;
 
-    cout << "CheckDominance, inside MOSearch, found dominated solution inside the Pareto!" << endl;
+    cout << "CheckDominance, inside MOSearch, found dominated solution inside "
+            "the Pareto!"
+         << endl;
     exit(1);
     return false;
   }
 
-  //	virtual bool checkDominance(Pareto<XMES>& p, MultiEvaluation<>* candidateMev, vector<MoveCost<>*>& candidateMovCost)
+  //	virtual bool checkDominance(Pareto<XMES>& p, MultiEvaluation<>*
+  // candidateMev, vector<MoveCost<>*>& candidateMovCost)
   //	{
   //		MultiEvaluation<>* tempMev = new MultiEvaluation(*candidateMev);
   //
@@ -146,13 +152,15 @@ class ParetoManager {
   //		return checkedValue;
   //	}
   //
-  //	virtual bool checkDominance(Pareto<XMES>& p, MultiEvaluation<>* candidateMev)
+  //	virtual bool checkDominance(Pareto<XMES>& p, MultiEvaluation<>*
+  // candidateMev)
   //	{
   //		for (int ind = 0; ind < x_e.size(); ind++)
   //		{
-  //			MultiEvaluation<> popIndFitness = x_e.getIndMultiEvaluation(ind);
-  //			if (domWeak.dominates(popIndFitness, *candidateMev))
-  //				return false;
+  //			MultiEvaluation<> popIndFitness =
+  // x_e.getIndMultiEvaluation(ind); 			if
+  // (domWeak.dominates(popIndFitness,
+  //*candidateMev)) 				return false;
   //		}
   //		return true;
   //	}

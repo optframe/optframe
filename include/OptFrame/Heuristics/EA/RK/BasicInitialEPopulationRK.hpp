@@ -73,15 +73,11 @@ class BasicInitialEPopulationRK
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicInitialEPopulationRKBuilder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
+class BasicInitialEPopulationRKBuilder : public ComponentBuilder<XES> {
   using KeyType = double;
   using RealS = std::vector<KeyType>;
   using RealXEv = Evaluation<>;
@@ -91,8 +87,7 @@ class BasicInitialEPopulationRKBuilder
   virtual ~BasicInitialEPopulationRKBuilder() = default;
 
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     sptr<ConstructiveRK<KeyType>> crk;
     std::string sid_0 = scanner.next();
@@ -117,8 +112,8 @@ class BasicInitialEPopulationRKBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << EA::family()
-       << ":" << RK::family() << "BasicInitialEPopulationRKBuilder";
+    ss << ComponentBuilder<XES>::idComponent() << EA::family() << ":"
+       << RK::family() << "BasicInitialEPopulationRKBuilder";
     return ss.str();
   }
 

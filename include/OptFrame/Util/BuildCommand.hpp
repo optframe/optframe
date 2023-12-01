@@ -93,8 +93,7 @@ class BuildCommand {
       \endportuguese
   */
 
-  string run(HeuristicFactory<S, XEv, XES, X2ES>& factory,
-             map<string, string>& dictionary,
+  string run(HeuristicFactory<XES>& factory, map<string, string>& dictionary,
              map<string, vector<string>>& ldictionary, string input) {
     // cout << "build command: " << input << endl;
     Scanner scanner1(input);
@@ -129,7 +128,7 @@ class BuildCommand {
                                    // como o proprio... o que eh melhor?
       }
     } else if (ComponentHelper::compareBase(
-                   SingleObjSearchBuilder<S, XEv>::idComponent(), type)) {
+                   SingleObjSearchBuilder<XES>::idComponent(), type)) {
       pair<SingleObjSearch<XES>*, string> method;
       method = factory.createSingleObjSearch(scanner.rest());
       scanner = Scanner(method.second);
@@ -184,7 +183,7 @@ class BuildCommand {
     return new_name + " " + s_new_id;
   }
 
-  string listBuilders(HeuristicFactory<S, XEv, XES, X2ES>& factory,
+  string listBuilders(HeuristicFactory<XES>& factory,
                       map<string, string>& dictionary,
                       map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);

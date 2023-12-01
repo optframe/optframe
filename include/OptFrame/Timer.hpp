@@ -108,19 +108,15 @@ class Timer : public Component {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class TimerBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class TimerBuilder : public ComponentBuilder<XES> {
  public:
   virtual ~TimerBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return new Timer;
   }
@@ -136,7 +132,7 @@ class TimerBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "Timer";
+    ss << ComponentBuilder<XES>::idComponent() << "Timer";
     return ss.str();
   }
 

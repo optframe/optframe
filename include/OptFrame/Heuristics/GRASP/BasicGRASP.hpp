@@ -18,9 +18,11 @@
 namespace optframe {
 
 // GRASP requires S space interaction
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>>
+template <XESolution XES>
 class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  private:
   sref<GeneralEvaluator<XES>> evaluator;
   sref<GRConstructive<S>> constructive;
@@ -135,20 +137,18 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicGRASPBuilder : public GRASP,
-                          public SingleObjSearchBuilder<S, XEv, XES> {
+class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   ~BasicGRASPBuilder() override = default;
 
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -178,7 +178,7 @@ class BasicGRASPBuilder : public GRASP,
     int iterMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new BasicGRASP<S, XEv>(eval, constructive, h, alpha, iterMax);
+    return new BasicGRASP<XES>(eval, constructive, h, alpha, iterMax);
   }
 
   vector<pair<string, string>> parameters() override {
@@ -196,13 +196,13 @@ class BasicGRASPBuilder : public GRASP,
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicGRASPBuilder<S, XEv>::idComponent();
+    return component == BasicGRASPBuilder<XES>::idComponent();
   }
 
   static std::string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":"
-       << GRASP::family() << ":BasicGRASP";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << GRASP::family()
+       << ":BasicGRASP";
     return ss.str();
   }
 

@@ -190,20 +190,15 @@ class BestImprovement : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>,
-          XSearch<XES> XSH = std::pair<S, XEv>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>, typename XSH = std::pair<S, XEv>>
+template <typename XES>
 #endif
-class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class BestImprovementBuilder : public LocalSearchBuilder<XES> {
  public:
   virtual ~BestImprovementBuilder() {}
 
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     if (this->verbose)
       std::cout << "Debug: BestImprovementBuilder::build()" << std::endl;
@@ -215,13 +210,13 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     hf.assign(eval, ev_id, comp_ev_id);
 
     if (!scanner.hasNext()) return nullptr;
-    sptr<NSSeq<XES, XSH>> nsseq;
+    sptr<NSSeq<XES>> nsseq;
     std::string comp_nsseq_id = scanner.next();
     if (!scanner.hasNextInt()) return nullptr;
     int nsseq_id = *scanner.nextInt();
     hf.assign(nsseq, nsseq_id, comp_nsseq_id);
 
-    return new BestImprovement<XES, XEv, XSH>(eval, nsseq);
+    return new BestImprovement<XES>(eval, nsseq);
   }
 
   vector<pair<string, string>> parameters() override {
@@ -229,18 +224,18 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
+        make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
 
     return params;
   }
 
-  virtual bool canBuild(string component) override {
-    return component == BestImprovement<XES, XEv>::idComponent();
+  bool canBuild(string component) override {
+    return component == BestImprovement<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":BI";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":BI";
     return ss.str();
   }
 

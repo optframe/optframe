@@ -42,11 +42,10 @@ using scannerpp::Scanner;
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv, XESSolution XESS,
-          X2ESolution<XESS> X2ES>
+template <XESolution XES>
 class HeuristicFactory;
 #else
-template <typename S, typename XEv, typename XESS, typename X2ES>
+template <typename XES>
 class HeuristicFactory;
 #endif
 
@@ -67,9 +66,9 @@ class ComponentMultiBuilder : public Component {
  public:
   virtual ~ComponentMultiBuilder() {}
 
-  virtual Component* buildMultiComponent(
-      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
-      string family = "") = 0;
+  virtual Component* buildMultiComponent(Scanner& scanner,
+                                         HeuristicFactory<XES>& hf,
+                                         string family = "") = 0;
 
   virtual vector<pair<string, string>> parameters() = 0;
 

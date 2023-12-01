@@ -201,23 +201,20 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class ILSLPerturbationLPlus2Builder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
+class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~ILSLPerturbationLPlus2Builder() = default;
 
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string sid_0 = scanner.next();
@@ -230,13 +227,13 @@ class ILSLPerturbationLPlus2Builder
     hf.assign(ns, id_1, sid_1);
 
     // NOLINTNEXTLINE
-    return new ILSLPerturbationLPlus2<XES, XEv>(eval, ns, hf.getRandGen());
+    return new ILSLPerturbationLPlus2<XES>(eval, ns, hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     params.push_back(
         make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
 
@@ -249,7 +246,7 @@ class ILSLPerturbationLPlus2Builder
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family()
+    ss << ComponentBuilder<XES>::idComponent() << ILS::family()
        << "LevelPert:LPlus2";
     return ss.str();
   }
@@ -260,23 +257,18 @@ class ILSLPerturbationLPlus2Builder
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class ILSLPerturbationLPlus2ProbBuilder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
+class ILSLPerturbationLPlus2ProbBuilder : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~ILSLPerturbationLPlus2ProbBuilder() = default;
 
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -289,7 +281,7 @@ class ILSLPerturbationLPlus2ProbBuilder
     hf.assign(ns, id2, comp_id2);
 
     // NOLINTNEXTLINE
-    return new ILSLPerturbationLPlus2Prob<XES, XEv>(eval, ns, hf.getRandGen());
+    return new ILSLPerturbationLPlus2Prob<XES>(eval, ns, hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -303,12 +295,12 @@ class ILSLPerturbationLPlus2ProbBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component == ILSLPerturbationLPlus2Prob<XES, XEv>::idComponent();
+    return component == ILSLPerturbationLPlus2Prob<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family()
+    ss << ComponentBuilder<XES>::idComponent() << ILS::family()
        << "LevelPert:LPlus2Prob";
     return ss.str();
   }

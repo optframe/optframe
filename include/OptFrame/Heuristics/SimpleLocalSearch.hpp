@@ -20,15 +20,18 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
+template <XESolution XES>
 class SimpleLocalSearch : public SingleObjSearch<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  protected:
-  sref<Evaluator<XES, XEv>> evaluator;
+  sref<Evaluator<S, XEv, XES>> evaluator;
   sref<InitialSearch<XES>> constructive;
   sref<LocalSearch<XES>> localSearch;
 
  public:
-  SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator,
+  SimpleLocalSearch(sref<Evaluator<S, XEv, XES>> _evaluator,
                     sref<InitialSearch<XES>> _constructive,
                     sref<LocalSearch<XES>> _localSearch)
       : evaluator(_evaluator),
@@ -57,7 +60,7 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
     if (!pse) return SearchStatus::NO_SOLUTION;  // nothing to return
     // Evaluation<> e = evaluator.evaluate(*s);
 
-    ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
+    //// pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
     // delete &s;
 
@@ -90,21 +93,20 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
+class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~SimpleLocalSearchBuilder() {}
 
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
-    sptr<Evaluator<XES, XEv>> eval;
+    sptr<Evaluator<S, XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -129,8 +131,8 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
@@ -147,7 +149,7 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << "SimpleLocalSearch";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << "SimpleLocalSearch";
     return ss.str();
   }
 

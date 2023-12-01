@@ -26,13 +26,15 @@
 // ===================================================
 // Search that happens using MultiSolution space (2^S)
 // ===================================================
-// It could be MO Pareto Search, or any populational search, being it single or multi objective.
-// The idea is that MS management (Population or Pareto) is held by X2ES class itself, thus
+// It could be MO Pareto Search, or any populational search, being it single or
+// multi objective. The idea is that MS management (Population or Pareto) is
+// held by X2ES class itself, thus
 //   reducing the burden of Evaluation objects to keep track of it.
 // This finally allows to remove ParetoManager class.
 // ===================================================
 
-// THIS CLASS COULD PERHAPS BE DEPRECATED IN FAVOR OF GlobalSearch... NOT MUCH USE HERE, DOES IT?
+// THIS CLASS COULD PERHAPS BE DEPRECATED IN FAVOR OF GlobalSearch... NOT MUCH
+// USE HERE, DOES IT?
 
 #include <cstring>
 #include <iostream>
@@ -59,18 +61,16 @@ namespace optframe {
 template <XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 class MSSearch : public Component {
  public:
-  MSSearch() {
-  }
+  MSSearch() {}
 
-  virtual ~MSSearch() {
-  }
+  virtual ~MSSearch() {}
 
-  // this should be pure virtual. useful for populational searches (single or multiobj) and general multiobj searches (by pareto sets)
-  virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<XEv>& stopCriteria) = 0;
+  // this should be pure virtual. useful for populational searches (single or
+  // multiobj) and general multiobj searches (by pareto sets)
+  virtual SearchStatus search(std::optional<X2ES>& p,
+                              const StopCriteria<XEv>& stopCriteria) = 0;
 
-  std::string log() const override {
-    return "Empty heuristic log.";
-  }
+  std::string log() const override { return "Empty heuristic log."; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -82,23 +82,19 @@ class MSSearch : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 template <XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MSSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class MSSearchBuilder : public ComponentBuilder<XES> {
  public:
-  virtual ~MSSearchBuilder() {
-  }
+  virtual ~MSSearchBuilder() {}
 
   virtual MSSearch<S, XEv, X2ES>* build(Scanner& scanner,
-                                        HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                        HeuristicFactory<XES>& hf,
                                         string family = "") = 0;
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -109,13 +105,11 @@ class MSSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MSSearch:";
+    ss << ComponentBuilder<XES>::idComponent() << "MSSearch:";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

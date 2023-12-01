@@ -109,13 +109,11 @@ class BRKGA : public RKGA<XES, KeyType, XES2> {
 // TODO: only time can tell...
 //
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XESolution XES2_Factory,
-          XSearch<XES2_Factory> X2ES_Factory>
+template <XESolution XES>
 #else
-template <typename XES, XESolution XES2_Factory, typename X2ES_Factory>
+template <typename XES>
 #endif
-class BRKGABuilder
-    : public GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory> {
+class BRKGABuilder : public GlobalSearchBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
@@ -130,9 +128,8 @@ class BRKGABuilder
 
   virtual ~BRKGABuilder() {}
 
-  virtual GlobalSearch<XES>* build(
-      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES_Factory>& hf,
-      string family = "") override {
+  virtual GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
+                                   string family = "") override {
     sptr<DecoderRandomKeys<XES, KeyType>> decoder;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -157,7 +154,7 @@ class BRKGABuilder
     return sos;
   }
 
-  virtual vector<pair<string, string>> parameters() override {
+  vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(
         make_pair(DecoderRandomKeys<XES, KeyType>::idComponent(), "decoder"));
@@ -172,15 +169,14 @@ class BRKGABuilder
     return params;
   }
 
-  virtual bool canBuild(string component) override {
+  bool canBuild(string component) override {
     return component == BRKGA<XES, double>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << GlobalSearchBuilder<XES, XES, XES2_Factory,
-                              X2ES_Factory>::idComponent()
-       << EA::family() << ":" << RK::family() << "BRKGA";
+    ss << GlobalSearchBuilder<XES>::idComponent() << EA::family() << ":"
+       << RK::family() << "BRKGA";
     return ss.str();
   }
 

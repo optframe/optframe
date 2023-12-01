@@ -31,7 +31,8 @@ namespace optframe {
 typedef pair<pair<int, int>, pair<int, int>> levelHistory;
 
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, XMEv> {
+class MOILSLevels
+    : public MultiObjILS<levelHistory, typename XMES::first_type, XMEv> {
   using S = typename XMES::first_type;
   static_assert(is_same<S, typename XMES::first_type>::value);
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
@@ -41,19 +42,25 @@ class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, 
   int iterMax, levelMax;
 
  public:
-  MOILSLevels(sref<MultiEvaluator<XMES>> _mev, sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size, sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg, sref<MOILSLPerturbation<XMES, XMEv>> _p, int _iterMax, int _levelMax)
-      :  //MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
-        MultiObjILS<levelHistory, S, XMEv>(_mev, _init_pareto, _init_pop_size, _ls, _rg),
+  MOILSLevels(sref<IEvaluator<XMES>> _mev,
+              sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size,
+              sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg,
+              sref<MOILSLPerturbation<XMES, XMEv>> _p, int _iterMax,
+              int _levelMax)
+      :  // MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XES,
+         // XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>*
+         // _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax,
+         // int _levelMax) :
+        MultiObjILS<levelHistory, S, XMEv>(_mev, _init_pareto, _init_pop_size,
+                                           _ls, _rg),
         p(_p),
         iterMax(_iterMax),
-        levelMax(_levelMax) {
-  }
+        levelMax(_levelMax) {}
 
-  virtual ~MOILSLevels() {
-  }
+  virtual ~MOILSLevels() {}
 
   virtual levelHistory& initializeHistory() {
-    //cout << "initializeHistory()" << endl;
+    // cout << "initializeHistory()" << endl;
     pair<int, int> vars(0, 0);
 
     // IterMax e LevelMax
@@ -62,15 +69,16 @@ class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, 
     return *new levelHistory(vars, maxs);
   }
 
-  virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, levelHistory& history) override {
-    //cout << "perturbation(.)" << endl;
+  virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+                            levelHistory& history) override {
+    // cout << "perturbation(.)" << endl;
 
     int iter = history.first.first;
     int level = history.first.second;
     int iterMax = history.second.first;
-    //int levelMax = history.second.second;
+    // int levelMax = history.second.second;
 
-    //cout << "level = " << level << " e iter = " << iter << endl;
+    // cout << "level = " << level << " e iter = " << iter << endl;
 
     // nivel atual: 'level'
     p->perturb(smev, stopCriteria, level);
@@ -78,8 +86,7 @@ class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, 
     // Incrementa a iteracao
     iter++;
 
-    if (Component::debug)
-      cout << "MOILSL::iter " << iter << endl;
+    if (Component::debug) cout << "MOILSL::iter " << iter << endl;
 
     if (iter >= iterMax) {
       iter = 0;
@@ -93,10 +100,12 @@ class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, 
     history.first.second = level;
   }
 
-  virtual void acceptanceCriterion(const Pareto<XMES>& pf, levelHistory& history) {
+  virtual void acceptanceCriterion(const Pareto<XMES>& pf,
+                                   levelHistory& history) {
     if (pf.getNewNonDominatedSolutionsStatus()) {
       cout << "New Pareto size: is " << pf.size();
-      cout << " on [iter " << history.first.first << " of level " << history.first.second << "]" << endl;
+      cout << " on [iter " << history.first.first << " of level "
+           << history.first.second << "]" << endl;
       // =======================
       //  Atualiza o historico
       // =======================
@@ -118,9 +127,7 @@ class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, 
     return (s == idComponent()) || (MultiObjSearch<XMES>::compatible(s));
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;

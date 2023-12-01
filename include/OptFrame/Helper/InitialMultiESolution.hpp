@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HELPER_INITIALMULTIESOLUTION_HPP_
 #define OPTFRAME_HELPER_INITIALMULTIESOLUTION_HPP_
@@ -26,6 +7,7 @@
 // C++
 #include <string>
 #include <utility>
+#include <vector>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Constructive.hpp>
@@ -51,7 +33,7 @@ template <XESolution XES, typename X2ES = VEPopulation<XES>>
 #endif
 class InitialMultiESolution : public Component {
  public:
-  virtual ~InitialMultiESolution() {}
+  ~InitialMultiESolution() override = default;
 
   virtual X2ES generateEPopulation(unsigned populationSize) = 0;
 
@@ -84,8 +66,7 @@ class InitialMultiESolution : public Component {
 //  so, we need some specific type anyway.
 //
 template <XESolution XES>
-class BasicInitialMultiESolution
-    : public InitialMultiESolution<XES, VEPopulation<XES>> {
+class BasicInitialMultiESolution : public InitialMultiESolution<XES> {
   using XEv = typename XES::second_type;
 
  public:
@@ -128,24 +109,22 @@ class BasicInitialMultiESolution
   std::string id() const override { return idComponent(); }
 };
 
+// MultiESolution = VEPopulation
+// This has nothing to do with MultiObjective stuff...
+
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>  // XEMSolution XMES
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>  // TODO: make MultiBuilder for XMES ?
 #endif
-class BasicInitialMultiESolutionBuilder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
-  using XMEv = MultiEvaluation<typename XEv::objType>;
-  using XMES = std::pair<S, XMEv>;
+class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
 
  public:
   virtual ~BasicInitialMultiESolutionBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     //
     sptr<Constructive<S>> c;
@@ -155,12 +134,85 @@ class BasicInitialMultiESolutionBuilder
 
     // Reading concrete MultiEvaluator as an IEvaluator
     // TODO: we NEED multiple buildComponent... implement that ASAP!
-    sptr<MultiEvaluator<XMES>> _mev;
+    //
+    // This is IEvaluator now... another builder could be focused in XMES
+    // types...
+    //
+    sptr<Evaluator<S, XEv, XES>> _ev;
+    std::string sid_1 = scanner.next();
+    int id_1 = *scanner.nextInt();
+    hf.assign(_ev, id_1, sid_1);
+    sptr<IEvaluator<XES>> _iev = _ev;
+    sref<IEvaluator<XES>> ev{_iev};
+
+    return new BasicInitialMultiESolution<XES>(c, ev);
+  }
+
+  vector<pair<string, string>> parameters() override {
+    vector<pair<string, string>> params;
+    params.push_back(make_pair(Constructive<S>::idComponent(), "constructive"));
+    params.push_back(
+        make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
+
+    return params;
+  }
+
+  bool canBuild(string component) override {
+    return component == BasicInitialMultiESolution<XES>::idComponent();
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<XES>::idComponent();
+    ss << "BasicInitialMultiESolution";
+    return ss.str();
+  }
+
+  std::string toString() const override { return id(); }
+
+  std::string id() const override { return idComponent(); }
+};
+
+// ===================================================================
+// MultiESolution = VEPopulation
+// This has nothing to do with MultiObjective stuff...
+// However, this is a ComponentMultiBuilder, so it's intended for XMES.
+// ===================================================================
+
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+template <XESolution XES, XEMSolution XMES>
+#else
+template <typename XES, typename XMES>
+#endif
+class BasicInitialMultiESolutionMultiBuilder
+    : public ComponentMultiBuilder<XMES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+  // using XMEv = MultiEvaluation<typename XEv::objType>;
+
+ public:
+  virtual ~BasicInitialMultiESolutionMultiBuilder() {}
+
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
+                            string family = "") override {
+    //
+    sptr<Constructive<S>> c;
+    std::string sid_0 = scanner.next();
+    int id_0 = *scanner.nextInt();
+    hf.assign(c, id_0, sid_0);
+
+    // Reading concrete MultiEvaluator as an IEvaluator
+    // TODO: we NEED multiple buildComponent... implement that ASAP!
+    //
+    // This is IEvaluator now... another builder could be focused in XMES
+    // types...
+    //
+    sptr<MultiEvaluator<XES, XMES>> _mev;
     std::string sid_1 = scanner.next();
     int id_1 = *scanner.nextInt();
     hf.assign(_mev, id_1, sid_1);
-    sptr<IEvaluator<XMES>> _imev = _mev;
-    sref<IEvaluator<XMES>> mev{_imev};
+    sptr<IEvaluator<XES>> _imev = _mev;
+    sref<IEvaluator<XES>> mev{_imev};
 
     return new BasicInitialMultiESolution<XMES>(c, mev);
   }
@@ -169,18 +221,18 @@ class BasicInitialMultiESolutionBuilder
     vector<pair<string, string>> params;
     params.push_back(make_pair(Constructive<S>::idComponent(), "constructive"));
     params.push_back(
-        make_pair(MultiEvaluator<XMES>::idComponent(), "multi evaluator"));
+        make_pair(MultiEvaluator<XES, XMES>::idComponent(), "multi evaluator"));
 
     return params;
   }
 
   bool canBuild(string component) override {
-    return component == BasicInitialMultiESolution<XMES>::idComponent();
+    return component == BasicInitialMultiESolution<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << ComponentBuilder<XES>::idComponent();
     ss << "BasicInitialMultiESolution";
     return ss.str();
   }

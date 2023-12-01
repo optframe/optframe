@@ -64,6 +64,7 @@
 
 namespace optframe {
 
+/*
 //
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XEv = Evaluation<>,
@@ -73,8 +74,26 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
           typename X2ES = MultiESolution<XES>>
 #endif
+*/
+// ===========================================================================
+// XES is base-type for the Primary type
+// It should be enough for XESS single objective Primary Type
+// It should also be enough to form a base-type on X2ESolution Primary-types
+// Extra types can be passed here for alternative supported spaces, such as RK
+// Keep-it-simple for now, and just assume defaults
+//
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+template <XESolution XES>  // do not put XESSolution here... not only Single!
+#else
+template <typename XES>
+#endif
 class HeuristicFactory {
-  // TODO: must add to template!!!
+  // TODO: check if this is necessary:  X2ESolution<XES> X2ES / typename X2ES
+  //
+  // decomposing base-type XES into <S, XEv>
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+  // TODO: perhaps add this to template!!!
   using XMEv = MultiEvaluation<typename XEv::objType>;
   using XMES = std::pair<S, XMEv>;
   using X2MES = VEPopulation<XMES>;
@@ -91,9 +110,9 @@ class HeuristicFactory {
 
  public:
   map<string, vector<sptr<Component>>> components;
-  vector<ComponentBuilder<S, XEv, XES, X2ES>*> builders;
+  vector<ComponentBuilder<XES>*> builders;
   vector<ComponentMultiBuilder<S, XMEv, XMES, X2MES>*> xmes_builders;
-  vector<Action<S, XEv, XES, X2ES>*> actions;
+  vector<Action<XES>*> actions;
   map<string, vector<vector<sptr<Component>>>> componentLists;
 
   explicit HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
@@ -126,7 +145,7 @@ class HeuristicFactory {
     }
   }
 
-  ComponentBuilder<S, XEv, XES, X2ES>* getBuilder(string id) {
+  ComponentBuilder<XES>* getBuilder(string id) {
     for (unsigned i = 0; i < builders.size(); i++)
       if (builders[i]->id() == id) return builders[i];
     return nullptr;
@@ -627,14 +646,14 @@ class HeuristicFactory {
       // build local search directly by builder name
       if (builders[i]->id() == h) {
         LocalSearch<XES>* ls =
-            ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+            ((LocalSearchBuilder<XES>*)(builders[i]))->build(scanner, *this);
         return pair<sptr<LocalSearch<XES>>, std::string>(ls, scanner.rest());
       }
 
       // locate builder by local search name
       if (builders[i]->canBuild(h)) {
         LocalSearch<XES>* ls =
-            ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+            ((LocalSearchBuilder<XES>*)(builders[i]))->build(scanner, *this);
         return pair<sptr<LocalSearch<XES>>, std::string>(ls, scanner.rest());
       }
     }
@@ -679,7 +698,7 @@ class HeuristicFactory {
       // build local search directly by builder name
       if (builders[i]->id() == h) {
         SingleObjSearch<XES>* sios =
-            ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))
+            ((SingleObjSearchBuilder<XES>*)(builders[i]))
                 ->build(scanner, *this);
         return pair<sptr<SingleObjSearch<XES>>, std::string>(sios,
                                                              scanner.rest());
@@ -688,7 +707,7 @@ class HeuristicFactory {
       // locate builder by local search name
       if (builders[i]->canBuild(h)) {
         SingleObjSearch<XES>* sios =
-            ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))
+            ((SingleObjSearchBuilder<XES>*)(builders[i]))
                 ->build(scanner, *this);
         return pair<sptr<SingleObjSearch<XES>>, std::string>(sios,
                                                              scanner.rest());

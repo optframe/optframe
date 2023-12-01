@@ -61,8 +61,8 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
   virtual ~MORandomImprovement() {}
 
   /*
-        virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv,
-     XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
+        virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S,
+     XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
         {
                 MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
 

@@ -70,8 +70,8 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_7_7") {
         int obj = -2;
         return TestXEv{obj};
       }});
-  sref<MultiEvaluator<TestXMES>> mev2min{
-      new MultiEvaluator<TestXMES>{veval2min}};
+  sref<MultiEvaluator<TestXES, TestXMES>> mev2min{
+      new MultiEvaluator<TestXES, TestXMES>{veval2min}};
   //
   REQUIRE(mev2min->vDir.size() == 2);
   NonDominatedSort<TestXMES> biObjMinMin{mev2min};
@@ -101,8 +101,8 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_7_7") {
         int obj = -2;
         return TestXEv{obj};
       }});
-  sref<MultiEvaluator<TestXMES>> mev2max{
-      new MultiEvaluator<TestXMES>{veval2max}};
+  sref<MultiEvaluator<TestXES, TestXMES>> mev2max{
+      new MultiEvaluator<TestXES, TestXMES>{veval2max}};
   //
   REQUIRE(mev2max->vDir.size() == 2);
   NonDominatedSort<TestXMES> biObjMaxMax{mev2max};
@@ -139,7 +139,8 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
         return TestXEv{obj};
       }});
 
-  sref<MultiEvaluator<TestXMES>> mev{new MultiEvaluator<TestXMES>{veval}};
+  sref<MultiEvaluator<TestXES, TestXMES>> mev{
+      new MultiEvaluator<TestXES, TestXMES>{veval}};
   //
   REQUIRE(mev->vDir.size() == 3);
   NonDominatedSort<TestXMES> ndSort{mev};

@@ -16,6 +16,8 @@
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
+#include "OptFrame/Pareto.hpp"
+
 namespace optframe {
 
 // template <XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 =
@@ -125,10 +127,11 @@ class NSPopulationBasedMultiObjSearch
   using XMEv = typename XMES::second_type;
   // this is homogeneous multi-obj based on XEv obj type
   using XEv = typename XMEv::XEv;
+  using XES = DEFAULT_PARETO_XES;  // WORKAROUND!
   using MyPareto = Pareto<XMES>;
 
  protected:
-  sref<MultiEvaluator<XMES>> mev;
+  sref<MultiEvaluator<XES, XMES>> mev;
   sref<MultiDirection<XEv>> mDir;
   sref<MOPopulationManagement<XMES>> popMan;
   unsigned popSize;
@@ -138,7 +141,7 @@ class NSPopulationBasedMultiObjSearch
   int maxIter;  // generations without improvement
 
  public:
-  NSPopulationBasedMultiObjSearch(sref<MultiEvaluator<XMES>> _mev,
+  NSPopulationBasedMultiObjSearch(sref<MultiEvaluator<XES, XMES>> _mev,
                                   sref<MultiDirection<XEv>> _mDir,
                                   sref<MOPopulationManagement<XMES>> _popMan,
                                   unsigned _popSize, int _maxIter,
@@ -345,13 +348,16 @@ class NSPopulationBasedMultiObjSearch
       if (improved) {
         tImp = -1;
         if (Component::verbose) {
-          // std::cout << "t=" << t << " improved bounds: " << bestObj << std::endl;
-          std::cout << "t=" << t << " improved bounds: (TODO PRINT VECTOR)" << std::endl;
+          // std::cout << "t=" << t << " improved bounds: " << bestObj <<
+          // std::endl;
+          std::cout << "t=" << t << " improved bounds: (TODO PRINT VECTOR)"
+                    << std::endl;
         }
       } else {
         if (Component::verbose) {
           // std::cout << "DID NOT IMPROVE ANY BOUNDS " << bestObj << std::endl;
-          std::cout << "DID NOT IMPROVE ANY BOUNDS (TODO PRINT VECTOR)" << std::endl;
+          std::cout << "DID NOT IMPROVE ANY BOUNDS (TODO PRINT VECTOR)"
+                    << std::endl;
         }
       }
 

@@ -41,29 +41,30 @@ using scannerpp::Scanner;
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv, XESSolution XESS,
-          X2ESolution<XESS> X2ES>
+template <XESolution XES>
 class HeuristicFactory;
 #else
-template <typename S, typename XEv, typename XESS, typename X2ES>
+template <typename XES>
 class HeuristicFactory;
 #endif
+
+// ===================
+// DO NOT DEFAULT HERE: = MultiESolution<XES> OR = VEPopulation<XES> ?
+//
+// XES is supposed to be <S, XEv> (same as XSH)
+//
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
 class ComponentBuilder : public Component {
  public:
-  virtual ~ComponentBuilder() {}
+  ~ComponentBuilder() override = default;
 
-  virtual Component* buildComponent(Scanner& scanner,
-                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                                     string family = "") = 0;
 
   virtual vector<pair<std::string, std::string>> parameters() = 0;

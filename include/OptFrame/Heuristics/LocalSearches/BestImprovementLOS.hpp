@@ -172,20 +172,16 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class BestImprovementBuilder : public LocalSearchBuilder<XES> {
  public:
   virtual ~BestImprovementBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     if (!scanner.hasNext()) return nullptr;
     Evaluator<XES, XEv>* eval;
@@ -205,8 +201,8 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     params.push_back(
         make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 
@@ -219,7 +215,7 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":BI_LOS";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":BI_LOS";
     return ss.str();
   }
 

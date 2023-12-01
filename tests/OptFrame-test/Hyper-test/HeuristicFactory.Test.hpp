@@ -49,10 +49,7 @@ TEST_CASE("OptFrameHeuristicFactoryTests: addComponentList") {
   //
   BTSP_fcore::OptFrameCoreBTSP core{p};
 
-  HeuristicFactory<typename ESolutionBTSPSingle::first_type,
-                   typename ESolutionBTSPSingle::second_type,
-                   ESolutionBTSPSingle>
-      hf;
+  HeuristicFactory<ESolutionBTSPSingle> hf;
   std::stringstream ss;
   hf.logdata = &ss;
 

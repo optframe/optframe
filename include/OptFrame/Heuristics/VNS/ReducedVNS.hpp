@@ -48,20 +48,15 @@ class ReducedVNS : public VariableNeighborhoodSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class ReducedVNSBuilder : public ILS,
-                          public SingleObjSearchBuilder<S, XEv, XES> {
+class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
  public:
   virtual ~ReducedVNSBuilder() {}
 
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -116,8 +111,7 @@ class ReducedVNSBuilder : public ILS,
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family()
-       << "RVNS";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family() << "RVNS";
     return ss.str();
   }
 

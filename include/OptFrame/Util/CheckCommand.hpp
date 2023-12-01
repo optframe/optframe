@@ -2233,7 +2233,7 @@ class CheckCommand : public Component {  // NOLINT
 
   template <class T>
   vector<T*> assignVector(const vector<string> lComponents, T* type,
-                          HeuristicFactory<S, XEv, XES, X2ES>& factory) {
+                          HeuristicFactory<XES>& factory) {
     vector<T*> vComp;
     for (unsigned i = 0; i < lComponents.size(); i++) {
       Scanner scan(lComponents.at(i));

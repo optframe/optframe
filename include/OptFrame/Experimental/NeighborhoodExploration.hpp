@@ -129,17 +129,15 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
           typename X2ES = MultiESolution<XES>, typename XSH = XES>
 #endif
-class NeighborhoodExplorationBuilder
-    : public ComponentBuilder<S, XEv, XES, X2ES> {
+class NeighborhoodExplorationBuilder : public ComponentBuilder<XES> {
  public:
   virtual ~NeighborhoodExplorationBuilder() {}
 
-  virtual NeighborhoodExploration<XES, XSH>* build(
-      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
-      string family = "") = 0;
+  virtual NeighborhoodExploration<XES, XSH>* build(Scanner& scanner,
+                                                   HeuristicFactory<XES>& hf,
+                                                   string family = "") = 0;
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -150,7 +148,7 @@ class NeighborhoodExplorationBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "NEx";
+    ss << ComponentBuilder<XES>::idComponent() << "NEx";
     return ss.str();
   }
 

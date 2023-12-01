@@ -287,16 +287,12 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicGeneticAlgorithmBuilder
-    : public EA,
-      public SingleObjSearchBuilder<S, XEv, XES> {
+class BasicGeneticAlgorithmBuilder : public EA,
+                                     public SingleObjSearchBuilder<XES> {
  public:
   virtual ~BasicGeneticAlgorithmBuilder() {}
 
@@ -372,7 +368,7 @@ class BasicGeneticAlgorithmBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << EA::family()
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << EA::family()
        << ":BasicGeneticAlgorithm";
     return ss.str();
   }

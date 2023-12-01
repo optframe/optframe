@@ -16,15 +16,18 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
+template <XESolution XES>
 class CompareLocalSearch : public LocalSearch<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  private:
-  sref<Evaluator<XES, XEv>> eval;
+  sref<Evaluator<S, XEv, XES>> eval;
   sref<LocalSearch<XES>> ls1;
   sref<LocalSearch<XES>> ls2;
 
  public:
-  CompareLocalSearch(sref<Evaluator<XES, XEv>> _eval,
+  CompareLocalSearch(sref<Evaluator<S, XEv, XES>> _eval,
                      sref<LocalSearch<XES>> _ls1, sref<LocalSearch<XES>> _ls2)
       : eval(_eval), ls1(_ls1), ls2(_ls2) {}
 
@@ -84,21 +87,20 @@ class CompareLocalSearch : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~CompareLocalSearchBuilder() {}
 
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
-    std::shared_ptr<Evaluator<XES, XEv>> eval;
+    std::shared_ptr<Evaluator<S, XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -127,8 +129,8 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search 1"));
     params.push_back(
@@ -143,7 +145,7 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << "CompareLocalSearch";
+    ss << LocalSearchBuilder<XES>::idComponent() << "CompareLocalSearch";
     return ss.str();
   }
 

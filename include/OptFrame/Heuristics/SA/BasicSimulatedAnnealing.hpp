@@ -311,9 +311,8 @@ template <XESolution XES, XESolution XES2,
 #else
 template <typename XES, typename XES2, typename X2ES = MultiESolution<XES2>>
 #endif
-class BasicSimulatedAnnealingBuilder
-    : public GlobalSearchBuilder<XES, XES, XES2, X2ES>,
-      public SA {
+class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
+                                       public SA {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
@@ -324,8 +323,7 @@ class BasicSimulatedAnnealingBuilder
   virtual ~BasicSimulatedAnnealingBuilder() {}
 
   // has sptr instead of sref, is that on purpose or legacy class?
-  GlobalSearch<XES>* build(Scanner& scanner,
-                           HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                            string family = "") override {
     if (Component::debug)
       std::cout << "BasicSA Builder Loading Parameter #0" << std::endl;
@@ -452,8 +450,7 @@ class BasicSimulatedAnnealingBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent()
-       << SA::family() << "BasicSA";
+    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family() << "BasicSA";
     return ss.str();
   }
 

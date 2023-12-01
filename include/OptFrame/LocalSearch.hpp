@@ -80,25 +80,23 @@ class LocalSearch : public Component {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>, typename XSH = XES>
+template <typename XES>
 #endif
-class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class LocalSearchBuilder : public ComponentBuilder<XES> {
+  using XSH = XES;
+
  public:
   virtual ~LocalSearchBuilder() = default;
 
   // NOLINTNEXTLINE
   virtual LocalSearch<XES, XSH>* build(Scanner& scanner,
-                                       HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                       HeuristicFactory<XES>& hf,
                                        string family = "") = 0;
 
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -109,7 +107,7 @@ class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "LocalSearch";
+    ss << ComponentBuilder<XES>::idComponent() << "LocalSearch";
     return ss.str();
   }
 

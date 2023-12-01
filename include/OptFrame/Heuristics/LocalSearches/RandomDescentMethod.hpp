@@ -77,23 +77,18 @@ class RandomDescentMethod : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class RandomDescentMethodBuilder
-    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class RandomDescentMethodBuilder : public LocalSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~RandomDescentMethodBuilder() = default;
 
   // NOLINTNEXTLINE
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -129,7 +124,7 @@ class RandomDescentMethodBuilder
 
   static std::string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":RDM";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":RDM";
     return ss.str();
   }
 

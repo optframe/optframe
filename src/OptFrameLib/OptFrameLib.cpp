@@ -38,46 +38,20 @@ using FCoreApi1Engine = optframe::HeuristicFactory<
   >;
 */
 
-using CB = optframe::ComponentBuilder<
-    FCoreLibSolution,              // XSolution S,
-    optframe::Evaluation<double>,  // XEvaluation XEv = Evaluation<>,
-    FCoreLibESolution              //  XESolution XES = pair<S, XEv>,
-    // X2ESolution<XES> X2ES = MultiESolution<XES>>
-    >;
+using CB = optframe::ComponentBuilder<FCoreLibESolution>;
 
-using CBSingle = optframe::SingleObjSearchBuilder<
-    FCoreLibSolution,              // XSolution S,
-    optframe::Evaluation<double>,  // XEvaluation XEv = Evaluation<>,
-    FCoreLibESolution              //  XESolution XES = pair<S, XEv>,
-    // X2ESolution<XES> X2ES = MultiESolution<XES>>
-    >;
+using CBSingle = optframe::SingleObjSearchBuilder<FCoreLibESolution>;
 
 // =============================================================================
 // adopting GlobalSearch with XSH=XES
 // meaning that, Search component is equals to its base type XES
 // meaning [2] that, our BestType is XESolution (not Pareto, Population, etc)
 // =============================================================================
-using CBGlobal = optframe::GlobalSearchBuilder<
-    FCoreLibESolution,  // XES
-    FCoreLibESolution,  // XSH = XES, a.k.a, BestType
-    FCoreLibESolution,
-    optframe::MultiESolution<FCoreLibESolution>  // adopting generic population
-                                                 // type... must see HF for this
-    >;
+using CBGlobal = optframe::GlobalSearchBuilder<FCoreLibESolution>;
 
-using CBLocal = optframe::LocalSearchBuilder<
-    FCoreLibSolution,              // XSolution S,
-    optframe::Evaluation<double>,  // XEvaluation XEv = Evaluation<>,
-    FCoreLibESolution              //  XESolution XES = pair<S, XEv>,
-    // X2ESolution<XES> X2ES = MultiESolution<XES>>
-    >;
+using CBLocal = optframe::LocalSearchBuilder<FCoreLibESolution>;
 
-using CB = optframe::ComponentBuilder<
-    FCoreLibSolution,              // XSolution S,
-    optframe::Evaluation<double>,  // XEvaluation XEv = Evaluation<>,
-    FCoreLibESolution              //  XESolution XES = pair<S, XEv>,
-    // X2ESolution<XES> X2ES = MultiESolution<XES>>
-    >;
+using CB = optframe::ComponentBuilder<FCoreLibESolution>;
 
 class FCoreApi1Engine {
  public:
@@ -506,7 +480,8 @@ optframe_api0d_engine_classic_nsgaii_params(FakeEnginePtr _engine,
   auto* engine = (FCoreApi1Engine*)_engine;
 
   //
-  using MyMEval = optframe::MultiEvaluator<FCoreLibEMSolution>;
+  using MyMEval =
+      optframe::MultiEvaluator<FCoreLibESolution, FCoreLibEMSolution>;
 
   // will try to get evaluator to build InitialSolution component...
   std::shared_ptr<MyMEval> _mev;

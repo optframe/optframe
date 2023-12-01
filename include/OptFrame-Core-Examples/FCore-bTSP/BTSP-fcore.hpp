@@ -148,8 +148,8 @@ vsref<Evaluator<typename ESolutionBTSPSingle::first_type,
                 typename ESolutionBTSPSingle::second_type>>
     ev_list = {ev0, ev1};
 
-sref<MultiEvaluator<ESolutionBTSP>> ev{
-    new MultiEvaluator<ESolutionBTSP>(ev_list)};
+sref<MultiEvaluator<ESolutionBTSPSingle, ESolutionBTSP>> ev{
+    new MultiEvaluator<ESolutionBTSPSingle, ESolutionBTSP>(ev_list)};
 
 // ===========================
 
@@ -412,7 +412,7 @@ class OptFrameCoreBTSP {
   sref<Evaluator<S, XEv>> ev0;
   sref<Evaluator<S, XEv>> ev1;
   vsref<Evaluator<S, XEv>> ev_list;
-  sref<MultiEvaluator<ESolutionBTSP>> ev;
+  sref<MultiEvaluator<ESolutionBTSPSingle, ESolutionBTSP>> ev;
   //
   FNS<ESolutionBTSP> nsswap;
 
@@ -423,7 +423,7 @@ class OptFrameCoreBTSP {
         ev1{new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{
             fevaluate1}},
         ev_list{ev0, ev1},
-        ev{new MultiEvaluator<ESolutionBTSP>(ev_list)},
+        ev{new MultiEvaluator<ESolutionBTSPSingle, ESolutionBTSP>(ev_list)},
         nsswap{fRandomSwap} {
     //
   }

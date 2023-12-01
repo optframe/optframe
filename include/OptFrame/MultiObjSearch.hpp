@@ -95,24 +95,20 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class MultiObjSearchBuilder : public ComponentBuilder<XES> {
  public:
   virtual ~MultiObjSearchBuilder() = default;
 
   // NOLINTNEXTLINE
   virtual MultiObjSearch<XES>* build(Scanner& scanner,
-                                     HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                     HeuristicFactory<XES>& hf,
                                      string family = "") = 0;
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -123,8 +119,7 @@ class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent()
-       << "MultiObjSearch:";
+    ss << ComponentBuilder<XES>::idComponent() << "MultiObjSearch:";
     return ss.str();
   }
 

@@ -51,9 +51,9 @@ class MOLocalSearch : public Component {
   // core methods
 
   // 1
-  // virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv,
-  // XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
-  // removed this method.. now only pair XMES!
+  // virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S,
+  // XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0; removed
+  // this method.. now only pair XMES!
 
   // 2
   virtual void moSearchFrom(Pareto<XMES>& p, XMES& smev,

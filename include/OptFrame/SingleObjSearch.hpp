@@ -89,25 +89,23 @@ class SingleObjSearch : public GlobalSearch<XESS, XESS> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESSolution XESS>  // single objective type XESSOlution
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XESS>
 #endif
-class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
+  using XES = XESS;  // single objective type XESSOlution
+
  public:
   virtual ~SingleObjSearchBuilder() = default;
 
   // NOLINTNEXTLINE
   virtual SingleObjSearch<XES>* build(Scanner& scanner,
-                                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                      HeuristicFactory<XES>& hf,
                                       string family = "") = 0;
 
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -118,7 +116,7 @@ class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << ComponentBuilder<XES>::idComponent();
     ss << "SingleObjSearch";
     return ss.str();
   }
@@ -132,14 +130,14 @@ class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 // CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>> template<XESolution XES,
 // XEvaluation XEv = Evaluation<>>
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class SingleObjSearchAction : public Action<S, XEv, X2ES> {
+class SingleObjSearchAction : public Action<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~SingleObjSearchAction() = default;
 
@@ -161,8 +159,7 @@ class SingleObjSearchAction : public Action<S, XEv, X2ES> {
   virtual bool handleAction(string action) { return (action == "search"); }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                      map<string, string>& d) {
+                      HeuristicFactory<XES>& hf, map<string, string>& d) {
     if (!handleComponent(type)) {
       cout << "SingleObjSearchAction::doCast error: can't handle component "
               "type '"
@@ -200,10 +197,10 @@ class SingleObjSearchAction : public Action<S, XEv, X2ES> {
 
     // add new component
     Scanner scanner(variable);
-    return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
+    return ComponentAction<XES>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
                         map<string, string>& dictionary,
                         map<string, vector<string>>& ldictionary) {
     // cout << "LocalSearch::doAction '" << content << "'" << endl;
@@ -252,7 +249,7 @@ class SingleObjSearchAction : public Action<S, XEv, X2ES> {
 
       delete p;
 
-      return Action<S, XEv, X2ES>::addAndRegister(scanner, *s2, hf, dictionary);
+      return Action<XES>::addAndRegister(scanner, *s2, hf, dictionary);
     }
 
     // no action found!

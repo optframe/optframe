@@ -18,14 +18,17 @@
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
+template <XESolution XES>
 class SingleObjSearchToLocalSearch : public LocalSearch<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  protected:
-  sref<Evaluator<XES, XEv>> evaluator;
+  sref<Evaluator<S, XEv, XES>> evaluator;
   sref<SingleObjSearch<XES>> sios;
 
  public:
-  SingleObjSearchToLocalSearch(sref<Evaluator<XES, XEv>> _evaluator,
+  SingleObjSearchToLocalSearch(sref<Evaluator<S, XEv, XES>> _evaluator,
                                sref<SingleObjSearch<XES>> _sios)
       : evaluator(_evaluator), sios(_sios) {}
 
@@ -86,22 +89,20 @@ class SingleObjSearchToLocalSearch : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class SingleObjSearchToLocalSearchBuilder
-    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class SingleObjSearchToLocalSearchBuilder : public LocalSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   virtual ~SingleObjSearchToLocalSearchBuilder() {}
 
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
-    sptr<Evaluator<XES, XEv>> eval;
+    sptr<Evaluator<S, XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -121,8 +122,8 @@ class SingleObjSearchToLocalSearchBuilder
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     params.push_back(
         make_pair(SingleObjSearch<XES>::idComponent(), "single obj search"));
 
@@ -135,7 +136,7 @@ class SingleObjSearchToLocalSearchBuilder
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent()
+    ss << LocalSearchBuilder<XES>::idComponent()
        << "SingleObjSearchToLocalSearch";
     return ss.str();
   }

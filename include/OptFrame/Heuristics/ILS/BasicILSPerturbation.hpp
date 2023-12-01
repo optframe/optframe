@@ -100,21 +100,17 @@ class BasicILSPerturbation : public ILS, public Component {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~BasicILSPerturbationBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
@@ -132,8 +128,8 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     vsref<NS<XES, XSH>> ns_list;
     for (auto x : _ns_list) ns_list.push_back(x);
 
-    return new BasicILSPerturbation<XES, XEv>(eval, pMin, pMax, ns_list,
-                                              hf.getRandGen());
+    return new BasicILSPerturbation<XES>(eval, pMin, pMax, ns_list,
+                                         hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -150,13 +146,12 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicILSPerturbation<XES, XEv>::idComponent();
+    return component == BasicILSPerturbation<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family()
-       << "basic_pert";
+    ss << ComponentBuilder<XES>::idComponent() << ILS::family() << "basic_pert";
     return ss.str();
   }
 

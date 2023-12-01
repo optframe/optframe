@@ -322,22 +322,19 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>,
-          XSearch<XES> XSH = std::pair<S, XEv>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>, typename XSH = std::pair<S, XEv>>
+template <typename XES>
 #endif
-class BasicTabuSearchBuilder : public TS,
-                               public SingleObjSearchBuilder<S, XEv, XES> {
+class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+
  public:
   ~BasicTabuSearchBuilder() override = default;
 
   // NOLINTNEXTLINE
-  SingleObjSearch<XES>* build(Scanner& scanner,
-                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
     if (Component::debug)
       std::cout << "BasicTabuSearch Builder Loading Parameter #0" << std::endl;
@@ -397,14 +394,14 @@ class BasicTabuSearchBuilder : public TS,
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "evaluation function"));
     // params.push_back(make_pair(Constructive<S>::idComponent(),
     // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
-        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
+        make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
     params.push_back(make_pair("OptFrame:int", "tabu list size"));
     params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 
@@ -412,12 +409,12 @@ class BasicTabuSearchBuilder : public TS,
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicTabuSearchBuilder<S, XEv>::idComponent();
+    return component == BasicTabuSearchBuilder<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << TS::family()
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << TS::family()
        << ":BasicTabuSearch";
     return ss.str();
   }

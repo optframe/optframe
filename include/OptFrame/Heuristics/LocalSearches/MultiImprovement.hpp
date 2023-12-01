@@ -194,21 +194,16 @@ class MultiImprovement : public LocalSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>,
-          XSearch<XES> XSH = std::pair<S, XEv>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>, typename XSH = std::pair<S, XEv>>
+template <typename XES>
 #endif
-class MultiImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+class MultiImprovementBuilder : public LocalSearchBuilder<XES> {
  public:
   virtual ~MultiImprovementBuilder() {}
 
   // NOLINTNEXTLINE
-  LocalSearch<XES>* build(Scanner& scanner,
-                          HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           string family = "") override {
     if (!scanner.hasNext()) return nullptr;
 
@@ -239,12 +234,12 @@ class MultiImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == MultiImprovement<XES, XEv>::idComponent();
+    return component == MultiImprovement<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":MI";
+    ss << LocalSearchBuilder<XES>::idComponent() << ":MI";
     return ss.str();
   }
 

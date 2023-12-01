@@ -36,22 +36,27 @@ using namespace std;
 
 namespace optframe {
 
-template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>, XSearch<XMES> XSH = Pareto<XMES>>
-class InitialPareto : public InitialSearch<XMES, XMEv, Pareto<XMES>>  //public Component
+template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>,
+          XSearch<XMES> XSH = Pareto<XMES>>
+class InitialPareto
+    : public InitialSearch<XMES, XMEv, Pareto<XMES>>  // public Component
 {
  public:
   using S = typename XMES::first_type;
   static_assert(is_same<S, typename XMES::first_type>::value);
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
-  virtual ~InitialPareto() {
-  }
+  virtual ~InitialPareto() {}
 
   // TODO: deprecate this in favor of 'initialSearch' (how to pass population?)
-  virtual Pareto<XMES> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
+  virtual Pareto<XMES> generatePareto(unsigned populationSize,
+                                      double timeLimit = 10000000) = 0;
 
-  std::pair<std::optional<Pareto<XMES>>, SearchStatus> initialSearch(const StopCriteria<XMEv>& stop) override {
-    return make_pair(make_optional(generatePareto(stop.xshCount, stop.timelimit)), SearchStatus::NO_REPORT);
+  std::pair<std::optional<Pareto<XMES>>, SearchStatus> initialSearch(
+      const StopCriteria<XMEv>& stop) override {
+    return make_pair(
+        make_optional(generatePareto(stop.xshCount, stop.timelimit)),
+        SearchStatus::NO_REPORT);
   }
 
   static string idComponent() {
@@ -60,9 +65,7 @@ class InitialPareto : public InitialSearch<XMES, XMEv, Pareto<XMES>>  //public C
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
@@ -72,22 +75,22 @@ class BasicInitialPareto : public InitialPareto<XMES> {
   static_assert(is_same<S, typename XMES::first_type>::value);
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
-  //Constructive<S>& constructive;
+  // Constructive<S>& constructive;
   InitialSearch<XMES, XMEv>& constructive;
   paretoManager<S, XMEv, XMES> pMan;
 
-  BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, paretoManager<S, XMEv, XMES>& _pman)
-      : constructive(_constructive), pMan(_pman) {
-  }
+  BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive,
+                     paretoManager<S, XMEv, XMES>& _pman)
+      : constructive(_constructive), pMan(_pman) {}
 
-  virtual ~BasicInitialPareto() {
-  }
+  virtual ~BasicInitialPareto() {}
 
-  virtual Pareto<XMES> generatePareto(unsigned populationSize, double timelimit = 100000000) override {
+  virtual Pareto<XMES> generatePareto(unsigned populationSize,
+                                      double timelimit = 100000000) override {
     Pareto<XMES> p;
     StopCriteria<XMEv> sosc(timelimit);
     for (unsigned i = 0; i < populationSize; i++)
-      //pMan.addSolution(p, *constructive.generateSolution(timelimit));
+      // pMan.addSolution(p, *constructive.generateSolution(timelimit));
       pMan.addSolution(p, constructive.initialSearch(sosc).first->first);
 
     return p;
@@ -99,12 +102,11 @@ class BasicInitialPareto : public InitialPareto<XMES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
+          XESolution XMES = pair<S, XMEv>>
 class GRInitialPareto : public InitialPareto<XMES> {
  public:
   GRConstructive<S>& constructive;
@@ -112,15 +114,19 @@ class GRInitialPareto : public InitialPareto<XMES> {
   double maxAlpha;  // limit the solution to be not so random
   paretoManager<S, XMEv, XMES> pMan;
 
-  //GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
-  GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, GeneralEvaluator<XMES, XMEv>& _mev)
-      : constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XMEv, XMES>(_mev)) {
-  }
+  // GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double
+  // _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
+  GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg,
+                  double _maxAlpha, GeneralEvaluator<XMES, XMEv>& _mev)
+      : constructive(_constructive),
+        rg(_rg),
+        maxAlpha(_maxAlpha),
+        pMan(paretoManager<S, XMEv, XMES>(_mev)) {}
 
-  virtual ~GRInitialPareto() {
-  }
+  virtual ~GRInitialPareto() {}
 
-  virtual Pareto<XMES>& generatePareto(unsigned populationSize, double timelimit = 100000000) override {
+  virtual Pareto<XMES>& generatePareto(
+      unsigned populationSize, double timelimit = 100000000) override {
     Timer tnow;
 
     Pareto<XMES>* p = new Pareto<XMES>;
@@ -131,8 +137,7 @@ class GRInitialPareto : public InitialPareto<XMES> {
         alpha = rg.rand01();
       }
 
-      if (alpha == 0)
-        alpha = 0.00001;
+      if (alpha == 0) alpha = 0.00001;
 
       pMan.addSolution(*p, constructive.generateGRSolution(alpha));
       i++;
@@ -146,9 +151,7 @@ class GRInitialPareto : public InitialPareto<XMES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

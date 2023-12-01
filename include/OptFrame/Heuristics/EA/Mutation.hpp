@@ -85,21 +85,17 @@ class BasicMutation : public Mutation<S, XEv> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XESolution XES>
 #else
-template <typename S, typename XEv = Evaluation<>, typename XES = pair<S, XEv>,
-          typename X2ES = MultiESolution<XES>>
+template <typename XES>
 #endif
-class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+class BasicMutationBuilder : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
   virtual ~BasicMutationBuilder() {}
 
-  Component* buildComponent(Scanner& scanner,
-                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             string family = "") override {
     int n = *scanner.nextInt();
 
@@ -109,7 +105,7 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     hf.assignList(ns_list, id1, comp_id1);
 
     // NOLINTNEXTLINE
-    return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
+    return new BasicMutation<XES>(n, ns_list, hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -123,13 +119,13 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicMutation<S, XEv>::idComponent();
+    return component == BasicMutation<XES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ""
-       << EA::family() << ":BasicMutation";
+    ss << ComponentBuilder<XES>::idComponent() << "" << EA::family()
+       << ":BasicMutation";
     return ss.str();
   }
 
