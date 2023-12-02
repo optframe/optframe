@@ -148,7 +148,7 @@ class FCoreLibSolution {
   FCoreLibSolution(
       FakePythonObjPtr solution_ptr,
       std::function<FakePythonObjPtr(FakePythonObjPtr)> f_sol_deepcopy,
-      std::function<int(FakePythonObjPtr, char*, int)> f_sol_tostring,
+      std::function<size_t(FakePythonObjPtr, char*, size_t)> f_sol_tostring,
       std::function<int(FakePythonObjPtr)> f_utils_decref)
       : solution_ptr{solution_ptr},
         is_view{false},
