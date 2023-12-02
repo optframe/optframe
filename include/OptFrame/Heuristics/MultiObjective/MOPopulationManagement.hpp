@@ -262,7 +262,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
       }
     }
     //
-    int min_sz = ::min((int)childrenPool.size(), (int)targetSize);
+    int min_sz = std::min((int)childrenPool.size(), (int)targetSize);
     for (int i = 0; i < min_sz; i++)
       children.push_back(std::move(childrenPool[i]));
     // drop skeletons
