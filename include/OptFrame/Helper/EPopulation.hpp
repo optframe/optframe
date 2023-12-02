@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-
 #ifndef OPTFRAME_EPOPULATION_HPP_
 #define OPTFRAME_EPOPULATION_HPP_
 
 // C++
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
@@ -18,6 +19,7 @@ namespace optframe {
 //
 // EPopulation class is 'final' (WHY??? NOT ANYMORE...)
 //
+// REQUIRES ostream on XES
 template <XESolution XES>  // XES only for evaluation purposes!
 class EPopulation : public Component {
   using S = typename XES::first_type;
@@ -28,8 +30,7 @@ class EPopulation : public Component {
 
  public:
   using value_type = XES;
-  EPopulation() {
-  }
+  EPopulation() {}
 
   EPopulation(const EPopulation& epop) {
     for (unsigned i = 0; i < epop.size(); i++)
@@ -37,27 +38,17 @@ class EPopulation : public Component {
   }
 
   // move constructor ('steal' population from dying epop)
-  EPopulation(EPopulation&& epop)
-      : p{epop.p} {
-  }
+  EPopulation(EPopulation&& epop) : p{epop.p} {}
 
-  virtual ~EPopulation() {
-    clear();
-  }
+  virtual ~EPopulation() { clear(); }
 
-  unsigned size() const {
-    return p.size();
-  }
+  unsigned size() const { return p.size(); }
 
   // supports X2ESolution concept standard
-  XES& at(unsigned c) {
-    return (*p.at(c));
-  }
+  XES& at(unsigned c) { return (*p.at(c)); }
 
   // supports X2ESolution concept standard
-  const XES& at(unsigned c) const {
-    return (*p.at(c));
-  }
+  const XES& at(unsigned c) const { return (*p.at(c)); }
 
   void push_back(XES* c) {
     if (c)  // not null
@@ -70,9 +61,7 @@ class EPopulation : public Component {
   }
 
   // chromossome is near dying... take everything and drop the corpse!!
-  void push_back(XES&& c) {
-    p.push_back(new XES(std::move(c)));
-  }
+  void push_back(XES&& c) { p.push_back(new XES(std::move(c))); }
 
   // ============ push_back( S )
 
@@ -81,18 +70,13 @@ class EPopulation : public Component {
     p.push_back(new XES(cs, XEv{}));
   }
 
-  XEv& getFitness(int pos) {
-    return p.at(pos)->second;
-  }
+  XEv& getFitness(int pos) { return p.at(pos)->second; }
 
-  void setFitness(unsigned pos, const XEv& v) {
-    p.at(pos)->second = v;
-  }
+  void setFitness(unsigned pos, const XEv& v) { p.at(pos)->second = v; }
 
   // clear and kill
   void clear() {
-    for (unsigned i = 0; i < p.size(); i++)
-      delete p.at(i);
+    for (unsigned i = 0; i < p.size(); i++) delete p.at(i);
     p.clear();
   }
 
@@ -109,7 +93,7 @@ class EPopulation : public Component {
   }
 
   // assignment from dying epop
-  virtual EPopulation<XES>& operator=(EPopulation<XES>&& epop) {
+  EPopulation<XES>& operator=(EPopulation<XES>&& epop) {
     clear();  // this is NOT vector p.clear... pay attention!
     p = std::move(epop.p);
     epop.p.clear();  // this is vector clear
@@ -126,22 +110,18 @@ class EPopulation : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  void print() const override {
-    std::cout << toString() << std::endl;
-  }
+  void print() const override { std::cout << toString() << std::endl; }
 
-  virtual std::string toString() const override {
+  std::string toString() const override {
     std::stringstream ss;
     ss << "EPopulation(" << p.size() << ")";
     ss << endl;
 
     for (unsigned i = 0; i < p.size(); i++) {
-      //p.at(i)->print();
-      ss << *p.at(i) << std::endl;
+      // ss << *p.at(i) << std::endl;
+      // TODO: do not force operator<< here
     }
     return ss.str();
   }
@@ -152,6 +132,7 @@ class EPopulation : public Component {
 
 // compilation tests
 // TODO: only add if not including "printable.h"
-//static_assert(X2ESolution<EPopulation<std::pair<Solution<double>, Evaluation<double>>>, std::pair<Solution<double>, Evaluation<double>>>);
+// static_assert(X2ESolution<EPopulation<std::pair<Solution<double>,
+// Evaluation<double>>>, std::pair<Solution<double>, Evaluation<double>>>);
 
 #endif /* OPTFRAME_POPULATION_HPP_ */
