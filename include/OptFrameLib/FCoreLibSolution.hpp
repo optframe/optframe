@@ -23,7 +23,7 @@ class FCoreLibSolution {
   // copy constructor function
   std::function<FakePythonObjPtr(FakePythonObjPtr)> f_sol_deepcopy;
   // print/to string function
-  std::function<int(FakePythonObjPtr, char*, int)> f_sol_tostring;
+  std::function<size_t(FakePythonObjPtr, char*, size_t)> f_sol_tostring;
   // utils function
   std::function<bool(FakePythonObjPtr)> f_utils_decref;
 
