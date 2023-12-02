@@ -6,6 +6,8 @@
 
 // C++
 #include <iostream>
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
@@ -94,18 +96,18 @@ template <XESSolution XESS>  // single objective type XESSOlution
 template <typename XESS>
 #endif
 class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
-  using XES = XESS;  // single objective type XESSOlution
+  using _XES = XESS;  // single objective type XESSOlution
 
  public:
   virtual ~SingleObjSearchBuilder() = default;
 
   // NOLINTNEXTLINE
-  virtual SingleObjSearch<XES>* build(Scanner& scanner,
-                                      HeuristicFactory<XES>& hf,
-                                      string family = "") = 0;
+  virtual SingleObjSearch<_XES>* build(Scanner& scanner,
+                                       HeuristicFactory<_XES>& hf,
+                                       string family = "") = 0;
 
   // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<_XES>& hf,
                             string family = "") override {
     return build(scanner, hf, family);
   }
@@ -116,7 +118,7 @@ class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent();
+    ss << ComponentBuilder<_XES>::idComponent();
     ss << "SingleObjSearch";
     return ss.str();
   }
@@ -135,8 +137,8 @@ template <XESolution XES>
 template <typename XES>
 #endif
 class SingleObjSearchAction : public Action<XES> {
-  using S = typename XES::first_type;
-  using XEv = typename XES::second_type;
+  using _S = typename XES::first_type;
+  using _XEv = typename XES::second_type;
 
  public:
   virtual ~SingleObjSearchAction() = default;
@@ -231,21 +233,21 @@ class SingleObjSearchAction : public Action<XES> {
 
       if (!scanner.hasNext()) return false;
 
-      S* s;
+      _S* s;
       hf.assign(s, *scanner.nextInt(), scanner.next());
 
       if (!scanner.hasNext()) return false;
 
-      XEv* e;
+      _XEv* e;
       hf.assign(e, *scanner.nextInt(), scanner.next());
 
-      pair<S, XEv>* p =
-          sios->search(StopCriteria<XEv>(timelimit, target_f), s, e);
+      std::pair<_S, _XEv>* p =
+          sios->search(StopCriteria<_XEv>(timelimit, target_f), s, e);
 
       if (!p) return true;
 
       // TODO: use Move Semantics
-      S* s2 = new S(p->first);
+      _S* s2 = new _S(p->first);
 
       delete p;
 

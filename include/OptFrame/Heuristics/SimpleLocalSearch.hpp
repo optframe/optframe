@@ -98,15 +98,15 @@ template <XESolution XES>
 template <typename XES>
 #endif
 class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
-  using S = typename XES::first_type;
-  using XEv = typename XES::second_type;
+  using _S = typename XES::first_type;
+  using _XEv = typename XES::second_type;
 
  public:
   virtual ~SimpleLocalSearchBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               string family = "") override {
-    sptr<Evaluator<S, XEv, XES>> eval;
+    sptr<Evaluator<_S, _XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
@@ -131,7 +131,7 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+    params.push_back(make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
                                "evaluation function"));
     // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
@@ -147,8 +147,8 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
     return component == SimpleLocalSearch<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<XES>::idComponent() << "SimpleLocalSearch";
     return ss.str();
   }

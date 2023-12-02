@@ -101,7 +101,7 @@ class LocalSearchBuilder : public ComponentBuilder<XES> {
     return build(scanner, hf, family);
   }
 
-  std::vector<pair<string, string>> parameters() override = 0;
+  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
 
   bool canBuild(string) override = 0;
 

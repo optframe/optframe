@@ -327,8 +327,8 @@ template <XESolution XES>
 template <typename XES>
 #endif
 class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
-  using S = typename XES::first_type;
-  using XEv = typename XES::second_type;
+  using _S = typename XES::first_type;
+  using _XEv = typename XES::second_type;
 
  public:
   ~BasicTabuSearchBuilder() override = default;
@@ -394,7 +394,7 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+    params.push_back(make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
                                "evaluation function"));
     // params.push_back(make_pair(Constructive<S>::idComponent(),
     // "constructive heuristic"));
