@@ -80,7 +80,6 @@ class NS : public Component {
   static string idComponent() {
     stringstream ss;
     ss << Component::idComponent() << ":NS"
-
        << Domain::getAlternativeDomain<XES>("<XESf64>");
     return ss.str();
   }

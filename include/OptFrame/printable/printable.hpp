@@ -161,7 +161,7 @@ std::ostream& operator<<(std::ostream& os, const std::pair<T1*, T2>& obj) {
   if (obj.first == nullptr)
     os << "nullptr";
   else
-    os << (*obj.first);
+    os << *(obj.first);
 
   os << " , " << obj.second << ")";
 
