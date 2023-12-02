@@ -20,6 +20,7 @@
 #include "../Selection.hpp"
 #include "DecoderRandomKeys.hpp"
 #include "OptFrame/Concepts/MyConcepts.hpp"
+#include "OptFrame/SearchStatus.hpp"
 
 // RKGA - Random Key Genetic Algorithms
 // Bean, J.C.: Genetic algorithms and random keys for
@@ -222,6 +223,7 @@ class RKGA : public Populational<XES, XES, XES2> {
       const StopCriteria<XEv>& stopCriteria) override {
     // TODO: IMPLEMENT!!
     assert(false);
+    return SearchOutput<XES>{SearchStatus::FAILED};
   }
 
   // pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit =
