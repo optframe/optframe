@@ -53,6 +53,16 @@ jobs:
       run: |
         git submodule update --init --recursive
         git pull --recurse-submodules
+    - name: make optframe_lib_cmake (windows)
+      if: contains(matrix.os, 'windows')
+      shell: bash
+      run: |
+        cmake --version
+        mkdir -p build_out
+        ls -la
+        cmake -S. -Bbuild_out -GNinja
+        ninja -Cbuild_out
+        mv build_out/liboptframe_lib.so build_out/optframe_lib.so 
     - name: make optframe_lib_cmake
       shell: bash
       run: |
