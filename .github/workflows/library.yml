@@ -62,7 +62,7 @@ jobs:
         ls -la
         cmake -S. -Bbuild_out -GNinja
         ninja -Cbuild_out
-        mv build_out/liboptframe_lib.so build_out/optframe_lib.so 
+        mv build/optframe_lib.dll build/optframe_lib.so 
     - name: make optframe_lib_cmake
       shell: bash
       run: |
