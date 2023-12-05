@@ -22,6 +22,7 @@
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Hyper/Loader.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
+#include <OptFrame/Timer.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 // C/C++ Library implementation
 #include <OptFrameLib/FCoreLibSolution.hpp>

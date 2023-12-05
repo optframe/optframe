@@ -44,6 +44,9 @@ Major changes happened from v3 to v4, so we will need to update our tutorials...
 - [03_QuickstartTSP_VNS_BRKGA](./demo/03_QuickstartTSP_VNS_BRKGA/README.md): 03_QuickstartTSP_VNS_BRKGA  - [![03_QuickstartTSP_VNS_BRKGA](https://github.com/optframe/optframe/actions/workflows/demo_03_quickstart_tsp_vns_brkga.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_03_quickstart_tsp_vns_brkga.yml)
 - [05_Advanced_TSP_checkmodule](./demo/05_Advanced_TSP_checkmodule/README.md): 05_Advanced_TSP_checkmodule  - [![05_Advanced_TSP_checkmodule](https://github.com/optframe/optframe/actions/workflows/demo_05_advanced_tsp_checkmodule.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_05_advanced_tsp_checkmodule.yml)
 
+Also we provide a C library for Windows, Linux and Mac:
+- [OptFrameLib](./include/OptFrameLib/README.md): OptFrameLib  - [![Test Library on windows and linux](https://github.com/optframe/optframe/actions/workflows/library.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/library.yml)
+
 
 Note that OptFrame website may have obsolete documentation and examples:
 
