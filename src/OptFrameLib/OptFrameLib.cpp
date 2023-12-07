@@ -288,13 +288,13 @@ class IMSObjLib {
 
 // ==================
 
-extern "C" void optframe_api0d_engine_welcome(FakeEnginePtr _engine) {
+OPT_MODULE_API void optframe_api0d_engine_welcome(FakeEnginePtr _engine) {
   // IGNORING LOG LEVEL FOR WELCOME! ASSUMING AS DEBUG FUNCTION!
   // if(_engine->engineLogLevel >= optframe::LogLevel::Error)
   std::cout << optframe::FCore::welcome() << std::endl;
 }
 
-extern "C" FakeEnginePtr optframe_api1d_create_engine(int ll) {
+OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int ll) {
   // safety checks on log level
   if (ll <= 0) ll = 0;
   if (ll >= 4) ll = 4;
@@ -311,9 +311,9 @@ extern "C" FakeEnginePtr optframe_api1d_create_engine(int ll) {
   return engine_ptr;
 }
 
-extern "C" bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
-                                            int p2, bool verbose,
-                                            bool (*_fOnFail)(int)) {
+OPT_MODULE_API bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
+                                                int p2, bool verbose,
+                                                bool (*_fOnFail)(int)) {
   auto* engine = (FCoreApi1Engine*)_engine;
   if (verbose) engine->check.setParameters(verbose);
   engine->check.onFail = [_fOnFail](int code) -> bool {
@@ -324,14 +324,14 @@ extern "C" bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
   return true;
 }
 
-extern "C" LibSearchOutput optframe_api0d_engine_simulated_annealing(
-    FakeEnginePtr _engine) {
+OPT_MODULE_API LibSearchOutput
+optframe_api0d_engine_simulated_annealing(FakeEnginePtr _engine) {
   return optframe_api0d_engine_simulated_annealing_params(_engine, 3.0, 0, 0, 0,
                                                           0.99, 100, 9999);
 }
 
-extern "C" int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
-                                                   char* prefix) {
+OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
+                                                       char* prefix) {
   std::string sprefix{prefix};
   auto* engine = (FCoreApi1Engine*)_engine;
   std::vector<
@@ -350,8 +350,8 @@ extern "C" int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
   return vlist.size();
 }
 
-extern "C" int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
-                                                     char* prefix) {
+OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
+                                                         char* prefix) {
   std::string sprefix{prefix};
   auto* engine = (FCoreApi1Engine*)_engine;
   std::vector<std::string> vlist =
@@ -364,7 +364,7 @@ extern "C" int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
   return vlist.size();
 }
 
-extern "C" int  // index of ComponentList
+OPT_MODULE_API int  // index of ComponentList
 optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
                                      char* list_type) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -405,7 +405,7 @@ optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
   return id;
 }
 
-extern "C" LibSearchOutput optframe_api0d_engine_simulated_annealing_params(
+OPT_MODULE_API LibSearchOutput optframe_api0d_engine_simulated_annealing_params(
     FakeEnginePtr _engine, double timelimit, int id_evaluator,
     int id_constructive, int id_ns, double alpha, int iter, double T) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -472,7 +472,7 @@ extern "C" LibSearchOutput optframe_api0d_engine_simulated_annealing_params(
   return lout;
 }
 
-extern "C" int  // ONLY STATUS... CANNOT RETURN PARETO ELEMENTS NOW...
+OPT_MODULE_API int  // ONLY STATUS... CANNOT RETURN PARETO ELEMENTS NOW...
 optframe_api0d_engine_classic_nsgaii_params(FakeEnginePtr _engine,
                                             double timelimit, double min_limit,
                                             double max_limit, int id_mevaluator,
@@ -531,7 +531,7 @@ optframe_api0d_engine_classic_nsgaii_params(FakeEnginePtr _engine,
   return 0;
 }
 
-extern "C" int  // index of GlobalSearch
+OPT_MODULE_API int  // index of GlobalSearch
 optframe_api1d_build_global(FakeEnginePtr _engine, char* builder,
                             char* build_string) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -582,7 +582,7 @@ optframe_api1d_build_global(FakeEnginePtr _engine, char* builder,
   return id;
 }
 
-extern "C" int  // index of SingleObjSearch
+OPT_MODULE_API int  // index of SingleObjSearch
 optframe_api1d_build_single(FakeEnginePtr _engine, char* builder,
                             char* build_string) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -633,7 +633,7 @@ optframe_api1d_build_single(FakeEnginePtr _engine, char* builder,
   return id;
 }
 
-extern "C" int  // index of LocalSearch
+OPT_MODULE_API int  // index of LocalSearch
 optframe_api1d_build_local_search(FakeEnginePtr _engine, char* builder,
                                   char* build_string) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -680,7 +680,7 @@ optframe_api1d_build_local_search(FakeEnginePtr _engine, char* builder,
   return id;
 }
 
-extern "C" int  // index of Component
+OPT_MODULE_API int  // index of Component
 optframe_api1d_build_component(FakeEnginePtr _engine, char* builder,
                                char* build_string, char* component_type) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -723,7 +723,7 @@ optframe_api1d_build_component(FakeEnginePtr _engine, char* builder,
   return id;
 }
 
-extern "C" LibSearchOutput  // SearchOutput for XSH "best-type"
+OPT_MODULE_API LibSearchOutput  // SearchOutput for XSH "best-type"
 optframe_api1d_run_global_search(FakeEnginePtr _engine, int g_idx,
                                  double timelimit) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -774,7 +774,7 @@ optframe_api1d_run_global_search(FakeEnginePtr _engine, int g_idx,
   return lout;
 }
 
-extern "C" LibSearchOutput  // SearchOutput for XSH "best-type"
+OPT_MODULE_API LibSearchOutput  // SearchOutput for XSH "best-type"
 optframe_api1d_run_sos_search(FakeEnginePtr _engine, int sos_idx,
                               double timelimit) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -826,7 +826,7 @@ optframe_api1d_run_sos_search(FakeEnginePtr _engine, int sos_idx,
   return lout;
 }
 
-extern "C" bool optframe_api0d_engine_test(FakeEnginePtr _engine) {
+OPT_MODULE_API bool optframe_api0d_engine_test(FakeEnginePtr _engine) {
   auto* engine = (FCoreApi1Engine*)_engine;
   //
   using MyEval =
@@ -868,7 +868,7 @@ extern "C" bool optframe_api0d_engine_test(FakeEnginePtr _engine) {
   return true;
 }
 
-extern "C" bool optframe_api1d_destroy_engine(FakeEnginePtr _engine) {
+OPT_MODULE_API bool optframe_api1d_destroy_engine(FakeEnginePtr _engine) {
   auto* engine = (FCoreApi1Engine*)_engine;
   delete engine;
   // good
@@ -880,7 +880,7 @@ extern "C" bool optframe_api1d_destroy_engine(FakeEnginePtr _engine) {
 // ==============================================
 
 // min_or_max is needed to correctly cast template on FEvaluator
-extern "C" int  // index of generalevaluator
+OPT_MODULE_API int  // index of generalevaluator
 
 optframe_api1d_add_evaluator(FakeEnginePtr _engine,
                              double (*_fevaluate)(FakePythonObjPtr,
@@ -962,7 +962,7 @@ optframe_api1d_add_evaluator(FakeEnginePtr _engine,
 // prevents extra referencing counting on both sides. On Python, storing it on
 // the engine (or the opposite) may do the job for us, so, no worry for now.
 
-extern "C" int  // index of constructive
+OPT_MODULE_API int  // index of constructive
 optframe_api1d_add_constructive(
     FakeEnginePtr _engine, FakePythonObjPtr (*_fconstructive)(FakePythonObjPtr),
     FakePythonObjPtr problem_view,
@@ -1038,7 +1038,7 @@ optframe_api1d_add_constructive(
   return id;
 }
 
-extern "C" int  // index of general crossover
+OPT_MODULE_API int  // index of general crossover
 optframe_api0d_add_general_crossover(
     FakeEnginePtr _engine,
     FakePythonObjPtr (*_fcross1)(FakePythonObjPtr, FakePythonObjPtr,
@@ -1094,7 +1094,7 @@ optframe_api0d_add_general_crossover(
   return id;
 }
 
-extern "C" int  // index of Constructive (for RK)
+OPT_MODULE_API int  // index of Constructive (for RK)
 optframe_api1d_add_rk_constructive(FakeEnginePtr _engine,
                                    int (*_fconstructive)(FakePythonObjPtr,
                                                          LibArrayDouble*),
@@ -1141,7 +1141,7 @@ optframe_api1d_add_rk_constructive(FakeEnginePtr _engine,
   return id;
 }
 
-extern "C" int  // error or size
+OPT_MODULE_API int  // error or size
 optframe_api0_set_array_double(int sz, double* vec, LibArrayDouble* lad_ptr) {
   assert(sz >= 0);
   // arbitrary limit, just for safety...
@@ -1155,7 +1155,7 @@ optframe_api0_set_array_double(int sz, double* vec, LibArrayDouble* lad_ptr) {
   return sz;
 }
 
-extern "C" int  // index of Decoder (for RK)
+OPT_MODULE_API int  // index of Decoder (for RK)
 optframe_api1d_add_rk_decoder(
     FakeEnginePtr _engine,
     FakePythonObjPtr (*_fdecoder)(FakePythonObjPtr, LibArrayDouble),
@@ -1201,7 +1201,7 @@ optframe_api1d_add_rk_decoder(
   return id;
 }
 
-extern "C" int  // index of Decoder (for RK)
+OPT_MODULE_API int  // index of Decoder (for RK)
 optframe_api1d_add_rk_edecoder_op(
     FakeEnginePtr _engine,
     FakePythonObjPtr (*_fdecoder)(FakePythonObjPtr, LibArrayDouble, double*,
@@ -1263,7 +1263,7 @@ optframe_api1d_add_rk_edecoder_op(
   return id;
 }
 
-extern "C" int  // index of ns
+OPT_MODULE_API int  // index of ns
 optframe_api1d_add_ns(
     FakeEnginePtr _engine,
     FakePythonObjPtr (*_fns_rand)(FakePythonObjPtr, FakePythonObjPtr),
@@ -1398,7 +1398,7 @@ optframe_api1d_add_ns(
   return id;
 }
 
-extern "C" int  // index of ns<XMES>
+OPT_MODULE_API int  // index of ns<XMES>
 optframe_api3d_add_ns_xmes(
     FakeEnginePtr _engine,
     FakePythonObjPtr (*_fns_rand)(FakePythonObjPtr, FakePythonObjPtr),
@@ -1517,7 +1517,7 @@ optframe_api3d_add_ns_xmes(
 
 // FOR NOW, WE IGNORE 'const XES' AND JUST USE 'const S'.... LET'S SEE!
 
-extern "C" int  // index of ns
+OPT_MODULE_API int  // index of ns
 optframe_api1d_add_nsseq(
     FakeEnginePtr _engine,
     FakePythonObjPtr (*_fns_rand)(FakePythonObjPtr, FakePythonObjPtr),
@@ -1733,7 +1733,7 @@ optframe_api1d_add_nsseq(
   return id;
 }
 
-extern "C" int  // index of InitialSearch
+OPT_MODULE_API int  // index of InitialSearch
 optframe_api1d_create_initial_search(FakeEnginePtr _engine, int ev_idx,
                                      int c_idx) {
   auto* engine = (FCoreApi1Engine*)_engine;
@@ -1776,7 +1776,7 @@ optframe_api1d_create_initial_search(FakeEnginePtr _engine, int ev_idx,
 //                      GET
 // ==============================================
 
-extern "C" void*  // raw (non-owned) pointer to GeneralEvaluator
+OPT_MODULE_API void*  // raw (non-owned) pointer to GeneralEvaluator
 optframe_api0d_get_evaluator(FakeEnginePtr _engine, int idx_ev) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
@@ -1793,7 +1793,7 @@ optframe_api0d_get_evaluator(FakeEnginePtr _engine, int idx_ev) {
   return ptr;
 }
 
-extern "C" void*  // raw (non-owned) pointer to FConstructive
+OPT_MODULE_API void*  // raw (non-owned) pointer to FConstructive
 optframe_api0d_get_constructive(FakeEnginePtr _engine, int idx_c) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
@@ -1810,7 +1810,7 @@ optframe_api0d_get_constructive(FakeEnginePtr _engine, int idx_c) {
 // ==============================================
 
 // min_or_max is needed to correctly cast template on FEvaluator
-extern "C" double  // FEvaluator object
+OPT_MODULE_API double  // FEvaluator object
 optframe_api0d_fevaluator_evaluate(FakeFEvaluatorPtr _fevaluator,
                                    bool min_or_max,
                                    FakePythonObjPtr solution_ptr_view) {
@@ -1832,7 +1832,7 @@ optframe_api0d_fevaluator_evaluate(FakeFEvaluatorPtr _fevaluator,
   return ev.evaluation();
 }
 
-extern "C" FakePythonObjPtr  // Python solution object
+OPT_MODULE_API FakePythonObjPtr  // Python solution object
 optframe_api0_fconstructive_gensolution(FakeFConstructivePtr _fconstructive) {
   // std::cout << "begin 'optframe_api1d_fconstructive_gensolution'" <<
   // std::endl;
@@ -1858,13 +1858,13 @@ optframe_api0_fconstructive_gensolution(FakeFConstructivePtr _fconstructive) {
 // ==============
 
 // RAW METHOD (SHOULD WE KEEP IT?)
-extern "C" void optframe_api0_component_print(void* component) {
+OPT_MODULE_API void optframe_api0_component_print(void* component) {
   auto* c = (optframe::Component*)component;
   // std::cout << "optframe_component_print ptr=" << c << " => ";
   c->print();
 }
 
-extern "C" bool optframe_api1d_engine_component_set_loglevel(
+OPT_MODULE_API bool optframe_api1d_engine_component_set_loglevel(
     FakeEnginePtr _engine, char* _scomponent, int loglevel, bool recursive) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
@@ -1899,7 +1899,7 @@ extern "C" bool optframe_api1d_engine_component_set_loglevel(
   return true;
 }
 
-extern "C" bool optframe_api1d_engine_experimental_set_parameter(
+OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
     FakeEnginePtr _engine, char* _parameter, char* _svalue) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
@@ -1974,7 +1974,7 @@ extern "C" bool optframe_api1d_engine_experimental_set_parameter(
   return true;
 }
 
-extern "C" char* optframe_api1d_engine_experimental_get_parameter(
+OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
     FakeEnginePtr _engine, char* _parameter) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
