@@ -16,6 +16,67 @@ To learn more, we recommend the following classic books:
 
 In Portuguese, we recommend the textbook by prof. Marcone Jamilson Freitas Souza.
 
+Simulated Annealing pseudocode
+------------------------------
+
+1. Classic Definition in Literature
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Parameters
+^^^^^^^^^^
+
+- :math:`f(.)`: objective function (minimization)
+- :math:`\mathcal{N}(.)`: neighborhood structure
+- :math:`\alpha`: cooling factor
+- :math:`SAmax`: max number of iterations per temperature
+- :math:`Ti`: initial temperature
+- :math:`\xi(.)`: random number generator
+- :math:`stop(.)`: stop criteria
+- :math:`s`: initial solution
+
+
+Pseudocode for Classic Version in Literature
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. only:: html
+
+    .. pcode::
+        :linenos:
+
+        \begin{algorithm}
+        \caption{SA}
+        \begin{algorithmic}
+        \Procedure{SA}{$f(.)$, $\mathcal{N}(.)$, $\alpha$, $SAmax$, $Ti$, $s$, $\xi(.)$}
+            \State $s^* \gets s$
+            \State $IterT \gets 0$
+            \State $T \gets Ti$
+            \While{$T > 0$ \textbf{and} \textbf{not} $stop(s)$}
+            \While{$IterT < SAmax$ \textbf{and} \textbf{not} $stop(s)$}
+                \State $IterT \gets IterT+1$
+                \State $s' \gets \mathcal{N}^{ANY}_j(s)$
+                \State $\Delta \gets f(s') - f(s)$
+                \If{$\Delta < 0$}
+                    \State s  \gets s'$
+                    \If{$f(s) < f(s^*)$}
+                        \State $s^* \gets s'$
+                    \EndIf
+                \Else
+                    \State $x \gets \xi^{\mathbb{R}}(0, 1)$
+                    \If{$x < e^{\frac{-\Delta}{T}}$}
+                        \State $s \gets s'$
+                    \EndIf
+                \EndIf
+            \EndWhile
+                \State $T \gets \alpha \times T$
+                \State $IterT \gets 0$
+            \EndWhile
+            \State \textbf{return} $NO\_REPORT, s^*$
+        \EndProcedure
+        \end{algorithmic}
+        \end{algorithm}
+
+
+
 BasicSimulatedAnnealing
 -----------------------
 

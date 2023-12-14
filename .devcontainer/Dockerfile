@@ -40,3 +40,7 @@ RUN python3 -m pip install bumpver
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends texlive texlive-latex-extra latexmk texlive-science
+
+# docs requiring tgtermes.sty
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+     && apt-get -y install --no-install-recommends tex-gyre
