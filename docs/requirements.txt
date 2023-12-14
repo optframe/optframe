@@ -4,4 +4,6 @@ breathe>=4.13.0
 exhale
 sphinx_rtd_theme
 sphinxcontrib-pseudocode
-sphinx~=7.2.0
+Sphinx~=6.2.0
+setuptools~=57.0.0
+docutils~=0.18.1
