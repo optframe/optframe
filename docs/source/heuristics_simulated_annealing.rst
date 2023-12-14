@@ -50,19 +50,19 @@ Pseudocode for Classic Version in Literature
             \State $s^* \gets s$
             \State $IterT \gets 0$
             \State $T \gets Ti$
-            \While{$T > 0$ \textbf{and} \textbf{not} $stop(s)$}
-            \While{$IterT < SAmax$ \textbf{and} \textbf{not} $stop(s)$}
+            \While{$T \gt 0$ \textbf{and} \textbf{not} $stop(s)$}
+            \While{$IterT \lt SAmax$ \textbf{and} \textbf{not} $stop(s)$}
                 \State $IterT \gets IterT+1$
-                \State $s' \gets \mathcal{N}^{ANY}_j(s)$
+                \State $s' \gets \mathcal{N}^{ANY}(s)$
                 \State $\Delta \gets f(s') - f(s)$
-                \If{$\Delta < 0$}
-                    \State s  \gets s'$
-                    \If{$f(s) < f(s^*)$}
+                \If{$\Delta \lt 0$}
+                    \State $s  \gets s'$
+                    \If{$f(s) \lt f(s^*)$}
                         \State $s^* \gets s'$
                     \EndIf
                 \Else
                     \State $x \gets \xi^{\mathbb{R}}(0, 1)$
-                    \If{$x < e^{\frac{-\Delta}{T}}$}
+                    \If{$x \lt e^{\frac{-\Delta}{T}}$}
                         \State $s \gets s'$
                     \EndIf
                 \EndIf
@@ -74,7 +74,6 @@ Pseudocode for Classic Version in Literature
         \EndProcedure
         \end{algorithmic}
         \end{algorithm}
-
 
 
 BasicSimulatedAnnealing
