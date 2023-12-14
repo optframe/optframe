@@ -5,4 +5,3 @@ exhale
 sphinx_rtd_theme
 sphinxcontrib-pseudocode
 sphinx~=7.2.0
-docutils~=0.18.1
