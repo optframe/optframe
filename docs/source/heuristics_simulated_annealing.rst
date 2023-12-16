@@ -31,7 +31,7 @@ Parameters
 - :math:`SAmax`: max number of iterations per temperature
 - :math:`Ti`: initial temperature
 - :math:`\xi(.)`: random number generator
-- :math:`stop(.)`: stop criteria
+- :math:`stop(time=\infty, target=-\infty)`: general stop criteria for timelimit and target quality
 - :math:`s`: initial solution
 
 
@@ -46,12 +46,12 @@ Pseudocode for Classic Version in Literature
         \begin{algorithm}
         \caption{SA}
         \begin{algorithmic}
-        \Procedure{SA}{$f(.)$, $\mathcal{N}(.)$, $\alpha$, $SAmax$, $Ti$, $s$, $\xi(.)$}
+        \Procedure{SA}{$f(.)$, $\mathcal{N}(.)$, $\alpha$, $SAmax$, $Ti$, $\xi(.)$, $stop(.)$, $s$}
             \State $s^* \gets s$
             \State $IterT \gets 0$
             \State $T \gets Ti$
-            \While{$T \gt 0$ \textbf{and} \textbf{not} $stop(s)$}
-            \While{$IterT \lt SAmax$ \textbf{and} \textbf{not} $stop(s)$}
+            \While{$T \gt 0$ \textbf{and} \textbf{not} $stop(time(), f(s))$}
+            \While{$IterT \lt SAmax$ \textbf{and} \textbf{not} $stop(time(), f(s))$}
                 \State $IterT \gets IterT+1$
                 \State $s' \gets \mathcal{N}^{ANY}(s)$
                 \State $\Delta \gets f(s') - f(s)$
