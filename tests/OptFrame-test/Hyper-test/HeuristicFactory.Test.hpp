@@ -12,7 +12,12 @@
 #include <vector>
 
 // testing
+// #include <catch2/catch_amalgamated.hpp>
+#ifdef MAKE
 #include <catch2/catch_amalgamated.hpp>
+#else
+#include <catch2/catch_test_macros.hpp>
+#endif
 
 // Some instructions for Catch2
 // https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md

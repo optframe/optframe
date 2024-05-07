@@ -15,7 +15,8 @@
 		"vscode": {
 			"extensions": [
 				"mine.cpplint",
-				"DevonDCarew.bazel-code",
+				// "DevonDCarew.bazel-code",
+				"BazelBuild.vscode-bazel",
 				"matepek.vscode-catch2-test-adapter",
 				"ms-vscode.cmake-tools",
 				"llvm-vs-code-extensions.vscode-clangd",

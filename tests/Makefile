@@ -2,7 +2,7 @@
 ROOT_PATH=..
 SRC_PATH=../include
 LIBS_PATH=../libs
-CATCH2_MAIN_PART=-Ithirdparty -DCATCH_CONFIG_MAIN thirdparty/catch2/catch_amalgamated.cpp 
+CATCH2_MAIN_PART=-Ithirdparty -DCATCH_CONFIG_MAIN thirdparty/catch2/catch_amalgamated.cpp -DMAKE
 
 all: test
 	@echo "Executing tests"

@@ -33,18 +33,20 @@ target_compile_definitions(optframe_lib PRIVATE _HAS_STD_BYTE=0)
 option(DISABLE_OPTFRAME_TESTING "Build tests")
 if(NOT DISABLE_OPTFRAME_TESTING)
 
-add_library(catch2 INTERFACE)
-target_include_directories(catch2 INTERFACE tests/thirdparty/)
+#add_library(catch2 INTERFACE)
+#target_include_directories(catch2 INTERFACE tests/thirdparty/)
 
-#FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.3.1)
-#FetchContent_MakeAvailable(Catch2)
+FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.3.1)
+FetchContent_MakeAvailable(Catch2)
 #
-#list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
-#include(CTest)
-#include(Catch)
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+include(CTest)
+include(Catch)
 #
-add_executable(my_test tests/all.Test.cpp  tests/thirdparty/catch2/catch_amalgamated.cpp)
-target_link_libraries(my_test PRIVATE OptFrameAll catch2)#Catch2::Catch2WithMain)
+#add_executable(my_test tests/all.Test.cpp  tests/thirdparty/catch2/catch_amalgamated.cpp)
+add_executable(my_test tests/all.Test.cpp)
+target_link_libraries(my_test PRIVATE OptFrameAll Catch2::Catch2WithMain) #catch2)
+
 # https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
 target_compile_definitions(my_test PRIVATE _HAS_STD_BYTE=0)
 

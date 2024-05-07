@@ -15,17 +15,18 @@ cc_test(
     deps = ["//include:OptFrame", 
     "//include:OptFCore",
      "//include:OptFrame-Core-Examples", 
-     ":catch2_thirdparty"],
+     "@catch2//:catch2_main"],
+     #":catch2_thirdparty"],
 )
 
 
-cc_library(
-    name = "catch2_thirdparty",
-    hdrs = ["thirdparty/catch2/catch_amalgamated.hpp"],
-    srcs = ["thirdparty/catch2/catch_amalgamated.cpp"],
-    strip_include_prefix="thirdparty/",
-    #include_prefix = "catch2/"
-)
+#cc_library(
+#    name = "catch2_thirdparty",
+#    hdrs = ["thirdparty/catch2/catch_amalgamated.hpp"],
+#    srcs = ["thirdparty/catch2/catch_amalgamated.cpp"],
+#    strip_include_prefix="thirdparty/",
+#    #include_prefix = "catch2/"
+#)
 
 test_suite(
     name = "all-tests",

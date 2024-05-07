@@ -2,7 +2,11 @@
 // collection of 'OptFrame' core tests
 
 //#define CATCH_CONFIG_MAIN // This tells Catch to provide a main()
+#ifdef MAKE
 #include <catch2/catch_amalgamated.hpp>
+#else
+#include <catch2/catch_test_macros.hpp>
+#endif
 
 #include "./OptFrame-test/Heuristics-test/HeuristicsAll.Test.hpp"
 #include "./OptFrame-test/Hyper-test/HeuristicFactory.Test.hpp"
