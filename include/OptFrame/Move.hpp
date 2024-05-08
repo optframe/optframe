@@ -10,6 +10,7 @@
 
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
 
 namespace optframe {
 

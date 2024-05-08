@@ -1,49 +1,24 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_NSSEQVRPEXCHANGE_HPP_
-#define OPTFRAME_NSSEQVRPEXCHANGE_HPP_
+#ifndef OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
+#define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
+
+// C++
+#include <string>
+#include <utility>
+#include <vector>
 
 // Framework includes
 #include "../../../../Move.hpp"
 #include "../../../../NSSeq.hpp"
 
-using namespace std;
+namespace optframe {
 
-// Working structure: vector<T>
-
-// template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-/*
-template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S,
-XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>> class
-MoveVRPExchange: public Move<XES>
-{
-
-        typedef vector<vector<T> > Routes;
-*/
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
 class MoveVRPExchange : public Move<XES> {
   using XEv = typename XES::second_type;
-  typedef vector<vector<int>> Routes;
+  using Routes = std::vector<std::vector<int>>;
 
  public:
   Routes& (*getRoutes)(const XES&);  // function to get routes from type 'R'
@@ -60,27 +35,19 @@ class MoveVRPExchange : public Move<XES> {
                   P* _problem = nullptr)
       : getRoutes(_getRoutes), r(_r), c1(_c1), c2(_c2), problem(_problem) {}
 
-  virtual ~MoveVRPExchange() {}
-
   int get_c1() { return c1; }
 
   int get_c2() { return c2; }
 
   int get_r() { return r; }
 
-  virtual bool canBeApplied(const XES& se) override {
+  bool canBeApplied(const XES& se) override {
     const Routes& rep = getRoutes(se);  // se.first.getR();
     bool all_positive = (c1 >= 0) && (c2 >= 0) && (r >= 0);
     return all_positive && (rep.at(r).size() >= 2);
   }
 
-  /*
-       virtual void updateNeighStatus(ADS& ads)
-       {
-       }
-*/
-
-  virtual uptr<Move<XES>> apply(XES& se) override {
+  uptr<Move<XES>> apply(XES& se) override {
     Routes& rep = getRoutes(se);  // se.first.getR();
     int aux = rep.at(r).at(c1);
     rep.at(r).at(c1) = rep.at(r).at(c2);
@@ -101,16 +68,6 @@ class MoveVRPExchange : public Move<XES> {
   }
 };
 
-// template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE =
-// MoveVRPExchange<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-/*
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE
-= MoveVRPExchange<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation
-XEv = Evaluation<>, XESolution XES = pair<S, XEv>> class NSIteratorVRPExchange:
-public NSIterator<XES>
-{
-        typedef vector<vector<T> > Routes;
-*/
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRPExchange<XES, P>>
 class NSIteratorVRPExchange : public NSIterator<XES> {
@@ -127,14 +84,9 @@ class NSIteratorVRPExchange : public NSIterator<XES> {
  public:
   NSIteratorVRPExchange(Routes& (*getRoutes)(const XES&), const XES& se,
                         P* _p = nullptr)
-      : getRoutes(getRoutes), rep{getRoutes(se)}, p(_p) {
-    index = 0;
-    m = nullptr;
-  }
+      : m{nullptr}, index{0}, getRoutes(getRoutes), rep{getRoutes(se)}, p(_p) {}
 
-  virtual ~NSIteratorVRPExchange() {}
-
-  virtual void first() override {
+  void first() override {
     for (int r = 0; r < (int)rep.size(); r++) {
       for (int c1 = 0; c1 < (int)rep.at(r).size(); c1++) {
         for (int c2 = 0; c2 < (int)rep.at(r).size(); c2++) {
@@ -143,27 +95,23 @@ class NSIteratorVRPExchange : public NSIterator<XES> {
         }
       }
     }
-    if (moves.size() > 0) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (moves.size() > 0)
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual void next() override {
+  void next() override {
     index++;
-    if (index < (int)moves.size()) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (index < (int)moves.size())
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual bool isDone() override { return m == nullptr; }
+  bool isDone() override { return m == nullptr; }
 
-  virtual uptr<Move<XES>> current() override {
+  uptr<Move<XES>> current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "NSSeqVRPExchange. Aborting." << endl;
@@ -177,21 +125,6 @@ class NSIteratorVRPExchange : public NSIterator<XES> {
   }
 };
 
-// template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE =
-// MoveVRPExchange<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class
-// NSITERATOR = NSIteratorVRPExchange<T, ADS, MOVE, P> >
-/*
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE
-= MoveVRPExchange<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class
-NSITERATOR = NSIteratorVRPExchange<T, ADS, S, MOVE, P>, XEvaluation XEv =
-Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S,
-XEv>> class NSSeqVRPExchange: public NSSeq<XES, XSH>
-{
-        typedef vector<vector<T> > Routes;
-
-private:
-        P* p; // has to be the last
-*/
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRPExchange<XES, P>,
           class NSITERATOR = NSIteratorVRPExchange<XES, P, MOVE>>
@@ -205,10 +138,8 @@ class NSSeqVRPExchange : public NSSeq<XES> {
   P* p;  // has to be the last (?)
 
  public:
-  NSSeqVRPExchange(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
+  explicit NSSeqVRPExchange(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
       : getRoutes(_getRoutes), p(_p) {}
-
-  virtual ~NSSeqVRPExchange() {}
 
   uptr<Move<XES>> randomMove(const XES& se) override {
     const Routes& rep = getRoutes(se);  // se.first.getR();
@@ -228,8 +159,7 @@ class NSSeqVRPExchange : public NSSeq<XES> {
     return uptr<Move<XES>>(new MOVE(getRoutes, r, c1, c2, p));
   }
 
-  virtual uptr<NSIterator<XES>> getIterator(const XES& se) override {
-    // XSolution& s = se.first;
+  uptr<NSIterator<XES>> getIterator(const XES& se) override {
     return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
   }
 
@@ -240,4 +170,6 @@ class NSSeqVRPExchange : public NSSeq<XES> {
   }
 };
 
-#endif /*OPTFRAME_NSSEQVRPEXCHANGE_HPP_*/
+}  // namespace optframe
+
+#endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_

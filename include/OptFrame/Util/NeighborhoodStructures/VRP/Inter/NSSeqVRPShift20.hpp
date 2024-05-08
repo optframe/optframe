@@ -1,34 +1,19 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef NSSeqVRPShift20_HPP_
-#define NSSeqVRPShift20_HPP_
+#ifndef OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSHIFT20_HPP_
+#define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSHIFT20_HPP_
+
+// C++
+#include <string>
+#include <utility>
+#include <vector>
 
 // Framework includes
 #include "../../../../Move.hpp"
 #include "../../../../NSSeq.hpp"
 
-using namespace std;
-
+namespace optframe {
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           class DS = OPTFRAME_DEFAULT_DS>
 class MoveVRPShift20 : public Move<vector<vector<T>>, ADS, DS> {
@@ -56,12 +41,12 @@ class MoveVRPShift20 : public Move<vector<vector<T>>, ADS, DS> {
 
   int get_pos() { return pos; }
 
-  virtual bool canBeApplied(const Routes& rep, const ADS*) override {
+  bool canBeApplied(const Routes& rep, const ADS*) override {
     bool numRoutes = rep.size() >= 2;
     return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
   }
 
-  virtual Move<Routes, ADS, DS>* apply(Routes& rep, ADS*) override {
+  Move<Routes, ADS, DS>* apply(Routes& rep, ADS*) override {
     // pegando o cliente
     int c = rep.at(r1).at(cli);
     int c2 = rep.at(r1).at(cli + 1);
@@ -102,24 +87,14 @@ class NSIteratorVRPShift20 : public NSIterator<vector<vector<T>>, ADS, DS> {
   vector<uptr<MoveVRPShift20<T, ADS, DS>>> moves;
   int index;  // index of moves
   const Routes& r;
+  // has to be the last
+  P* p;
 
-  P* p;  // has to be the last
  public:
-  NSIteratorVRPShift20(const Routes& _r, P* _p = nullptr) : r(_r), p(_p) {
-    m = nullptr;
-    index = 0;
-  }
+  explicit NSIteratorVRPShift20(const Routes& _r, P* _p = nullptr)
+      : m{nullptr}, index{0}, r{_r}, p{_p} {}
 
-  virtual ~NSIteratorVRPShift20() {
-    /*if (moves.size() > 0) //todo see this with Igor
-               {
-               for (unsigned int i = 0; i < moves.size(); i++)
-               delete moves[i];
-               moves.clear();
-               }*/
-  }
-
-  virtual void first() override {
+  void first() override {
     for (int r1 = 0; r1 < r.size(); r1++) {
       for (int r2 = 0; r2 < r.size(); r2++) {
         if (r1 != r2) {
@@ -132,27 +107,23 @@ class NSIteratorVRPShift20 : public NSIterator<vector<vector<T>>, ADS, DS> {
         }
       }
     }
-    if (moves.size() > 0) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (moves.size() > 0)
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual void next() override {
+  void next() override {
     index++;
-    if (index < moves.size()) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (index < moves.size())
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual bool isDone() override { return m == nullptr; }
+  bool isDone() override { return m == nullptr; }
 
-  virtual Move<Routes, ADS, DS>* current() override {
+  Move<Routes, ADS, DS>* current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "NSSeqVRPShift20. Aborting." << endl;
@@ -174,12 +145,10 @@ class NSSeqVRPShift20 : public NSSeq<vector<vector<T>>, ADS, DS> {
   P* p;  // has to be the last
 
  public:
-  NSSeqVRPShift20(P* _p = nullptr) : p(_p) {}
+  explicit NSSeqVRPShift20(P* _p = nullptr) : p(_p) {}
 
-  virtual ~NSSeqVRPShift20() {}
-
-  virtual uptr<Move<Routes, ADS, DS>> randomMove(const Routes& rep,
-                                                 const ADS*) override {
+  uptr<Move<Routes, ADS, DS>> randomMove(const Routes& rep,
+                                         const ADS*) override {
     if (rep.size() < 2) return *new MOVE(-1, -1, -1, -1, p);
 
     int r1 = rand() % rep.size();
@@ -199,7 +168,7 @@ class NSSeqVRPShift20 : public NSSeq<vector<vector<T>>, ADS, DS> {
         MOVE(r1, r2, cli, pos, p));  // return a random move
   }
 
-  virtual uptr<NSIteratorVRPShift20<T, ADS, DS, MOVE, P>> getIterator(
+  uptr<NSIteratorVRPShift20<T, ADS, DS, MOVE, P>> getIterator(
       const Routes& r, const ADS*) override {
     return new NSITERATOR(r, p);
   }
@@ -209,4 +178,6 @@ class NSSeqVRPShift20 : public NSSeq<vector<vector<T>>, ADS, DS> {
   }
 };
 
-#endif /*NSSeqVRPShift20_HPP_*/
+}  // namespace optframe
+
+#endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSHIFT20_HPP_

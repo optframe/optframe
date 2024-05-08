@@ -1,35 +1,19 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_NSSEQVRPSWAP2_2_HPP_
-#define OPTFRAME_NSSEQVRPSWAP2_2_HPP_
+#ifndef OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSWAP2_2_HPP_
+#define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSWAP2_2_HPP_
+
+// C++
+#include <string>
+#include <utility>
+#include <vector>
 
 // Framework includes
 #include "../../../../Move.hpp"
 #include "../../../../NSSeq.hpp"
 
-using namespace std;
-
-// Working structure: vector<T>
+namespace optframe {
 
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           class DS = OPTFRAME_DEFAULT_DS>
@@ -52,8 +36,6 @@ class MoveVRPSwap2_2 : public Move<vector<vector<T>>, ADS, DS> {
         reverseR2(_reverseR2),
         problem(_problem) {}
 
-  virtual ~MoveVRPSwap2_2() {}
-
   bool get_reverseR1() { return reverseR1; }
 
   bool get_reverseR2() { return reverseR2; }
@@ -66,13 +48,13 @@ class MoveVRPSwap2_2 : public Move<vector<vector<T>>, ADS, DS> {
 
   int get_c2() { return c2; }
 
-  virtual bool canBeApplied(const Routes& rep, const ADS*) override {
+  bool canBeApplied(const Routes& rep, const ADS*) override {
     bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 0) && (c2 >= 0);
     return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 2) &&
            (rep.at(r2).size() >= 2);
   }
 
-  virtual Move<Routes, ADS, DS>* apply(Routes& rep, ADS*) override {
+  Move<Routes, ADS, DS>* apply(Routes& rep, ADS*) override {
     int aux;
 
     if (reverseR1) {
@@ -126,27 +108,20 @@ class NSIteratorVRPSwap2_2 : public NSIterator<vector<vector<T>>> {
   vector<uptr<Move<XES>>> moves;
   int index;  // index of moves
   const Routes& r;
+  // has to be the last
+  P* p;
 
-  P* p;  // has to be the last
  public:
-  NSIteratorVRPSwap2_2(const Routes& _r) : r(_r), p(_p) {
-    m = nullptr;
-    index = 0;
-  }
+  explicit NSIteratorVRPSwap2_2(const Routes& _r, P* _p = nullptr)
+      : m{nullptr}, index{0}, r{_r}, p{_p} {}
 
-  virtual ~NSIteratorVRPSwap2_2() {
-    /*for (int i = 0; i < moves.size(); i++)
-               delete moves[i];*/
-  }
-
-  virtual void first() override {
+  void first() override {
     for (int r1 = 0; r1 < r.size() - 1; r1++) {
-      if (r.at(r1).size() >= 2)  // verificando se há pelo menos dois clientes.
-      {
+      if (r.at(r1).size() >= 2) {
+        // verificando se há pelo menos dois clientes.
         for (int r2 = r1 + 1; r2 < r.size(); r2++) {
-          if (r.at(r2).size() >=
-              2)  // verificando se há pelo menos dois clientes.
-          {
+          if (r.at(r2).size() >= 2) {
+            // verificando se há pelo menos dois clientes.
             for (int c1 = 0; c1 < r.at(r1).size() - 1; c1++) {
               for (int c2 = 0; c2 < r.at(r2).size() - 1; c2++) {
                 moves.push_back(uptr<Move<ESolutionHFMVRP>>(
@@ -164,27 +139,23 @@ class NSIteratorVRPSwap2_2 : public NSIterator<vector<vector<T>>> {
       }
     }
 
-    if (moves.size() > 0) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (moves.size() > 0)
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual void next() override {
+  void next() override {
     index++;
-    if (index < moves.size()) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (index < moves.size())
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual bool isDone() override { return m == nullptr; }
+  bool isDone() override { return m == nullptr; }
 
-  virtual Move<T, ADS, DS>* current() override {
+  Move<T, ADS, DS>* current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "NSSeqVRPSwap2_2. Aborting." << endl;
@@ -206,9 +177,7 @@ class NSSeqVRPSwap2_2 : public NSSeq<vector<vector<T>>> {
   P* p;  // has to be the last
 
  public:
-  NSSeqVRPSwap2_2(P* _p = nullptr) : p(_p) {}
-
-  virtual ~NSSeqVRPSwap2_2() {}
+  explicit NSSeqVRPSwap2_2(P* _p = nullptr) : p(_p) {}
 
   uptr<Move<Routes, ADS, DS>> randomMove(const Routes& rep,
                                          const ADS*) override {
@@ -249,4 +218,6 @@ class NSSeqVRPSwap2_2 : public NSSeq<vector<vector<T>>> {
   }
 };
 
-#endif /*OPTFRAME_NSSEQSWAP2_2_HPP_*/
+}  // namespace optframe
+
+#endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSWAP2_2_HPP_

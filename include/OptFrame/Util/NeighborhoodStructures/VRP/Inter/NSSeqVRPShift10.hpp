@@ -1,44 +1,29 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef NSSeqVRPShift10_HPP_
-#define NSSeqVRPShift10_HPP_
+#ifndef OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSHIFT10_HPP_
+#define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSHIFT10_HPP_
+
+// C++
+#include <string>
+#include <utility>
+#include <vector>
 
 // Framework includes
+#include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
+
 #include "../../../../Move.hpp"
 #include "../../../../NSSeq.hpp"
 
-using namespace std;
+namespace optframe {
 
-// template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-// class ADS, XBaseSolution<vector<vector<T> >,ADS> S, class MOVE =
-// MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR
-// = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<vector<T>>, ADS> S =
               CopySolution<vector<vector<T>>, ADS>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MoveVRPShift10 : public Move<XES>  // Move<vector<vector<T> > , ADS>
-{
+class MoveVRPShift10 : public Move<XES> {
   using Routes = vector<vector<T>>;
 
  protected:
@@ -63,7 +48,7 @@ class MoveVRPShift10 : public Move<XES>  // Move<vector<vector<T> > , ADS>
 
   int get_pos() { return pos; }
 
-  virtual bool canBeApplied(const XES& se) override {
+  bool canBeApplied(const XES& se) override {
     const Routes& rep = se.first.getR();
     bool numRoutes = rep.size() >= 2;
     return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
@@ -71,7 +56,7 @@ class MoveVRPShift10 : public Move<XES>  // Move<vector<vector<T> > , ADS>
 
   virtual void updateNeighStatus(ADS& ads) {}
 
-  virtual uptr<Move<XES>> apply(XES& se) override {
+  uptr<Move<XES>> apply(XES& se) override {
     Routes& rep = se.first.getR();
     // pegando o cliente
     int c = rep.at(r1).at(cli);
@@ -98,15 +83,11 @@ class MoveVRPShift10 : public Move<XES>  // Move<vector<vector<T> > , ADS>
   }
 };
 
-// template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE =
-// MoveVRPShift10<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           class MOVE = MoveVRPShift10<T, ADS, S>,
           class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
-class NSIteratorVRPShift10
-    : public NSIterator<XES>  // NSIterator<vector<vector<T> > , ADS>
-{
+class NSIteratorVRPShift10 : public NSIterator<XES> {
   typedef vector<vector<T>> Routes;
 
  protected:
@@ -124,16 +105,7 @@ class NSIteratorVRPShift10
     index = 0;
   }
 
-  virtual ~NSIteratorVRPShift10() {
-    /*if (moves.size() > 0) //todo see this with Igor
-               {
-               for (unsigned int i = 0; i < moves.size(); i++)
-               delete moves[i];
-               moves.clear();
-               }*/
-  }
-
-  virtual void first() override {
+  void first() override {
     for (int r1 = 0; r1 < r.size(); r1++) {
       for (int r2 = 0; r2 < r.size(); r2++) {
         if (r1 != r2) {
@@ -146,27 +118,23 @@ class NSIteratorVRPShift10
       }
     }
 
-    if (moves.size() > 0) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (moves.size() > 0)
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual void next() override {
+  void next() override {
     index++;
-    if (index < moves.size()) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (index < moves.size())
+      m = std::move(moves[index]);
+    else
       m = nullptr;
   }
 
-  virtual bool isDone() override { return m == nullptr; }
+  bool isDone() override { return m == nullptr; }
 
-  virtual uptr<Move<XES>> current() override {
+  uptr<Move<XES>> current() override {
     if (isDone()) {
       cout << "There isnt any current element!" << endl;
       cout << "NSSeqVRPShift10. Aborting." << endl;
@@ -178,9 +146,6 @@ class NSIteratorVRPShift10
   }
 };
 
-// template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE =
-// MoveVRPShift10<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR
-// = NSIteratorVRPShift10<T, ADS, MOVE, P> >
 template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           class MOVE = MoveVRPShift10<T, ADS, S>,
           class P = OPTFRAME_DEFAULT_PROBLEM,
@@ -188,17 +153,15 @@ template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
           XSearch<XES> XSH = std::pair<S, XEv>>
 class NSSeqVRPShift10 : public NSSeq<XES, XSH> {
-  typedef vector<vector<T>> Routes;
+  using Routes = std::vector<std::vector<T>>;
 
  private:
-  P* p;  // has to be the last
+  P* p;
 
  public:
-  NSSeqVRPShift10(P* _p = nullptr) : p(_p) {}
+  explicit NSSeqVRPShift10(P* _p = nullptr) : p(_p) {}
 
-  virtual ~NSSeqVRPShift10() {}
-
-  virtual uptr<Move<XES>> randomMove(const XES& se) override {
+  uptr<Move<XES>> randomMove(const XES& se) override {
     const Routes& rep = se.first.getR();
     if (rep.size() < 2) return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
 
@@ -219,25 +182,7 @@ class NSSeqVRPShift10 : public NSSeq<XES, XSH> {
         new MOVE(r1, r2, cli, pos, p));  // return a random move
   }
 
-  /*
-       virtual uptr<Move<XES>> validRandomMove(const XES& s) override
-       {
-     const Routes& rep = s.getR();
-               int maxValidMove = 50;
-               for (int iter = 0; iter < maxValidMove; iter++)
-               {
-                       uptr<Move<XES>> moveValid = this->randomMove(s);
-                       if (moveValid->canBeApplied(s))
-                               return moveValid;
-                       //else
-                       //	delete moveValid;
-               }
-
-               return nullptr;
-       }
-*/
-
-  virtual uptr<NSIterator<XES>> getIterator(const XES& se) override {
+  uptr<NSIterator<XES>> getIterator(const XES& se) override {
     XSolution AUTO_CONCEPTS& s = se.first;
     return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
   }
@@ -253,4 +198,6 @@ class NSSeqVRPShift10 : public NSSeq<XES, XSH> {
   }
 };
 
-#endif /*NSSeqVRPShift10_HPP_*/
+}  // namespace optframe
+
+#endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSHIFT10_HPP_
