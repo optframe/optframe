@@ -6,7 +6,7 @@ CC=g++
 all: cpp_17 cpp_20
 
 cpp_17:
-	$(CC) --std=c++17 OptFCore_load.cpp -I../../include -o app_demo_opt
+	$(CC) --std=c++17 src/OptFCore_load.cpp -I../../include -o app_demo_opt
 
 cpp_20:
-	$(CC) --std=c++20 OptFCore_load.cpp -I../../include -o app_demo_opt_20
+	$(CC) --std=c++20 src/OptFCore_load.cpp -I../../include -o app_demo_opt_20

@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 
 cc_binary(
     name = "app_demo_opt",
-    srcs = ["OptFCore_load.cpp"],
+    srcs = ["src/OptFCore_load.cpp"],
     deps = ["@OptFrame//include:OptFCore"],
     copts = select({
         "@bazel_tools//src/conditions:windows": ["/std:c++17"],

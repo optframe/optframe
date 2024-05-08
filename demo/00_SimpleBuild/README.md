@@ -25,6 +25,18 @@ $ bash -i -c "nvm install --lts"
 $ bash -i -c "sudo npm install -g @bazel/bazelisk"
 ```
 
+### Building with cxxbuild
+
+`cxxbuild` is a utilitary tool to automatically generate CMake or Bazel build files.
+To use `cxxbuild`, just install it with pip: `pip install cxxbuild`
+
+Then, create a `cxxdeps.txt` file with the following content (choose desired OptFrame version):
+
+```
+OptFrame == "5.0.18" [ OptFrameAll ]  git *  https://github.com/optframe/optframe.git
+```
+
+Finally, run `cxxbuild` with the desired c++ standard: `cxxbuild . --c++17`
 ### Learning more
 
 For more information, check [OptFrame Quickstart on ReadTheDocs](https://optframe.readthedocs.io/en/latest/quickstart.html).

@@ -5,6 +5,7 @@ git_override(
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
     commit = "daae6f40adfa5fdb7c89684cbe4d88b691c63b2d",
 )
+# RUN: bazel run @hedron_compile_commands//:refresh_all
 bazel_dep(name = "aspect_bazel_lib", version = "1.34.5")
 #
 #bazel_dep(name = "bazel_skylib", version = "1.5.0")
