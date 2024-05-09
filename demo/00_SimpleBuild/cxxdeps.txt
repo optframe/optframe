@@ -1,1 +1,1 @@
-OptFrame == "5.0.18" [ OptFrameAll ]  git *  https://github.com/optframe/optframe.git
+OptFrame == "master" [ OptFrameAll ]  git *  https://github.com/optframe/optframe.git

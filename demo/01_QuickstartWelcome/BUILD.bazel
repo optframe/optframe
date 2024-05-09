@@ -1,7 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
 cc_binary(
     name = "demo_welcome",
-    srcs = ["mytest.cpp"],
+    srcs = ["src/mytest.cpp"],
     deps=["@OptFrame//include:OptFCore"],
     copts = select({
         "@bazel_tools//src/conditions:windows": ["/std:c++17"],
