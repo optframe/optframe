@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef HFMVRP_EVALUATOR_HPP_
 #define HFMVRP_EVALUATOR_HPP_
 
 //#include <cmath>
 #include <math.h>
 #include <stdlib.h>
-
+//
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef HFMVRP_PROBLEMINSTANCE_HPP_
 #define HFMVRP_PROBLEMINSTANCE_HPP_
 

@@ -8,6 +8,7 @@ Include(FetchContent)
 set(SOURCES
 )
 add_definitions( -DLEGACY_ADS )
+
 add_executable(mainHFMVRP src/mainHFMVRP.cpp ${SOURCES})
 add_executable(Example.Test tests/Example.Test.cpp ${SOURCES})
 add_library(my_headers0 INTERFACE)

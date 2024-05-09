@@ -17,6 +17,9 @@
 #include "../../../../Move.hpp"
 #include "../../../../NSSeq.hpp"
 
+// Check if C++20 Concepts is supported
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
 namespace optframe {
 
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
@@ -195,5 +198,9 @@ class NSSeqVRPSwap1_1 : public NSSeq<XES, XSH> {
 };
 
 }  // namespace optframe
+
+#else
+#error C++20 is required
+#endif  // C++20
 
 #endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSWAP1_1_HPP_

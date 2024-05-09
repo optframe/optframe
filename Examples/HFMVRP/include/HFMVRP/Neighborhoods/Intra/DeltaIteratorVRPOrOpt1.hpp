@@ -1,118 +1,90 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
+#ifndef EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTRA_DELTAITERATORVRPOROPT1_HPP_
+#define EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTRA_DELTAITERATORVRPOROPT1_HPP_
 
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef DELTA_NSITERATORVRPOROPT1_HPP_
-#define DELTA_NSITERATORVRPOROPT1_HPP_
-
+// C++
 #include <cmath>
+// hfmvrp
+#include "DeltaMoveVRPOrOpt1.hpp"
 
 using namespace std;
 
-namespace HFMVRP
+namespace HFMVRP {
+
+template <class MOVE = DeltaMoveVRPOrOpt1>
+class DeltaNSIteratorVRPOrOpt1
+    : public NSIteratorVRPOrOpt1<
+          ESolutionHFMVRP, ProblemInstance,
+          DeltaMoveVRPOrOpt1>  //<int, AdsHFMVRP, SolutionHFMVRP,
+                               // DeltaMoveVRPOrOpt1, ProblemInstance>
 {
+  typedef NSIteratorVRPOrOpt1<ESolutionHFMVRP, ProblemInstance,
+                              DeltaMoveVRPOrOpt1>
+      super;  //<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1,
+              // ProblemInstance> super;
 
-template<class MOVE = DeltaMoveVRPOrOpt1>
-class DeltaNSIteratorVRPOrOpt1: public NSIteratorVRPOrOpt1<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPOrOpt1>//<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance>
-{
-	typedef NSIteratorVRPOrOpt1<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPOrOpt1> super;//<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance> super;
+ private:
+  const AdsHFMVRP& ads;  // TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
-private:
-	const AdsHFMVRP& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
+ public:
+  DeltaNSIteratorVRPOrOpt1(
+      vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s),
+      const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
+      : super(_getRoutes, se, _hfmvrp), ads(se.first.getADS()) {
+    if (!_hfmvrp) {
+      cout << "Error: hfmvrp problem is NULL!" << endl;
+      exit(1);
+    }
+  }
 
-public:
+  virtual ~DeltaNSIteratorVRPOrOpt1() {}
 
-	DeltaNSIteratorVRPOrOpt1(vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp) :
-   	super(_getRoutes, se, _hfmvrp), ads(se.first.getADS())
-	{
-		if (!_hfmvrp)
-		{
-			cout << "Error: hfmvrp problem is NULL!" << endl;
-			exit(1);
-		}
+  void first() override {
+    for (int r = 0; r < (int)rep.size(); r++)
+      if (!(ads.neighborhoodStatus.find(DeltaMoveVRPOrOpt1::idComponent())
+                ->second[r])) {
+        for (int c = 0; c < (int)rep.at(r).size(); c++) {
+          for (int pos = 0; pos <= (int)rep.at(r).size(); pos++) {
+            if ((c != pos) && (c + 1 != pos)) {
+              moves.push_back(uptr<Move<ESolutionHFMVRP>>(
+                  new MOVE(getRoutes, r, c, pos, p)));
+            }
+          }
+        }
+      }
 
-	}
+    if (moves.size() > 0)
+      m = std::move(moves[index]);  // stealing from vector..
+    else
+      m = NULL;
+  }
 
-	virtual ~DeltaNSIteratorVRPOrOpt1()
-	{
-	}
+  void next() override {
+    index++;
+    if (index < (int)moves.size())
+      m = std::move(moves[index]);  // stealing from vector...
+    else
+      m = NULL;
+  }
 
-	void first() override
-	{
+  bool isDone() override { return m == NULL; }
 
-		for (int r = 0; r < rep.size(); r++)
-			if (!(ads.neighborhoodStatus.find(DeltaMoveVRPOrOpt1::idComponent())->second[r]))
-			{
-				for (int c = 0; c < rep.at(r).size(); c++)
-				{
-					for (int pos = 0; pos <= rep.at(r).size(); pos++)
-					{
-						if ((c != pos) && (c + 1 != pos))
-						{
-							moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(getRoutes, r, c, pos, p)));
-						}
-					}
-				}
-			}
+  uptr<Move<ESolutionHFMVRP>> current() override {
+    if (isDone()) {
+      cout << "There isnt any current element!" << endl;
+      cout << "DeltaNSSeqVRPOrOpt1. Aborting." << endl;
+      exit(1);
+    }
 
-		if (moves.size() > 0)
-		{
-			m = std::move(moves[index]); // stealing from vector..
-		}
-		else
-			m = NULL;
+    uptr<Move<ESolutionHFMVRP>> m2 = std::move(m);
+    m = nullptr;
 
-	}
-
-	void next() override
-	{
-		index++;
-		if (index < moves.size())
-		{
-			m = std::move(moves[index]); // stealing from vector...
-		}
-		else
-			m = NULL;
-
-	}
-
-	bool isDone() override
-	{
-		return m == NULL;
-	}
-
-	uptr<Move<ESolutionHFMVRP>> current() override
-	{
-		if (isDone())
-		{
-			cout << "There isnt any current element!" << endl;
-			cout << "DeltaNSSeqVRPOrOpt1. Aborting." << endl;
-			exit(1);
-		}
-
-      uptr<Move<ESolutionHFMVRP>> m2 = std::move(m);
-      m = nullptr;
-
-		return m2;
-	}
+    return m2;
+  }
 };
 
-}
+}  // namespace HFMVRP
 
-#endif /*DELTA_NSITERATORVRPOROPT1_HPP_*/
+#endif  // EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTRA_DELTAITERATORVRPOROPT1_HPP_

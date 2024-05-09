@@ -1,28 +1,12 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
+#ifndef EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSHIFT10_HPP_
+#define EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSHIFT10_HPP_
 
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef DELTA_MOVEVRPSHIFT1_0_HPP_
-#define DELTA_MOVEVRPSHIFT1_0_HPP_
-
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPShift10.hpp>
 #include <cmath>
+// MoveVRPShift10
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPShift10.hpp>
 
 using namespace std;
 
@@ -329,4 +313,4 @@ class DeltaMoveVRPShift10
 
 }  // namespace HFMVRP
 
-#endif /*DELTA_MOVEVRPSHIFT1_0_HPP_*/
+#endif  // EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSHIFT10_HPP_
