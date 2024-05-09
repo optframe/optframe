@@ -10,7 +10,7 @@ Include(FetchContent)
 # ====== configure project with header only library ======
 add_library(OptFrameAll INTERFACE)
 target_include_directories(OptFrameAll INTERFACE include/)
-add_executable(app_demo_opt demo/00_SimpleBuild/OptFCore_load.cpp)
+add_executable(app_demo_opt demo/00_SimpleBuild/src/OptFCore_load.cpp)
 target_link_libraries(app_demo_opt PRIVATE OptFrameAll)
 
 # ==================================
