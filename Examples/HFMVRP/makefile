@@ -2,7 +2,7 @@ all: build/app_Example
 
 CC=g++
 # removed -Wall, for now
-CXXFLAGS= -I../../include -I../../libs/ -DLEGACY_ADS -g --std=c++20 -fsanitize=address -Wfatal-errors  -fno-exceptions -O3  #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../include -I../../libs/ -Iinclude/ -DLEGACY_ADS -g --std=c++20 -fsanitize=address -Wfatal-errors  -fno-exceptions -O3  #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src

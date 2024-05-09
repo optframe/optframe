@@ -3,8 +3,14 @@
 // Project HFMVRP
 // ===================================
 
+// C
 #include <math.h>
 #include <stdlib.h>
+
+// C++
+#include <iostream>
+
+// optframe
 
 #include <OptFrame/Helper/CloneConstructive.hpp>
 #include <OptFrame/Heuristics/EA/ESContinuous.hpp>
@@ -21,9 +27,9 @@
 #include <OptFrame/Timer.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
-#include <iostream>
 
-#include "HFMVRP.h"
+//
+#include <HFMVRP/HFMVRP.h>
 
 using namespace std;
 
@@ -97,11 +103,10 @@ int main(int argc, char** argv) {
   // nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP,
   // SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance,
   // DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>>
-      nsseq_deltaIterator_delta_2opt =
-          new NSSeqVRP2Opt<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRP2Opt,
-                           DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(
-              localGetRoutes, p);
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_delta_2opt =
+      new NSSeqVRP2Opt<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRP2Opt,
+                       DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(localGetRoutes,
+                                                                 p);
   uptr<Move<ESolutionHFMVRP>> movetest =
       nsseq_deltaIterator_delta_2opt->randomMove(esolTest);
   movetest->print();
@@ -109,47 +114,46 @@ int main(int argc, char** argv) {
   // sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_2opt =
   // new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt,
   // ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_2opt =
+  sref<NS<ESolutionHFMVRP>> ns_deltaIterator_delta_2opt =
       nsseq_deltaIterator_delta_2opt;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or1 =
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_delta_or1 =
       new NSSeqVRPOrOpt1<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPOrOpt1,
                          DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(
           localGetRoutes, p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_or1 =
+  sref<NS<ESolutionHFMVRP>> ns_deltaIterator_delta_or1 =
       nsseq_deltaIterator_delta_or1;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or2 =
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_delta_or2 =
       new NSSeqVRPOrOpt2<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPOrOpt2,
                          DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(
           localGetRoutes, p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_or2 =
+  sref<NS<ESolutionHFMVRP>> ns_deltaIterator_delta_or2 =
       nsseq_deltaIterator_delta_or2;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>>
-      nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<
-          ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPExchange,
-          DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(localGetRoutes, p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_exchange =
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_delta_exchange =
+      new NSSeqVRPExchange<ESolutionHFMVRP, ProblemInstance,
+                           DeltaMoveVRPExchange,
+                           DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(
+          localGetRoutes, p);
+  sref<NS<ESolutionHFMVRP>> ns_deltaIterator_delta_exchange =
       nsseq_deltaIterator_delta_exchange;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_shift10 =
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_delta_shift10 =
       new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10,
                           ProblemInstance>(p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_delta_shift10 =
-      nsseq_delta_shift10;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_swap11 =
+  sref<NS<ESolutionHFMVRP>> ns_delta_shift10 = nsseq_delta_shift10;
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_delta_swap11 =
       new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1,
                           ProblemInstance>(p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_delta_swap11 =
-      nsseq_delta_swap11;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_swap11 =
+  sref<NS<ESolutionHFMVRP>> ns_delta_swap11 = nsseq_delta_swap11;
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_swap11 =
       new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1,
                           ProblemInstance,
                           DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1>>(p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_swap11 =
+  sref<NS<ESolutionHFMVRP>> ns_deltaIterator_swap11 =
       nsseq_deltaIterator_swap11;
-  sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_shift10 =
+  sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_shift10 =
       new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10,
                           ProblemInstance,
                           DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
-  sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_shift10 =
+  sref<NS<ESolutionHFMVRP>> ns_deltaIterator_shift10 =
       nsseq_deltaIterator_shift10;
 
   ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>* ilsl_pert;
@@ -235,8 +239,8 @@ int main(int argc, char** argv) {
   getchar();
 
   // if randgen is given, it is RVND
-  sref<GeneralEvaluator<ESolutionHFMVRP, EvaluationHFMVRP>> _ev = eval;
-  vsref<LocalSearch<ESolutionHFMVRP, EvaluationHFMVRP>> _lsList = vLS;
+  sref<GeneralEvaluator<ESolutionHFMVRP>> _ev = eval;
+  vsref<LocalSearch<ESolutionHFMVRP>> _lsList = vLS;
   sptr<RandGen> _rg = rg.sptr();
   // VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg);
   VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg.sptr());
@@ -246,8 +250,8 @@ int main(int argc, char** argv) {
       newVNDUpdateADS(eval, *adsMan, vLS);
   // BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>
   // basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
-  BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP> basicGrasp(
-      eval, is, newVNDUpdateADS, alpha, 1000);
+  BasicGRASP<ESolutionHFMVRP> basicGrasp(eval, is, newVNDUpdateADS, alpha,
+                                         1000);
 
   EmptyLocalSearch<ESolutionHFMVRP> emptyLS;
   // vector<NSSeq<ESolutionHFMVRP>*> vNSeq;
@@ -271,8 +275,8 @@ int main(int argc, char** argv) {
   //
 
   sref<InitialSearch<ESolutionHFMVRP>> initConstructive =
-      new BasicInitialSearch<ESolutionHFMVRP>(
-          new CloneConstructive<SolutionHFMVRP>(initialPairGrasp->first), eval);
+      new BasicInitialSearch<ESolutionHFMVRP>{
+          new CloneConstructive<SolutionHFMVRP>{initialPairGrasp->first}, eval};
 
   vector<int> vNSeqMaxApplication(vNSeq.size(), 1000);
   int selectionType = 1;
@@ -302,10 +306,9 @@ int main(int argc, char** argv) {
   // sref<RandGen> _rg, NGESParams _ngesParams)
   //
   sref<GeneralEvaluator<ESolutionHFMVRP>> _eval = eval;
-  sref<InitialSearch<ESolutionHFMVRP, EvaluationHFMVRP>> _constructive =
-      initConstructive;
-  vsref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> _vNS;
-  sref<LocalSearch<ESolutionHFMVRP, EvaluationHFMVRP>> _ls = emptyLS;
+  sref<InitialSearch<ESolutionHFMVRP>> _constructive = initConstructive;
+  vsref<NS<ESolutionHFMVRP>> _vNS;
+  sref<LocalSearch<ESolutionHFMVRP>> _ls = emptyLS;
   // sref<RandGen> _rg = rg;
 
   // NGES<ESolutionHFMVRP>* es = new NGES<ESolutionHFMVRP>(*eval,

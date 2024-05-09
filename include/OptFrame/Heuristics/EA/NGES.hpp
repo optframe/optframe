@@ -1,33 +1,18 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
+#ifndef OPTFRAME_HEURISTICS_EA_NGES_HPP_
+#define OPTFRAME_HEURISTICS_EA_NGES_HPP_
 
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef OPTFRAME_NGES_HPP_
-#define OPTFRAME_NGES_HPP_
-
-// filename: NGES.hpp
-
+// C
 #include <math.h>
 
+// C++
 #include <memory>  // shared_ptr
+#include <string>
 #include <vector>
 
+// optframe
 #include "../../Constructive.hpp"
 #include "../../Evaluation.hpp"
 #include "../../Evaluator.hpp"
@@ -36,9 +21,9 @@
 #include "../../RandGen.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "../../Timer.hpp"
-//#include <gsl/gsl_rng.h>
-//#include <gsl/gsl_randist.h>
-//#include "../../NSSeq.hpp"
+// #include <gsl/gsl_rng.h>
+// #include <gsl/gsl_randist.h>
+// #include "../../NSSeq.hpp"
 
 // NGES - Neighborhood Guided Evolution Strategies
 
@@ -188,7 +173,8 @@ struct NGESInd {
 
   ~NGESInd() {}
 
-  void print() const override {
+  // do not 'override'
+  void print() const {
     cout << "NGESInd: {";
     ind.first.print();
     ind.second.print();
@@ -457,13 +443,14 @@ class NGES : public SingleObjSearch<XES> {
   // XEv>> search(StopCriteria<XEv>& stopCriteria) override
   //
   // SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
-  SearchOutput<XES, XSH> search(
-      const StopCriteria<XEv>& stopCriteria) override {
+  SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& stopCriteria,
+                                  std::optional<XES> best) override {
+    assert(!best);  // DO NOT RECEIVE IT HERE!
     // op<XES>& star = this->best;
     op<XES> star = nullopt;
     Timer tnow;
     NGESPopulation pop;
-    //////NGESPopulation pop(ngesParams.mi, nullptr);
+    ////// NGESPopulation pop(ngesParams.mi, nullptr);
 
     // S* sStar = nullptr;
     // Evaluation<>* eStar = nullptr;
@@ -570,7 +557,7 @@ class NGES : public SingleObjSearch<XES> {
         // pair<S, XEv> se = make_pair(filho, eval->evaluate(filho));
         pair<S, XEv> se = {filho, XEv{}};  // TODO: fix this logic! Solution
                                            // must come with Evaluation already
-        se.second.isOutdated() = true;     // force outdated
+        se.second.invalidate();            // force outdated
         eval->reevaluate(se);
 
         //================
@@ -704,4 +691,4 @@ class NGES : public SingleObjSearch<XES> {
 };
 }  // namespace optframe
 
-#endif /* NGES_HPP_ */
+#endif  // OPTFRAME_HEURISTICS_EA_NGES_HPP_

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_CLONE_CONSTRUCTIVE_HPP_
-#define OPTFRAME_CLONE_CONSTRUCTIVE_HPP_
+#ifndef OPTFRAME_HELPER_CLONECONSTRUCTIVE_HPP_
+#define OPTFRAME_HELPER_CLONECONSTRUCTIVE_HPP_
 
 #include <string>
 #include <utility>
@@ -20,19 +20,15 @@ class CloneConstructive : public Constructive<S> {
   S base;
 
  public:
-  CloneConstructive(S _base)  //(sptr<S> _base)
-      : base{_base}           // base(&_base->clone())
-  {}
+  // explicit CloneConstructive(S _base) : base{_base} {}
 
-  CloneConstructive(const S& _base)
-      : base{_base}  //(&_base.clone())
-  {}
+  explicit CloneConstructive(const S& _base) : base{_base} {}
 
-  virtual ~CloneConstructive() {
-    // delete &base;
-  }
+  // virtual ~CloneConstructive() {
+  //  delete &base;
+  //}
 
-  virtual std::optional<S> generateSolution(double timelimit) override {
+  std::optional<S> generateSolution(double timelimit) override {
     /*
       S& s = base->clone();
       std::optional<S> retS(s); // TODO: what happens here? can we move at
@@ -101,4 +97,4 @@ class CloneConstructiveBuilder : public ComponentBuilder<XES> {
 };
 }  // namespace optframe
 
-#endif /*OPTFRAME_CLONE_CONSTRUCTIVE_HPP_*/
+#endif  // OPTFRAME_HELPER_CLONECONSTRUCTIVE_HPP_

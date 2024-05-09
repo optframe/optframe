@@ -1,0 +1,17 @@
+# bazel_dep(name = "bazel_skylib", version = "1.4.2")
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+git_override(
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "daae6f40adfa5fdb7c89684cbe4d88b691c63b2d",
+)
+# RUN: bazel run @hedron_compile_commands//:refresh_all
+bazel_dep(name = "aspect_bazel_lib", version = "1.34.5")
+#
+#bazel_dep(name = "bazel_skylib", version = "1.5.0")
+bazel_dep(name = "catch2", dev_dependency = True)
+git_override(
+    module_name = "catch2",
+    remote = "https://github.com/catchorg/Catch2.git",
+    commit = "3acb8b30f1ce0c801de0e3880ea1f6467dd0105c",
+)

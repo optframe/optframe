@@ -1,0 +1,2 @@
+OptFrame == "5.0.18" [ OptFrameAll ]  git *  https://github.com/optframe/optframe.git
+Catch2 == "v3.5.1" [ Catch2::Catch2WithMain ] cmake+git test https://github.com/catchorg/Catch2.git

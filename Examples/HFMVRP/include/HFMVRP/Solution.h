@@ -1,6 +1,10 @@
 #ifndef HFMVRP_SOLUTION_H_
 #define HFMVRP_SOLUTION_H_
 
+// C++
+#include <utility>
+
+//
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
@@ -12,13 +16,12 @@ using namespace optframe;
 
 namespace HFMVRP {
 
-typedef CopySolution<RepHFMVRP, AdsHFMVRP> SolutionHFMVRP;
+using SolutionHFMVRP = CopySolution<RepHFMVRP, AdsHFMVRP>;
 
-typedef pair<SolutionHFMVRP, EvaluationHFMVRP> ESolutionHFMVRP;
+using ESolutionHFMVRP = std::pair<SolutionHFMVRP, EvaluationHFMVRP>;
 
 // adapter for VRP neighborhoods
-vector<vector<int>>&
-localGetRoutes(const ESolutionHFMVRP& s) {
+vector<vector<int>>& localGetRoutes(const ESolutionHFMVRP& s) {
   vector<vector<int>>& v = const_cast<vector<vector<int>>&>(s.first.getR());
   return v;
 };
