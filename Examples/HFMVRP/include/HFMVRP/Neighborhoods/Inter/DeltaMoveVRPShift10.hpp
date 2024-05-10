@@ -6,7 +6,7 @@
 
 #include <cmath>
 // MoveVRPShift10
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPShift10.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPShift10.hpp>
 
 using namespace std;
 

@@ -33,7 +33,7 @@
 //
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
-#include <OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp>
+#include <OptFrame/Util/NSAdapter/NSSeqTSPSwap.hpp>
 
 #include "Evaluation.h"
 #include "ProblemInstance.h"

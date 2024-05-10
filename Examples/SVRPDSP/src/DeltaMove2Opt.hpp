@@ -1,7 +1,7 @@
 #ifndef SVRPDSP_DELTA_MOVE_2OPT_HPP_
 #define SVRPDSP_DELTA_MOVE_2OPT_HPP_
 
-#include <OptFrame/Util/NeighborhoodStructures/Moves/MoveTSP2Opt.hpp>
+#include <OptFrame/Util/NSAdapter/Moves/MoveTSP2Opt.hpp>
 #include <cmath>
 
 #include "Delta.h"

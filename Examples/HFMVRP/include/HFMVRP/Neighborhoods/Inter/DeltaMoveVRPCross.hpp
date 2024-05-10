@@ -6,7 +6,7 @@
 
 #include <cmath>
 //
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPCross.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPCross.hpp>
 
 using namespace std;
 

@@ -1,7 +1,7 @@
 #ifndef SVRPDSP_DELTA_MOVE_SWAP_HPP_
 #define SVRPDSP_DELTA_MOVE_SWAP_HPP_
 
-#include <OptFrame/Util/NeighborhoodStructures/Moves/MoveTSPSwap.hpp>
+#include <OptFrame/Util/NSAdapter/Moves/MoveTSPSwap.hpp>
 #include <cmath>
 
 #include "Delta.h"

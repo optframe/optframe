@@ -26,7 +26,7 @@
 // Framework includes
 #include <OptFrame/Move.hpp>
 #include <OptFrame/NSEnum.hpp>
-#include <OptFrame/Util/NeighborhoodStructures/NSEnumVectorShift.hpp>
+#include <OptFrame/Util/NSAdapter/NSEnumVectorShift.hpp>
 
 // Own includes
 #include "ProblemInstance.h"

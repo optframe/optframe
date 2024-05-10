@@ -13,10 +13,12 @@
 #include "Solution.h"
 //
 // #include "Neighborhoods/Inter/DeltaMoveVRPCross.hpp"
+// Inter
 #include "Neighborhoods/Inter/DeltaIteratorVRPShift10.hpp"
 #include "Neighborhoods/Inter/DeltaIteratorVRPSwap1_1.hpp"
 #include "Neighborhoods/Inter/DeltaMoveVRPShift10.hpp"
 #include "Neighborhoods/Inter/DeltaMoveVRPSwap1_1.hpp"
+// Intra
 #include "Neighborhoods/Intra/DeltaIteratorVRP2Opt.hpp"
 #include "Neighborhoods/Intra/DeltaIteratorVRPExchange.hpp"
 #include "Neighborhoods/Intra/DeltaIteratorVRPOrOpt1.hpp"

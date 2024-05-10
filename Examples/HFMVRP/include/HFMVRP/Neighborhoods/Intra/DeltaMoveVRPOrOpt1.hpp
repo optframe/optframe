@@ -6,7 +6,7 @@
 
 #include <cmath>
 //
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt1.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Intra/NSSeqVRPOrOpt1.hpp>
 
 using namespace std;
 

@@ -6,7 +6,7 @@
 
 #include <cmath>
 // MoveVRPSwap1_1
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPSwap1_1.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPSwap1_1.hpp>
 
 using namespace std;
 

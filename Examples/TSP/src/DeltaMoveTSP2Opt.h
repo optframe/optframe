@@ -23,7 +23,7 @@
 #ifndef TSP_DELTA_MOVETSP2OPT_HPP_
 #define TSP_DELTA_MOVETSP2OPT_HPP_
 
-#include <OptFrame/Util/NeighborhoodStructures/Moves/MoveTSP2Opt.hpp>
+#include <OptFrame/Util/NSAdapter/Moves/MoveTSP2Opt.hpp>
 #include <cmath>
 
 #include "ProblemInstance.h"

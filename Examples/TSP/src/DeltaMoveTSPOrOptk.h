@@ -23,7 +23,7 @@
 #ifndef TSP_DELTA_MOVETSP_OROPTK_HPP_
 #define TSP_DELTA_MOVETSP_OROPTK_HPP_
 
-#include <OptFrame/Util/NeighborhoodStructures/Moves/MoveTSPOrOptk.hpp>
+#include <OptFrame/Util/NSAdapter/Moves/MoveTSPOrOptk.hpp>
 #include <cmath>
 
 #include "ProblemInstance.h"

@@ -1,7 +1,7 @@
 #ifndef SVRPDSP_DELTA_MOVE_OROPTK_HPP_
 #define SVRPDSP_DELTA_MOVE_OROPTK_HPP_
 
-#include <OptFrame/Util/NeighborhoodStructures/Moves/MoveTSPOrOptk.hpp>
+#include <OptFrame/Util/NSAdapter/Moves/MoveTSPOrOptk.hpp>
 #include <cmath>
 
 #include "Delta.h"

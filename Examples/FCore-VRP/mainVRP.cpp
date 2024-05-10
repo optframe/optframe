@@ -16,10 +16,10 @@
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRP2Opt.hpp>
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPExchange.hpp>
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt1.hpp>
-#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt2.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Intra/NSSeqVRP2Opt.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Intra/NSSeqVRPExchange.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Intra/NSSeqVRPOrOpt1.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Intra/NSSeqVRPOrOpt2.hpp>
 #include <OptFrame/printable/printable.hpp>
 
 using namespace std;       // NOLINT

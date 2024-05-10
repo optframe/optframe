@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include "../../OptFrame/Util/NeighborhoodStructures/Moves/MoveTSP3Opt.hpp"
+#include "../../OptFrame/Util/NSAdapter/Moves/MoveTSP3Opt.hpp"
 #include "Delta.h"
 #include "MySolution.hpp"
 
