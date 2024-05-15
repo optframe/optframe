@@ -31,90 +31,87 @@
 #include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"
+#include "ProblemInstance.h"
 #include "Representation.h"
 #include "Solution.h"
-
-#include "ProblemInstance.h"
 
 using namespace optframe;
 
 #define EPSILON_PCAP 0.0001
 
-class PCAPEvaluator : public Evaluator<SolutionPCAP, EvaluationPCAP, ESolutionPCAP>
-{
-private:
-   PCAPProblemInstance& pPCAP;
+class PCAPEvaluator
+    : public Evaluator<SolutionPCAP, EvaluationPCAP, ESolutionPCAP> {
+ private:
+  PCAPProblemInstance& pPCAP;
 
-   // Your private vars
+  // Your private vars
 
-public:
-   //using Evaluator<ESolutionPCAP>::evaluate;
+ public:
+  // using Evaluator<ESolutionPCAP>::evaluate;
 
-   PCAPEvaluator(PCAPProblemInstance& _pPCAP)
-     : // If necessary, add more parameters
-     pPCAP(_pPCAP)
-   {
-      // Put the rest of your code here
-   }
+  PCAPEvaluator(PCAPProblemInstance& _pPCAP)
+      : Evaluator(new Minimization<EvaluationPCAP>()),  // If necessary, add
+                                                        // more parameters
+        pPCAP{_pPCAP} {
+    // Put the rest of your code here
+  }
 
-   Evaluation<> evaluate(const SolutionPCAP& s) override
-   {
-      const RepPCAP& rep = s.getR();
-      // 'rep' is the representation of the solution
+  Evaluation<> evaluate(const SolutionPCAP& s) override {
+    const RepPCAP& rep = s.getR();
+    // 'rep' is the representation of the solution
 
-      double fo = 0; // Evaluation<> Function Value
-      double fo_Inv = 0;
+    double fo = 0;  // Evaluation<> Function Value
+    double fo_Inv = 0;
 
-      vector<int> utilizacao;
-      for (unsigned int i = 0; i < rep.first.size(); i++)
-         utilizacao.push_back(0);
+    vector<int> utilizacao;
+    for (unsigned int i = 0; i < rep.first.size(); i++) utilizacao.push_back(0);
 
-      for (unsigned int i = 0; i < rep.second.size(); i++) {
-         int med = rep.first[rep.second[i]];
-         int indiceMed = rep.second[i];
+    for (unsigned int i = 0; i < rep.second.size(); i++) {
+      int med = rep.first[rep.second[i]];
+      int indiceMed = rep.second[i];
 
-         double x = pPCAP.vecCidades[i].x;
-         double y = pPCAP.vecCidades[i].y;
-         int d = pPCAP.vecCidades[i].demanda;
+      double x = pPCAP.vecCidades[i].x;
+      double y = pPCAP.vecCidades[i].y;
+      int d = pPCAP.vecCidades[i].demanda;
 
-         utilizacao[indiceMed] += d;
-         if (utilizacao[indiceMed] > pPCAP.vecCidades[med].capacidade)
-            fo_Inv += utilizacao[indiceMed] - pPCAP.vecCidades[med].capacidade;
+      utilizacao[indiceMed] += d;
+      if (utilizacao[indiceMed] > pPCAP.vecCidades[med].capacidade)
+        fo_Inv += utilizacao[indiceMed] - pPCAP.vecCidades[med].capacidade;
 
-         double xMed = pPCAP.vecCidades[med].x;
-         double yMed = pPCAP.vecCidades[med].y;
+      double xMed = pPCAP.vecCidades[med].x;
+      double yMed = pPCAP.vecCidades[med].y;
 
-         fo += sqrt(pow((x - xMed), 2) + pow((y - yMed), 2));
-         //cout << "i = " << i << " fo = " << fo << endl;
-         //getchar();
-      }
+      fo += sqrt(pow((x - xMed), 2) + pow((y - yMed), 2));
+      // cout << "i = " << i << " fo = " << fo << endl;
+      // getchar();
+    }
 
-      double fo_medAlocada = 0; //Garante que a mediana eh atendida por ela propria
+    double fo_medAlocada =
+        0;  // Garante que a mediana eh atendida por ela propria
 
-      for (unsigned int i = 0; i < rep.first.size(); i++) {
-         int med = rep.first[i];
-         if (rep.second[med] != (int)i)
-            fo_medAlocada += 100000;
-      }
+    for (unsigned int i = 0; i < rep.first.size(); i++) {
+      int med = rep.first[i];
+      if (rep.second[med] != (int)i) fo_medAlocada += 100000;
+    }
 
-      fo_Inv = fo_Inv * 10000 + fo_medAlocada;
+    fo_Inv = fo_Inv * 10000 + fo_medAlocada;
 
-      return Evaluation<>(fo, fo_Inv);
-   }
+    return Evaluation<>(fo, fo_Inv);
+  }
 
-   virtual bool betterThan(double f1, double f2)
-   {
-      // MINIMIZATION
-      return (f1 < (f2 - EPSILON_PCAP));
-   }
+  virtual bool betterThan(double f1, double f2) {
+    // MINIMIZATION
+    return (f1 < (f2 - EPSILON_PCAP));
+  }
 
-   virtual bool isMinimization() const
-   {
-      return true;
-   }
+  virtual bool isMinimization() const { return true; }
 };
 
-static_assert(std::is_base_of<Evaluator<SolutionPCAP, EvaluationPCAP>, PCAPEvaluator>::value, "not inherited from Evaluator");
-static_assert(std::is_base_of<GeneralEvaluator<ESolutionPCAP>, PCAPEvaluator>::value, "not inherited from GeneralEvaluator");
+static_assert(std::is_base_of<Evaluator<SolutionPCAP, EvaluationPCAP>,
+                              PCAPEvaluator>::value,
+              "not inherited from Evaluator");
+static_assert(
+    std::is_base_of<GeneralEvaluator<ESolutionPCAP>, PCAPEvaluator>::value,
+    "not inherited from GeneralEvaluator");
 
 #endif /*PCAP_EVALUATOR_HPP_*/

@@ -47,14 +47,17 @@ int main(int argc, char** argv) {
 
   Scanner scanner(File("./Examples/PMedCap/InstancesLorena/SJC1"));
 
-  //double tempo = 120;
+  // double tempo = 120;
 
   PCAPProblemInstance p(scanner);
   sref<PCAPEvaluator> e = new PCAPEvaluator(p);
   sref<GeneralEvaluator<ESolutionPCAP>> e2 = e;
-  sref<PCAPInitialSolutionGreedy> is_greedy = new PCAPInitialSolutionGreedy(p, e2, rg);
-  //SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
-  ESolutionPCAP se = *is_greedy->initialSearch(StopCriteria<EvaluationPCAP>(100)).first;  // timelimit 100
+  sref<PCAPInitialSolutionGreedy> is_greedy =
+      new PCAPInitialSolutionGreedy(p, e2, rg);
+  // SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
+  ESolutionPCAP se =
+      *is_greedy->initialSearch(StopCriteria<EvaluationPCAP>(100))
+           .first;  // timelimit 100
 
   XSolution AUTO_CONCEPTS& s = se.first;
   ////XEvaluation& e = se.second;
@@ -67,7 +70,7 @@ int main(int argc, char** argv) {
 
   PCAPSolCheck(p, s);
 
-  Loader<RepPCAP, OPTFRAME_DEFAULT_ADS, SolutionPCAP, EvaluationPCAP, ESolutionPCAP> optframe(rg);
+  Loader<ESolutionPCAP> optframe(rg);
   optframe.factory.addComponent(is_greedy, "OptFrame:Constructive");
   optframe.factory.addComponent(e, "OptFrame:GeneralEvaluator");
   optframe.factory.addComponent(nsSwap, "OptFrame:NS");

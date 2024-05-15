@@ -26,127 +26,116 @@
 #include <OptFrame/Constructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
+#include <stdlib.h>
+
 #include <OptFrame/RandGen.hpp>
-
-#include "ProblemInstance.h"
-
-#include "Representation.h"
-#include "Solution.h"
-
-#include "Evaluator.h"
-
+#include <algorithm>
 #include <list>
 
-#include <algorithm>
-#include <stdlib.h>
+#include "Evaluator.h"
+#include "ProblemInstance.h"
+#include "Representation.h"
+#include "Solution.h"
 
 using namespace std;
 using namespace optframe;
 
-//class PCAPInitialSolutionGreedy : public Constructive<SolutionPCAP>
-class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP, EvaluationPCAP>
-{
-private:
-   PCAPProblemInstance& pPCAP;
-   GeneralEvaluator<ESolutionPCAP>& eval;
-   RandGen& rg;
+class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP> {
+ private:
+  PCAPProblemInstance& pPCAP;
+  GeneralEvaluator<ESolutionPCAP>& eval;
+  RandGen& rg;
 
-public:
-   static bool compara(pair<int, double> p1, pair<int, double> p2)
-   {
-      return p1.second < p2.second;
-   }
+ public:
+  static bool compara(pair<int, double> p1, pair<int, double> p2) {
+    return p1.second < p2.second;
+  }
 
-   PCAPInitialSolutionGreedy(PCAPProblemInstance& _pPCAP, GeneralEvaluator<ESolutionPCAP>& _eval, RandGen& _rg)
-     : pPCAP(_pPCAP)
-     , eval(_eval)
-     , rg(_rg)
-   {
-   }
+  PCAPInitialSolutionGreedy(PCAPProblemInstance& _pPCAP,
+                            GeneralEvaluator<ESolutionPCAP>& _eval,
+                            RandGen& _rg)
+      : pPCAP(_pPCAP), eval(_eval), rg(_rg) {}
 
-   std::pair<std::optional<ESolutionPCAP>, SearchStatus> initialSearch(const StopCriteria<EvaluationPCAP>& stop) override
-   {
-      //double timelimit = stop.timelimit;
-      RepPCAP newRep;
+  std::pair<std::optional<ESolutionPCAP>, SearchStatus> initialSearch(
+      const StopCriteria<EvaluationPCAP>& stop) override {
+    // double timelimit = stop.timelimit;
+    RepPCAP newRep;
 
-      //cout << "pPCAP.nCidades = " << pPCAP.nCidades << endl;
-      vector<bool> medianasUtilizadas;
-      for (int i = 0; i < pPCAP.nCidades; i++)
-         medianasUtilizadas.push_back(false);
+    // cout << "pPCAP.nCidades = " << pPCAP.nCidades << endl;
+    vector<bool> medianasUtilizadas;
+    for (int i = 0; i < pPCAP.nCidades; i++)
+      medianasUtilizadas.push_back(false);
 
-      for (int i = 0; i < pPCAP.nMedianas; i++) {
-         int med = rg.rand(pPCAP.nCidades);
-         while (medianasUtilizadas[med] == true)
-            med = rg.rand(pPCAP.nCidades);
-         newRep.first.push_back(med);
-         medianasUtilizadas[med] = true;
+    for (int i = 0; i < pPCAP.nMedianas; i++) {
+      int med = rg.rand(pPCAP.nCidades);
+      while (medianasUtilizadas[med] == true) med = rg.rand(pPCAP.nCidades);
+      newRep.first.push_back(med);
+      medianasUtilizadas[med] = true;
+    }
+
+    vector<int> utilizacao;
+    for (int i = 0; i < pPCAP.nMedianas; i++) utilizacao.push_back(0);
+
+    for (int i = 0; i < pPCAP.nCidades; i++) newRep.second.push_back(-1);
+
+    vector<bool> vertices;
+    for (int i = 0; i < pPCAP.nCidades; i++) vertices.push_back(false);
+
+    for (int i = 0; i < pPCAP.nMedianas; i++) {
+      int cidade = newRep.first[i];
+      newRep.second[cidade] = i;
+      utilizacao[i] += pPCAP.vecCidades[cidade].demanda;
+      vertices[cidade] = true;
+
+      // cout<<"i = "<<i<<"  cidade "<<cidade<<" newRep.second[cidade] =
+      // "<<newRep.second[cidade]<<endl;
+    }
+
+    vector<bool> verticesAlocados;
+    for (int i = 0; i < pPCAP.nCidades; i++) verticesAlocados.push_back(false);
+    for (int k = 0; k < pPCAP.nCidades; k++) {
+      int i = rg.rand(pPCAP.nCidades);
+      while (verticesAlocados[i] == true) i = rg.rand(pPCAP.nCidades);
+
+      verticesAlocados[i] = true;
+
+      double x = pPCAP.vecCidades[i].x;
+      double y = pPCAP.vecCidades[i].y;
+      int lowerCost = -1;
+
+      if (vertices[i] == false) {
+        double distMin = 100000000;
+
+        for (int j = 0; j < pPCAP.nMedianas; j++) {
+          int med = newRep.first[j];
+          double x2 = pPCAP.vecCidades[med].x;
+          double y2 = pPCAP.vecCidades[med].y;
+          double dist = sqrt(pow((x - x2), 2) + pow((y - y2), 2));
+
+          if ((dist < distMin) &&
+              ((utilizacao[j] + pPCAP.vecCidades[i].demanda) <
+               pPCAP.vecCidades[med].capacidade)) {
+            distMin = dist;
+            lowerCost = j;
+          }
+        }
+
+        if (lowerCost != -1) {
+          newRep.second[i] = lowerCost;
+          utilizacao[lowerCost] += pPCAP.vecCidades[i].demanda;
+        } else {
+          newRep.second[i] = 0;
+          utilizacao[0] += pPCAP.vecCidades[i].demanda;
+        }
       }
+    }
 
-      vector<int> utilizacao;
-      for (int i = 0; i < pPCAP.nMedianas; i++)
-         utilizacao.push_back(0);
-
-      for (int i = 0; i < pPCAP.nCidades; i++)
-         newRep.second.push_back(-1);
-
-      vector<bool> vertices;
-      for (int i = 0; i < pPCAP.nCidades; i++)
-         vertices.push_back(false);
-
-      for (int i = 0; i < pPCAP.nMedianas; i++) {
-         int cidade = newRep.first[i];
-         newRep.second[cidade] = i;
-         utilizacao[i] += pPCAP.vecCidades[cidade].demanda;
-         vertices[cidade] = true;
-
-         //cout<<"i = "<<i<<"  cidade "<<cidade<<" newRep.second[cidade] = "<<newRep.second[cidade]<<endl;
-      }
-
-      vector<bool> verticesAlocados;
-      for (int i = 0; i < pPCAP.nCidades; i++)
-         verticesAlocados.push_back(false);
-      for (int k = 0; k < pPCAP.nCidades; k++) {
-         int i = rg.rand(pPCAP.nCidades);
-         while (verticesAlocados[i] == true)
-            i = rg.rand(pPCAP.nCidades);
-
-         verticesAlocados[i] = true;
-
-         double x = pPCAP.vecCidades[i].x;
-         double y = pPCAP.vecCidades[i].y;
-         int lowerCost = -1;
-
-         if (vertices[i] == false) {
-            double distMin = 100000000;
-
-            for (int j = 0; j < pPCAP.nMedianas; j++) {
-               int med = newRep.first[j];
-               double x2 = pPCAP.vecCidades[med].x;
-               double y2 = pPCAP.vecCidades[med].y;
-               double dist = sqrt(pow((x - x2), 2) + pow((y - y2), 2));
-
-               if ((dist < distMin) && ((utilizacao[j] + pPCAP.vecCidades[i].demanda) < pPCAP.vecCidades[med].capacidade)) {
-                  distMin = dist;
-                  lowerCost = j;
-               }
-            }
-
-            if (lowerCost != -1) {
-               newRep.second[i] = lowerCost;
-               utilizacao[lowerCost] += pPCAP.vecCidades[i].demanda;
-            } else {
-               newRep.second[i] = 0;
-               utilizacao[0] += pPCAP.vecCidades[i].demanda;
-            }
-         }
-      }
-
-      SolutionPCAP s1(newRep);
-      pair<SolutionPCAP, EvaluationPCAP> es(s1, EvaluationPCAP());
-      eval.reevaluate(es);
-      //ESolutionPCAP es = make_pair(s1, EvaluationPCAP);
-      return make_pair(make_optional(es), SearchStatus::NO_REPORT);
-   }
+    SolutionPCAP s1(newRep);
+    pair<SolutionPCAP, EvaluationPCAP> es(s1, EvaluationPCAP());
+    eval.reevaluate(es);
+    // ESolutionPCAP es = make_pair(s1, EvaluationPCAP);
+    return make_pair(make_optional(es), SearchStatus::NO_REPORT);
+  }
 };
 
 #endif /*PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_*/

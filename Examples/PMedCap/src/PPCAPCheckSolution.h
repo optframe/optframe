@@ -20,30 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-void
-PCAPSolCheck(PCAPProblemInstance& pPCAP, XRSolution<RepPCAP>& s)
-{
-   vector<int> utilizacao;
-   for (unsigned int i = 0; i < s.getR().first.size(); i++)
-      utilizacao.push_back(0);
+// C++
+#include <vector>
+//
+#include "ProblemInstance.h"
+//
 
-   for (unsigned int i = 0; i < s.getR().second.size(); i++) {
-      int med = s.getR().second[i];
+void PCAPSolCheck(PCAPProblemInstance& pPCAP, auto& s) {
+  std::vector<int> utilizacao;
+  for (unsigned int i = 0; i < s.getR().first.size(); i++)
+    utilizacao.push_back(0);
 
-      int d = pPCAP.vecCidades[i].demanda;
-      utilizacao[med] += d;
-      cout << "Cidade i= " << i << " Associada Facilidade: " << s.getR().second[i] << endl;
-   }
+  for (unsigned int i = 0; i < s.getR().second.size(); i++) {
+    int med = s.getR().second[i];
 
-   for (unsigned int i = 0; i < s.getR().first.size(); i++) {
-      cout << "Facilidade i: " << i << " eh CIDADE: " << s.getR().first[i] << endl;
-   }
+    int d = pPCAP.vecCidades[i].demanda;
+    utilizacao[med] += d;
+    cout << "Cidade i= " << i << " Associada Facilidade: " << s.getR().second[i]
+         << endl;
+  }
 
-   for (unsigned int i = 0; i < s.getR().first.size(); i++) {
-      if (utilizacao[i] > pPCAP.vecCidades[i].capacidade)
-         cout << "Capacidade Estourada da mediana: " << s.getR().first[i]
-              << " Passaram: " << utilizacao[i] - pPCAP.vecCidades[i].capacidade << endl;
+  for (unsigned int i = 0; i < s.getR().first.size(); i++) {
+    cout << "Facilidade i: " << i << " eh CIDADE: " << s.getR().first[i]
+         << endl;
+  }
 
-      //cout<<"Utilizacao = "<<utilizacao[i]<<" Capacidade= "<<pPCAP.vecCidades[i].capacidade<<endl;
-   }
+  for (unsigned int i = 0; i < s.getR().first.size(); i++) {
+    if (utilizacao[i] > pPCAP.vecCidades[i].capacidade)
+      cout << "Capacidade Estourada da mediana: " << s.getR().first[i]
+           << " Passaram: " << utilizacao[i] - pPCAP.vecCidades[i].capacidade
+           << endl;
+
+    // cout<<"Utilizacao = "<<utilizacao[i]<<" Capacidade=
+    // "<<pPCAP.vecCidades[i].capacidade<<endl;
+  }
 }

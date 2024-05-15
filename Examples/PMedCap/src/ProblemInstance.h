@@ -23,37 +23,38 @@
 #ifndef PCAP_PROBLEMINSTANCE_HPP_
 #define PCAP_PROBLEMINSTANCE_HPP_
 
+// C++
 #include <iostream>
+#include <vector>
+//
+#include <OptFrame/Scanner++/Scanner.hpp>
 
 #include "./cidade.h"
-#include <OptFrame/Scanner++/Scanner.hpp>
 
 using namespace scannerpp;
 using namespace std;
 
-class PCAPProblemInstance
-{
-private:
-public:
-   int nCidades;
-   int nMedianas;
-   vector<Cidade> vecCidades;
-   PCAPProblemInstance(Scanner& scanner)
-   {
-      nCidades = *scanner.nextInt();
-      nMedianas = *scanner.nextInt();
+class PCAPProblemInstance {
+ private:
+ public:
+  int nCidades;
+  int nMedianas;
+  vector<Cidade> vecCidades;
+  PCAPProblemInstance(Scanner& scanner) {
+    nCidades = *scanner.nextInt();
+    nMedianas = *scanner.nextInt();
 
-      while (scanner.hasNext()) {
-         double x = *scanner.nextDouble();
-         double y = *scanner.nextDouble();
-         int cap = *scanner.nextInt();
-         int d = *scanner.nextInt();
-         Cidade c(x, y, cap, d);
-         vecCidades.push_back(c);
-      }
-      // Put here your code
-      // You can read the input data from the 'scanner' object
-   }
+    while (scanner.hasNext()) {
+      double x = *scanner.nextDouble();
+      double y = *scanner.nextDouble();
+      int cap = *scanner.nextInt();
+      int d = *scanner.nextInt();
+      Cidade c(x, y, cap, d);
+      vecCidades.push_back(c);
+    }
+    // Put here your code
+    // You can read the input data from the 'scanner' object
+  }
 };
 
 #endif /*PCAP_PROBLEMINSTANCE_HPP_*/
