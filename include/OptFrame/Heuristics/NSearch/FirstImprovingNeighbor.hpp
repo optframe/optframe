@@ -160,13 +160,13 @@ class FirstImprovingNeighborBuilder
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    NSSeq<XES, XSH>* nsseq;
+    NSSeq<XES>* nsseq;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsseq, id2, comp_id2);
 
     // NOLINTNEXTLINE
-    return new FirstImprovingNeighbor<XES, XSH>(*eval, *nsseq);
+    return new FirstImprovingNeighbor<XES>(*eval, *nsseq);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -174,13 +174,13 @@ class FirstImprovingNeighborBuilder
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
+        make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
 
     return params;
   }
 
   bool canBuild(std::string component) override {
-    return component == FirstImprovingNeighbor<XES, XEv>::idComponent();
+    return component == FirstImprovingNeighbor<XES>::idComponent();
   }
 
   static string idComponent() {

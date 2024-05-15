@@ -49,7 +49,8 @@ class MoveVRP2Opt : public Move<XES> {
 
   uptr<Move<XES>> apply(XES& se) override {
     Routes& rep = getRoutes(se);
-    int small = 0, bigger = 0;
+    int small = 0;
+    int bigger = 0;
     if (p1 <= p2) {
       small = p1;
       bigger = p2;

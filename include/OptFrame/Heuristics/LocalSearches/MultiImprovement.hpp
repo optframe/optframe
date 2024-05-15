@@ -214,13 +214,13 @@ class MultiImprovementBuilder : public LocalSearchBuilder<XES> {
 
     if (!scanner.hasNext()) return nullptr;
 
-    sptr<NSSeq<XES, XSH>> nsseq;
+    sptr<NSSeq<XES>> nsseq;
     std::string comp_id2 = scanner.next();
     int id2 = *scanner.nextInt();
     hf.assign(nsseq, id2, comp_id2);
 
     // NOLINTNEXTLINE
-    return new MultiImprovement<XES, XEv, XSH>(eval, nsseq);
+    return new MultiImprovement<XES>(eval, nsseq);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
@@ -228,7 +228,7 @@ class MultiImprovementBuilder : public LocalSearchBuilder<XES> {
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
-        make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
+        make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
 
     return params;
   }
