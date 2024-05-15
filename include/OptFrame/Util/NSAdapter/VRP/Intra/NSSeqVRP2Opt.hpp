@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRP2OPT_HPP_
-#define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRP2OPT_HPP_
+#ifndef OPTFRAME_UTIL_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_HPP_
+#define OPTFRAME_UTIL_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_HPP_
 
 // C++
 #include <string>
@@ -22,7 +22,8 @@ class MoveVRP2Opt : public Move<XES> {
 
  public:
   using Routes = std::vector<std::vector<int>>;
-  Routes& (*getRoutes)(const XES&);  // function to get routes from type 'R'
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
 
  protected:
   int r;       // route id
@@ -30,9 +31,9 @@ class MoveVRP2Opt : public Move<XES> {
   P* problem;
 
  public:
-  MoveVRP2Opt(Routes& (*_getRoutes)(const XES&), int _r, int _p1, int _p2,
-              P* _problem = nullptr)
-      : getRoutes(_getRoutes), r(_r), p1(_p1), p2(_p2), problem(_problem) {}
+  MoveVRP2Opt(std::function<Routes&(const XES&)> _getRoutes, int _r, int _p1,
+              int _p2, P* _problem = nullptr)
+      : getRoutes{_getRoutes}, r{_r}, p1{_p1}, p2{_p2}, problem{_problem} {}
 
   int get_p1() { return p1; }
 
@@ -67,11 +68,22 @@ class MoveVRP2Opt : public Move<XES> {
     return ((m1.p1 == p1) && (m1.p2 == p2) && (m1.r == r));
   }
 
-  void print() const override {
-    cout << "MoveVRP2Opt( route: " << r << " : ";
-    cout << " edge " << p1 << " <=>  edge " << p2 << " )";
-    cout << endl;
+  std::string toString() const override {
+    std::stringstream ss;
+    ss << "MoveVRP2Opt( route: " << r << " : ";
+    ss << " edge " << p1 << " <=>  edge " << p2 << " )";
+    return ss.str();
   }
+
+  std::string id() const override { return idComponent(); }
+
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Move<XES>::idComponent() << ":MoveVRP2Opt";
+    return ss.str();
+  }
+
+  // void print() const override { cout << toString() << endl; }
 };
 
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
@@ -87,14 +99,14 @@ class NSIteratorVRP2Opt : public NSIterator<XES> {
   // strategy: storing general moves
   std::vector<uptr<Move<XES>>> moves;
   // function to get routes from type 'R'
-  Routes& (*getRoutes)(const XES&);
+  std::function<Routes&(const XES&)> getRoutes;
   //
   const Routes& rep;
 
   P* p;  // has to be the last
 
  public:
-  NSIteratorVRP2Opt(Routes& (*getRoutes)(const XES&), const XES& se,
+  NSIteratorVRP2Opt(std::function<Routes&(const XES&)> getRoutes, const XES& se,
                     P* _p = nullptr)
       : m{nullptr}, index{0}, getRoutes(getRoutes), rep{getRoutes(se)}, p(_p) {}
 
@@ -144,14 +156,39 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
   typedef vector<vector<int>> Routes;
 
  public:
-  Routes& (*getRoutes)(const XES&);  // function to get routes from type 'R'
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
 
  private:
   P* p;
 
+  using fConstRoute = std::function<const Routes&(const XES&)>;
+
  public:
+  // (0) automatic when no conversion is needed
+  template <typename T = typename XES::first_type,
+            std::enable_if_t<std::is_same_v<T, Routes>, bool> = true>
+  explicit NSSeqVRP2Opt(P* _p = nullptr)
+      : getRoutes{[](const XES& se) -> Routes& {
+          // hiding the innevitable const_cast from the user...
+          // NOLINTNEXTLINE
+          return const_cast<Routes&>(se.first);
+        }},
+        p{_p} {}
+
+  // (1) updated behavior: easier, but less efficient
+  // reversed parameters to allow differentiation
+  explicit NSSeqVRP2Opt(P* _p, fConstRoute func)
+      : getRoutes{[func](const XES& se) -> Routes& {
+          // hiding the innevitable const_cast from the user...
+          // NOLINTNEXTLINE
+          return const_cast<Routes&>(func(se));
+        }},
+        p{_p} {}
+
+  // (2) legacy behavior: more efficient
   explicit NSSeqVRP2Opt(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
-      : getRoutes(_getRoutes), p(_p) {}
+      : getRoutes{_getRoutes}, p{_p} {}
 
   uptr<Move<XES>> randomMove(const XES& se) override {
     const Routes& rep = getRoutes(se);  // se.first.getR();
@@ -184,4 +221,4 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRP2OPT_HPP_
+#endif  // OPTFRAME_UTIL_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_HPP_

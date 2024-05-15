@@ -13,5 +13,6 @@
 #include "./OptFrame-test/Matrix.Test.hpp"
 #include "./OptFrame-test/ParetoDominance.Test.hpp"
 #include "./OptFrame-test/RandGen.Test.hpp"
+#include "./OptFrame-test/Util-test/Util.Test.hpp"
 
 // good
