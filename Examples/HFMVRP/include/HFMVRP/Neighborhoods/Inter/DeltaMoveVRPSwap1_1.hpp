@@ -4,7 +4,13 @@
 #ifndef EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSWAP1_1_HPP_
 #define EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSWAP1_1_HPP_
 
+#include <algorithm>
 #include <cmath>
+#include <string>
+#include <utility>
+//
+#include "../../ProblemInstance.hpp"
+#include "../../Solution.h"
 // MoveVRPSwap1_1
 #include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPSwap1_1.hpp>
 
@@ -12,19 +18,24 @@ using namespace std;
 
 namespace HFMVRP {
 
-class DeltaMoveVRPSwap1_1
-    : public MoveVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP> {
-  typedef MoveVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP> super;
-
+// personalized move
+class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
+  /*
+  class DeltaMoveVRPSwap1_1
+      : public MoveVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP> {
+    typedef MoveVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP> super;
+  */
  private:
   ProblemInstance* hfmvrp;
   int vType1;
   int vType2;
 
+  int r1, r2, c1, c2;
+
  public:
   DeltaMoveVRPSwap1_1(int _r1, int _r2, int _c1, int _c2,
                       ProblemInstance* _hfmvrp)
-      : super(_r1, _r2, _c1, _c2), hfmvrp(_hfmvrp) {
+      : r1{_r1}, r2{_r2}, c1{_c1}, c2{_c2}, hfmvrp{_hfmvrp} {
     if (!_hfmvrp) {
       cout << "Error: hfmvrp problem is NULL!" << endl;
       print();
@@ -148,8 +159,8 @@ class DeltaMoveVRPSwap1_1
       vector<int> route = rep[r];
       int routeSize = route.size();
 
-      if (routeSize >= 3)  // two depots plus one client
-      {
+      if (routeSize >= 3) {
+        // two depots plus one client
         vector<double> routeDemands(routeSize);
 
         routeDemands[0] = 0;              // depot demand
@@ -302,7 +313,7 @@ class DeltaMoveVRPSwap1_1
   }
 
   static string idComponent() {
-    string idComp = super::idComponent();
+    string idComp = Move<ESolutionHFMVRP>::idComponent();
     idComp.append(":DeltaMoveVRPSwap1_1");
     return idComp;
   }

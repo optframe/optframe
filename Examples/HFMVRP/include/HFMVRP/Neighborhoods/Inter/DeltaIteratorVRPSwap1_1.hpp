@@ -6,15 +6,19 @@
 
 // C++
 #include <cmath>
+#include <string>
+#include <utility>
+#include <vector>
 // framework
 // #include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPSwap1_1.hpp>
 // hfmvrp
-#include "DeltaMoveVRPSwap1_1.hpp"
+#include "./DeltaMoveVRPSwap1_1.hpp"
 
 using namespace std;
 
 namespace HFMVRP {
 
+/*
 template <class MOVE = DeltaMoveVRPSwap1_1>
 class DeltaNSIteratorVRPSwap1_1
     : public NSIteratorVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP,
@@ -22,29 +26,34 @@ class DeltaNSIteratorVRPSwap1_1
   typedef NSIteratorVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP,
                                DeltaMoveVRPSwap1_1, ProblemInstance>
       super;
-
+      */
+class DeltaIteratorVRPSwap1_1 : public NSIterator<ESolutionHFMVRP> {
  private:
   const AdsHFMVRP& ads;  // TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
+  const RepHFMVRP& r;
+  ProblemInstance* p;
+
+  uptr<Move<ESolutionHFMVRP>> m;
+  vector<uptr<Move<ESolutionHFMVRP>>> moves;
+  int index;  // index of moves
 
  public:
-  DeltaNSIteratorVRPSwap1_1(const RepHFMVRP& _rep, const AdsHFMVRP& _ads,
-                            ProblemInstance* _hfmvrp)
-      : super(_rep, _ads, _hfmvrp), ads(_ads) {
+  using MoveType = DeltaMoveVRPSwap1_1;
+  DeltaIteratorVRPSwap1_1(const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
+      : r{se.first.getR()}, ads{se.first.getADS()}, p{_hfmvrp} {
     if (!_hfmvrp) {
       cout << "Error: hfmvrp problem is NULL!" << endl;
       exit(1);
     }
   }
 
-  virtual ~DeltaNSIteratorVRPSwap1_1() {}
+  virtual ~DeltaIteratorVRPSwap1_1() {}
 
   void first() override {
     for (int r1 = 0; r1 < (int)r.size() - 1; r1++)
       for (int r2 = r1 + 1; r2 < (int)r.size(); r2++)
-        if (!(ads.neighborhoodStatus.find(DeltaMoveVRPSwap1_1::idComponent())
-                  ->second[r1] &&
-              ads.neighborhoodStatus.find(DeltaMoveVRPSwap1_1::idComponent())
-                  ->second[r2])) {
+        if (!(ads.neighborhoodStatus.find(idComponent())->second[r1] &&
+              ads.neighborhoodStatus.find(idComponent())->second[r2])) {
           bool teste1 =
               (ads.minDemand[r1] - ads.maxDemand[r2] + ads.sumDemand[r2] <=
                p->vehiclesCap[r2]);
@@ -90,20 +99,17 @@ class DeltaNSIteratorVRPSwap1_1
         }
 
     if (moves.size() > 0) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+      m = std::move(moves[index]);
+    } else {
       m = NULL;
+    }
   }
 
   void next() override {
     index++;
-    if (index < (int)moves.size()) {
-      m = std::move(
-          moves[index]);  // stealing from vector... verify if this is correct!
-                          // otherwise, must need clone() on Move
-    } else
+    if (index < (int)moves.size())
+      m = std::move(moves[index]);
+    else
       m = NULL;
   }
 

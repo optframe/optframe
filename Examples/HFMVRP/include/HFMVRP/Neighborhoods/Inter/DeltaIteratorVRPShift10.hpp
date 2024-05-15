@@ -6,6 +6,8 @@
 
 // C++
 #include <cmath>
+#include <string>
+#include <utility>
 #include <vector>
 
 // optframe
