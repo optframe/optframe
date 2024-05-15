@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
-#define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
+#ifndef OPTFRAME_UTIL_NSADAPTER_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
+#define OPTFRAME_UTIL_NSADAPTER_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
 
 // C++
 #include <string>
@@ -21,7 +21,8 @@ class MoveVRPExchange : public Move<XES> {
   using Routes = std::vector<std::vector<int>>;
 
  public:
-  Routes& (*getRoutes)(const XES&);  // function to get routes from type 'R'
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
 
  protected:
   int r;       // route
@@ -31,8 +32,8 @@ class MoveVRPExchange : public Move<XES> {
   P* problem;
 
  public:
-  MoveVRPExchange(Routes& (*_getRoutes)(const XES&), int _r, int _c1, int _c2,
-                  P* _problem = nullptr)
+  MoveVRPExchange(std::function<Routes&(const XES&)> _getRoutes, int _r,
+                  int _c1, int _c2, P* _problem = nullptr)
       : getRoutes(_getRoutes), r(_r), c1(_c1), c2(_c2), problem(_problem) {}
 
   int get_c1() { return c1; }
@@ -66,6 +67,14 @@ class MoveVRPExchange : public Move<XES> {
     cout << " client " << c1 << " <=>  client" << c2 << " )";
     cout << endl;
   }
+
+  std::string id() const override { return idComponent(); }
+
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Move<XES>::idComponent() << ":MoveVRPExchange";
+    return ss.str();
+  }
 };
 
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
@@ -77,13 +86,14 @@ class NSIteratorVRPExchange : public NSIterator<XES> {
   uptr<Move<XES>> m;
   int index;
   vector<uptr<Move<XES>>> moves;
-  Routes& (*getRoutes)(const XES&);  // function to get routes from type 'R'
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
   const Routes& rep;
   P* p;  // has to be the last
 
  public:
-  NSIteratorVRPExchange(Routes& (*getRoutes)(const XES&), const XES& se,
-                        P* _p = nullptr)
+  NSIteratorVRPExchange(std::function<Routes&(const XES&)> getRoutes,
+                        const XES& se, P* _p = nullptr)
       : m{nullptr}, index{0}, getRoutes(getRoutes), rep{getRoutes(se)}, p(_p) {}
 
   void first() override {
@@ -132,12 +142,24 @@ class NSSeqVRPExchange : public NSSeq<XES> {
   typedef vector<vector<int>> Routes;
 
  public:
-  Routes& (*getRoutes)(const XES&);  // function to get routes from type 'R'
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
 
  private:
   P* p;  // has to be the last (?)
 
  public:
+  // (0) automatic when no conversion is needed
+  template <typename T = typename XES::first_type,
+            std::enable_if_t<std::is_same_v<T, Routes>, bool> = true>
+  explicit NSSeqVRPExchange(P* _p = nullptr)
+      : getRoutes{[](const XES& se) -> Routes& {
+          // hiding the innevitable const_cast from the user...
+          // NOLINTNEXTLINE
+          return const_cast<Routes&>(se.first);
+        }},
+        p{_p} {}
+
   explicit NSSeqVRPExchange(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
       : getRoutes(_getRoutes), p(_p) {}
 
@@ -172,4 +194,4 @@ class NSSeqVRPExchange : public NSSeq<XES> {
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_
+#endif  // OPTFRAME_UTIL_NSADAPTER_VRP_INTRA_NSSEQVRPEXCHANGE_HPP_

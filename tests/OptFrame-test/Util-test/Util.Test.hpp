@@ -19,6 +19,9 @@
 #include <catch2/catch_test_macros.hpp>
 #endif
 
-#include "./NSAdapter-test/VRP-test/Intra-test/NSSeqVRP2Opt.Test.hpp"
+#include "./NSAdapter/VRP/Intra/NSSeqVRP2Opt.Test.hpp"
+#include "./NSAdapter/VRP/Intra/NSSeqVRPExchange.Test.hpp"
+#include "./NSAdapter/VRP/Intra/NSSeqVRPOrOpt1.Test.hpp"
+#include "./NSAdapter/VRP/Intra/NSSeqVRPOrOpt2.Test.hpp"
 
 #endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_UTIL_TEST_HPP_

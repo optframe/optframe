@@ -2,8 +2,8 @@
 // Copyright (C) 2007-2024 - OptFrame developers
 // https://github.com/optframe/optframe
 
-#ifndef TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_TEST_VRP_TEST_INTRA_TEST_NSSEQVRP2OPT_TEST_HPP_
-#define TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_TEST_VRP_TEST_INTRA_TEST_NSSEQVRP2OPT_TEST_HPP_  // NOLINT
+#ifndef TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_TEST_HPP_
+#define TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_TEST_HPP_  // NOLINT
 
 // C++ system
 #include <limits>
@@ -23,11 +23,11 @@
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT
 
-class CVRPProblemTest {};
-
 TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
   using Routes = std::vector<std::vector<int>>;
   using ESolutionCVRPTest = std::pair<Routes, Evaluation<int>>;
+
+  class CVRPProblemTest {};
 
   CVRPProblemTest p;
 
@@ -48,5 +48,5 @@ TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
           "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
 }
 
-#endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_TEST_VRP_TEST_INTRA_TEST_NSSEQVRP2OPT_TEST_HPP_
+#endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_TEST_HPP_
         // // NOLINT
