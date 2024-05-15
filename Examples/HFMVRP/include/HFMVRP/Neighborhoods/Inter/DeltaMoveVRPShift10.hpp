@@ -4,7 +4,13 @@
 #ifndef EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSHIFT10_HPP_
 #define EXAMPLES_HFMVRP_INCLUDE_HFMVRP_NEIGHBORHOODS_INTER_DELTAMOVEVRPSHIFT10_HPP_
 
+#include <algorithm>
 #include <cmath>
+#include <string>
+#include <utility>
+//
+#include "../../ProblemInstance.hpp"
+#include "../../Solution.h"
 // MoveVRPShift10
 #include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPShift10.hpp>
 
@@ -12,19 +18,24 @@ using namespace std;
 
 namespace HFMVRP {
 
-class DeltaMoveVRPShift10
-    : public MoveVRPShift10<int, AdsHFMVRP, SolutionHFMVRP> {
-  typedef MoveVRPShift10<int, AdsHFMVRP, SolutionHFMVRP> super;
-
+// personalized move
+class DeltaMoveVRPShift10 : public Move<ESolutionHFMVRP> {
+  /*
+  class DeltaMoveVRPShift10
+      : public MoveVRPShift10<int, AdsHFMVRP, SolutionHFMVRP> {
+    typedef MoveVRPShift10<int, AdsHFMVRP, SolutionHFMVRP> super;
+  */
  private:
   ProblemInstance* hfmvrp;
   int vType1;
   int vType2;
 
+  int r1, r2, cli, pos;
+
  public:
   DeltaMoveVRPShift10(int _r1, int _r2, int _cli, int _pos,
                       ProblemInstance* _hfmvrp)
-      : super(_r1, _r2, _cli, _pos), hfmvrp(_hfmvrp) {
+      : r1{_r1}, r2{_r2}, cli{_cli}, pos{_pos}, hfmvrp{_hfmvrp} {
     if (!_hfmvrp) {
       cout << "Error: hfmvrp problem is NULL!" << endl;
       print();
@@ -45,7 +56,8 @@ class DeltaMoveVRPShift10
   virtual ~DeltaMoveVRPShift10() {}
 
   int myabs(int x) { return std::abs(x); }
-  virtual bool canBeApplied(const ESolutionHFMVRP& se) override {
+
+  bool canBeApplied(const ESolutionHFMVRP& se) override {
     const SolutionHFMVRP& s = se.first;
     const RepHFMVRP& rep = s.getR();
     const AdsHFMVRP& ads = s.getADS();
@@ -85,9 +97,9 @@ class DeltaMoveVRPShift10
 
       // If one of the routes is out of optimum (value 0), the variable
       // localOptimum has its value equal to 1
-      //			bool localOptimum =
-      //!((ads.neighborhoodStatus.find(idComponent())->second)[r1] &&
-      //(ads.neighborhoodStatus.find(idComponent())->second)[r2]);
+      //    bool localOptimum =
+      // !((ads.neighborhoodStatus.find(idComponent())->second)[r1] &&
+      // (ads.neighborhoodStatus.find(idComponent())->second)[r2]);
 
       return all_positive && is_Comp && capR2 && (int(rep.size()) >= 2) &&
              notEmpty;
@@ -118,8 +130,8 @@ class DeltaMoveVRPShift10
       int r = modRoutes[iter];
       vector<int> route = rep[r];
       int routeSize = route.size();
-      if (routeSize >= 3)  // two depots plus one client
-      {
+      if (routeSize >= 3) {
+        // two depots plus one client
         vector<double> routeDemands(routeSize);
 
         routeDemands[0] = 0;              // depot demand
@@ -291,12 +303,12 @@ class DeltaMoveVRPShift10
   }
 
   static string idComponent() {
-    string idComp = super::idComponent();
+    string idComp = Move<ESolutionHFMVRP>::idComponent();
     idComp.append(":DeltaMoveVRPShift10");
     return idComp;
   }
 
-  virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const {
+  bool operator==(const Move<ESolutionHFMVRP>& _m) const override {
     const DeltaMoveVRPShift10& m1 = (const DeltaMoveVRPShift10&)_m;
     return ((r1 == m1.r1) && (r2 == m1.r2) && (cli == m1.cli) &&
             (pos == m1.pos));

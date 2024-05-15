@@ -48,7 +48,7 @@ class MoveVRP2Opt : public Move<XES> {
   }
 
   uptr<Move<XES>> apply(XES& se) override {
-    Routes& rep = getRoutes(se);  // se.first.getR();
+    Routes& rep = getRoutes(se);
     int small = 0, bigger = 0;
     if (p1 <= p2) {
       small = p1;
@@ -106,9 +106,13 @@ class NSIteratorVRP2Opt : public NSIterator<XES> {
   P* p;  // has to be the last
 
  public:
-  NSIteratorVRP2Opt(std::function<Routes&(const XES&)> getRoutes, const XES& se,
-                    P* _p = nullptr)
-      : m{nullptr}, index{0}, getRoutes(getRoutes), rep{getRoutes(se)}, p(_p) {}
+  NSIteratorVRP2Opt(std::function<Routes&(const XES&)> _getRoutes,
+                    const XES& se, P* _p = nullptr)
+      : m{nullptr},
+        index{0},
+        getRoutes{_getRoutes},
+        rep{_getRoutes(se)},
+        p(_p) {}
 
   void first() override {
     for (int r = 0; r < (int)rep.size(); r++) {

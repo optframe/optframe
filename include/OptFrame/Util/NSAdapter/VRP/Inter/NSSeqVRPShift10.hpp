@@ -18,30 +18,45 @@
 #include "../../../../NSSeq.hpp"
 
 // Check if C++20 Concepts is supported
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 namespace optframe {
 
+/*
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
           XBaseSolution<vector<vector<T>>, ADS> S =
               CopySolution<vector<vector<T>>, ADS>,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MoveVRPShift10 : public Move<XES> {
   using Routes = vector<vector<T>>;
+  */
+template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
+class MoveVRPShift10Adapter : public Move<XES> {
+  using XEv = typename XES::second_type;
+
+ public:
+  using Routes = std::vector<std::vector<int>>;
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
 
  protected:
   int r1, r2;  // routes id's
   int cli;     // cli shifted in r1
   int pos;     // insertion position in r2
 
-  OPTFRAME_DEFAULT_PROBLEM* problem;
+  P* problem;
 
  public:
-  MoveVRPShift10(int _r1, int _r2, int _cli, int _pos,
-                 OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr)
-      : r1(_r1), r2(_r2), cli(_cli), pos(_pos), problem(_problem) {}
+  MoveVRPShift10Adapter(std::function<Routes&(const XES&)> _getRoutes, int _r1,
+                        int _r2, int _cli, int _pos, P* _p = nullptr)
+      : getRoutes{_getRoutes},
+        r1(_r1),
+        r2(_r2),
+        cli(_cli),
+        pos(_pos),
+        problem(_p) {}
 
-  virtual ~MoveVRPShift10() {}
+  virtual ~MoveVRPShift10Adapter() {}
 
   int get_r1() { return r1; }
 
@@ -52,15 +67,15 @@ class MoveVRPShift10 : public Move<XES> {
   int get_pos() { return pos; }
 
   bool canBeApplied(const XES& se) override {
-    const Routes& rep = se.first.getR();
+    const Routes& rep = getRoutes(se);
     bool numRoutes = rep.size() >= 2;
     return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
   }
 
-  virtual void updateNeighStatus(ADS& ads) {}
+  // virtual void updateNeighStatus(ADS& ads) {}
 
   uptr<Move<XES>> apply(XES& se) override {
-    Routes& rep = se.first.getR();
+    Routes& rep = getRoutes(se);
     // pegando o cliente
     int c = rep.at(r1).at(cli);
 
@@ -69,41 +84,60 @@ class MoveVRPShift10 : public Move<XES> {
 
     // fazendo a inserção
     rep.at(r2).insert(rep.at(r2).begin() + pos, c);
-    return uptr<Move<XES>>(new MoveVRPShift10(r2, r1, pos, cli));
+    return uptr<Move<XES>>(
+        new MoveVRPShift10Adapter(getRoutes, r2, r1, pos, cli));
   }
 
   bool operator==(const Move<XES>& _m) const override {
-    const MoveVRPShift10& m = (const MoveVRPShift10&)_m;
+    const MoveVRPShift10Adapter& m = (const MoveVRPShift10Adapter&)_m;
     return ((r1 == m.r1) && (r2 == m.r2) && (cli == m.cli) && (pos == m.pos));
   }
 
   void print() const override {
-    cout << "MoveVRPShift10( ";
+    cout << "MoveVRPShift10Adapter( ";
     cout << r1 << " , ";
     cout << r2 << " , ";
     cout << cli << " , ";
     cout << pos << " )";
   }
+
+  std::string id() const override { return idComponent(); }
+
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Move<XES>::idComponent() << ":MoveVRPShift10Adapter";
+    return ss.str();
+  }
 };
 
+/*
 template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           class MOVE = MoveVRPShift10<T, ADS, S>,
           class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
 class NSIteratorVRPShift10 : public NSIterator<XES> {
   typedef vector<vector<T>> Routes;
+*/
+template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
+          bool ADAPTER = true, class MOVE = MoveVRPShift10Adapter<XES, P>>
+class NSIteratorVRPShift10Adapter : public NSIterator<XES> {
+  using Routes = std::vector<std::vector<int>>;
 
  protected:
   uptr<Move<XES>> m;
   vector<uptr<Move<XES>>> moves;
   int index;  // index of moves
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
   const Routes& r;
 
   P* p;  // has to be the last
 
  public:
-  NSIteratorVRPShift10(const Routes& _r, const ADS& _ads, P* _p = nullptr)
-      : r(_r), p(_p) {
+  using MoveType = MOVE;
+  NSIteratorVRPShift10Adapter(std::function<Routes&(const XES&)> _getRoutes,
+                              const XES& se, P* _p = nullptr)
+      : getRoutes{_getRoutes}, r{_getRoutes(se)}, p(_p) {
     m = nullptr;
     index = 0;
   }
@@ -114,7 +148,11 @@ class NSIteratorVRPShift10 : public NSIterator<XES> {
         if (r1 != r2) {
           for (int cli = 0; cli < r.at(r1).size(); cli++) {
             for (int pos = 0; pos <= r.at(r2).size(); pos++) {
-              moves.push_back(uptr<Move<XES>>(new MOVE(r1, r2, cli, pos, p)));
+              if constexpr (ADAPTER)
+                moves.push_back(
+                    uptr<Move<XES>>(new MOVE(getRoutes, r1, r2, cli, pos, p)));
+              else
+                moves.push_back(uptr<Move<XES>>(new MOVE(r1, r2, cli, pos, p)));
             }
           }
         }
@@ -149,6 +187,7 @@ class NSIteratorVRPShift10 : public NSIterator<XES> {
   }
 };
 
+/*
 template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           class MOVE = MoveVRPShift10<T, ADS, S>,
           class P = OPTFRAME_DEFAULT_PROBLEM,
@@ -157,20 +196,63 @@ template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
           XSearch<XES> XSH = std::pair<S, XEv>>
 class NSSeqVRPShift10 : public NSSeq<XES, XSH> {
   using Routes = std::vector<std::vector<T>>;
+  */
+template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
+          bool ADAPTER = true,
+          class NSITERATOR = NSIteratorVRPShift10Adapter<XES, P, ADAPTER>>
+class NSSeqVRPShift10 : public NSSeq<XES> {
+  using Routes = vector<vector<int>>;
+  using MOVE = typename NSITERATOR::MoveType;
+
+ public:
+  // function to get routes from type 'R'
+  std::function<Routes&(const XES&)> getRoutes;
 
  private:
   P* p;
 
  public:
-  explicit NSSeqVRPShift10(P* _p = nullptr) : p(_p) {}
+  // template <typename T = typename XES::first_type,
+  //           std::enable_if_t<!ADAPTER, int> = 0>
+  // template <class = typename std::enable_if<not ADAPTER>::type>
+  template <
+      typename T = typename XES::first_type,
+      std::enable_if_t<!ADAPTER && !std::is_same_v<T, Routes>, bool> = true>
+  explicit NSSeqVRPShift10(P* _p = nullptr) : p{_p} {}
+
+  // (0) automatic when no conversion is needed
+  template <typename T = typename XES::first_type,
+            std::enable_if_t<ADAPTER && std::is_same_v<T, Routes>, bool> = true>
+  explicit NSSeqVRPShift10(P* _p = nullptr)
+      : getRoutes{[](const XES& se) -> Routes& {
+          // hiding the innevitable const_cast from the user...
+          // NOLINTNEXTLINE
+          return const_cast<Routes&>(se.first);
+        }},
+        p{_p} {}
+
+  // (2) legacy behavior: more efficient
+  explicit NSSeqVRPShift10(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
+      : getRoutes{_getRoutes}, p{_p} {}
+
+  // explicit NSSeqVRPShift10(P* _p = nullptr) : p(_p) {}
 
   uptr<Move<XES>> randomMove(const XES& se) override {
-    const Routes& rep = se.first.getR();
-    if (rep.size() < 2) return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
+    // const Routes& rep = se.first.getR();
+    const Routes& rep = getRoutes(se);
+    if (rep.size() < 2) {
+      if constexpr (ADAPTER)
+        return uptr<Move<XES>>(new MOVE(getRoutes, -1, -1, -1, -1, p));
+      else
+        return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
+    }
 
     int r1 = rand() % rep.size();
     if (rep.at(r1).size() == 0) {
-      return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
+      if constexpr (ADAPTER)
+        return uptr<Move<XES>>(new MOVE(getRoutes, -1, -1, -1, -1, p));
+      else
+        return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
     }
 
     int r2;
@@ -181,30 +263,35 @@ class NSSeqVRPShift10 : public NSSeq<XES, XSH> {
     int cli = rand() % rep.at(r1).size();
 
     int pos = rand() % (rep.at(r2).size() + 1);
-    return uptr<Move<XES>>(
-        new MOVE(r1, r2, cli, pos, p));  // return a random move
+    if constexpr (ADAPTER)
+      return uptr<Move<XES>>(new MOVE(getRoutes, r1, r2, cli, pos, p));
+    else
+      return uptr<Move<XES>>(new MOVE(r1, r2, cli, pos, p));
   }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
-    XSolution AUTO_CONCEPTS& s = se.first;
-    return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
+    // auto& s = se.first;
+    // return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
+    if constexpr (ADAPTER)
+      return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
+    else
+      return uptr<NSIterator<XES>>(new NSITERATOR(se, p));
   }
 
   std::string toString() const override {
     stringstream ss;
-    ss << "NSSeqVRPShift10 with move: " << MOVE::idComponent();
+    ss << "NSSeqVRPShift10(ADAPTER=" << ADAPTER
+       << ") with move: " << MOVE::idComponent();
     return ss.str();
   }
 
-  void print() const override {
-    cout << "NSSeqVRPShift10 with move: " << MOVE::idComponent();
-  }
+  // void print() const override { cout << toString() << endl; }
 };
 
 }  // namespace optframe
 
-#else
-#error C++20 is required for NSSeqVRPShift10.hpp
-#endif  // C++20
+// #else
+// #error C++20 is required for NSSeqVRPShift10.hpp
+// #endif  // C++20
 
 #endif  // OPTFRAME_UTIL_NSADAPTER_VRP_INTER_NSSEQVRPSHIFT10_HPP_

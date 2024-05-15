@@ -6,6 +6,7 @@
 
 // C++
 #include <cmath>
+#include <vector>
 
 // optframe
 #include "OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPShift10.hpp"
@@ -17,6 +18,7 @@ using namespace std;
 
 namespace HFMVRP {
 
+/*
 template <class MOVE = DeltaMoveVRPShift10>
 class DeltaNSIteratorVRPShift10
     : public NSIteratorVRPShift10<int, AdsHFMVRP, SolutionHFMVRP,
@@ -24,29 +26,41 @@ class DeltaNSIteratorVRPShift10
   typedef NSIteratorVRPShift10<int, AdsHFMVRP, SolutionHFMVRP,
                                DeltaMoveVRPShift10, ProblemInstance>
       super;
+      */
 
+// personalized move
+class DeltaIteratorVRPShift10 : public NSIterator<ESolutionHFMVRP> {
  private:
   const AdsHFMVRP& ads;  // TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
+  const RepHFMVRP& r;
+  ProblemInstance* p;
+
+  uptr<Move<ESolutionHFMVRP>> m;
+  vector<uptr<Move<ESolutionHFMVRP>>> moves;
+  int index;  // index of moves
 
  public:
-  DeltaNSIteratorVRPShift10(const RepHFMVRP& _rep, const AdsHFMVRP& _ads,
-                            ProblemInstance* _hfmvrp)
-      : super(_rep, _ads, _hfmvrp), ads(_ads) {
+  using MoveType = DeltaMoveVRPShift10;
+  /*
+   DeltaNSIteratorVRPShift10(const RepHFMVRP& _rep, const AdsHFMVRP& _ads,
+                             ProblemInstance* _hfmvrp)
+       : super(_rep, _ads, _hfmvrp), ads(_ads) {
+         */
+  DeltaIteratorVRPShift10(const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
+      : r{se.first.getR()}, ads{se.first.getADS()}, p{_hfmvrp} {
     if (!_hfmvrp) {
       cout << "Error: hfmvrp problem is NULL!" << endl;
       exit(1);
     }
   }
 
-  virtual ~DeltaNSIteratorVRPShift10() {}
+  // virtual ~DeltaNSIteratorVRPShift10() {}
 
   void first() override {
     for (int r1 = 0; r1 < (int)r.size(); r1++)
       for (int r2 = 0; r2 < (int)r.size(); r2++)
-        if (!(ads.neighborhoodStatus.find(DeltaMoveVRPShift10::idComponent())
-                  ->second[r1] &&
-              ads.neighborhoodStatus.find(DeltaMoveVRPShift10::idComponent())
-                  ->second[r2]))
+        if (!(ads.neighborhoodStatus.find(idComponent())->second[r1] &&
+              ads.neighborhoodStatus.find(idComponent())->second[r2]))
           if ((ads.minDemand[r1] + ads.sumDemand[r2] <= p->vehiclesCap[r2]) &&
               (r1 != r2)) {
             for (int cli = 1; cli < (int)(r.at(r1).size() - 1); cli++)

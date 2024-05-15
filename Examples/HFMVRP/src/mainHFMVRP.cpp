@@ -139,8 +139,8 @@ int main(int argc, char** argv) {
   sref<NS<ESolutionHFMVRP>> ns_deltaIterator_delta_exchange =
       nsseq_deltaIterator_delta_exchange;
   sref<NSSeq<ESolutionHFMVRP>> nsseq_delta_shift10 =
-      new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10,
-                          ProblemInstance>(p);
+      new NSSeqVRPShift10<ESolutionHFMVRP, ProblemInstance, false,
+                          DeltaIteratorVRPShift10>(p);
   sref<NS<ESolutionHFMVRP>> ns_delta_shift10 = nsseq_delta_shift10;
   sref<NSSeq<ESolutionHFMVRP>> nsseq_delta_swap11 =
       new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1,
@@ -153,9 +153,8 @@ int main(int argc, char** argv) {
   sref<NS<ESolutionHFMVRP>> ns_deltaIterator_swap11 =
       nsseq_deltaIterator_swap11;
   sref<NSSeq<ESolutionHFMVRP>> nsseq_deltaIterator_shift10 =
-      new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10,
-                          ProblemInstance,
-                          DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
+      new NSSeqVRPShift10<ESolutionHFMVRP, ProblemInstance, false,
+                          DeltaIteratorVRPShift10>(p);
   sref<NS<ESolutionHFMVRP>> ns_deltaIterator_shift10 =
       nsseq_deltaIterator_shift10;
 
