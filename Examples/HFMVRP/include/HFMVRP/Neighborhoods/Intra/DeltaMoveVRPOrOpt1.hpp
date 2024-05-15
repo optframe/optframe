@@ -21,10 +21,11 @@ class DeltaMoveVRPOrOpt1
   ProblemInstance* hfmvrp;
   int k;
 
+  using Routes = std::vector<vector<int>>;
+
  public:
-  DeltaMoveVRPOrOpt1(
-      vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), int _r,
-      int _c, int _pos, ProblemInstance* _hfmvrp)
+  DeltaMoveVRPOrOpt1(std::function<Routes&(const ESolutionHFMVRP&)> _getRoutes,
+                     int _r, int _c, int _pos, ProblemInstance* _hfmvrp)
       : super(_getRoutes, _r, _c, _pos), hfmvrp(_hfmvrp) {
     k = 1;  // OrOpt1
     if (!_hfmvrp) {

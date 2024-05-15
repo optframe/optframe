@@ -23,9 +23,11 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
  private:
   ProblemInstance* hfmvrp;
 
+  using Routes = std::vector<vector<int>>;
+
  public:
-  DeltaMoveVRP2Opt(Routes& (*getRoutes)(const ESolutionHFMVRP&), int _r,
-                   int _p1, int _p2, ProblemInstance* _hfmvrp)
+  DeltaMoveVRP2Opt(std::function<Routes&(const ESolutionHFMVRP&)> _getRoutes,
+                   int _r, int _p1, int _p2, ProblemInstance* _hfmvrp)
       : super(getRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp) {
     if (!_hfmvrp) {
       cout << "Error: hfmvrp problem is NULL!" << endl;
@@ -51,9 +53,7 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
 
   int myabs(int x) { return std::abs(x); }
 
-  virtual bool canBeApplied(
-      const ESolutionHFMVRP& se)  // TODO voltar ADS para const
-  {
+  virtual bool canBeApplied(const ESolutionHFMVRP& se) {
     const SolutionHFMVRP& s = se.first;
     const RepHFMVRP& rep = s.getR();
     // const AdsHFMVRP& ads = s.getADS();

@@ -28,9 +28,11 @@ class DeltaNSIteratorVRPExchange
  private:
   const AdsHFMVRP& ads;  // TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
+  using Routes = std::vector<vector<int>>;
+
  public:
   DeltaNSIteratorVRPExchange(
-      vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s),
+      std::function<Routes&(const ESolutionHFMVRP&)> _getRoutes,
       const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
       : super(_getRoutes, se, _hfmvrp), ads(se.first.getADS()) {
     if (!_hfmvrp) {
