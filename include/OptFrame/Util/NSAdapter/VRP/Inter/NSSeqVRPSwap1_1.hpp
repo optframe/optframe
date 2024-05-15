@@ -182,16 +182,15 @@ class NSSeqVRPSwap1_1 : public NSSeq<XES> {
   template <typename T = typename XES::first_type,
             std::enable_if_t<ADAPTER && std::is_same_v<T, Routes>, bool> = true>
   explicit NSSeqVRPSwap1_1(P* _p = nullptr)
-      : getRoutes{[](const XES& se) -> Routes& {
+      : p{_p}, getRoutes{[](const XES& se) -> Routes& {
           // hiding the innevitable const_cast from the user...
           // NOLINTNEXTLINE
           return const_cast<Routes&>(se.first);
-        }},
-        p{_p} {}
+        }} {}
 
   // (2) legacy behavior: more efficient
   explicit NSSeqVRPSwap1_1(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
-      : getRoutes{_getRoutes}, p{_p} {}
+      : p{_p}, getRoutes{_getRoutes} {}
 
   uptr<Move<XES>> randomMove(const XES& se) override {
     const Routes& rep = getRoutes(se);
@@ -235,7 +234,6 @@ class NSSeqVRPSwap1_1 : public NSSeq<XES> {
   }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
-    auto& s = se.first;
     if constexpr (ADAPTER)
       return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
     else
@@ -249,7 +247,7 @@ class NSSeqVRPSwap1_1 : public NSSeq<XES> {
     return ss.str();
   }
 
-  virtual void print() { cout << toString() << endl; }
+  void print() const override { cout << toString() << endl; }
 };
 
 }  // namespace optframe

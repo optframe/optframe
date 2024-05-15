@@ -88,7 +88,7 @@ class MoveVRPCrossAdapter : public Move<XES> {
     return uptr<Move<XES>>(new MoveVRPCrossAdapter(getRoutes, r1, r2, p1, p2));
   }
 
-  virtual bool operator==(const Move<XES>& _m) const {
+  bool operator==(const Move<XES>& _m) const override {
     const MoveVRPCrossAdapter& m1 = (const MoveVRPCrossAdapter&)_m;
     return ((m1.r1 == r1) && (m1.r2 == r2) && (m1.p1 == p1) && (m1.p2 == p2));
   }
@@ -200,16 +200,15 @@ class NSSeqVRPCross : public NSSeq<XES> {
   template <typename T = typename XES::first_type,
             std::enable_if_t<ADAPTER && std::is_same_v<T, Routes>, bool> = true>
   explicit NSSeqVRPCross(P* _p = nullptr)
-      : getRoutes{[](const XES& se) -> Routes& {
+      : p{_p}, getRoutes{[](const XES& se) -> Routes& {
           // hiding the innevitable const_cast from the user...
           // NOLINTNEXTLINE
           return const_cast<Routes&>(se.first);
-        }},
-        p{_p} {}
+        }} {}
 
   // (2) legacy behavior: more efficient
   explicit NSSeqVRPCross(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
-      : getRoutes{_getRoutes}, p{_p} {}
+      : p{_p}, getRoutes{_getRoutes} {}
 
   virtual ~NSSeqVRPCross() {}
 
@@ -248,7 +247,6 @@ class NSSeqVRPCross : public NSSeq<XES> {
   }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
-    auto& s = se.first;
     if constexpr (ADAPTER)
       return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
     else
