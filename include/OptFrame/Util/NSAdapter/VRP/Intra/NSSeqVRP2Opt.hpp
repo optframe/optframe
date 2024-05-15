@@ -31,9 +31,9 @@ class MoveVRP2Opt : public Move<XES> {
   P* problem;
 
  public:
-  MoveVRP2Opt(std::function<Routes&(const XES&)> _getRoutes, int _r, int _p1,
-              int _p2, P* _problem = nullptr)
-      : getRoutes{_getRoutes}, r{_r}, p1{_p1}, p2{_p2}, problem{_problem} {}
+  MoveVRP2Opt(std::function<Routes&(const XES&)> getRoutes, int r, int p1,
+              int p2, P* problem = nullptr)
+      : getRoutes{getRoutes}, r{r}, p1{p1}, p2{p2}, problem{problem} {}
 
   int get_p1() { return p1; }
 
@@ -49,8 +49,7 @@ class MoveVRP2Opt : public Move<XES> {
 
   uptr<Move<XES>> apply(XES& se) override {
     Routes& rep = getRoutes(se);
-    int small = 0;
-    int bigger = 0;
+    int small = 0, bigger = 0;
     if (p1 <= p2) {
       small = p1;
       bigger = p2;
@@ -107,13 +106,9 @@ class NSIteratorVRP2Opt : public NSIterator<XES> {
   P* p;  // has to be the last
 
  public:
-  NSIteratorVRP2Opt(std::function<Routes&(const XES&)> _getRoutes,
-                    const XES& se, P* _p = nullptr)
-      : m{nullptr},
-        index{0},
-        getRoutes{_getRoutes},
-        rep{_getRoutes(se)},
-        p(_p) {}
+  NSIteratorVRP2Opt(std::function<Routes&(const XES&)> getRoutes, const XES& se,
+                    P* p = nullptr)
+      : m{nullptr}, index{0}, getRoutes{getRoutes}, rep{getRoutes(se)}, p{p} {}
 
   void first() override {
     for (int r = 0; r < (int)rep.size(); r++) {
@@ -173,27 +168,27 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
   // (0) automatic when no conversion is needed
   template <typename T = typename XES::first_type,
             std::enable_if_t<std::is_same_v<T, Routes>, bool> = true>
-  explicit NSSeqVRP2Opt(P* _p = nullptr)
+  explicit NSSeqVRP2Opt(P* p = nullptr)
       : getRoutes{[](const XES& se) -> Routes& {
           // hiding the innevitable const_cast from the user...
           // NOLINTNEXTLINE
           return const_cast<Routes&>(se.first);
         }},
-        p{_p} {}
+        p{p} {}
 
   // (1) updated behavior: easier, but less efficient
   // reversed parameters to allow differentiation
-  explicit NSSeqVRP2Opt(P* _p, fConstRoute func)
+  explicit NSSeqVRP2Opt(P* p, fConstRoute func)
       : getRoutes{[func](const XES& se) -> Routes& {
           // hiding the innevitable const_cast from the user...
           // NOLINTNEXTLINE
           return const_cast<Routes&>(func(se));
         }},
-        p{_p} {}
+        p{p} {}
 
   // (2) legacy behavior: more efficient
-  explicit NSSeqVRP2Opt(Routes& (*_getRoutes)(const XES&), P* _p = nullptr)
-      : getRoutes{_getRoutes}, p{_p} {}
+  explicit NSSeqVRP2Opt(Routes& (*getRoutes)(const XES&), P* p = nullptr)
+      : getRoutes{getRoutes}, p{p} {}
 
   uptr<Move<XES>> randomMove(const XES& se) override {
     const Routes& rep = getRoutes(se);  // se.first.getR();
