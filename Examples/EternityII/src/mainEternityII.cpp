@@ -32,54 +32,56 @@
 
 using namespace std;
 
-#include <OptFrame/Hyper/Loader.hpp>
 #include <filesystem>  // c++17 std::filesystem::current_path
 #include <set>
-
-#include "EternityII.h"
+//
+#include <OptFrame/Hyper/Loader.hpp>
+//
+#include <EtII/EternityII.h>
 
 using namespace EtII;
 
 // gets real file path, if file exists, or empty string, if not
-std::string
-resolvePath(std::string sinstance, std::string appPath, std::string bazelPackage = "") {
+std::string resolvePath(std::string sinstance, std::string appPath,
+                        std::string bazelPackage = "") {
   // try relative path
-  if (std::filesystem::exists(sinstance))
-    return sinstance;
+  if (std::filesystem::exists(sinstance)) return sinstance;
 
   // load file from absolute directory that contains executable
   std::filesystem::path exec = appPath;
-  std::string full_instance = exec.parent_path().string() + std::string("/") + sinstance;
-  //std::cout << "loading instance at '" << full_instance << "'" << std::endl;
-  if (std::filesystem::exists(full_instance))
-    return full_instance;
+  std::string full_instance =
+      exec.parent_path().string() + std::string("/") + sinstance;
+  // std::cout << "loading instance at '" << full_instance << "'" << std::endl;
+  if (std::filesystem::exists(full_instance)) return full_instance;
 
   // try .runfiles directory extension (bazel build for external bazel package)
-  full_instance = exec.string() + std::string(".runfiles/") + std::string(bazelPackage) + std::string("/") + sinstance;
-  if (std::filesystem::exists(full_instance))
-    return full_instance;
+  full_instance = exec.string() + std::string(".runfiles/") +
+                  std::string(bazelPackage) + std::string("/") + sinstance;
+  if (std::filesystem::exists(full_instance)) return full_instance;
 
   // instance not found
   return "";
 }
 
 int main(int argc, char** argv) {
-  //std::cout << "0: " << argv[0] << std::endl;
-  //std::cout << "dir: " << std::filesystem::current_path() << std::endl;
+  // std::cout << "0: " << argv[0] << std::endl;
+  // std::cout << "dir: " << std::filesystem::current_path() << std::endl;
 
   std::string sinstance = "pieces_set_2/pieces_10x10.txt";
 
   std::string good_path = resolvePath(sinstance, argv[0], "EternityII");
 
   if (good_path == "") {
-    std::cerr << "Instances not found in executable directory. Aborting." << std::endl;
+    std::cerr << "Instances not found in executable directory. Aborting."
+              << std::endl;
     return 1;  // cannot open file
   }
 
-  //Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
+  // Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
   Loader<ESolutionEtII> optframe;
   EtIIProblemCommand etii;
-  etii.load(good_path, optframe.factory, optframe.dictionary, optframe.ldictionary);
+  etii.load(good_path, optframe.factory, optframe.dictionary,
+            optframe.ldictionary);
 
   cout << "Program ended successfully" << endl;
 

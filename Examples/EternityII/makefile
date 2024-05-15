@@ -5,7 +5,7 @@ all: build/app_Example
 CC=g++
 CPPSTD=-std=c++20 -Wfatal-errors
 
-CXXFLAGS= -I../../include -Wfatal-errors  -fno-exceptions -O3 -Wall $(CPPSTD) #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../include -Wfatal-errors  -Iinclude  -fno-exceptions -O3 -Wall $(CPPSTD) #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src

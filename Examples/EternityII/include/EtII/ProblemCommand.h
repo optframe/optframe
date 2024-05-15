@@ -30,27 +30,26 @@ class EtIIProblemCommand {
  public:
   ProblemInstance* p;
 
-  EtIIProblemCommand() {
-    p = NULL;
-  }
+  EtIIProblemCommand() { p = NULL; }
 
   virtual ~EtIIProblemCommand() {
-    if (p)
-      delete p;
+    if (p) delete p;
   }
 
-  string id() {
-    return "problem.EtII";
-  }
+  string id() { return "problem.EtII"; }
 
-  bool registerComponent(sref<Component> component, string type, string name, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary) {
+  bool registerComponent(sref<Component> component, string type, string name,
+                         HeuristicFactory<ESolutionEtII>& hf,
+                         map<string, string>& dictionary) {
     int idx = hf.addComponent(component, type);
     stringstream ss;
     ss << type << " " << idx;
-    return true;  //defineText(name, ss.str(), dictionary);
+    return true;  // defineText(name, ss.str(), dictionary);
   }
 
-  bool load(string filename, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
+  bool load(string filename, HeuristicFactory<ESolutionEtII>& hf,
+            map<string, string>& dictionary,
+            map<string, vector<string>>& ldictionary) {
     File file(filename);
 
     if (!file.isOpen()) {
@@ -64,24 +63,33 @@ class EtIIProblemCommand {
 
     // add everything to the HeuristicFactory 'hf'
 
-    //EtIIInitialSolutionGreedy& is = *new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
-    sref<Constructive<SolutionEtII>> is(new EtIIInitialSolutionGreedy(*p, hf.getRandGen()));
+    // EtIIInitialSolutionGreedy& is = *new EtIIInitialSolutionGreedy(*p,
+    // hf.getRandGen());
+    sref<Constructive<SolutionEtII>> is(
+        new EtIIInitialSolutionGreedy(*p, hf.getRandGen()));
 
     SolutionEtII s = *is->generateSolution(10);  // TODO: fix time
 
-    sref<NSSeqRotate<DeltaMoveRotate>> nsRotate{new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen())};
-    sref<NSSeqSwapCenter<DeltaMoveSwapCenter>> nsSwapCenter = new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
-    sref<NSSeqSwapCorner<DeltaMoveSwapCorner>> nsSwapCorner = new NSSeqSwapCorner<DeltaMoveSwapCorner>(hf.getRandGen());
-    sref<NSSeqSwapRotateCenter<>> nsSwapRotateCenter = new NSSeqSwapRotateCenter<>(hf.getRandGen());
-    sref<NSSeqSwapSide<DeltaMoveSwapSide>> nsSwapSide = new NSSeqSwapSide<DeltaMoveSwapSide>(hf.getRandGen());
+    sref<NSSeqRotate<DeltaMoveRotate>> nsRotate{
+        new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen())};
+    sref<NSSeqSwapCenter<DeltaMoveSwapCenter>> nsSwapCenter =
+        new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
+    sref<NSSeqSwapCorner<DeltaMoveSwapCorner>> nsSwapCorner =
+        new NSSeqSwapCorner<DeltaMoveSwapCorner>(hf.getRandGen());
+    sref<NSSeqSwapRotateCenter<>> nsSwapRotateCenter =
+        new NSSeqSwapRotateCenter<>(hf.getRandGen());
+    sref<NSSeqSwapSide<DeltaMoveSwapSide>> nsSwapSide =
+        new NSSeqSwapSide<DeltaMoveSwapSide>(hf.getRandGen());
 
     s.print();
 
-    //EtIIEvaluator& eval = *new EtIIEvaluator(*p);
-    //sref<GeneralEvaluator<ESolutionEtII>> eval(new EtIIEvaluator(*p));
+    // EtIIEvaluator& eval = *new EtIIEvaluator(*p);
+    // sref<GeneralEvaluator<ESolutionEtII>> eval(new EtIIEvaluator(*p));
     sref<Component> eval(new EtIIEvaluator(*p));
 
-    Evaluation<> e = ((Evaluator<SolutionEtII, EvaluationEtII, ESolutionEtII>&)*eval).evaluate(s);
+    Evaluation<> e =
+        ((Evaluator<SolutionEtII, EvaluationEtII, ESolutionEtII>&)*eval)
+            .evaluate(s);
 
     e.print();
     cout << endl;
@@ -99,9 +107,10 @@ class EtIIProblemCommand {
     return true;
   }
 
-  bool unload(HeuristicFactory<SolutionEtII>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
-    if (p)
-      delete p;
+  bool unload(HeuristicFactory<ESolutionEtII>& factory,
+              map<string, string>& dictionary,
+              map<string, vector<string>>& ldictionary) {
+    if (p) delete p;
     p = NULL;
 
     return true;
