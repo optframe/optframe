@@ -2,8 +2,8 @@
 // Copyright (C) 2007-2024 - OptFrame developers
 // https://github.com/optframe/optframe
 
-#ifndef TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTER_NSSEQVRPSHIFT10_TEST_HPP_
-#define TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTER_NSSEQVRPSHIFT10_TEST_HPP_  // NOLINT
+#ifndef TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTER_NSSEQVRPCROSS_TEST_HPP_
+#define TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTER_NSSEQVRPCROSS_TEST_HPP_  // NOLINT
 
 // C++ system
 #include <limits>
@@ -18,12 +18,12 @@
 #endif
 
 // core includes
-#include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPShift10.hpp>
+#include <OptFrame/Util/NSAdapter/VRP/Inter/NSSeqVRPCross.hpp>
 
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT
 
-TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
+TEST_CASE("OptFrameUtilTests: NSSeqVRPCross") {
   using Routes = std::vector<std::vector<int>>;
   using ESolutionCVRPTest = std::pair<Routes, Evaluation<int>>;
 
@@ -31,7 +31,7 @@ TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
 
   CVRPProblemTest p;
 
-  NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTest> nsseq_v1{
+  NSSeqVRPCross<ESolutionCVRPTest, CVRPProblemTest> nsseq_v1{
       [](const ESolutionCVRPTest& se) -> Routes& {
         // NOLINTNEXTLINE
         auto& r = const_cast<Routes&>(se.first);
@@ -40,13 +40,15 @@ TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
       &p};
 
   REQUIRE(nsseq_v1.toString() ==
-          "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
+          "NSSeqVRPCross(ADAPTER=1) with move: "
+          "OptFrame:Move:MoveVRPCrossAdapter");
 
-  NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTest> nsseq_v2;
+  NSSeqVRPCross<ESolutionCVRPTest, CVRPProblemTest> nsseq_v2;
 
   REQUIRE(nsseq_v2.toString() ==
-          "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
+          "NSSeqVRPCross(ADAPTER=1) with move: "
+          "OptFrame:Move:MoveVRPCrossAdapter");
 }
 
-#endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTER_NSSEQVRPSHIFT10_TEST_HPP_
+#endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTER_NSSEQVRPCROSS_TEST_HPP_
         // // NOLINT

@@ -19,8 +19,10 @@
 #include <catch2/catch_test_macros.hpp>
 #endif
 
+#include "./NSAdapter/VRP/Inter/NSSeqVRPCross.Test.hpp"
 #include "./NSAdapter/VRP/Inter/NSSeqVRPShift10.Test.hpp"
 #include "./NSAdapter/VRP/Inter/NSSeqVRPSwap1_1.Test.hpp"
+//
 #include "./NSAdapter/VRP/Intra/NSSeqVRP2Opt.Test.hpp"
 #include "./NSAdapter/VRP/Intra/NSSeqVRPExchange.Test.hpp"
 #include "./NSAdapter/VRP/Intra/NSSeqVRPOrOpt1.Test.hpp"

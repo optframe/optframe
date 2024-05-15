@@ -22,14 +22,6 @@
 
 namespace optframe {
 
-/*
-template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
-          XBaseSolution<vector<vector<T>>, ADS> S =
-              CopySolution<vector<vector<T>>, ADS>,
-          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MoveVRPSwap1_1 : public Move<XES> {
-  typedef vector<vector<T>> Routes;
-  */
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
 class MoveVRPSwap1_1Adapter : public Move<XES> {
  public:
@@ -103,12 +95,6 @@ class MoveVRPSwap1_1Adapter : public Move<XES> {
   }
 };
 
-/*
-template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
-          class MOVE = MoveVRPSwap1_1<T, ADS, S>,
-          class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>,
-          XESolution XES = pair<S, XEv>>
-          */
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           bool ADAPTER = true, class MOVE = MoveVRPSwap1_1Adapter<XES, P>>
 class NSIteratorVRPSwap1_1Adapter : public NSIterator<XES> {
@@ -173,14 +159,6 @@ class NSIteratorVRPSwap1_1Adapter : public NSIterator<XES> {
   }
 };
 
-/*
-template <class T, class ADS, XBaseSolution<vector<vector<T>>, ADS> S,
-          class MOVE = MoveVRPSwap1_1<T, ADS, S>,
-          class P = OPTFRAME_DEFAULT_PROBLEM,
-          class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, S, MOVE, P>,
-          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
-          XSearch<XES> XSH = std::pair<S, XEv>>
-          */
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           bool ADAPTER = true,
           class NSITERATOR = NSIteratorVRPSwap1_1Adapter<XES, P, ADAPTER>>
