@@ -19,6 +19,8 @@
 #include <catch2/catch_test_macros.hpp>
 #endif
 
+// DO NOT USE IN WINDOWS: CRAZY THINGS HAPPEN! error C2187... C2632...
+#ifndef _MSC_VER
 #include "./NSAdapter/VRP/Inter/NSSeqVRPCross.Test.hpp"
 #include "./NSAdapter/VRP/Inter/NSSeqVRPShift10.Test.hpp"
 #include "./NSAdapter/VRP/Inter/NSSeqVRPSwap1_1.Test.hpp"
@@ -27,5 +29,6 @@
 #include "./NSAdapter/VRP/Intra/NSSeqVRPExchange.Test.hpp"
 #include "./NSAdapter/VRP/Intra/NSSeqVRPOrOpt1.Test.hpp"
 #include "./NSAdapter/VRP/Intra/NSSeqVRPOrOpt2.Test.hpp"
+#endif
 
 #endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_UTIL_TEST_HPP_
