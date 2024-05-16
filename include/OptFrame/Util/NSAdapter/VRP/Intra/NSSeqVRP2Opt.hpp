@@ -184,10 +184,10 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
   using fConstRoute = std::function<const Routes&(const XES&)>;
 
  public:
-#ifndef _MSC_VER
+  // #ifndef _MSC_VER
   // (0) automatic when no conversion is needed
   template <typename T = typename XES::first_type,
-            typename std::enable_if_t<std::is_same_v<T, Routes>, bool> = false>
+            std::enable_if_t<std::is_same_v<T, Routes>>* = nullptr>
   explicit NSSeqVRP2Opt(P* p = nullptr)
       : getRoutes{[](const XES& se) -> Routes& {
           // hiding the innevitable const_cast from the user...
@@ -195,7 +195,7 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
           return const_cast<Routes&>(se.first);
         }},
         p{p} {}
-#endif
+  // #endif
 
   // (1) updated behavior: easier, but less efficient
   // reversed parameters to allow differentiation

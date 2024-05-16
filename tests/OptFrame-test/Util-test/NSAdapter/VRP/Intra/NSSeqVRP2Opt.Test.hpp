@@ -42,10 +42,12 @@ TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
   REQUIRE(nsseq_v1.toString() ==
           "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
 
+  // #ifndef _MSC_VER
   NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTestNSSeq2Opt> nsseq_v2;
 
   REQUIRE(nsseq_v2.toString() ==
           "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
+  // #endif
 }
 
 #endif  // TESTS_OPTFRAME_TEST_UTIL_TEST_NSADAPTER_VRP_INTRA_NSSEQVRP2OPT_TEST_HPP_
