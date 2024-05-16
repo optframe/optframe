@@ -61,8 +61,8 @@ using remove_ref = std::remove_reference_t<Self>;
 // warning: the ‘bool’ keyword is not allowed in a C++20 concept definition
 // use macro __cplusplus == 201703L to verify that
 
-//#define BOOL_OR_EMPTY(b) (__cplusplus <= 201703L ? bool :  std::cout <<
-//"C++17\n";
+// #define BOOL_OR_EMPTY(b) (__cplusplus <= 201703L ? bool :  std::cout <<
+// "C++17\n";
 //    else if (__cplusplus == 201402L) std::cout << "C++14\n";)
 
 // default renaming of std::unique_ptr (too long!!)
@@ -84,38 +84,9 @@ using id_type = std::size_t;
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 // https://en.cppreference.com/w/cpp/concepts/boolean
-/*
-template<class B>
-  concept boolean =
-    std::movable<std::remove_cvref_t<B>> &&
-    requires(const std::remove_reference_t<B>& b1,
-             const std::remove_reference_t<B>& b2, const bool a) {
-      { b1 } -> std::convertible_to<bool>;
-      { !b1 } -> std::convertible_to<bool>;
-      { b1 && b2 } -> std::same_as<bool>;
-      { b1 &&  a } -> std::same_as<bool>;
-      {  a && b2 } -> std::same_as<bool>;
-      { b1 || b2 } -> std::same_as<bool>;
-      { b1 ||  a } -> std::same_as<bool>;
-      {  a || b2 } -> std::same_as<bool>;
-      { b1 == b2 } -> std::convertible_to<bool>;
-      { b1 ==  a } -> std::convertible_to<bool>;
-      {  a == b2 } -> std::convertible_to<bool>;
-      { b1 != b2 } -> std::convertible_to<bool>;
-      { b1 !=  a } -> std::convertible_to<bool>;
-      {  a != b2 } -> std::convertible_to<bool>;
-    };
-   */
 
-// on C++17 this is a "workaround"
-// on C++20, best solution would be to have 'my_same_as = std::same_as'
-// This should work for both standards
 template <class Me, class Other>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
+concept my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
 
 // https://en.cppreference.com/w/cpp/concepts/convertible_to
 /*
@@ -138,11 +109,7 @@ concept
 
 // https://en.cppreference.com/w/cpp/concepts/equality_comparable
 template <class T, class U>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        __WeaklyEqualityComparableWith =  // exposition only
+concept __WeaklyEqualityComparableWith =  // exposition only
     requires(const std::remove_reference_t<T>& t,
              const std::remove_reference_t<U>& u) {
   { t == u } -> my_same_as<bool>;  // std::boolean;
@@ -153,11 +120,7 @@ concept
 //
 
 template <class T>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        equality_comparable = __WeaklyEqualityComparableWith<T, T>;
+concept equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 
 //
 //
@@ -192,13 +155,7 @@ concept
 // weak dominance is always 'reflexive'.
 
 template <class T>
-// concept bool totally_ordered =
-// concept bool partially_ordered =
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        comparability = optframe::equality_comparable<T> &&
+concept comparability = optframe::equality_comparable<T> &&
     requires(const std::remove_reference_t<T>& a,
              const std::remove_reference_t<T>& b) {
   { a < b } -> my_same_as<bool>;
@@ -239,13 +196,8 @@ concept
 // (weight scalar *= was dropped for now, too hard)
 
 template <class T>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        basic_arithmetics_assign =
-            requires(std::remove_reference_t<T>& a,
-                     const std::remove_reference_t<T>& b) {
+concept basic_arithmetics_assign = requires(
+    std::remove_reference_t<T>& a, const std::remove_reference_t<T>& b) {
   { a += b } -> my_same_as<T>;
   { a -= b } -> my_same_as<T>;
 }
@@ -256,45 +208,15 @@ concept
 };
 
 template <class T>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        basic_arithmetics = optframe::basic_arithmetics_assign<T> &&
+concept basic_arithmetics = optframe::basic_arithmetics_assign<T> &&
     requires(const std::remove_reference_t<T>& a,
              const std::remove_reference_t<T>& b) {
   { a + b } -> my_same_as<T>;
   { a - b } -> my_same_as<T>;
 };
 
-//{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must
-// provide multiplication by scalar to do 'weights' { a / b } ->
-// std::remove_reference_t<T>;  // NOT actually necessary (until today!)
-/* ||
-requires(const std::remove_reference_t<T>& a,
-         const std::remove_reference_t<T>& b) {
-  { a + b } -> my_same_as<T&>; // std::remove_reference_t<T>; // won't work on
-C++20 { a - b } -> my_same_as<T&>;
-  //{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must
-provide multiplication by scalar to do 'weights'
-  //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until
-today!)
-};
-*/
-
-/*
-&&
-requires(std::remove_reference_t<T>& a) {
-  { optframe::get_numeric_zero<T>() } -> std::remove_reference_t<T>&;
-};
-*/
-
 template <class T>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        extended_arithmetics = optframe::basic_arithmetics<T> &&
+concept extended_arithmetics = optframe::basic_arithmetics<T> &&
     requires(const std::remove_reference_t<T>& a,
              const std::remove_reference_t<T>& b) {
   {
@@ -308,14 +230,10 @@ concept
 
 // capability to move to ostream&
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        ostreamable = requires(std::ostream& os,
+concept ostreamable = requires(std::ostream& os,
                                // const std::remove_reference_t<Self>& obj) {
                                const Self& obj) {
-  {os << obj};  //-> my_same_as<std::ostream&>; // or 'my_convertible_to'
+  {os << obj};
 };
 
 #endif  // cpp_concepts
