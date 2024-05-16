@@ -37,11 +37,7 @@ typedef OPTFRAME_DEFAULT_ADS _ADS;         // more beautiful :)
 namespace optframe {
 
 template <class T>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        IsComplete = requires(T self) {
+concept IsComplete = requires(T self) {
   {sizeof(self)};
 };
 
@@ -50,10 +46,7 @@ template <class R>
 // concept bool Representation = true;
 concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-        XRepresentation = requires(R self) {
+    XRepresentation = requires(R self) {
   {new R(self)};
 };
 #else
@@ -66,28 +59,10 @@ concept
 // there may be some "Cloneable" in std future...
 // TODO: change return to unique_ptr instead of reference
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        HasClone = true; /*requires(Self self)
-       {
-
-          {
-             self.clone()
-          }
-          -> my_convertible_to<Self>;
-
-         // not working on c++20 (return 'Self&' is not fine...)
-       };
-       */
+concept HasClone = true;
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        HasToString = requires(Self self) {
+concept HasToString = requires(Self self) {
   { self.toString() } -> my_same_as<std::string>;
 };
 
@@ -95,13 +70,7 @@ concept
 // 'XRepresentation'?
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XSolution =
-            XRepresentation<Self>;  // HasClone<Self> && HasToString<Self> &&
-                                    // XRepresentation<Self>;
+concept XSolution = XRepresentation<Self>;
 
 // -------
 // Why is XSolutionOrIncomplete necessary?
@@ -114,11 +83,7 @@ concept
 //
 
 template <class S>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XSolutionOrIncomplete = !IsComplete<S> || XSolution<S>;
+concept XSolutionOrIncomplete = !IsComplete<S> || XSolution<S>;
 
 // No more cloning!! finally! thanks concepts :)
 
@@ -134,24 +99,16 @@ concept
 // note that "auto" is an "unconstrained concept", while "XRepresentation"
 // forced a filter that cannot be done during concept definition.
 template <class S, class R>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        HasGetR = XRepresentation<R> &&(
-            requires(S a) {
-              { a.getR() } -> my_same_as<R&>;
-            } ||
-            requires(S a) {
-              { a.getR() } -> my_same_as<R>;
-            });
+concept HasGetR = XRepresentation<R> &&(
+    requires(S a) {
+      { a.getR() } -> my_same_as<R&>;
+    } ||
+    requires(S a) {
+      { a.getR() } -> my_same_as<R>;
+    });
 
 template <class S, class ADS = _ADS>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        HasGetADS = requires(S a) {
+concept HasGetADS = requires(S a) {
   { a.getADSptr() } -> my_same_as<ADS*>;
 };
 
@@ -159,32 +116,20 @@ concept
 // cannot be constrained" so, we should explicitly pass constraints on next line
 // as: "XRepresentation<R>"
 template <class S, class R, class ADS = _ADS>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XBaseSolution = XRepresentation<R> && HasGetR<S, R> &&
-    HasGetADS<S, ADS> && XSolution<S>;
+concept XBaseSolution =
+    XRepresentation<R> && HasGetR<S, R> && HasGetADS<S, ADS> && XSolution<S>;
 
 // same gcc bug: "error: a variable concept cannot be constrained" for
 // "XRepresentation R"
 template <class Self, class R>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XRSolution = XRepresentation<R> && HasGetR<Self, R> && XSolution<Self>;
+concept XRSolution = XRepresentation<R> && HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
 // defining 'objval' concept: objective value must have +/- (for costs) and
 // comparisons
 template <class T>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        objval = optframe::basic_arithmetics<T> && optframe::comparability<T>;
+concept objval = optframe::basic_arithmetics<T> && optframe::comparability<T>;
 
 //
 // defining 'evgoal' concept: something that has +/- and some directed
@@ -194,11 +139,7 @@ concept
 // TODO(igormcoelho): OLD rename 'diff' to 'sub'?
 //
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        evgoal = (optframe::basic_arithmetics<Self> ||
+concept evgoal = (optframe::basic_arithmetics<Self> ||
                   (
                       requires(Self e, remove_ref<Self>& e2) {
                         { e.update(e2) } -> my_same_as<void>;
@@ -208,44 +149,16 @@ concept
                       }));
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        hasUpdateDiff = (
-            requires(Self e, remove_ref<Self>& e2) {
-              { e.update(e2) } -> my_same_as<void>;
-            } &&
-            requires(Self e, const remove_ref<Self>& e2) {
-              { e.diff(e2) } -> my_same_as<Self>;
-            });
-
-/*
-    &&
-//      requires(Self e)
-        requires(Self e,
-           const std::remove_reference_t<Self>& e2)
-      {
-         { e.betterStrict(e2) }    -> bool; // strict compare towards goal,
-e.g., '<' { e.betterNonStrict(e2) } -> bool; // non-strict compare towards goal,
-e.g., '<=' { e.equals(e2) }          -> bool; // compare towards goal, e.g.,
-'=='
-      }
-      &&
-        requires(Self e)
-      {
-         { e.isStrictImprovement()} -> bool;
-         { e.isNonStrictImprovement()} -> bool;
-      };
-*/
-//------
+concept hasUpdateDiff = (
+    requires(Self e, remove_ref<Self>& e2) {
+      { e.update(e2) } -> my_same_as<void>;
+    } &&
+    requires(Self e, const remove_ref<Self>& e2) {
+      { e.diff(e2) } -> my_same_as<Self>;
+    });
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        HasGetObj = requires(Self a) {
+concept HasGetObj = requires(Self a) {
   typename Self::objType;  // requires 'objType' on XEvaluation...
   //
   // filtering 'objType' properties...
@@ -267,11 +180,7 @@ concept
 // just getObj one can implement this way if preferred, separating or not both
 // "values"... not mandatory anymore
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XEvaluation =  // sing obj. evaluation part (standard multi obj)
+concept XEvaluation =  // sing obj. evaluation part (standard multi obj)
     (
         optframe::evgoal<Self>&& HasClone<Self>&& HasToString<Self>&&
             HasGetObj<Self>&& optframe::ostreamable<Self>&& requires(Self e) {
@@ -292,55 +201,12 @@ concept
           // {e.diff(e)};
         });
 
-/*
-        ||  // classic multiobj (MultiEvaluation) - TODO: remove this option
-    (requires(Self e, size_t idx) {
-      // variable 'outdated' is still useful for optimizations
-      { e.atObjVal(idx) } -> optframe::objval;
-      {e.diff(e)};
-    });
-    */
-
 // XSolution and XEvaluation are container-inspired "conceptual objects", to
 // carry Representation and Objective Value One can even aggregate both in a
 // single unified "thing", called XESolution
 
 // =================== Notes on Pair ==================
 // One Pair could be implemented in two ways:
-/*
-template<typename P>
-concept bool Pair5 = requires(P p)
-{
-   typename P::first_type;
-   typename P::second_type;
-   p.first;
-   p.second;
-   requires my_same_as<decltype(p.first), typename P::first_type>;
-   requires my_same_as<decltype(p.second), typename P::second_type>;
-};
-*/
-// The next way uses "return ->" on "local variables", but seem to require
-// my_convertible_to, instead of my_same_as
-/*
-template<typename P>
-concept bool Pair7 = requires(P p)
-{
-   typename P::first_type;
-   typename P::second_type;
-   {
-      p.first
-   }
-   ->my_convertible_to<typename P::first_type>;
-   {
-      p.second
-   }
-   ->my_convertible_to<typename P::second_type>;
-};
-*/
-// It LOOKS LIKE... 'my_convertible_to' is more flexible than 'my_same_as'.
-// Tried and found some issues with 'my_same_as', maybe 'convertible' is the
-// ONLY way...
-// ===================== END PAIR SPEC ====================================
 
 // funny thing, Solution doesn't carry specific representation (yet)
 // probably, because Representation itself is as abstract as a solution...
@@ -351,13 +217,7 @@ concept bool Pair7 = requires(P p)
 // -----> now concept also allows pair<S, XEv> to represent composed space
 // <-----
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XESolution =
-            XSolution<Self> &&  //(XSolution<Self> && XEvaluation<Self>)  ||
-    requires(Self p) {
+concept XESolution = XSolution<Self> && requires(Self p) {
   typename Self::first_type;   // requires a "first_type" with some "XSolution
                                // properties"
   typename Self::second_type;  // requires a "second_type" with some
@@ -399,11 +259,7 @@ concept
 // general one:
 template <class Self, class P>
 // concept bool XPowerSet = true;
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XPowerSet = requires(Self a, size_t idx) {
+concept XPowerSet = requires(Self a, size_t idx) {
   {
     a.size()
     } -> my_convertible_to<size_t>;  // could this be 'int' as well? TODO: test
@@ -417,14 +273,6 @@ concept
   //
   typename Self::value_type;
 };
-/*
-|| requires(Self a, size_t idx)
-   {
-      a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
-with 'vector'
-   }
-   -> my_convertible_to<P>;
-   */
 
 // TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or
 // iterator) of objects for type P
@@ -435,11 +283,7 @@ with 'vector'
 // template<class Self, XSolution S> // needs to fix this 'XSolution S'
 template <class Self, class S>  // fixed "constrained variable concept" on line
                                 // below... "XSolution<S>&&..."
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        X2Solution = XSolution<S> &&
+concept X2Solution = XSolution<S> &&
     XPowerSet<Self, S>;  // Too bad, this is unused on OptFrame... :'(
 
 // ---
@@ -457,11 +301,7 @@ concept
 // XPowerSet<Self, XEv>;
 template <class Self,
           class XES>  // fixes gcc bug! "XESolution<XES>&&..." is good!
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        X2ESolution = XESolution<XES> && XPowerSet<Self, XES>;
+concept X2ESolution = XESolution<XES> && XPowerSet<Self, XES>;
 
 // TODO1: should make exponential over a XESolution... not separated sets!!
 // TODO2: require any container with operator*, instead of hardcoded 'uptr'....
@@ -517,16 +357,13 @@ concept
 template <class Self, class XES>  // TODO: should remove S and XEv, by changing
                                   // X2ESolution concept...
 concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        // XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self,
-        // XES>);
-        //
-        //  XES must be of XESolution kind
-        //  XES is either the BASE type for Self or the REAL type for Self
-        XSearch = (XESolution<XES> && XESolution<Self>) ||
-                  (XESolution<XES> && X2ESolution<Self, XES>);
+    // XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self,
+    // XES>);
+    //
+    //  XES must be of XESolution kind
+    //  XES is either the BASE type for Self or the REAL type for Self
+    XSearch = (XESolution<XES> && XESolution<Self>) ||
+              (XESolution<XES> && X2ESolution<Self, XES>);
 
 // -------------
 // Maybe make evaluation values total_ordered...
@@ -538,67 +375,12 @@ concept
 // template <class Self, class XSearch> // TODO: make this, if StopCriteria has
 // XESolution
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XSearchMethod = true;
-
-// UNUSED CODE BELOW!! REMOVED IT (It also contains gcc bug on "XEvaluation
-// XEv"...)
-/*
-template<class Self, XEvaluation XEv, XSearchMethod XM>
-concept bool XStopCriteria =
-  requires(Self a, std::remove_reference_t<XEv>& e, std::remove_reference_t<XM>&
-m)
-{
-   {
-      a.shouldStop(e, m)
-   }
-   ->bool;
-};
-*/
-
-// bugged code (too bad!!) - TODO: fix gcc to have this simplified version (only
-// Self on XStopCriteria)
-/*
-template <class Self>
-concept bool XStopCriteria =  requires(Self a, const XEvaluation& e,
-XSearchMethod& m)
-                              {
-                                 { a.shouldStop(e, m) } -> bool;
-                              };
-*/
-// gcc-7 bug
-/*
-BaseConcepts.hpp:260:39: internal compiler error: in
-synthesize_implicit_template_parm, at cp/parser.c:38874 requires(Self a, const
-XEvaluation& e, XSearchMethod& m)
-                                       ^~~~~
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <file:///usr/share/doc/gcc-7/README.Bugs> for instructions.
-*/
-
-// gcc-8 bug
-/*
-BaseConcepts.hpp:266:55: internal compiler error: in
-synthesize_implicit_template_parm, at cp/parser.c:39141 concept bool
-XStopCriteria2 =  requires(Self a, const XEvaluation& e, XSearchMethod& m)
-                                                       ^~~~~~~~~~~
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <file:///usr/share/doc/gcc-8/README.Bugs> for instructions.
-*/
+concept XSearchMethod = true;
 
 // ===================
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        X01N = true;  // TODO: space for [0,1]^N random keys... N could be
+concept X01N = true;  // TODO: space for [0,1]^N random keys... N could be
                       // constexpr template, but better not.
 
 // ===================
@@ -608,63 +390,38 @@ concept
 // XEMSolution (EM = objective multiple) - Requires Set of Total Order
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XSEvaluation =
-            XEvaluation<Self> && comparability<typename Self::objType>;
+concept XSEvaluation =
+    XEvaluation<Self> && comparability<typename Self::objType>;
 
 // XMEvaluation mimics XPowerSet... but could not use it directly!
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XMEvaluation = XEvaluation<Self> &&
+concept XMEvaluation = XEvaluation<Self> &&
     requires(Self e, typename Self::objType m,
              typename Self::objType::value_type v,
              typename Self::objType::value_type::objType vm, size_t idx) {
   { m.size() } -> my_convertible_to<size_t>;
   { m.at(idx) } -> my_convertible_to<typename Self::objType::value_type>;
-}
-&& comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
+} && comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XESSolution =
-            XESolution<Self> && XSEvaluation<typename Self::second_type>;
+concept XESSolution =
+    XESolution<Self> && XSEvaluation<typename Self::second_type>;
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XEMSolution =
-            XESolution<Self> && XMEvaluation<typename Self::second_type>;
+concept XEMSolution =
+    XESolution<Self> && XMEvaluation<typename Self::second_type>;
 
 template <class Self,
           class XMES>  // fixes gcc bug! "XESolution<XES>&&..." is good!
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        X2EMSolution = XEMSolution<XMES> && XPowerSet<Self, XMES>;
+concept X2EMSolution = XEMSolution<XMES> && XPowerSet<Self, XMES>;
 
 // ===================
 
 // XFamily concept
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XFamily = requires(Self a) {
+concept XFamily = requires(Self a) {
   { a.family() } -> my_same_as<std::string>;
 };
 

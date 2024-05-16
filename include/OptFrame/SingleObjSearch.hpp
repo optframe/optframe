@@ -28,11 +28,7 @@ namespace optframe {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 template <class Self>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XSingleObjSearch = requires(Self a) {
+concept XSingleObjSearch = requires(Self a) {
   XESolution<typename Self::BestType>;
 };
 

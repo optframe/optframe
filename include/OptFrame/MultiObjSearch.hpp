@@ -29,11 +29,7 @@ namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <class Self, class XES>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        XMultiObjSearch = requires(Self a) {
+concept XMultiObjSearch = requires(Self a) {
   XESolution<XES>;
   X2ESolution<typename Self::BestType, XES>;
 };
