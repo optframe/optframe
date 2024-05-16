@@ -52,7 +52,10 @@ class MoveVRP2Opt : public Move<XES> {
   }
 
   uptr<Move<XES>> apply(XES& se) override {
+    // buggy msvc line
     Routes& rep = getRoutes(se);
+    //
+    //
     int small = 0;
     int bigger = 0;
     if (p1 <= p2) {
@@ -169,7 +172,7 @@ template <typename XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class NSITERATOR = NSIteratorVRP2Opt<XES, P, MOVE>>
 #endif
 class NSSeqVRP2Opt : public NSSeq<XES> {
-  typedef vector<vector<int>> Routes;
+  typedef std::vector<std::vector<int>> Routes;
 
  public:
   // function to get routes from type 'R'
@@ -183,7 +186,7 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
  public:
   // (0) automatic when no conversion is needed
   template <typename T = typename XES::first_type,
-            std::enable_if_t<std::is_same_v<T, Routes>, bool> = true>
+            typename std::enable_if_t<std::is_same_v<T, Routes>, bool> = false>
   explicit NSSeqVRP2Opt(P* p = nullptr)
       : getRoutes{[](const XES& se) -> Routes& {
           // hiding the innevitable const_cast from the user...
