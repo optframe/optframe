@@ -188,7 +188,8 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
         p{p} {}
 
   // (2) legacy behavior: more efficient
-  explicit NSSeqVRP2Opt(Routes& (*getRoutes)(const XES&), P* p = nullptr)
+  explicit NSSeqVRP2Opt(std::function<Routes&(const XES&)> getRoutes,
+                        P* p = nullptr)
       : getRoutes{getRoutes}, p{p} {}
 
   uptr<Move<XES>> randomMove(const XES& se) override {
