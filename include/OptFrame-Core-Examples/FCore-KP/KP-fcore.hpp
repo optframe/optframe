@@ -12,13 +12,14 @@
 #include <string>
 #include <utility>
 #include <vector>
+// priority loading
+#include <OptFrame/printable/printable.hpp>
 //
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/printable/printable.hpp>
 
 using namespace std;        // NOLINT
 using namespace optframe;   // NOLINT
