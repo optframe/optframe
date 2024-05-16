@@ -185,6 +185,7 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
 
  public:
 // (0) automatic when no conversion is needed
+#ifndef _MSC_VER  // NO USE IN MSVC
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
   explicit NSSeqVRP2Opt(
       P* p = nullptr) requires std::is_same_v<typename XES::first_type, Routes>
@@ -195,7 +196,6 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
       }},
         p{p} {}
 #else
-#ifndef _MSC_VER  // NO MSVC
   // (0) automatic when no conversion is needed
   template <typename T = typename XES::first_type,
             std::enable_if_t<std::is_same_v<T, Routes>>* = nullptr>
@@ -206,8 +206,9 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
           return const_cast<Routes&>(se.first);
         }},
         p{p} {}
-#endif            // no MSVC
-#endif            // no C++20
+
+#endif  // no C++20
+#endif  // no MSVC
 
   // (1) updated behavior: easier, but less efficient
   // reversed parameters to allow differentiation
