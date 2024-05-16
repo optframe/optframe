@@ -1,5 +1,8 @@
 
-// FORCE ADDING A LOT OF STUFF!!! TODO: REMOVE
+// load first to guarantee all tests work fine!
+#include <OptFrame/printable/printable.hpp>
+//
+// TODO: clean some of these stuff and move to test-specific settings...
 #include <OptFCore/EA/RK/FDecoderOpRK.hpp>
 #include <OptFCore/FCore.hpp>
 // #include <OptFCore/FxCore.hpp>
