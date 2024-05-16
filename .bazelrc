@@ -10,7 +10,9 @@ build --cxxopt='-g'
 #### https://github.com/erenon/bazel_clang_tidy/issues/29
 #
 # build --cxxopt='-Wfatal-errors'
-build --client_env=CC=clang
+
+# DO NOT FORCE clang, UNLESS USING stdlib
+# build --client_env=CC=clang
 
 #######
 # FROM: https://github.com/erenon/bazel_clang_tidy

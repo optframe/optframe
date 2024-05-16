@@ -29,7 +29,7 @@ namespace optframe {
 
 template <class Self>
 concept XSingleObjSearch = requires(Self a) {
-  XESolution<typename Self::BestType>;
+  requires XESolution<typename Self::BestType>;
 };
 
 #endif  // cpp_concepts

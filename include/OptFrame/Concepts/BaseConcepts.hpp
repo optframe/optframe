@@ -41,6 +41,11 @@ concept IsComplete = requires(T self) {
   {sizeof(self)};
 };
 
+template <typename T>
+concept XOStreamable = requires(std::ostream& os, T value) {
+  { os << value } -> std::convertible_to<std::ostream&>;
+};
+
 // Representation type just requires some Copy Constructive behavior
 template <class R>
 // concept bool Representation = true;
@@ -128,6 +133,7 @@ concept XRSolution = XRepresentation<R> && HasGetR<Self, R> && XSolution<Self>;
 
 // defining 'objval' concept: objective value must have +/- (for costs) and
 // comparisons
+// NOTE: comparability breaks MultiEvaluator... how to fix this correctly?
 template <class T>
 concept objval = optframe::basic_arithmetics<T> && optframe::comparability<T>;
 
@@ -162,7 +168,8 @@ concept HasGetObj = requires(Self a) {
   typename Self::objType;  // requires 'objType' on XEvaluation...
   //
   // filtering 'objType' properties...
-  optframe::objval<typename Self::objType>;
+  // BROKEN for MultiEvaluator.. how to fix this?
+  // requires optframe::objval<typename Self::objType>;
   //
   { a.evaluation() } -> my_convertible_to<typename Self::objType>;
   //
@@ -231,8 +238,8 @@ concept XESolution = XSolution<Self> && requires(Self p) {
   // not enough for reference and non-reference cases requires
   // my_same_as<decltype(p.second), typename Self::second_type>;
   // details on types
-  XSolution<typename Self::first_type>;
-  XEvaluation<typename Self::second_type>;
+  requires XSolution<typename Self::first_type>;
+  requires XEvaluation<typename Self::second_type>;
 };
 
 // =====================

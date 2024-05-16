@@ -30,8 +30,8 @@ namespace optframe {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <class Self, class XES>
 concept XMultiObjSearch = requires(Self a) {
-  XESolution<XES>;
-  X2ESolution<typename Self::BestType, XES>;
+  requires XESolution<XES>;
+  requires X2ESolution<typename Self::BestType, XES>;
 };
 #endif  // cpp_concepts
 

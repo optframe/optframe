@@ -119,10 +119,10 @@ class NSIteratorVRPSwap1_1Adapter : public NSIterator<XES> {
   }
 
   void first() override {
-    for (int r1 = 0; r1 < r.size() - 2; r1++)
-      for (int c1 = 0; c1 < r.at(r1).size(); c1++)
-        for (int r2 = r1 + 1; r2 < r.size() - 1; r2++)
-          for (int c2 = 0; c2 < r.at(r2).size(); c2++) {
+    for (int r1 = 0; r1 < (int)r.size() - 2; r1++)
+      for (int c1 = 0; c1 < (int)r.at(r1).size(); c1++)
+        for (int r2 = r1 + 1; r2 < (int)r.size() - 1; r2++)
+          for (int c2 = 0; c2 < (int)r.at(r2).size(); c2++) {
             if constexpr (ADAPTER)
               moves.push_back(
                   uptr<Move<XES>>(new MOVE(getRoutes, r1, r2, c1, c2, p)));
@@ -138,7 +138,7 @@ class NSIteratorVRPSwap1_1Adapter : public NSIterator<XES> {
 
   void next() override {
     index++;
-    if (index < moves.size())
+    if (index < (int)moves.size())
       m = std::move(moves[index]);
     else
       m = nullptr;

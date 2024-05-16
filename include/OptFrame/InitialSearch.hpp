@@ -83,14 +83,20 @@ class BasicInitialSearch : public InitialSearch<XES, XSH> {
 
     if (!sol) return make_pair(nullopt, SearchStatus::NO_REPORT);
 
-    if (Component::verbose)
-      std::cout << "BasicInitialSearch: sol => " << *sol << std::endl;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+    if constexpr (XOStreamable<S>)
+      if (Component::verbose)
+        std::cout << "BasicInitialSearch: sol => " << *sol << std::endl;
+#endif
 
     XEv e = evaluator->evaluate(*sol);
     XES se(*sol, e);
 
-    if (Component::verbose)
-      std::cout << "BasicInitialSearch: se => " << se << std::endl;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+    if constexpr (XOStreamable<XES>)
+      if (Component::verbose)
+        std::cout << "BasicInitialSearch: se => " << se << std::endl;
+#endif
     return make_pair(se, SearchStatus::NO_REPORT);
   }
 };

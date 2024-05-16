@@ -133,10 +133,10 @@ class NSIteratorVRPCrossAdapter : public NSIterator<XES> {
   }
 
   void first() override {
-    for (int r1 = 0; r1 < r.size() - 1; r1++) {
-      for (int r2 = r1 + 1; r2 < r.size(); r2++) {
-        for (int p1 = 0; p1 <= r.at(r1).size(); p1++) {
-          for (int p2 = 0; p2 <= r.at(r2).size(); p2++) {
+    for (int r1 = 0; r1 < (int)r.size() - 1; r1++) {
+      for (int r2 = r1 + 1; r2 < (int)r.size(); r2++) {
+        for (int p1 = 0; p1 <= (int)r.at(r1).size(); p1++) {
+          for (int p2 = 0; p2 <= (int)r.at(r2).size(); p2++) {
             if constexpr (ADAPTER)
               moves.push_back(
                   uptr<Move<XES>>(new MOVE(getRoutes, r1, r2, p1, p2, p)));
@@ -155,7 +155,7 @@ class NSIteratorVRPCrossAdapter : public NSIterator<XES> {
 
   void next() override {
     index++;
-    if (index < moves.size()) {
+    if (index < (int)moves.size()) {
       m = std::move(moves[index]);
     } else {
       m = nullptr;

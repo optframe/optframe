@@ -44,3 +44,15 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # docs requiring tgtermes.sty
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends tex-gyre
+
+
+# command 'add-apt-repository'
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+     && apt-get -y install --no-install-recommends software-properties-common
+RUN sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+     && apt-get -y install --no-install-recommends g++-13 gcc-13
+
+RUN sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 10
+RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 10
