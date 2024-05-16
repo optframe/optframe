@@ -16,7 +16,11 @@
 
 namespace optframe {
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
+#else
+template <typename XES, class P = OPTFRAME_DEFAULT_PROBLEM>
+#endif
 class MoveVRP2Opt : public Move<XES> {
   using XEv = typename XES::second_type;
 
@@ -87,8 +91,13 @@ class MoveVRP2Opt : public Move<XES> {
   // void print() const override { cout << toString() << endl; }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRP2Opt<XES, P>>
+#else
+template <typename XES, class P = OPTFRAME_DEFAULT_PROBLEM,
+          class MOVE = MoveVRP2Opt<XES, P>>
+#endif
 class NSIteratorVRP2Opt : public NSIterator<XES> {
   using Routes = std::vector<std::vector<int>>;
 
@@ -150,9 +159,15 @@ class NSIteratorVRP2Opt : public NSIterator<XES> {
   }
 };
 
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRP2Opt<XES, P>,
           class NSITERATOR = NSIteratorVRP2Opt<XES, P, MOVE>>
+#else
+template <typename XES, class P = OPTFRAME_DEFAULT_PROBLEM,
+          class MOVE = MoveVRP2Opt<XES, P>,
+          class NSITERATOR = NSIteratorVRP2Opt<XES, P, MOVE>>
+#endif
 class NSSeqVRP2Opt : public NSSeq<XES> {
   typedef vector<vector<int>> Routes;
 
