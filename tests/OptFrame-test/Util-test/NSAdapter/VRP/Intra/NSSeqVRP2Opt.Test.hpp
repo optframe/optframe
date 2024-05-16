@@ -23,15 +23,15 @@
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT
 
+class CVRPProblemTestNSSeq2Opt {};
+
 TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
   using Routes = std::vector<std::vector<int>>;
   using ESolutionCVRPTest = std::pair<Routes, Evaluation<int>>;
 
-  class CVRPProblemTest {};
+  CVRPProblemTestNSSeq2Opt p;
 
-  CVRPProblemTest p;
-
-  NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTest> nsseq_v1{
+  NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTestNSSeq2Opt> nsseq_v1{
       [](const ESolutionCVRPTest& se) -> Routes& {
         // NOLINTNEXTLINE
         auto& r = const_cast<Routes&>(se.first);
@@ -42,7 +42,7 @@ TEST_CASE("OptFrameUtilTests: NSSeqVRP2Opt") {
   REQUIRE(nsseq_v1.toString() ==
           "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
 
-  NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTest> nsseq_v2;
+  NSSeqVRP2Opt<ESolutionCVRPTest, CVRPProblemTestNSSeq2Opt> nsseq_v2;
 
   REQUIRE(nsseq_v2.toString() ==
           "NSSeqVRP2Opt with move: OptFrame:Move:MoveVRP2Opt");
