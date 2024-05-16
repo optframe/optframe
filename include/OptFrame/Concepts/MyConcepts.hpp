@@ -98,11 +98,7 @@ concept convertible_to =
   };
   */
 template <class From, class To>
-concept
-#if __cplusplus <= 201703L  // after c++20, not required 'bool'
-    bool
-#endif
-        my_convertible_to = std::is_convertible_v<From, To> &&
+concept my_convertible_to = std::is_convertible_v<From, To> &&
     requires(std::add_rvalue_reference_t<From> (&f)()) {
   static_cast<To>(f());
 };
