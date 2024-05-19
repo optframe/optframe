@@ -32,7 +32,7 @@ typedef OPTFRAME_DEFAULT_ADS _ADS;         // more beautiful :)
 #include <OptFrame/Concepts/MyConcepts.hpp>
 
 // may require some basic printing capabilities
-//#include <OptFrame/printable/printable.hpp>
+// #include <OptFrame/printable/printable.hpp>
 
 namespace optframe {
 

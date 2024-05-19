@@ -7,6 +7,7 @@
 #include <functional>
 #include <string>
 //
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Move.hpp>
 
 namespace optframe {
@@ -165,7 +166,18 @@ class FMoveP final : public Move<XES> {
   std::string id() const override { return idComponent(); }
 
   // use 'operator<<' for M
-  void print() const override { std::cout << m << std::endl; }
+  void print() const override {
+    // for now, require operator<< for M
+    // Check if C++20 Concepts is supported
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+    static_assert(optframe::XOStreamable<M>);
+#endif
+    //
+    // if constexpr (XOStreamable<Move<XES, XSH>>)
+    std::cout << m << std::endl;
+    // else
+    //   std::cout << "Move(NO_PRINT_AVALIABLE)" << std::endl;
+  }
 };
 
 }  // namespace optframe

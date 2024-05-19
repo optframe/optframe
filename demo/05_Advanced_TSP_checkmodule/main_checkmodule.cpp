@@ -3,6 +3,9 @@
 
 #include <iostream>
 //
+// must come first...
+#include <OptFrame/printable/printable.hpp>
+//
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>

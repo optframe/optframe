@@ -165,7 +165,10 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
     if (Component::verbose) {
       std::cout << "star value: " << star->second.evaluation() << std::endl;
-      std::cout << "star: " << star->first << std::endl;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+      if constexpr (XOStreamable<XES>)
+        std::cout << "star: " << star->first << std::endl;
+#endif
     }
 
     // initialize search context for Simulated Annealing
@@ -222,17 +225,23 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
       move->applyUpdate(current);
 
-      if (Component::verbose)
-        std::cout << "SA(verbose): will reevaluate. current.first="
-                  << current.first << std::endl;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+      if constexpr (XOStreamable<XES>)
+        if (Component::verbose)
+          std::cout << "SA(verbose): will reevaluate. current.first="
+                    << current.first << std::endl;
+#endif
 
       evaluator->reevaluate(current);
 
       assert(!current.second.isOutdated());  // CXX CONTRACT C++26
 
-      if (Component::verbose)
-        std::cout << "SA(verbose): after reevaluate. current=" << current
-                  << std::endl;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+      if constexpr (XOStreamable<XES>)
+        if (Component::verbose)
+          std::cout << "SA(verbose): after reevaluate. current=" << current
+                    << std::endl;
+#endif
 
       if (Component::verbose)
         std::cout << "SA(verbose): will compare betterStrict" << std::endl;
