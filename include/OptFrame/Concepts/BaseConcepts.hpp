@@ -131,9 +131,7 @@ concept XRSolution = XRepresentation<R> && HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
-// defining 'objval' concept: objective value must have +/- (for costs) and
-// comparisons
-// NOTE: comparability breaks MultiEvaluator... how to fix this correctly?
+// 'objval' means total order: basic arithmetics (+/-) and comparability
 template <class T>
 concept objval = optframe::basic_arithmetics<T> && optframe::comparability<T>;
 
@@ -171,7 +169,11 @@ concept HasGetObj = requires(Self a) {
   // BROKEN for MultiEvaluator.. how to fix this?
   // requires optframe::objval<typename Self::objType>;
   //
-  { a.evaluation() } -> my_convertible_to<typename Self::objType>;
+  // objType must support basic arithmetics
+  requires optframe::basic_arithmetics<typename Self::objType>;
+  //
+  // { a.evaluation() } -> my_convertible_to<typename Self::objType>;
+  { a.evaluation() } -> std::convertible_to<typename Self::objType>;
   //
   //-> optframe::objval; // note that, if 'ObjType' becomes complex, one must
   // return a moveable copy, not reference of internal value
@@ -407,8 +409,8 @@ concept XMEvaluation = XEvaluation<Self> &&
     requires(Self e, typename Self::objType m,
              typename Self::objType::value_type v,
              typename Self::objType::value_type::objType vm, size_t idx) {
-  { m.size() } -> my_convertible_to<size_t>;
-  { m.at(idx) } -> my_convertible_to<typename Self::objType::value_type>;
+  { m.size() } -> std::convertible_to<size_t>;
+  { m[idx] } -> std::convertible_to<typename Self::objType::value_type>;
 } && comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
 
 template <class Self>

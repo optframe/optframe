@@ -102,10 +102,8 @@ class Evaluation final : public Component {
   // TODO(IGOR): maybe create empty Evaluation with numeric_zero on 'obj'
 
   explicit Evaluation(const ObjType& obj, const ObjType& inf,
-                      const evtype& w = 1)  //, bool _isMini = true)
-      : objFunction(obj),
-        infMeasure(inf)  //, isMini(_isMini)
-  {
+                      const evtype& w = 1)
+      : objFunction(obj), infMeasure(inf) {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
@@ -118,8 +116,7 @@ class Evaluation final : public Component {
     estimated = false;
   }
 
-  // TODO(IGOR): I am removing 'explicit' to allow StopCriteria "seamless"
-  // passing of Evaluation object.
+  // NOLINTNEXTLINE // no explicit here
   Evaluation(const ObjType& obj) : objFunction(obj) {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
@@ -158,10 +155,7 @@ class Evaluation final : public Component {
         //, gos(e.gos)
         ,
         outdated(e.outdated),
-        estimated(e.estimated)
-  //,
-  // isMini(e.isMini)
-  {
+        estimated(e.estimated) {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
@@ -170,9 +164,9 @@ class Evaluation final : public Component {
     optframe::numeric_zero(objValZero);
   }
 
-  virtual ~Evaluation() {}
+  ~Evaluation() override {}
 
-  virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e) {
+  Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e) {
     if (&e == this)  // auto ref check
       return *this;
 
@@ -187,7 +181,7 @@ class Evaluation final : public Component {
     return *this;
   }
 
-  virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>&& e) {
+  Evaluation<ObjType>& operator=(Evaluation<ObjType>&& e) noexcept {
     if (&e == this)  // auto ref check
       return *this;
 
@@ -276,13 +270,42 @@ class Evaluation final : public Component {
     return Evaluation<ObjType>(mcost);
   }
 
-  virtual bool equals(const Evaluation<ObjType>& e) {
+  Evaluation& operator-=(const Evaluation& e) {
+    objFunction -= e.objFunction;
+    infMeasure -= e.infMeasure;
+    return *this;
+  }
+
+  Evaluation& operator+=(const Evaluation& e) {
+    objFunction += e.objFunction;
+    infMeasure += e.infMeasure;
+    return *this;
+  }
+
+  friend Evaluation operator-(Evaluation lhs, const Evaluation& rhs) {
+    lhs -= rhs;
+    return lhs;
+  }
+
+  friend Evaluation operator+(Evaluation lhs, const Evaluation& rhs) {
+    lhs += rhs;
+    return lhs;
+  }
+
+  // equality is supported here
+  virtual bool equals(const Evaluation& e) {
     return evaluation() == e.evaluation();
   }
 
-  // =========
+  bool operator==(const Evaluation& e) {
+    return evaluation() == e.evaluation();
+  }
+
+  bool operator!=(const Evaluation& e) { return !(*this == e); }
+
+  // ===============
   // finish MoveCost
-  // =========
+  // ===============
 
   // leave option to rewrite tolerance (or consider lexicographic values)
   virtual bool isFeasible() const {
@@ -339,6 +362,7 @@ class Evaluation final : public Component {
 // compilation test (for concepts)
 // debugging error on XEvaluation for IsEvaluation<int>
 static_assert(optframe::evgoal<Evaluation<>>);
+static_assert(optframe::basic_arithmetics<Evaluation<>>);
 static_assert(HasClone<Evaluation<>>);
 static_assert(HasToString<Evaluation<>>);
 static_assert(HasGetObj<Evaluation<>>);

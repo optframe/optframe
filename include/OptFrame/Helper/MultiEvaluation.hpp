@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MULTIEVALUATION_HPP_
-#define OPTFRAME_MULTIEVALUATION_HPP_
+#ifndef OPTFRAME_HELPER_MULTIEVALUATION_HPP_
+#define OPTFRAME_HELPER_MULTIEVALUATION_HPP_
 
 #include <string>
 #include <utility>
+#include <valarray>
 #include <vector>
 //
-
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
-
-// using namespace std;
 
 namespace optframe {
 
@@ -26,8 +25,12 @@ class MultiEvaluation : public Component {
  public:
   // internal Evaluation type
   using XEv = Evaluation<ObjType>;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+  static_assert(basic_arithmetics<XEv>);
+  static_assert(objval<typename XEv::objType>);
+#endif
   // this is not 'double' but a 'vector of double'
-  using objType = std::vector<XEv>;
+  using objType = std::valarray<XEv>;
 
  protected:
   // internal structure is a pack of XEv
@@ -59,7 +62,8 @@ class MultiEvaluation : public Component {
     for (unsigned i = 0; i < mev.vev.size(); i++) vev.push_back(mev.vev[i]);
   }
 
-  MultiEvaluation(MultiEvaluation<ObjType>&& mev) : vev(std::move(mev.vev)) {}
+  MultiEvaluation(MultiEvaluation<ObjType>&& mev) noexcept
+      : vev(std::move(mev.vev)) {}
 
   ~MultiEvaluation() override { this->clear(); }
 
@@ -86,7 +90,8 @@ class MultiEvaluation : public Component {
     return false;
   }
 
-  std::vector<XEv>& evaluation() { return vev; }
+  // this is 'valarray', not vector! needs to support operators +/-
+  std::valarray<XEv>& evaluation() { return vev; }
 
   void addEvaluation(Evaluation<ObjType>& ev) { vev.push_back(ev); }
 
@@ -108,10 +113,35 @@ class MultiEvaluation : public Component {
     return r;
   }
 
-  MultiEvaluation<ObjType> operator-(
-      const MultiEvaluation<ObjType>& other) const {
+  /*
+  MultiEvaluation operator-(const MultiEvaluation& other) const {
     return this->diff(other);
   }
+  */
+
+  MultiEvaluation& operator-=(const MultiEvaluation& e) {
+    vev -= e.vev;
+    return *this;
+  }
+
+  MultiEvaluation& operator+=(const MultiEvaluation& e) {
+    vev += e.vev;
+    return *this;
+  }
+
+  friend MultiEvaluation operator-(MultiEvaluation lhs,
+                                   const MultiEvaluation& rhs) {
+    lhs -= rhs;
+    return lhs;
+  }
+
+  friend MultiEvaluation operator+(MultiEvaluation lhs,
+                                   const MultiEvaluation& rhs) {
+    lhs += rhs;
+    return lhs;
+  }
+
+  // ============
 
   XEv& operator[](unsigned index) { return vev[index]; }
 
@@ -181,20 +211,23 @@ optframe::evgoal<Self>&&
 */
 static_assert(optframe::evgoal<MultiEvaluation<double>>);
 
-// Compilation test for concepts
-// MultiEvaluation is considered an XEvaluation type (compatible with past
-// implementations)
-// TODO: remove this
+// ========= Compilation test for concepts =========
+// Evaluation needs to be `basic_arithmetics`, to be part of MultiEvaluation
+static_assert(optframe::basic_arithmetics<Evaluation<double>>);
+
+// MultiEvaluation is considered an XEvaluation type and also XMEvaluation
+static_assert(
+    optframe::basic_arithmetics<typename MultiEvaluation<double>::objType>);
 static_assert(XEvaluation<MultiEvaluation<double>>);
 static_assert(XMEvaluation<MultiEvaluation<double>>);
 #endif
 
-//#ifndef NDEBUG
+// #ifndef NDEBUG
 struct optframe_debug_test_multievaluation {
   MultiEvaluation<double> testEvaluation;
 };
-//#endif
+// #endif
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_MULTIEVALUATION_HPP_
+#endif  // OPTFRAME_HELPER_MULTIEVALUATION_HPP_

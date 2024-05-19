@@ -25,12 +25,16 @@
 // core includes
 #include <OptFCore/FDirection.hpp>
 #include <OptFCore/FEvaluator.hpp>
+#include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Heuristics/MultiObjective/NonDominatedSort.hpp>
 
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT
 
 using TestS = int;
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+static_assert(XEvaluation<MultiEvaluation<int>>);
+#endif
 using TestXMES = std::pair<TestS, MultiEvaluation<int>>;
 using TestXEv = Evaluation<int>;
 using TestXMEv = MultiEvaluation<int>;

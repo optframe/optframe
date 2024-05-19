@@ -12,7 +12,7 @@ test: clean OptFrame_test
 
 
 OptFrame_test : OptFrame.Test.cpp 
-	g++ --coverage -g -O0 -fmax-errors=5 -std=c++17 -pedantic -I$(SRC_PATH) -I$(LIBS_PATH) $(CATCH2_MAIN_PART) $<  -o ./build/$@   
+	g++ --coverage -g -O0 -fmax-errors=5 -std=c++20 -pedantic -I$(SRC_PATH) -I$(LIBS_PATH) $(CATCH2_MAIN_PART) $<  -o ./build/$@   
 
 FCore_test : FCore.Test.cpp
 	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -fcoroutines -I$(SRC_PATH) -I$(LIBS_PATH) $(CATCH2_MAIN_PART) $< -o ./build/$@   

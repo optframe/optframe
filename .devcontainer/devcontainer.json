@@ -29,7 +29,7 @@
 					"-pretty",
 					"--background-index",
 					// "--compile-commands-dir=${workspaceFolder}/build/"
-					"--compile-commands-dir=${workspaceFolder}/Examples/TSP/build/"
+					"--compile-commands-dir=${workspaceFolder}/build/"
 				],
 				"editor.formatOnSave": true,
 				"cpplint.cpplintPath": "/usr/local/bin/cpplint",
