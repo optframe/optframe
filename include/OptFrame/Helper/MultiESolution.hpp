@@ -31,7 +31,7 @@ class MultiESolution : public Component {
   MultiESolution(const MultiESolution& pop) {
     for (unsigned i = 0; i < pop.size(); i++) {
       // NOLINTNEXTLINE
-      S* s = new S{pop.at(i)};
+      S* s = new S{pop.at(i).first};
       p.push_back(s);
     }
   }
