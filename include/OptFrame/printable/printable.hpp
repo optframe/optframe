@@ -29,8 +29,8 @@ operator<<(std::ostream& os, const nullptr_t& nptr)
 }
 */
 
-// template <class T1, class T2>
-// std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& obj);
+template <class T1, class T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& obj);
 
 template <class T>
 std::ostream& operator<<(std::ostream& os, const std::optional<T>& obj) {
