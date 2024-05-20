@@ -15,6 +15,8 @@
 
 // optframe
 
+#include <OptFrame/printable/printable.hpp>
+//
 #include <OptFrame/Helper/CloneConstructive.hpp>
 #include <OptFrame/Heuristics/EA/ESContinuous.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>

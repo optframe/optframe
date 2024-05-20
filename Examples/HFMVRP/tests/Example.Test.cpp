@@ -10,6 +10,9 @@
 // system
 //#include <limits>
 
+//
+#include <OptFrame/printable/printable.hpp>
+
 // core includes
 #include <HFMVRP/ConstructiveSavings.hpp>
 

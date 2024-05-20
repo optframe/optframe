@@ -5,10 +5,9 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Include(FetchContent)
+add_definitions(-DLEGACY_ADS)
 set(SOURCES
 )
-add_definitions( -DLEGACY_ADS )
-
 add_executable(mainHFMVRP src/mainHFMVRP.cpp ${SOURCES})
 add_executable(Example.Test tests/Example.Test.cpp ${SOURCES})
 add_library(my_headers0 INTERFACE)

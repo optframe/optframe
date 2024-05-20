@@ -13,6 +13,9 @@
 //
 // #include "../../OptFrame/Util/TestSolution.hpp"
 
+#include <OptFrame/printable/printable.hpp>
+//
+#include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Constructive.hpp>
 #include <OptFrame/RandGen.hpp>
 //
@@ -27,6 +30,10 @@
 
 using namespace std;
 
+static_assert(optframe::XOStreamable<pair<int, double>>);
+static_assert(optframe::XOStreamable<vector<int>>);
+static_assert(optframe::XOStreamable<vector<pair<int, double>>>);
+
 namespace HFMVRP {
 
 class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
@@ -40,32 +47,32 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
   // Your private vars
 
   // heurística construtiva Savings de Clarke and Wright
-  vector<vector<int> >* savings(vector<int>& LC, Matrix<double>* dist,
-                                vector<int>* loads, double capVehicle) {
+  vector<vector<int>>* savings(vector<int>& LC, Matrix<double>* dist,
+                               vector<int>* loads, double capVehicle) {
     /*
      tabela auxiliar, mantem os seguintes dados:
      # identificador da rota, custo, demanda atendida, # de clientes, extremo 1,
      extremo 2
      */
-    vector<vector<double> >* t;  // tabela auxiliar por rota
+    vector<vector<double>>* t;  // tabela auxiliar por rota
 
     // lista de clientes que estão em cada uma das rotas
-    vector<vector<int> > cs;  // clientes por rota
+    vector<vector<int>> cs;  // clientes por rota
 
     // ls:  vetor(valor da economia, [i,j] ) -> valor da economia ao ligar i com
     // j
-    vector<pair<double, pair<int, int> > > ls;
+    vector<pair<double, pair<int, int>>> ls;
 
     // mapeamento que identifica em qual rota está cada cliente
     map<int, int> rotaCliente;
 
-    vector<vector<int> >* retorno = new vector<vector<int> >();
+    vector<vector<int>>* retorno = new vector<vector<int>>();
     if (LC.size() == 0) {
       *retorno = cs;
       return retorno;
     }
     // criando a tabela auxiliar
-    t = new vector<vector<double> >;
+    t = new vector<vector<double>>;
     // zerando o vetor de clientes
     cs.clear();
     // zerando as rotas associadas a cada cliente
@@ -99,7 +106,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
     }
     // calculando a lista de savings
     double saving;
-    pair<double, pair<int, int> > laux;
+    pair<double, pair<int, int>> laux;
     pair<int, int> valor_aux;
 
     // caminhando por todas as rotas presentes na tabela auxiliar de rotas
@@ -214,7 +221,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
   }
 
   // retorno se o cliente é um dos extremos no algoritmo Savings
-  bool clienteExtremo(int c, vector<vector<double> >* t) {
+  bool clienteExtremo(int c, vector<vector<double>>* t) {
     bool extremo = false;
 
     for (int i = 0; i < (int)t->size() && !extremo; i++) {
@@ -226,7 +233,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
   // metodo que une duas rotas já atualizando todos os valores da tabela
   // auxiliar
   void mergeSavings(double saving, int rc1, int rc2, map<int, int>* rotaCliente,
-                    vector<vector<double> >* t, vector<vector<int> >* cs,
+                    vector<vector<double>>* t, vector<vector<int>>* cs,
                     vector<int>* deleteList) {
     cs->at(rc1).insert(cs->at(rc1).end(), cs->at(rc2).begin(),
                        cs->at(rc2).end());
@@ -250,12 +257,12 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
   }
 
   // método para realizar a ordenação dos dados da lista de Savings
-  static bool comparacaoSavings(pair<double, pair<int, int> > a,
-                                pair<double, pair<int, int> > b) {
+  static bool comparacaoSavings(pair<double, pair<int, int>> a,
+                                pair<double, pair<int, int>> b) {
     return (a.first < b.first);
   }
 
-  vector<int>& CriaLC(vector<vector<int> >& rep, vector<bool> allocated,
+  vector<int>& CriaLC(vector<vector<int>>& rep, vector<bool> allocated,
                       int vType) {
     vector<int>* LC = new vector<int>;
     // int qAtualPP = 0; // capacidade atual do periodo, iniciado com 0
@@ -275,8 +282,8 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
     return *LC;
   }
 
-  void chooseRoutes(vector<vector<int> >& newRep,
-                    vector<vector<int> >& parcialRep, vector<bool>& allocated,
+  void chooseRoutes(vector<vector<int>>& newRep,
+                    vector<vector<int>>& parcialRep, vector<bool>& allocated,
                     int vType) {
     int nVehicles = pHFMVRP.getVehicleNumber(vType);
     int nRoutes = parcialRep.size();
@@ -293,7 +300,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
         routeCap[r] += pHFMVRP.demands[route[i]];
     }
 
-    vector<pair<int, double> > rank_Cap;
+    vector<pair<int, double>> rank_Cap;
     for (int i = 0; i < (int)routeCap.size(); i++)
       rank_Cap.push_back(make_pair(i, routeCap[i]));
 
@@ -315,8 +322,8 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
     }
   }
 
-  void chooseRoutesMultiTrip(vector<vector<int> >& newRep,
-                             vector<vector<int> >& parcialRep,
+  void chooseRoutesMultiTrip(vector<vector<int>>& newRep,
+                             vector<vector<int>>& parcialRep,
                              vector<bool>& allocated, int vType) {
     // Ordena as melhores rotas
     int nRoutes = parcialRep.size();
@@ -329,7 +336,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
         routeCap[r] += pHFMVRP.demands[route[i]];
     }
 
-    vector<pair<int, double> > rank_Cap;
+    vector<pair<int, double>> rank_Cap;
     for (int i = 0; i < (int)routeCap.size(); i++)
       rank_Cap.push_back(make_pair(i, routeCap[i]));
 
@@ -359,12 +366,12 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
   virtual ~ConstructiveSavings() {}
 
   std::optional<SolutionHFMVRP> generateSolution(double timelimit) override {
-    vector<vector<int> > newRep;
+    vector<vector<int>> newRep;
     bool feasibleSol = false;
     int nTentativas = 0;
     while (!feasibleSol) {
       cout << "Iteration = " << nTentativas << endl;
-      vector<vector<int> > parcialRep;  // Keep the parcial solution
+      vector<vector<int>> parcialRep;  // Keep the parcial solution
       vector<bool> allocated(
           pHFMVRP.nodes);  // mark the clients that has already been assigned
 
@@ -383,7 +390,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
       for (int types = 0; types < pHFMVRP.typesVehicles; types++) {
         int r = pHFMVRP.typesVehicles - 1 - types;
         cout << "Generating solution for vehicle type = " << r << endl;
-        vector<vector<int> >* vTypeRep;
+        vector<vector<int>>* vTypeRep;
         vTypeRep = savings(CriaLC(parcialRep, allocated, r), pHFMVRP.dist,
                            &demands, pHFMVRP.getVehicleTypeCap(r));
         cout << "Parcial Solution for this class of vehicles" << endl;
@@ -419,7 +426,7 @@ class ConstructiveSavings : public Constructive<SolutionHFMVRP> {
             2;  // Vehicle type 2 is allowed to do multi-trips (ONLY THIS ONE)
         cout << "Generating multi-trip solution for vehicle type = " << r
              << endl;
-        vector<vector<int> >* vMultiTripRep;
+        vector<vector<int>>* vMultiTripRep;
         vMultiTripRep = savings(CriaLC(parcialRep, allocated, r), pHFMVRP.dist,
                                 &demands, pHFMVRP.getVehicleTypeCap(r));
         cout << "Parcial MultiTrip Solution for this class of vehicles" << endl;
