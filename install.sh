@@ -12,12 +12,13 @@ case $input in
     [yY][eE][sS]|[yY])
     echo "Yes"
 
-    cp -r src/OptFrame /usr/local/include/
-    cp -r src/OptFCore /usr/local/include/
+    cp -r include/OptFrame /usr/local/include/
+    cp -r include/OptFCore /usr/local/include/
 
     mkdir -p /usr/local/optframe
 
     cp -r Examples /usr/local/optframe/
+    cp -r include  /usr/local/optframe/
     cp -r src      /usr/local/optframe/
     cp -r tests    /usr/local/optframe/
     cp    makefile /usr/local/optframe/
