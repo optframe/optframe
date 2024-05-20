@@ -9,9 +9,9 @@ else()
 endif()
 
 project(OptFrame LANGUAGES CXX VERSION 0.0.1)
-#
-# set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_STANDARD 20)
+# OptFrame default should be C++17 here, unless for testing
+set (CMAKE_CXX_STANDARD 17)
+# set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -20,6 +20,8 @@ Include(FetchContent)
 option(OPTFRAME_DEVELOPMENT_BUILD "Build tests, demos, etc" OFF)
 if (NOT IS_SUBPROJECT)
    set(OPTFRAME_DEVELOPMENT_BUILD ON)
+   # force C++20 for local development
+   set (CMAKE_CXX_STANDARD 20)
 endif()
 include(CMakeDependentOption)
 cmake_dependent_option(OPTFRAME_BUILD_TESTING  "Build the tests"  ON  "OPTFRAME_DEVELOPMENT_BUILD" OFF)

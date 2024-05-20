@@ -6,6 +6,7 @@
 #include <vector>
 //
 //#include <OptFCore/FCore.hpp> // included src
+#include <OptFCore/FCore.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Evaluation.hpp>
@@ -40,7 +41,9 @@ static_assert(X2ESolution<EPopulationRealTest, ESolutionTest>);
 
 int main() {
   EPopulationTest epop;
-  std::cout << "Hello" << std::endl;
+  std::cout << "Hello OptFrame" << std::endl;
+  //
+  std::cout << optframe::FCore::welcome() << std::endl;
   //
   optframe::Evaluation<int> ev;
   //
