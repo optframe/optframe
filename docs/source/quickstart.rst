@@ -31,9 +31,9 @@ and print its `welcome()` message:
         return 0;
     }
 
-:code:`File 'mytest.cpp' located in 'demo/01_QuickstartWelcome/'`
+:code:`File 'mytest.cpp' located in 'demo/01_QuickstartWelcome/src/'`
 
-.. literalinclude:: ../../demo/01_QuickstartWelcome/mytest.cpp
+.. literalinclude:: ../../demo/01_QuickstartWelcome/src/mytest.cpp
     :linenos:
     :language: c++
 

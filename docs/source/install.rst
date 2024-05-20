@@ -2,10 +2,49 @@ Installation
 =============
 
 OptFrame is a standalone C++ project, such that users can simply download a `.zip` from
-the `GitHub repository <https://github.com/optframe/optframe>`_ and use contents from `src/`
+the `GitHub repository <https://github.com/optframe/optframe>`_ and use contents from `include/`
 folder.
 Instead of downloading a .zip, we recommend users to use git and clone the project (so that 
 they can keep updated with latest fixes).
+
+Building with cxxbuild
+----------------------
+
+To use it on a CMake or Bazel project, we recommend installing cxxbuild: `pipx install cxxbuild`
+
+Create the following `cxxdeps.txt` file and run `cxxbuild`::
+
+   OptFrame == "master" [ OptFrame::OptFrameAll ]  git *  https://github.com/optframe/optframe.git
+   Catch2 == "v3.5.1" [ Catch2::Catch2WithMain ] cmake+git test https://github.com/catchorg/Catch2.git
+   !define LEGACY_ADS
+   !std c++20
+   !version 1.6.2
+   !build cmake
+
+Building with CMake
+-------------------
+
+To add OptFrame in your C++ project with CMake, just add the following to your `CMakeLists.txt`::
+
+   Include(FetchContent)
+   FetchContent_Declare(OptFrame GIT_REPOSITORY https://github.com/optframe/optframe.git GIT_TAG master)
+   FetchContent_MakeAvailable(OptFrame)
+   # ...
+   target_link_libraries(your_target PRIVATE OptFrame::OptFrameAll)
+
+Building with Bazel
+-------------------
+
+To add OptFrame in your C++ project with Bazel, just add the following to your `WORKSPACE.bazel`::
+
+   load('@bazel_tools//tools/build_defs/repo:git.bzl', 'git_repository')
+   git_repository(
+      name='OptFrame',
+      remote='https://github.com/optframe/optframe.git',
+      branch='master'
+   )
+
+Then, use the desired `deps`, such as `"@OptFrame//include:OptFrame"` and `"@OptFrame//include:OptFCore"`.
 
 Cloning from GitHub
 -------------------
