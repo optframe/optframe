@@ -18,9 +18,9 @@ target_link_libraries(Example.Test PRIVATE my_headers0)
 # cxxdeps dependency OptFrame
 FetchContent_Declare(OptFrame GIT_REPOSITORY https://github.com/optframe/optframe.git GIT_TAG master)
 FetchContent_MakeAvailable(OptFrame)
-target_link_libraries(my_headers0 INTERFACE OptFrameAll)
-target_link_libraries(mainHFMVRP PRIVATE OptFrameAll)
-target_link_libraries(Example.Test PRIVATE OptFrameAll)
+target_link_libraries(my_headers0 INTERFACE OptFrame::OptFrameAll)
+target_link_libraries(mainHFMVRP PRIVATE OptFrame::OptFrameAll)
+target_link_libraries(Example.Test PRIVATE OptFrame::OptFrameAll)
 # cxxdeps dependency Catch2
 FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.5.1)
 FetchContent_MakeAvailable(Catch2)
