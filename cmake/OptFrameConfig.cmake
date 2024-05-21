@@ -6,6 +6,6 @@ if(NOT TARGET OptFrame::OptFrameAll)
     include("${CMAKE_CURRENT_LIST_DIR}/../CMakeLists.txt")
     # exports include dir
     set(OptFrame_FOUND ON)
-    set(OptFrame_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/../include/")
+    set(OptFrame_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/../include/")
     # set(OptFrame_LIBRARIES "")
 endif()
