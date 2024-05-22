@@ -5,6 +5,20 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Include(FetchContent)
+add_definitions(-DOPTFRAME_AC)
+# add all executables
+add_executable(mainTSP src/mainTSP.cpp )
+add_executable(Example.Test tests/Example.Test.cpp )
+# begin dependencies from cxxdeps.txt
+# cxxdeps dependency OptFrame
+set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../cmake")
+find_package(OptFrame REQUIRED)
+include_directories("${OptFrame_INCLUDE_DIRS}")
+# cxxdeps dependency Catch2
+FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.5.1)
+FetchContent_MakeAvailable(Catch2)
+target_link_libraries(Example.Test PRIVATE Catch2::Catch2WithMain)
+# finally, add all sources
 set(SOURCES
 	src/NSEnumShift.cpp
 	src/ProblemInstance.cpp
@@ -17,15 +31,5 @@ set(SOURCES
 	src/Evaluator.cpp
 	src/DeltaMoveTSPOrOptk.cpp
 )
-add_executable(mainTSP src/mainTSP.cpp ${SOURCES})
-add_executable(Example.Test tests/Example.Test.cpp ${SOURCES})
-# begin dependencies from cxxdeps.txt
-# cxxdeps dependency OptFrame
-FetchContent_Declare(OptFrame GIT_REPOSITORY https://github.com/optframe/optframe.git GIT_TAG master)
-FetchContent_MakeAvailable(OptFrame)
-target_link_libraries(mainTSP PRIVATE OptFrameAll)
-target_link_libraries(Example.Test PRIVATE OptFrameAll)
-# cxxdeps dependency Catch2
-FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.5.1)
-FetchContent_MakeAvailable(Catch2)
-target_link_libraries(Example.Test PRIVATE Catch2::Catch2WithMain)
+target_sources(mainTSP PRIVATE ${SOURCES})
+target_sources(Example.Test PRIVATE ${SOURCES})

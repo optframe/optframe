@@ -31,9 +31,7 @@ using namespace optframe;
 //  pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 static_assert(X2ESolution<MultiESolution<ESolutionTSP>, ESolutionTSP>);
 //
-using HeuristicFactoryTSP =
-    HeuristicFactory<SolutionTSP, EvaluationTSP, ESolutionTSP,
-                     MultiESolution<ESolutionTSP>>;
+using HeuristicFactoryTSP = HeuristicFactory<ESolutionTSP>;
 
 namespace TSP {
 class TSPProblemCommand {

@@ -274,7 +274,7 @@ class MoveSwap : public Move<ESolutionTSP> {
 //                  Swap Neighborhood Structure
 //============================================================================
 
-class NSEnumSwap : public NSEnum<ESolutionTSP> {
+class NSEnumSwap : public NSEnum<ESolutionTSP, ESolutionTSP> {
  private:
   sref<ProblemInstance> pI;
   int n;
@@ -283,7 +283,7 @@ class NSEnumSwap : public NSEnum<ESolutionTSP> {
 
  public:
   NSEnumSwap(sref<ProblemInstance> pI, sref<RandGen> _rg)
-      : NSEnum<ESolutionTSP>(_rg), pI(pI), n(pI->n) {}
+      : NSEnum<ESolutionTSP, ESolutionTSP>(_rg), pI{pI}, n{pI->n} {}
 
   // this NS type supports Move Independence
   bool supportsMoveIndependence() const override { return true; }

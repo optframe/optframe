@@ -149,9 +149,9 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
       std::stringstream ss;
       ss << star->second.evaluation();
       star->first.listAC.push_back(
-          ContextAC_AC{.id{"SA_NEW_STAR"}, .message{ss.str()}, .payload {
-                         star->first.sharedClone()
-                       }});
+          ContextAC{.id{"SA_NEW_STAR"}, .message{ss.str()}, .payload {
+                      star->first.sharedClone()
+                    }});
     }
     //
     // star->first.printListAC();
