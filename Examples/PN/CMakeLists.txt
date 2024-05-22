@@ -7,9 +7,11 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Include(FetchContent)
 add_definitions(-DOPTFRAME_AC)
 # add all executables
+add_executable(mainPN src/mainPN.cpp )
 add_executable(Example.Test tests/Example.Test.cpp )
 add_library(my_headers0 INTERFACE)
 target_include_directories(my_headers0 INTERFACE include)
+target_link_libraries(mainPN PRIVATE my_headers0)
 target_link_libraries(Example.Test PRIVATE my_headers0)
 # begin dependencies from cxxdeps.txt
 # cxxdeps dependency OptFrame
@@ -32,4 +34,5 @@ set(SOURCES
 	src/Evaluator.cpp
 	src/ConstructiveRandomGreedy.cpp
 )
+target_sources(mainPN PRIVATE ${SOURCES})
 target_sources(Example.Test PRIVATE ${SOURCES})

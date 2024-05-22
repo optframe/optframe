@@ -3,9 +3,10 @@
 // Project Particao
 // ===================================
 
-#include <iostream>
 #include <math.h>
 #include <stdlib.h>
+
+#include <iostream>
 
 /*
 #include "../OptFrame/Interactive.hpp"
@@ -33,18 +34,16 @@ main(int argc, char** argv)
 }
 */
 
-#include "PN.h"
+#include <PN/PN.h>
 
 using namespace std;
 using namespace optframe;
 using namespace PN;
 
-int
-main(int argc, char** argv)
-{
-   PNProblemCommand p;
+int main(int argc, char** argv) {
+  PNProblemCommand p;
 
-   cout << "Program ended successfully" << endl;
+  cout << "Program ended successfully" << endl;
 
-   return 0;
+  return 0;
 }

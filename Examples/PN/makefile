@@ -11,7 +11,7 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace
 
 # pack all objs ($^) into a single APPNAME
 build/app_Example: $(OBJ_FILES)
-	$(CC) $(LDFLAGS) mainPN.cpp -o $@ $^
+	$(CC) $(LDFLAGS)  -o $@ $^
 
 # compile each .cpp individually ($<)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
