@@ -1,5 +1,8 @@
-#ifndef PN_NSSEQShift_H_
-#define PN_NSSEQShift_H_
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef PN_NSSEQSwap_H_
+#define PN_NSSEQSwap_H_
 
 // Framework includes
 #include <OptFrame/NSSeq.hpp>
@@ -14,33 +17,32 @@ using namespace std;
 
 namespace PN {
 
-class MoveShift : public Move<ESolutionPN> {
+class MoveSwap : public Move<ESolutionPN> {
  private:
   // MOVE PARAMETERS
-  int i;
+  int i, j;
   ProblemInstance& pPN;
 
  public:
-  MoveShift(int _i, ProblemInstance& _pPN) : i(_i), pPN(_pPN) {}
+  MoveSwap(int _i, int _j, ProblemInstance& _pPN) : i(_i), j(_j), pPN(_pPN) {}
 
-  virtual ~MoveShift() {}
+  virtual ~MoveSwap() {}
 
   void print() const override {
-    cout << id() << " with params: '" << i << "'" << endl;
+    cout << id() << " with params: '" << i << "," << j << endl;
   }
 
   std::string id() const override {
-    return Move<ESolutionPN>::idComponent().append(":MoveShift");
+    return Move<ESolutionPN>::idComponent().append(":MoveSwap");
   }
 
   bool operator==(const Move<ESolutionPN>& _m) const {
-    const MoveShift& m = (const MoveShift&)_m;
-    return (i == m.i);
+    const MoveSwap& m = (const MoveSwap&)_m;
+    return (i == m.i) && (j == m.j);
   }
 
   // Implement these methods in the .cpp file
 
-  // bool canBeApplied(const RepPN& rep, const MY_ADS*) override;
   bool canBeApplied(const ESolutionPN& se) override;
 
   uptr<Move<ESolutionPN>> apply(ESolutionPN& se) override;
@@ -48,19 +50,18 @@ class MoveShift : public Move<ESolutionPN> {
   op<EvaluationPN> cost(const ESolutionPN& se, bool allowEstimate) override;
 };
 
-class NSIteratorShift : public NSIterator<ESolutionPN> {
+class NSIteratorSwap : public NSIterator<ESolutionPN> {
  private:
   // ITERATOR PARAMETERS
-  int i;
-  const ESolutionPN& se;
+  int i, j;
   const RepPN& rep;
   ProblemInstance& pPN;
 
  public:
-  NSIteratorShift(ProblemInstance& _pPN, const ESolutionPN& _se)
-      : se{_se}, rep(_se.first.getR()), pPN(_pPN) {}
+  NSIteratorSwap(ProblemInstance& _pPN, const ESolutionPN& se)
+      : rep{se.first.getR()}, pPN(_pPN) {}
 
-  virtual ~NSIteratorShift() {}
+  virtual ~NSIteratorSwap() {}
 
   // Implement these methods in the .cpp file
 
@@ -70,7 +71,7 @@ class NSIteratorShift : public NSIterator<ESolutionPN> {
   uptr<Move<ESolutionPN>> current() override;
 };
 
-class NSSeqShift : public NSSeq<ESolutionPN> {
+class NSSeqSwap : public NSSeq<ESolutionPN> {
  private:
   // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
   ProblemInstance& pPN;  // problem instance data
@@ -78,25 +79,25 @@ class NSSeqShift : public NSSeq<ESolutionPN> {
 
  public:
   // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
-  NSSeqShift(ProblemInstance& _pPN, RandGen& _rg) : pPN(_pPN), rg(_rg) {}
+  NSSeqSwap(ProblemInstance& _pPN, RandGen& _rg) : pPN(_pPN), rg(_rg) {}
 
-  virtual ~NSSeqShift() {}
+  virtual ~NSSeqSwap() {}
 
-  void print() const override { cout << "NSSeqShift" << endl; }
+  void print() const override { cout << "NSSeqSwap" << endl; }
 
   std::string id() const override {
-    return NSSeq<ESolutionPN>::idComponent().append(":NSSeqShift");
+    return NSSeq<ESolutionPN>::idComponent().append(":NSSeqSwap");
   }
 
-  uptr<NSIterator<ESolutionPN>> getIterator(const ESolutionPN& se) {
+  uptr<NSIterator<ESolutionPN>> getIterator(const ESolutionPN& se) override {
     // return an iterator to the neighbors of 'rep'
     return uptr<NSIterator<ESolutionPN>>{
-        new NSIteratorShift(pPN, se)};  // ADD POSSIBLE ITERATOR PARAMETERS
+        new NSIteratorSwap(pPN, se)};  // ADD POSSIBLE ITERATOR PARAMETERS
   }
 
   // Implement this method in the .cpp file
 
-  uptr<Move<ESolutionPN>> randomMove(const ESolutionPN& se) override;
+  uptr<Move<ESolutionPN>> randomMove(const ESolutionPN& se);
 
   uptr<Move<ESolutionPN>> validMove(const ESolutionPN& se) {
     for (unsigned i = 0; i < 100; i++) {
@@ -108,4 +109,4 @@ class NSSeqShift : public NSSeq<ESolutionPN> {
 };
 }  // namespace PN
 
-#endif /*PN_NSSEQShift_H_*/
+#endif /*PN_NSSEQSwap_H_*/

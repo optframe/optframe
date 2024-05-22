@@ -1,5 +1,8 @@
-#ifndef PN_CONSTRUCTIVE_RandomGreedy_H_
-#define PN_CONSTRUCTIVE_RandomGreedy_H_
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef PN_CONSTRUCTIVE_GreedySum_H_
+#define PN_CONSTRUCTIVE_GreedySum_H_
 
 #include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
@@ -20,7 +23,7 @@ using namespace optframe;
 
 namespace PN {
 
-class ConstructiveRandomGreedy
+class ConstructiveGreedySum
     : public Constructive<SolutionPN>  //<RepPN> //, MY_ADS>
 {
  private:
@@ -29,16 +32,16 @@ class ConstructiveRandomGreedy
   // Your private vars
 
  public:
-  ConstructiveRandomGreedy(ProblemInstance& _pPN);
+  ConstructiveGreedySum(ProblemInstance& _pPN);
 
-  virtual ~ConstructiveRandomGreedy();
+  virtual ~ConstructiveGreedySum();
 
   // Solution<ESolutionPN>* generateSolution(double timelimit);
   std::optional<SolutionPN> generateSolution(double timelimit) override;
 
-  void print() const override { cout << "ConstructiveRandomGreedy" << endl; }
+  void print() const override { cout << "ConstructiveGreedySum" << endl; }
 };
 
 }  // namespace PN
 
-#endif /*PN_CONTRUCTIVE_RandomGreedy_H_*/
+#endif /*PN_CONTRUCTIVE_GreedySum_H_*/

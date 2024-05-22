@@ -1,13 +1,18 @@
-#ifndef PN_CONSTRUCTIVE_GreedyHalfSum_H_
-#define PN_CONSTRUCTIVE_GreedyHalfSum_H_
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#include <OptFrame/Constructive.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+#ifndef EXAMPLES_PN_INCLUDE_PN_CONSTRUCTIVEGREEDYHALFSUM_H_
+#define EXAMPLES_PN_INCLUDE_PN_CONSTRUCTIVEGREEDYHALFSUM_H_
 
+// C
 #include <stdlib.h>
 
+// C++
 #include <algorithm>
 #include <list>
+//
+#include <OptFrame/Constructive.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "Evaluator.h"
 #include "ProblemInstance.h"
@@ -41,4 +46,4 @@ class ConstructiveGreedyHalfSum
 
 }  // namespace PN
 
-#endif /*PN_CONTRUCTIVE_GreedyHalfSum_H_*/
+#endif  // EXAMPLES_PN_INCLUDE_PN_CONSTRUCTIVEGREEDYHALFSUM_H_

@@ -1,5 +1,12 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef TSP_PROBLEMMODULE_HPP_
 #define TSP_PROBLEMMODULE_HPP_
+
+// C++
+#include <iostream>
+//
 
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
@@ -7,7 +14,6 @@
 #include <OptFrame/Util/NSAdapter/NSSeqTSPOrOpt.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPOrOptk.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPSwap.hpp>
-#include <iostream>
 
 #include "ConstructiveBestInsertion.h"
 #include "DeltaMoveTSP2Opt.h"
