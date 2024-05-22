@@ -44,29 +44,29 @@ class OptHSProblemCommand {
  public:
   ProblemInstance* p;
 
-  OptHSProblemCommand() {
-    p = NULL;
-  }
+  OptHSProblemCommand() { p = NULL; }
 
   virtual ~OptHSProblemCommand() {
-    if (p)
-      delete p;
+    if (p) delete p;
   }
 
-  string id() {
-    return "problem.OptHS";
-  }
+  string id() { return "problem.OptHS"; }
 
-  bool registerComponent(sref<Component> component, string type, string name, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary) {
+  bool registerComponent(sref<Component> component, string type, string name,
+                         HeuristicFactory<ESolutionOptHS>& hf,
+                         map<string, string>& dictionary) {
     int idx = hf.addComponent(component, type);
     stringstream ss;
     ss << type << " " << idx;
-    return true;  //defineText(name, ss.str(), dictionary);
+    return true;  // defineText(name, ss.str(), dictionary);
   }
 
-  bool load(string members, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
+  bool load(string members, HeuristicFactory<ESolutionOptHS>& hf,
+            map<string, string>& dictionary,
+            map<string, vector<string>>& ldictionary) {
     Scanner scanner(members);
 
+    // NOLINTNEXTLINE
     p = new ProblemInstance(scanner);
 
     // add everything to the HeuristicFactory 'hf'
@@ -75,7 +75,8 @@ class OptHSProblemCommand {
     hf.addComponent(is, "OptFrame:Constructive");
 
     sref<OptHSEvaluator> eval = new OptHSEvaluator(*p);
-    hf.addComponent(eval, Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent());
+    hf.addComponent(eval,
+                    Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent());
 
     sref<NSSwap> ns = new NSSwap(*p, hf.getRandGen());
     hf.addComponent(ns, "OptFrame:NS");
@@ -85,12 +86,15 @@ class OptHSProblemCommand {
     return true;
   }
 
-  bool unload(HeuristicFactory<SolutionOptHS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
-    if (p)
-      delete p;
+  bool unload(HeuristicFactory<ESolutionOptHS>& factory,
+              map<string, string>& dictionary,
+              map<string, vector<string>>& ldictionary) {
+    if (p) delete p;
     p = NULL;
 
-    cout << "problem instance for OptHS unloaded successfully (use 'drop_all' if you want to remove all components)" << endl;
+    cout << "problem instance for OptHS unloaded successfully (use 'drop_all' "
+            "if you want to remove all components)"
+         << endl;
 
     return true;
   }
