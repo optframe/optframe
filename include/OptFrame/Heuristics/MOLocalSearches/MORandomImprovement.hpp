@@ -71,7 +71,7 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
 */
 
   virtual void moSearchFrom(Pareto<XMES>& p, XMES& se,
-                            paretoManager<S, XMEv, XMES>& pManager,
+                            ParetoManager<XMES>& pManager,
                             const StopCriteria<XMEv>& stopCriteria) override {
     num_calls++;
     Timer t;

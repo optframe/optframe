@@ -266,7 +266,8 @@ class ESContinous : public SingleObjSearch<XES> {
   // stopCriteria) override
   //
   // SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
-  SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override {
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
+                             std::optional<XES> best) override {
     // op<XES>& star = this->best;
     //  TODO: reimplement with SearchBy ...
     op<XES> star;

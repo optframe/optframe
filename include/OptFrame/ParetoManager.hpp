@@ -7,14 +7,12 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
-
+//
 #include "Pareto.hpp"
 
 namespace optframe {
 
-// template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES
-// = pair<S, XMEv>>
-template <XESolution XMES>
+template <XEMSolution XMES>
 class ParetoManager {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;

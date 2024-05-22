@@ -23,25 +23,19 @@
 #ifndef OPTFRAME_VND_FAMILY_H_
 #define OPTFRAME_VND_FAMILY_H_
 
-#include <string.h>
+#include <string>
 
 using namespace std;
 
 namespace optframe {
 
-class VND
-{
-public:
-   static string family()
-   {
-      return "VND(UNUSED):";
-   }
+class VND {
+ public:
+  static std::string family() { return "VND(UNUSED):"; }
 
-   virtual ~VND()
-   {
-   }
+  virtual ~VND() {}
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_VND_FAMILY_H_*/

@@ -5,9 +5,11 @@
 #define OPTFRAME_BasicMOILS_HPP_
 
 #include <algorithm>
+#include <string>
+//
 
-#include "BasicMOILSPerturbation.hpp"
-#include "MultiObjILS.hpp"
+#include "./BasicMOILSPerturbation.hpp"
+#include "./MultiObjILS.hpp"
 
 namespace optframe {
 
@@ -30,27 +32,22 @@ class BasicMOILS
              sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size,
              sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg,
              sref<BasicMOILSPerturbation<XMES, XMEv>> _p, int _iterMax)
-      :  // BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XES,
-         // XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>*
-         // _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int
-         // _iterMax)
-         // :
-        MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev, _init_pareto,
+      : MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev, _init_pareto,
                                                  _init_pop_size, _ls, _rg),
         p(_p),
         iterMax(_iterMax) {}
 
   virtual ~BasicMOILS() {}
 
-  virtual BasicHistory& initializeHistory() override {
+  BasicHistory& initializeHistory() override {
     int& iter = *new int;
     iter = 0;
 
     return iter;
   }
 
-  virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
-                            BasicHistory& history) override {
+  void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+                    BasicHistory& history) override {
     int iter = history;
 
     p->perturb(smev, stopCriteria);
@@ -62,8 +59,8 @@ class BasicMOILS
     history = iter;
   }
 
-  virtual void acceptanceCriterion(const Pareto<XMES>& pf,
-                                   BasicHistory& history) override {
+  void acceptanceCriterion(const Pareto<XMES>& pf,
+                           BasicHistory& history) override {
     if (pf.getNewNonDominatedSolutionsStatus()) {
       cout << "New Pareto size: is " << pf.size();
       cout << " on [iter without improvement " << history << "]" << endl;
@@ -75,7 +72,7 @@ class BasicMOILS
     }
   }
 
-  virtual bool terminationCondition(BasicHistory& history) override {
+  bool terminationCondition(BasicHistory& history) override {
     int iter = history;
 
     return (iter >= iterMax);
@@ -87,7 +84,7 @@ class BasicMOILS
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
+  static std::string idComponent() {
     stringstream ss;
     ss << MultiObjILS<BasicHistory, S, XMEv>::idComponent() << "BasicMOILS";
     return ss.str();

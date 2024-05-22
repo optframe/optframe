@@ -5,6 +5,7 @@
 #define OPTFRAME_MULTIOBJECTIVEILS_HPP_
 
 #include <algorithm>
+//
 
 #include "../../../InitialPareto.hpp"
 #include "../../../MOLocalSearch.hpp"
@@ -24,7 +25,7 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
   sref<InitialPareto<XMES>> init_pareto;
   int init_pop_size;
   sref<MOLocalSearch<XMES, XMEv>> ls;
-  paretoManager<S, XMEv, XMES> pMan;
+  ParetoManager<XMES> pMan;
   sref<RandGen> rg;
 
  public:
@@ -42,7 +43,7 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
         pMan(paretoManager<S, XMEv, XMES>(_mev)),
         rg(_rg) {}
 
-  virtual ~MultiObjILS() {}
+  ~MultiObjILS() override {}
 
   virtual H& initializeHistory() = 0;
 
@@ -55,7 +56,7 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
 
   // virtual Pareto<XMES>* search(StopCriteria<XEv>& stopCriteria, Pareto<XMES>*
   // _pf = nullptr) override
-  virtual SearchOutput<XMES, Pareto<XMES>> search(
+  SearchOutput<XMES, Pareto<XMES>> search(
       const StopCriteria<XMEv>& stopCriteria) override {
     // std::optional<Pareto<XMES>>& p = this->best;
     //  TODO: reimplement with SearchBy...

@@ -43,7 +43,7 @@ struct gplsStructure {
 
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>>
-class paretoManagerGPLS : public paretoManager<S, XMEv, XMES> {
+class paretoManagerGPLS : public ParetoManager<XMES> {
   using XEv = Evaluation<>;  // hardcoded... TODO: fix
  private:
   int r;
@@ -54,7 +54,7 @@ class paretoManagerGPLS : public paretoManager<S, XMEv, XMES> {
 
   paretoManagerGPLS(IEvaluator<XMES>& _mev, int _r)
       :  // paretoManagerGPLS(GeneralEvaluator<XMES, XMEv>& _mev, int _r) :
-        paretoManager<S, XMEv, XMES>(_mev),
+        ParetoManager<XMES>(_mev),
         r(_r) {}
 
   virtual ~paretoManagerGPLS() {}
@@ -69,14 +69,13 @@ class paretoManagerGPLS : public paretoManager<S, XMEv, XMES> {
 
       // if (paretoManager<S, XMEv, XMES>::domWeak.dominates(popIndFitness,
       // candidateMev))
-      if (paretoManager<S, XMEv, XMES>::domWeak.dominates(popIndFitness,
-                                                          cand_smev.second))
+      if (ParetoManager<XMES>::domWeak.dominates(popIndFitness,
+                                                 cand_smev.second))
         return false;
 
       // if (paretoManager<S, XMEv, XMES>::dom.dominates(candidateMev,
       // popIndFitness))
-      if (paretoManager<S, XMEv, XMES>::dom.dominates(cand_smev.second,
-                                                      popIndFitness)) {
+      if (ParetoManager<XMES>::dom.dominates(cand_smev.second, popIndFitness)) {
         p.erase(ind);
         gplsData.nsParetoOptimum.erase(gplsData.nsParetoOptimum.begin() + ind);
         gplsData.newSol.erase(gplsData.newSol.begin() + ind);
@@ -147,9 +146,8 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XMES, XMEv> {
         }
 */
 
-  virtual void moSearchFrom(Pareto<XMES>& p, XMES& se,
-                            paretoManager<S, XMEv, XMES>& pManager,
-                            const StopCriteria<XMEv>& stopCriteria) override {
+  void moSearchFrom(Pareto<XMES>& p, XMES& se, ParetoManager<XMES>& pManager,
+                    const StopCriteria<XMEv>& stopCriteria) override {
     // S& s = se.first;
     // XMEv& sMev = se.second;
     // Pareto<XMES> _pf;

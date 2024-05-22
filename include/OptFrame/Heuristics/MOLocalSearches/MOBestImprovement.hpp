@@ -31,10 +31,11 @@
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
+template <XSolution S, XEvaluation XMEv = Evaluation<>,
+          XESolution XMES = pair<S, XMEv>>
 class MOBestImprovement : public MOLocalSearch<S, XMEv> {
  private:
-  //MultiEvaluator<S, XEv>& v_e;
+  // MultiEvaluator<S, XEv>& v_e;
   GeneralEvaluator<XMES, XMEv>& v_e;
   NSSeq<S>& nsSeq;
 
@@ -43,17 +44,17 @@ class MOBestImprovement : public MOLocalSearch<S, XMEv> {
   int num_calls;
 
  public:
-  //MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
+  // MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
   MOBestImprovement(GeneralEvaluator<XMES, XMEv>& _v_e, NSSeq<S>& _nsSeq)
       : v_e(_v_e), nsSeq(_nsSeq) {
     sum_time = 0.0;
     num_calls = 0;
   }
 
-  virtual ~MOBestImprovement() {
-  }
+  virtual ~MOBestImprovement() {}
 
-  virtual void exec(IESolution<S, XMEv>& s, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f) {
+  virtual void exec(IESolution<S, XMEv>& s, ParetoManager<XMES>& pManager,
+                    double timelimit, double target_f) {
     MultiEvaluation<>& sMev = v_e.evaluate(s);
 
     exec(s, sMev, pManager, timelimit, target_f);
@@ -62,7 +63,9 @@ class MOBestImprovement : public MOLocalSearch<S, XMEv> {
     delete &sMev;
   }
 
-  virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f) {
+  virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev,
+                    ParetoManager<XMES>& pManager, double timelimit,
+                    double target_f) {
     num_calls++;
     Timer t;
 
@@ -120,13 +123,9 @@ class MOBestImprovement : public MOLocalSearch<S, XMEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 
   std::string toString() const override {
     stringstream ss;

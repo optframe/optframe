@@ -4,6 +4,10 @@
 #ifndef OPTFRAME_INITIALPARETO_HPP_
 #define OPTFRAME_INITIALPARETO_HPP_
 
+//
+#include <string>
+#include <utility>
+//
 #include "Component.hpp"
 #include "Constructive.hpp"
 #include "Heuristics/GRASP/GRConstructive.hpp"
@@ -31,7 +35,7 @@ class InitialPareto : public InitialSearch<XMES, Pareto<XMES>> {
 
   // TODO: deprecate this in favor of 'initialSearch' (how to pass population?)
   virtual Pareto<XMES> generatePareto(unsigned populationSize,
-                                      double timeLimit = 10000000) = 0;
+                                      double timeLimit) = 0;
 
   std::pair<std::optional<Pareto<XMES>>, SearchStatus> initialSearch(
       const StopCriteria<XMEv>& stop) override {
@@ -58,16 +62,16 @@ class BasicInitialPareto : public InitialPareto<XMES> {
 
   // Constructive<S>& constructive;
   InitialSearch<XMES, XMEv>& constructive;
-  ParetoManager<S, XMEv, XMES> pMan;
+  ParetoManager<XMES> pMan;
 
   BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive,
-                     paretoManager<S, XMEv, XMES>& _pman)
+                     ParetoManager<XMES>& _pman)
       : constructive(_constructive), pMan(_pman) {}
 
   virtual ~BasicInitialPareto() {}
 
-  virtual Pareto<XMES> generatePareto(unsigned populationSize,
-                                      double timelimit = 100000000) override {
+  Pareto<XMES> generatePareto(unsigned populationSize,
+                              double timelimit) override {
     Pareto<XMES> p;
     StopCriteria<XMEv> sosc(timelimit);
     for (unsigned i = 0; i < populationSize; i++)
@@ -93,7 +97,7 @@ class GRInitialPareto : public InitialPareto<XMES> {
   GRConstructive<S>& constructive;
   RandGen& rg;
   double maxAlpha;  // limit the solution to be not so random
-  paretoManager<S, XMEv, XMES> pMan;
+  ParetoManager<XMES> pMan;
 
   // GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double
   // _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
@@ -102,14 +106,15 @@ class GRInitialPareto : public InitialPareto<XMES> {
       : constructive(_constructive),
         rg(_rg),
         maxAlpha(_maxAlpha),
-        pMan(paretoManager<S, XMEv, XMES>(_mev)) {}
+        pMan(ParetoManager<XMES>(_mev)) {}
 
   virtual ~GRInitialPareto() {}
 
-  virtual Pareto<XMES>& generatePareto(unsigned populationSize,
-                                       double timelimit = 100000000) override {
+  Pareto<XMES>& generatePareto(unsigned populationSize,
+                               double timelimit) override {
     Timer tnow;
 
+    // NOLINTNEXTLINE
     Pareto<XMES>* p = new Pareto<XMES>;
     unsigned i = 0;
     while ((i < populationSize) && (tnow.now() < timelimit)) {
@@ -137,4 +142,4 @@ class GRInitialPareto : public InitialPareto<XMES> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_INITIALPARETO_H_*/
+#endif  // OPTFRAME_INITIALPARETO_HPP_
