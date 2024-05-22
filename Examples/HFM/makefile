@@ -1,7 +1,7 @@
 all: build/app_Example
 
 CC=g++
-CXXFLAGS= -I../../include -I../../libs -fopenmp  -fno-exceptions -O3 -Wfatal-errors -Wall --std=c++20 #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../include -I../../libs -fopenmp -Iinclude -fno-exceptions -O3 -Wfatal-errors -Wall --std=c++20 #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src

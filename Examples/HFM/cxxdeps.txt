@@ -1,0 +1,8 @@
+# OptFrame == "master" [ OptFrame::OptFrameAll ]  git *  https://github.com/optframe/optframe.git
+OptFrame == * [ ]  local * ../../cmake
+Catch2 == "v3.5.1" [ Catch2::Catch2WithMain ] cmake+git test https://github.com/catchorg/Catch2.git
+!define OPTFRAME_AC
+!std c++20
+!version 1.6.3
+!build cmake
+# apt install libsndfile1-dev

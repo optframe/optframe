@@ -1,22 +1,5 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_INITIALPARETO_HPP_
 #define OPTFRAME_INITIALPARETO_HPP_
@@ -27,8 +10,8 @@
 #include "MultiEvaluator.hpp"
 #include "Pareto.hpp"
 #include "RandGen.hpp"
-//#include "MultiEvaluation.hpp"
-//#include "Timer.hpp"
+// #include "MultiEvaluation.hpp"
+// #include "Timer.hpp"
 #include "InitialSearch.hpp"
 #include "ParetoManager.hpp"
 
@@ -38,9 +21,7 @@ namespace optframe {
 
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>,
           XSearch<XMES> XSH = Pareto<XMES>>
-class InitialPareto
-    : public InitialSearch<XMES, XMEv, Pareto<XMES>>  // public Component
-{
+class InitialPareto : public InitialSearch<XMES, Pareto<XMES>> {
  public:
   using S = typename XMES::first_type;
   static_assert(is_same<S, typename XMES::first_type>::value);
@@ -77,7 +58,7 @@ class BasicInitialPareto : public InitialPareto<XMES> {
 
   // Constructive<S>& constructive;
   InitialSearch<XMES, XMEv>& constructive;
-  paretoManager<S, XMEv, XMES> pMan;
+  ParetoManager<S, XMEv, XMES> pMan;
 
   BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive,
                      paretoManager<S, XMEv, XMES>& _pman)
@@ -125,8 +106,8 @@ class GRInitialPareto : public InitialPareto<XMES> {
 
   virtual ~GRInitialPareto() {}
 
-  virtual Pareto<XMES>& generatePareto(
-      unsigned populationSize, double timelimit = 100000000) override {
+  virtual Pareto<XMES>& generatePareto(unsigned populationSize,
+                                       double timelimit = 100000000) override {
     Timer tnow;
 
     Pareto<XMES>* p = new Pareto<XMES>;

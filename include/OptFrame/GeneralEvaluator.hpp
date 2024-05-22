@@ -7,10 +7,10 @@
 #include <iostream>
 #include <string>
 //
-#include "Direction.hpp"
-#include "Domain.hpp"
-#include "Evaluation.hpp"
-#include "Move.hpp"
+#include "./Direction.hpp"
+#include "./Domain.hpp"
+#include "./Evaluation.hpp"
+#include "./Move.hpp"
 // #include "MoveCost.hpp"
 
 // This evaluator intends to run for both Single and MultiObj
