@@ -154,7 +154,7 @@ class GRInitialPopulation : public InitialPopulation<S, X2S> {
   virtual ~GRInitialPopulation() = default;
 
   // Population<XES>
-  virtual X2S generatePopulation(unsigned populationSize, double timelimit) {
+  X2S generatePopulation(unsigned populationSize, double timelimit) override {
     // Population<XES> pop;
     X2S pop;
     for (unsigned i = 0; i < populationSize; i++) {
@@ -168,7 +168,7 @@ class GRInitialPopulation : public InitialPopulation<S, X2S> {
       std::optional<S> s = constructive.generateGRSolution(alpha, timelimit);
       // XES se = { *s, Evaluation<>{} };
       S sol = (*s);
-      pop.push_back(s);  // the end of solution
+      pop.push_back(sol);  // the end of solution
     }
     return pop;
   }
