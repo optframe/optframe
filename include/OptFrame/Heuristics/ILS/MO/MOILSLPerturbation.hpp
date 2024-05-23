@@ -44,20 +44,20 @@ class MOILSLPerturbation : public Component, public MOILS {
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
  private:
-  vsref<NS<XMES, XMEv>> ns;
-  sref<GeneralEvaluator<XMES, XMEv>> evaluator;
+  vsref<NS<XMES>> ns;
+  sref<GeneralEvaluator<XMES>> evaluator;
   sref<RandGen> rg;
 
  public:
-  MOILSLPerturbationLPlus2(sref<GeneralEvaluator<XMES, XMEv>> _e,
-                           sref<NS<XMES, XMEv>> _ns, sref<RandGen> _rg)
+  MOILSLPerturbationLPlus2(sref<GeneralEvaluator<XMES>> _e, sref<NS<XMES>> _ns,
+                           sref<RandGen> _rg)
       : evaluator(_e), rg(_rg) {
     ns.push_back(_ns);
   }
 
   virtual ~MOILSLPerturbationLPlus2() {}
 
-  void add_ns(sref<NS<XMES, XMEv>> _ns) { ns.push_back(_ns); }
+  void add_ns(sref<NS<XMES>> _ns) { ns.push_back(_ns); }
 
   // void perturb(S& s, XMEv& mev, const StopCriteria<XEv>& stopCriteria, int
   // level)
@@ -109,13 +109,13 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
  private:
-  vector<NS<XMES, XMEv>*> ns;
+  vector<NS<XMES>*> ns;
   vector<pair<int, double>> pNS;
   IEvaluator<XMES>& evaluator;
   RandGen& rg;
 
  public:
-  MOILSLPerturbationLPlus2Prob(IEvaluator<XMES>& _e, NS<XMES, XMEv>& _ns,
+  MOILSLPerturbationLPlus2Prob(IEvaluator<XMES>& _e, NS<XMES>& _ns,
                                RandGen& _rg)
       : evaluator(_e), rg(_rg) {
     ns.push_back(&_ns);
@@ -124,7 +124,7 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
 
   virtual ~MOILSLPerturbationLPlus2Prob() {}
 
-  void add_ns(NS<XMES, XMEv>& _ns) {
+  void add_ns(NS<XMES>& _ns) {
     ns.push_back(&_ns);
     pNS.push_back(make_pair(1, 1));
 

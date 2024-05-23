@@ -36,7 +36,7 @@ template <XSolution S, XEvaluation XMEv = Evaluation<>,
 class MOBestImprovement : public MOLocalSearch<S, XMEv> {
  private:
   // MultiEvaluator<S, XEv>& v_e;
-  GeneralEvaluator<XMES, XMEv>& v_e;
+  GeneralEvaluator<XMES>& v_e;
   NSSeq<S>& nsSeq;
 
   // logs
@@ -45,7 +45,7 @@ class MOBestImprovement : public MOLocalSearch<S, XMEv> {
 
  public:
   // MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
-  MOBestImprovement(GeneralEvaluator<XMES, XMEv>& _v_e, NSSeq<S>& _nsSeq)
+  MOBestImprovement(GeneralEvaluator<XMES>& _v_e, NSSeq<S>& _nsSeq)
       : v_e(_v_e), nsSeq(_nsSeq) {
     sum_time = 0.0;
     num_calls = 0;

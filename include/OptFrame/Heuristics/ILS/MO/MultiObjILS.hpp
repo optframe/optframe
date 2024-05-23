@@ -20,7 +20,8 @@ namespace optframe {
 template <class H, XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<XMES>>
 class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
-  using XEv = Evaluation<>;  // hardcoded... TODO: fix
+  using XEv = typename XMEv::XEv;
+
  private:
   sref<InitialPareto<XMES>> init_pareto;
   int init_pop_size;
@@ -29,14 +30,9 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
   sref<RandGen> rg;
 
  public:
-  // MultiObjILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>&
-  // _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen&
-  // _rg)
   MultiObjILS(sref<IEvaluator<XMES>> _mev,
               sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size,
               sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg)
-      // MultiObjILS(Evaluator<S>& _mev, InitialPareto<XMES>& _init_pareto,
-      // int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
       : init_pareto(_init_pareto),
         init_pop_size(_init_pop_size),
         ls(_ls),
@@ -54,12 +50,11 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
 
   virtual bool terminationCondition(H& history) = 0;
 
-  // virtual Pareto<XMES>* search(StopCriteria<XEv>& stopCriteria, Pareto<XMES>*
-  // _pf = nullptr) override
-  SearchOutput<XMES, Pareto<XMES>> search(
-      const StopCriteria<XMEv>& stopCriteria) override {
+  SearchOutput<XMES, Pareto<XMES>> searchBy(
+      const StopCriteria<XMEv>& stopCriteria,
+      std::optional<Pareto<XMES>> _best) override {
     // std::optional<Pareto<XMES>>& p = this->best;
-    //  TODO: reimplement with SearchBy...
+    // TODO: reimplement with SearchBy...
     std::optional<Pareto<XMES>> p;
     //
     Timer tnow;

@@ -26,7 +26,7 @@ namespace optframe {
 // this is homogeneous multi-obj with obj type XEv
 // ===============================================
 
-template <XEvaluation XEv = Evaluation<>>
+template <XEvaluation XEv>
 class MultiDirection : public Component {
  protected:
   vsref<Direction<XEv>> vDir;

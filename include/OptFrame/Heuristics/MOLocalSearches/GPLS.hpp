@@ -1,28 +1,14 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
+#ifndef OPTFRAME_HEURISTICS_MOLOCALSEARCHES_GPLS_HPP_
+#define OPTFRAME_HEURISTICS_MOLOCALSEARCHES_GPLS_HPP_
 
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef OPTFRAME_GENERALPARETOLOCALSEARCH_HPP_
-#define OPTFRAME_GENERALPARETOLOCALSEARCH_HPP_
-
+// C++
 #include <algorithm>
-
+#include <vector>
+//
+#include "../../Concepts/BaseConcepts.hpp"
 #include "../../Evaluator.hpp"
 #include "../../Heuristics/MOLocalSearches/MOBestImprovement.hpp"
 #include "../../InitialPareto.hpp"
@@ -31,6 +17,8 @@
 #include "../../Pareto.hpp"
 #include "../../ParetoDominance.hpp"
 #include "../../ParetoDominanceWeak.hpp"
+
+namespace optframe {
 
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>>
@@ -43,8 +31,9 @@ struct gplsStructure {
 
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>>
-class paretoManagerGPLS : public ParetoManager<XMES> {
-  using XEv = Evaluation<>;  // hardcoded... TODO: fix
+class ParetoManagerGPLS : public ParetoManager<XMES> {
+  using XEv = typename XMEv::XEv;
+
  private:
   int r;
 
@@ -52,12 +41,12 @@ class paretoManagerGPLS : public ParetoManager<XMES> {
   gplsStructure<S, XMEv> gplsData;
   //	Pareto<XMES> x_e; //TODO -- possibility of embedding Pareto here
 
-  paretoManagerGPLS(IEvaluator<XMES>& _mev, int _r)
-      :  // paretoManagerGPLS(GeneralEvaluator<XMES, XMEv>& _mev, int _r) :
+  ParetoManagerGPLS(IEvaluator<XMES>& _mev, int _r)
+      :  // paretoManagerGPLS(GeneralEvaluator<XMES>& _mev, int _r) :
         ParetoManager<XMES>(_mev),
         r(_r) {}
 
-  virtual ~paretoManagerGPLS() {}
+  virtual ~ParetoManagerGPLS() {}
 
   // Special addSolution used in the GPLS speedUp
   // virtual bool addSolutionWithMEV(Pareto<XMES>& p, const S& candidate,
@@ -113,20 +102,20 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XMES, XMEv> {
   using S = typename XMES::first_type;
   static_assert(is_same<S, typename XMES::first_type>::value);
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
-  using XEv =
-      Evaluation<>;  // hardcoded Evaluation... only by fixing ParetoManager
+  using XEv = typename XMEv::XEv;
+
  private:
   sref<InitialPareto<XMES>> init_pareto;
   int init_pop_size;
   vsref<MOLocalSearch<XMES, XMEv>> vLS;
-  paretoManagerGPLS<S, XMEv> pMan2PPLS;
+  ParetoManagerGPLS<S, XMEv> pMan2PPLS;
 
  public:
   GeneralParetoLocalSearch(sref<IEvaluator<XMES>> _mev,
                            sref<InitialPareto<XMES>> _init_pareto,
                            int _init_pop_size,
                            vsref<MOLocalSearch<XMES, XMEv>> _vLS)
-      :  // GeneralParetoLocalSearch(GeneralEvaluator<XMES, XMEv>& _mev,
+      :  // GeneralParetoLocalSearch(GeneralEvaluator<XMES>& _mev,
          // InitialPareto<XMES>& _init_pareto, int _init_pop_size,
          // vector<MOLocalSearch<S, XMEv>*> _vLS) :
         init_pareto(_init_pareto),
@@ -313,4 +302,6 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XMES, XMEv> {
   }
 };
 
-#endif /*OPTFRAME_GENERALPARETOLOCALSEARCH_HPP_*/
+}  // namespace optframe
+
+#endif  // OPTFRAME_HEURISTICS_MOLOCALSEARCHES_GPLS_HPP_

@@ -4,10 +4,14 @@
 #ifndef OPTFRAME_MOILSLevels_HPP_
 #define OPTFRAME_MOILSLevels_HPP_
 
+// C++
 #include <algorithm>
+#include <string>
+#include <utility>
+//
 
-#include "MOILSLevels.hpp"
-#include "MultiObjILS.hpp"
+#include "./MOILSLPerturbation.hpp"
+#include "./MultiObjILS.hpp"
 
 namespace optframe {
 
@@ -30,7 +34,7 @@ class MOILSLevels
               sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg,
               sref<MOILSLPerturbation<XMES, XMEv>> _p, int _iterMax,
               int _levelMax)
-      :  // MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XES,
+      :  // MOILSLevels(GeneralEvaluator<XMES>& _mev, InitialPareto<XES,
          // XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>*
          // _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax,
          // int _levelMax) :
@@ -42,7 +46,7 @@ class MOILSLevels
 
   virtual ~MOILSLevels() {}
 
-  virtual levelHistory& initializeHistory() {
+  levelHistory& initializeHistory() override {
     // cout << "initializeHistory()" << endl;
     pair<int, int> vars(0, 0);
 
@@ -52,8 +56,8 @@ class MOILSLevels
     return *new levelHistory(vars, maxs);
   }
 
-  virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
-                            levelHistory& history) override {
+  void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
+                    levelHistory& history) override {
     // cout << "perturbation(.)" << endl;
 
     int iter = history.first.first;
@@ -83,8 +87,8 @@ class MOILSLevels
     history.first.second = level;
   }
 
-  virtual void acceptanceCriterion(const Pareto<XMES>& pf,
-                                   levelHistory& history) {
+  void acceptanceCriterion(const Pareto<XMES>& pf,
+                           levelHistory& history) override {
     if (pf.getNewNonDominatedSolutionsStatus()) {
       cout << "New Pareto size: is " << pf.size();
       cout << " on [iter " << history.first.first << " of level "
@@ -99,7 +103,7 @@ class MOILSLevels
     }
   }
 
-  virtual bool terminationCondition(levelHistory& history) {
+  bool terminationCondition(levelHistory& history) override {
     int level = history.first.second;
     int levelMax = history.second.second;
 

@@ -40,8 +40,8 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
 
  private:
   // MultiEvaluator<S, XEv>& mev;
-  sref<GeneralEvaluator<XMES, XMEv>> mev;
-  sref<NS<XMES, XMEv>> ns;
+  sref<GeneralEvaluator<XMES>> mev;
+  sref<NS<XMES>> ns;
 
   // logs
   double sum_time;
@@ -51,8 +51,8 @@ class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
  public:
   // MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XSH>& _ns,
   // unsigned int _iterMax) :
-  MORandomImprovement(sref<GeneralEvaluator<XMES, XMEv>> _mev,
-                      sref<NS<XMES, XMEv>> _ns, unsigned int _iterMax)
+  MORandomImprovement(sref<GeneralEvaluator<XMES>> _mev, sref<NS<XMES>> _ns,
+                      unsigned int _iterMax)
       : mev(_mev), ns(_ns), iterMax(_iterMax) {
     sum_time = 0.0;
     num_calls = 0;

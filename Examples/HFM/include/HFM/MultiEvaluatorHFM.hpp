@@ -20,14 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef HFM_MULTI_EVALUATOR_HPP_
-#define HFM_MULTI_EVALUATOR_HPP_
+#ifndef EXAMPLES_HFM_INCLUDE_HFM_MULTIEVALUATORHFM_HPP_
+#define EXAMPLES_HFM_INCLUDE_HFM_MULTIEVALUATORHFM_HPP_
 
 #include <iostream>
+#include <string>
+#include <utility>
+#include <vector>
 //
 #include <OptFrame/MultiEvaluator.hpp>
+//
 
-#include "Solution.h"
+#include "./Evaluator.hpp"
+#include "./Solution.h"
 
 using namespace std;
 using namespace scannerpp;
@@ -38,9 +43,9 @@ class HFMMultiEvaluator : public MultiEvaluator<ESolutionHFM, EMSolutionHFM> {
   sref<HFMEvaluator> evalEFP;
 
  public:
-  HFMMultiEvaluator(sref<HFMEvaluator> _evalEFP) : evalEFP(_evalEFP) {}
+  explicit HFMMultiEvaluator(sref<HFMEvaluator> _evalEFP) : evalEFP{_evalEFP} {}
 
-  ~HFMMultiEvaluator() {}
+  ~HFMMultiEvaluator() override {}
 
   MultiEvaluation<> evaluate(const SolutionHFM& s) override {
     const RepHFM& r = s.getR();
@@ -52,16 +57,16 @@ class HFMMultiEvaluator : public MultiEvaluator<ESolutionHFM, EMSolutionHFM> {
     // are strongly correlated Instead of designed MAPE_INV
     nev.addEvaluation(EvaluationHFM(foIndicator->at(MAPE_INDEX)));
     nev.addEvaluation(EvaluationHFM(foIndicator->at(MAPE_INV_INDEX)));
-    //		nev.addEvaluation(EvaluationHFM(foIndicator->at(SMAPE_INDEX)));
-    //		nev.addEvaluation(EvaluationHFM(foIndicator->at(RMSE_INDEX)));
-    //		nev.addEvaluation(EvaluationHFM(foIndicator->at(WMAPE_INDEX)));
-    //		nev.addEvaluation(EvaluationHFM(foIndicator->at(MMAPE_INDEX)));
+    // nev.addEvaluation(EvaluationHFM(foIndicator->at(SMAPE_INDEX)));
+    // nev.addEvaluation(EvaluationHFM(foIndicator->at(RMSE_INDEX)));
+    // nev.addEvaluation(EvaluationHFM(foIndicator->at(WMAPE_INDEX)));
+    // nev.addEvaluation(EvaluationHFM(foIndicator->at(MMAPE_INDEX)));
 
     delete foIndicator;
     return nev;
   }
 
-  virtual void reevaluate(pair<SolutionHFM, MultiEvaluation<>>& smev) override {
+  void reevaluate(pair<SolutionHFM, MultiEvaluation<>>& smev) override {
     smev.second = evaluate(smev.first);
   }
 
@@ -72,33 +77,36 @@ class HFMMultiEvaluator : public MultiEvaluator<ESolutionHFM, EMSolutionHFM> {
 
   unsigned size() const { return 5; }
 
-  bool betterThan(const Evaluation<>& ev1, const Evaluation<>& ev2,
-                  int index) override {
+  bool betterThanAt(const Evaluation<>& ev1, const Evaluation<>& ev2,
+                    int index) override {
     return evalEFP->betterThan(ev1, ev2);
   }
 
-  bool equals(const Evaluation<>& ev1, const Evaluation<>& ev2,
-              int index) override {
+  bool equalsAt(const Evaluation<>& ev1, const Evaluation<>& ev2,
+                int index) override {
     return evalEFP->equals(ev1, ev2);
   }
 
  protected:
   static string idComponent() {
     stringstream ss;
-    ss << MultiDirection::idComponent() << ":MultiEvaluator:HFM";
+    ss << MultiEvaluator<ESolutionHFM, EMSolutionHFM>::idComponent()
+       << ":HFMMultiEvaluator";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
-static_assert(std::is_base_of<MultiEvaluator<SolutionHFM, EvaluationHFM,
-                                             MultiEvaluationHFM>,
+static_assert(std::is_base_of<MultiEvaluator<ESolutionHFM, EMSolutionHFM>,
                               HFMMultiEvaluator>::value,
               "not inherited from MultiEvaluator");
+static_assert(
+    std::is_base_of<IEvaluator<EMSolutionHFM>, HFMMultiEvaluator>::value,
+    "not inherited from IEvaluator");
 // static_assert(std::is_base_of<GeneralEvaluator< EMSolutionHFM  >,
 // HFMMultiEvaluator >::value,  "not inherited from GeneralEvaluator");
 
 }  // namespace HFM
 
-#endif /*HFM_MULTI_EVALUATOR_HPP_*/
+#endif  // EXAMPLES_HFM_INCLUDE_HFM_MULTIEVALUATORHFM_HPP_

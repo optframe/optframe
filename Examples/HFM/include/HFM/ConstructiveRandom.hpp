@@ -1,289 +1,270 @@
 #ifndef EFP_CONTRUCTIVE_RANDOM_HPP_
 #define EFP_CONTRUCTIVE_RANDOM_HPP_
 
+// C
+#include <stdlib.h>
+// C++
+#include <algorithm>
+#include <list>
+#include <set>
+//
 #include <OptFrame/Constructive.hpp>
-#include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
+#include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/RandGen.hpp>
 
+#include "Evaluator.hpp"
 #include "ProblemInstance.hpp"
-
 #include "Representation.h"
 #include "Solution.h"
-
-#include "Evaluator.hpp"
-
-#include <list>
-
-#include <algorithm>
-#include <stdlib.h>
-#include <set>
 
 using namespace std;
 using namespace optframe;
 
-namespace HFM
-{
+namespace HFM {
 
-//class ConstructiveRandom: public Constructive<SolutionHFM>
-// should decide if single or multi obj
-template<XESolution XXES, XEvaluation XXEv>
-//class ConstructiveRandom: public InitialSearch<ESolutionHFM>
-class ConstructiveRandom: public InitialSearch<XXES, XXEv>
-{
-private:
-	HFMProblemInstance& pEFP;
-	ProblemParameters problemParam;
-	RandGen& rg;
+// class ConstructiveRandom: public Constructive<SolutionHFM>
+//  should decide if single or multi obj
+template <XESolution XXES, XEvaluation XXEv>
+// class ConstructiveRandom: public InitialSearch<ESolutionHFM>
+class ConstructiveRandom : public InitialSearch<XXES> {
+ private:
+  HFMProblemInstance& pEFP;
+  ProblemParameters problemParam;
+  RandGen& rg;
 
-	int precisionSP;
-	int precisionMP;
-	int precisionDP;
-	int precision;
-	// Your private vars
+  int precisionSP;
+  int precisionMP;
+  int precisionDP;
+  int precision;
+  // Your private vars
 
-public:
+ public:
+  ConstructiveRandom(HFMProblemInstance& _pEFP,
+                     ProblemParameters& _problemParam, RandGen& _rg,
+                     int _precision)
+      :  // If necessary, add more parameters
+        pEFP(_pEFP),
+        problemParam(_problemParam),
+        rg(_rg),
+        precision(_precision) {
+    if (precision == 0) {
+      cerr << "Precision should be greater than 0 :" << precision << endl;
+      getchar();
+    }
 
-	ConstructiveRandom(HFMProblemInstance& _pEFP, ProblemParameters& _problemParam, RandGen& _rg, int _precision) : // If necessary, add more parameters
-			pEFP(_pEFP), problemParam(_problemParam), rg(_rg), precision(_precision)
-	{
+    precisionSP = precision;
+    precisionMP = precision;
+    precisionDP = precision;
+    precisionMP = 1;  // forcing to not have average rules
+    precisionDP = 1;  // forcing to do not have derivative rules
+  }
 
-		if (precision == 0)
-		{
-			cerr << "Precision should be greater than 0 :" << precision << endl;
-			getchar();
-		}
+  virtual ~ConstructiveRandom() {}
 
-		precisionSP = precision;
-		precisionMP = precision;
-		precisionDP = precision;
-		precisionMP = 1; //forcing to not have average rules
-		precisionDP = 1;//forcing to do not have derivative rules
-	}
+  // std::optional<SolutionHFM> generateSolution(double timelimit) override
+  // std::optional<ESolutionHFM> initialSearch(const
+  // StopCriteria<EvaluationHFM>& sosc) override
+  std::pair<std::optional<XXES>, SearchStatus> initialSearch(
+      const StopCriteria<XXEv>& sosc) override {
+    std::optional<SolutionHFM> s = generateSolutionAlpha(0.0, sosc.timelimit);
+    // return make_pair(*s, EvaluationHFM(0)); // TODO: fix
+    return make_pair(make_pair(*s, XXEv()), SearchStatus::NO_REPORT);
+  }
 
-	virtual ~ConstructiveRandom()
-	{
-	}
+  std::optional<SolutionHFM> generateSolutionAlpha(float notUsed,
+                                                   double timelimit) {
+    // cout << "ACF generating solution.." << endl;
 
-	//std::optional<SolutionHFM> generateSolution(double timelimit) override
-   //std::optional<ESolutionHFM> initialSearch(const StopCriteria<EvaluationHFM>& sosc) override
-   std::pair<std::optional<XXES>, SearchStatus> initialSearch(const StopCriteria<XXEv>& sosc) override
-	{
-      std::optional<SolutionHFM> s = generateSolutionAlpha(0.0, sosc.timelimit);
-		//return make_pair(*s, EvaluationHFM(0)); // TODO: fix
-      return make_pair(make_pair(*s, XXEv()), SearchStatus::NO_REPORT);
-	}
+    vector<vector<double> > data = pEFP.getForecastingsVector();
 
-	std::optional<SolutionHFM> generateSolutionAlpha(float notUsed, double timelimit)
-	{
+    int numberExplanatoryVariables = data.size();
 
-		//cout << "ACF generating solution.." << endl;
+    int earliestInput = 0;
+    vector<pair<int, int> > singleIndex;
+    vector<vector<double> > singleFuzzyRS;
+    vector<vector<pair<int, int> > > averageIndex;
+    vector<vector<double> > averageFuzzyRS;
+    vector<vector<pair<int, int> > > derivativeIndex;
+    vector<vector<double> > derivativeFuzzyRS;
 
-		vector<vector<double> > data = pEFP.getForecastingsVector();
+    for (int nEXV = 0; nEXV < numberExplanatoryVariables; nEXV++) {
+      int mean = pEFP.getMean(nEXV);
+      int stdDesv = pEFP.getStdDesv(nEXV);
+      double meanWeight = pEFP.getMean(0);  // File 0 is the target file
+      double stdDesvWeight = pEFP.getStdDesv(0);
 
-		int numberExplanatoryVariables = data.size();
+      int maxLag = problemParam.getMaxLag(nEXV);
+      int maxUpperLag = problemParam.getMaxUpperLag(nEXV);
 
-		int earliestInput = 0;
-		vector<pair<int, int> > singleIndex;
-		vector<vector<double> > singleFuzzyRS;
-		vector<vector<pair<int, int> > > averageIndex;
-		vector<vector<double> > averageFuzzyRS;
-		vector<vector<pair<int, int> > > derivativeIndex;
-		vector<vector<double> > derivativeFuzzyRS;
+      int pSP = rg.rand(precisionSP);
+      for (int p = 0; p < pSP; p++) {
+        int K;
+        if (maxUpperLag > 0) {
+          int sign = rg.rand(2);
+          if (sign == 0)
+            K = rg.rand(maxLag) + 1;
+          else
+            K = (rg.rand(maxUpperLag) + 1) * -1;
+        } else
+          K = rg.rand(maxLag) + 1;
 
-		for (int nEXV = 0; nEXV < numberExplanatoryVariables; nEXV++)
-		{
-			int mean = pEFP.getMean(nEXV);
-			int stdDesv = pEFP.getStdDesv(nEXV);
-			double meanWeight = pEFP.getMean(0); //File 0 is the target file
-			double stdDesvWeight = pEFP.getStdDesv(0);
+        singleIndex.push_back(make_pair(nEXV, K));
 
-			int maxLag = problemParam.getMaxLag(nEXV);
-			int maxUpperLag = problemParam.getMaxUpperLag(nEXV);
+        if (K > earliestInput) earliestInput = K;
 
-			int pSP = rg.rand(precisionSP);
-			for (int p = 0; p < pSP; p++)
-			{
-				int K;
-				if (maxUpperLag > 0)
-				{
-					int sign = rg.rand(2);
-					if (sign == 0)
-						K = rg.rand(maxLag) + 1;
-					else
-						K = (rg.rand(maxUpperLag) + 1) * -1;
-				}
-				else
-					K = rg.rand(maxLag) + 1;
+        double greater = rg.randG(mean, stdDesv);
+        double lower = rg.randG(mean, stdDesv);
+        double greaterWeight = rg.randG(meanWeight, stdDesvWeight);
+        double lowerWeight = rg.randG(meanWeight, stdDesvWeight);
 
-				singleIndex.push_back(make_pair(nEXV, K));
+        int fuzzyFunction = rg.rand(N_Activation_Functions);
 
-				if (K > earliestInput)
-					earliestInput = K;
+        vector<double> fuzzyRules;
+        fuzzyRules.resize(NCOLUMNATRIBUTES);
+        fuzzyRules[GREATER] = greater;
+        fuzzyRules[GREATER_WEIGHT] = greaterWeight;
+        fuzzyRules[LOWER] = lower;
+        fuzzyRules[LOWER_WEIGHT] = lowerWeight;
+        fuzzyRules[EPSILON] = 1;                     // TODO TEST FOR TRAPEZOID
+        fuzzyRules[PERTINENCEFUNC] = fuzzyFunction;  // PERTINENCE FUNCTION
 
-				double greater = rg.randG(mean, stdDesv);
-				double lower = rg.randG(mean, stdDesv);
-				double greaterWeight = rg.randG(meanWeight, stdDesvWeight);
-				double lowerWeight = rg.randG(meanWeight, stdDesvWeight);
+        singleFuzzyRS.push_back(fuzzyRules);
+      }
 
-				int fuzzyFunction = rg.rand(N_Activation_Functions);
+      int pMP = rg.rand(precisionMP);
+      for (int p = 0; p < pMP; p++) {
+        int nAveragePoints = rg.rand(5) + 2;
+        vector<pair<int, int> > aInputs;
+        for (int aI = 0; aI < nAveragePoints; aI++) {
+          int K;
+          if (maxUpperLag > 0) {
+            int sign = rg.rand(2);
+            if (sign == 0)
+              K = rg.rand(maxLag) + 1;
+            else
+              K = (rg.rand(maxUpperLag) + 1) * -1;
+          } else
+            K = rg.rand(maxLag) + 1;
 
-				vector<double> fuzzyRules;
-				fuzzyRules.resize(NCOLUMNATRIBUTES);
-				fuzzyRules[GREATER] = greater;
-				fuzzyRules[GREATER_WEIGHT] = greaterWeight;
-				fuzzyRules[LOWER] = lower;
-				fuzzyRules[LOWER_WEIGHT] = lowerWeight;
-				fuzzyRules[EPSILON] = 1; //TODO TEST FOR TRAPEZOID
-				fuzzyRules[PERTINENCEFUNC] = fuzzyFunction; //PERTINENCE FUNCTION
+          aInputs.push_back(make_pair(nEXV, K));
+          if (K > earliestInput) earliestInput = K;
+        }
+        averageIndex.push_back(aInputs);
 
-				singleFuzzyRS.push_back(fuzzyRules);
-			}
+        double greater = rg.randG(mean, stdDesv);
+        double lower = rg.randG(mean, stdDesv);
+        double greaterWeight = rg.randG(meanWeight, stdDesvWeight);
+        double lowerWeight = rg.randG(meanWeight, stdDesvWeight);
 
-			int pMP = rg.rand(precisionMP);
-			for (int p = 0; p < pMP; p++)
-			{
-				int nAveragePoints = rg.rand(5) + 2;
-				vector<pair<int, int> > aInputs;
-				for (int aI = 0; aI < nAveragePoints; aI++)
-				{
-					int K;
-					if (maxUpperLag > 0)
-					{
-						int sign = rg.rand(2);
-						if (sign == 0)
-							K = rg.rand(maxLag) + 1;
-						else
-							K = (rg.rand(maxUpperLag) + 1) * -1;
-					}
-					else
-						K = rg.rand(maxLag) + 1;
+        int fuzzyFunction = rg.rand(N_Activation_Functions);
 
-					aInputs.push_back(make_pair(nEXV, K));
-					if (K > earliestInput)
-						earliestInput = K;
-				}
-				averageIndex.push_back(aInputs);
+        vector<double> fuzzyRules;
+        fuzzyRules.resize(NCOLUMNATRIBUTES);
+        fuzzyRules[GREATER] = greater;
+        fuzzyRules[GREATER_WEIGHT] = greaterWeight;
+        fuzzyRules[LOWER] = lower;
+        fuzzyRules[LOWER_WEIGHT] = lowerWeight;
+        fuzzyRules[EPSILON] = 1;                     // TODO TEST FOR TRAPEZOID
+        fuzzyRules[PERTINENCEFUNC] = fuzzyFunction;  // PERTINENCE FUNCTION
 
-				double greater = rg.randG(mean, stdDesv);
-				double lower = rg.randG(mean, stdDesv);
-				double greaterWeight = rg.randG(meanWeight, stdDesvWeight);
-				double lowerWeight = rg.randG(meanWeight, stdDesvWeight);
+        averageFuzzyRS.push_back(fuzzyRules);
+      }
 
-				int fuzzyFunction = rg.rand(N_Activation_Functions);
+      // cout << pMP << endl;
+      // cout << averageFuzzyRS << endl;
+      // cout << averageIndex << endl;
+      // getchar();
 
-				vector<double> fuzzyRules;
-				fuzzyRules.resize(NCOLUMNATRIBUTES);
-				fuzzyRules[GREATER] = greater;
-				fuzzyRules[GREATER_WEIGHT] = greaterWeight;
-				fuzzyRules[LOWER] = lower;
-				fuzzyRules[LOWER_WEIGHT] = lowerWeight;
-				fuzzyRules[EPSILON] = 1; //TODO TEST FOR TRAPEZOID
-				fuzzyRules[PERTINENCEFUNC] = fuzzyFunction; //PERTINENCE FUNCTION
+      int pDP = rg.rand(precisionDP);
+      for (int p = 0; p < pDP; p++) {
+        int nDerivativePoints = 2;
+        vector<pair<int, int> > aInputs;
+        for (int aI = 0; aI < nDerivativePoints; aI++) {
+          int K;
+          if (maxUpperLag > 0) {
+            int sign = rg.rand(2);
+            if (sign == 0)
+              K = rg.rand(maxLag) + 1;
+            else
+              K = (rg.rand(maxUpperLag) + 1) * -1;
+          } else
+            K = rg.rand(maxLag) + 1;
 
-				averageFuzzyRS.push_back(fuzzyRules);
-			}
+          aInputs.push_back(make_pair(nEXV, K));
+          if (K > earliestInput) earliestInput = K;
+        }
+        derivativeIndex.push_back(aInputs);
 
-			//cout << pMP << endl;
-			//cout << averageFuzzyRS << endl;
-			//cout << averageIndex << endl;
-			//getchar();
+        double greater = rg.randG(mean, stdDesv);
+        double lower = rg.randG(mean, stdDesv);
+        double greaterWeight = rg.randG(meanWeight, stdDesvWeight);
+        double lowerWeight = rg.randG(meanWeight, stdDesvWeight);
 
-			int pDP = rg.rand(precisionDP);
-			for (int p = 0; p < pDP; p++)
-			{
-				int nDerivativePoints = 2;
-				vector<pair<int, int> > aInputs;
-				for (int aI = 0; aI < nDerivativePoints; aI++)
-				{
-					int K;
-					if (maxUpperLag > 0)
-					{
-						int sign = rg.rand(2);
-						if (sign == 0)
-							K = rg.rand(maxLag) + 1;
-						else
-							K = (rg.rand(maxUpperLag) + 1) * -1;
-					}
-					else
-						K = rg.rand(maxLag) + 1;
+        int fuzzyFunction = rg.rand(N_Activation_Functions);
 
-					aInputs.push_back(make_pair(nEXV, K));
-					if (K > earliestInput)
-						earliestInput = K;
-				}
-				derivativeIndex.push_back(aInputs);
+        vector<double> fuzzyRules;
+        fuzzyRules.resize(NCOLUMNATRIBUTES);
+        fuzzyRules[GREATER] = greater;
+        fuzzyRules[GREATER_WEIGHT] = greaterWeight;
+        fuzzyRules[LOWER] = lower;
+        fuzzyRules[LOWER_WEIGHT] = lowerWeight;
+        fuzzyRules[EPSILON] = 1;                     // TODO TEST FOR TRAPEZOID
+        fuzzyRules[PERTINENCEFUNC] = fuzzyFunction;  // PERTINENCE FUNCTION
 
-				double greater = rg.randG(mean, stdDesv);
-				double lower = rg.randG(mean, stdDesv);
-				double greaterWeight = rg.randG(meanWeight, stdDesvWeight);
-				double lowerWeight = rg.randG(meanWeight, stdDesvWeight);
+        derivativeFuzzyRS.push_back(fuzzyRules);
+      }
 
-				int fuzzyFunction = rg.rand(N_Activation_Functions);
+      // cout << pDP << endl;
+      // cout << derivativeFuzzyRS << endl;
+      // cout << derivativeIndex << endl;
+      // getchar();
+    }
 
-				vector<double> fuzzyRules;
-				fuzzyRules.resize(NCOLUMNATRIBUTES);
-				fuzzyRules[GREATER] = greater;
-				fuzzyRules[GREATER_WEIGHT] = greaterWeight;
-				fuzzyRules[LOWER] = lower;
-				fuzzyRules[LOWER_WEIGHT] = lowerWeight;
-				fuzzyRules[EPSILON] = 1; //TODO TEST FOR TRAPEZOID
-				fuzzyRules[PERTINENCEFUNC] = fuzzyFunction; //PERTINENCE FUNCTION
+    RepHFM newRep;
+    newRep.singleIndex = singleIndex;
+    newRep.singleFuzzyRS = singleFuzzyRS;
+    newRep.averageIndex = averageIndex;
+    newRep.averageFuzzyRS = averageFuzzyRS;
+    newRep.derivativeIndex = derivativeIndex;
+    newRep.derivativeFuzzyRS = derivativeFuzzyRS;
+    // newRep.earliestInput = earliestInput;
 
-				derivativeFuzzyRS.push_back(fuzzyRules);
-			}
+    vector<double> vAlpha(NAJUSTS, rg.randG(0, 0.1));
+    newRep.alpha = rg.rand(100) / 10000.0;
+    newRep.vAlpha = vAlpha;
 
-			//cout << pDP << endl;
-			//cout << derivativeFuzzyRS << endl;
-			//cout << derivativeIndex << endl;
-			//getchar();
-		}
+    vector<int> vIndex;
+    vector<double> vIndexAlphas;
 
-		RepHFM newRep;
-		newRep.singleIndex = singleIndex;
-		newRep.singleFuzzyRS = singleFuzzyRS;
-		newRep.averageIndex = averageIndex;
-		newRep.averageFuzzyRS = averageFuzzyRS;
-		newRep.derivativeIndex = derivativeIndex;
-		newRep.derivativeFuzzyRS = derivativeFuzzyRS;
-		//newRep.earliestInput = earliestInput;
+    int nAdjust = rg.rand(1) + 1;
+    for (int nA = 0; nA <= nAdjust; nA++) {
+      int K = rg.rand(problemParam.getMaxLag(problemParam.getTargetFile()));
 
-		vector<double> vAlpha(NAJUSTS, rg.randG(0, 0.1));
-		newRep.alpha = rg.rand(100) / 10000.0;
-		newRep.vAlpha = vAlpha;
+      vIndex.push_back(K);
+      //			double std = rg.rand(300) / 1000; //TODO check
+      // the use of this variable
+      vIndexAlphas.push_back(rg.randG(0, 0.1));
+    }
 
-		vector<int> vIndex;
-		vector<double> vIndexAlphas;
+    newRep.vIndex = vIndex;
+    newRep.vIndexAlphas = vIndexAlphas;
 
-		int nAdjust = rg.rand(1) + 1;
-		for (int nA = 0; nA <= nAdjust; nA++)
-		{
-			int K = rg.rand(problemParam.getMaxLag(problemParam.getTargetFile()));
+    /*		cout << newRep.earliestInput << endl;
+     cout << newRep.singleIndex << endl;
+     cout << newRep.singleFuzzyRS << endl;
+     cout << newRep.averageIndex << endl;
+     cout << newRep.averageFuzzyRS << endl;
+     cout << newRep.derivativeIndex << endl;
+     cout << newRep.derivativeFuzzyRS << endl;
+     getchar();*/
 
-			vIndex.push_back(K);
-//			double std = rg.rand(300) / 1000; //TODO check the use of this variable
-			vIndexAlphas.push_back(rg.randG(0, 0.1));
-		}
-
-		newRep.vIndex = vIndex;
-		newRep.vIndexAlphas = vIndexAlphas;
-
-		/*		cout << newRep.earliestInput << endl;
-		 cout << newRep.singleIndex << endl;
-		 cout << newRep.singleFuzzyRS << endl;
-		 cout << newRep.averageIndex << endl;
-		 cout << newRep.averageFuzzyRS << endl;
-		 cout << newRep.derivativeIndex << endl;
-		 cout << newRep.derivativeFuzzyRS << endl;
-		 getchar();*/
-
-//		cout << "End of Random Hybrid Fuzzy Model Sol generation!" << endl;
-//		getchar();
-		return make_optional(SolutionHFM(newRep));
-	}
-
+    //		cout << "End of Random Hybrid Fuzzy Model Sol generation!" <<
+    // endl; 		getchar();
+    return make_optional(SolutionHFM(newRep));
+  }
 };
 
-}
+}  // namespace HFM
 
 #endif /*EFP_CONTRUCTIVE_RANDOM_HPP_*/

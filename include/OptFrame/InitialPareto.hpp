@@ -61,10 +61,10 @@ class BasicInitialPareto : public InitialPareto<XMES> {
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
   // Constructive<S>& constructive;
-  InitialSearch<XMES, XMEv>& constructive;
+  InitialSearch<XMES>& constructive;
   ParetoManager<XMES> pMan;
 
-  BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive,
+  BasicInitialPareto(InitialSearch<XMES>& _constructive,
                      ParetoManager<XMES>& _pman)
       : constructive(_constructive), pMan(_pman) {}
 
@@ -102,7 +102,7 @@ class GRInitialPareto : public InitialPareto<XMES> {
   // GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double
   // _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
   GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg,
-                  double _maxAlpha, GeneralEvaluator<XMES, XMEv>& _mev)
+                  double _maxAlpha, GeneralEvaluator<XMES>& _mev)
       : constructive(_constructive),
         rg(_rg),
         maxAlpha(_maxAlpha),

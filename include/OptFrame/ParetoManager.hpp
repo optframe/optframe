@@ -22,19 +22,19 @@ class ParetoManager {
   // GeneralEvaluator down here!
  public:
   IEvaluator<XMES>& multiEval;
-  // GeneralEvaluator<XMES, XMEv>& multiEval;
+  // GeneralEvaluator<XMES>& multiEval;
   // MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
   ParetoDominance<XES, XMES> dom;
   ParetoDominanceWeak<XES, XMES> domWeak;
-  //	Pareto<XMES> x_e;
+  // Pareto<XMES> x_e;
 
  public:
   explicit ParetoManager(IEvaluator<XMES>& _multiEval)
-      :  // paretoManager(GeneralEvaluator<XMES, XMEv>& _multiEval) : // cannot
+      :  // paretoManager(GeneralEvaluator<XMES>& _multiEval) : // cannot
          // be this, for now!
-        multiEval(_multiEval),
-        dom(ParetoDominance<XES, XMES>(_multiEval)),
-        domWeak(ParetoDominanceWeak<XES, XMES>(_multiEval)) {}
+        multiEval{_multiEval},
+        dom{ParetoDominance<XES, XMES>(_multiEval)},
+        domWeak{ParetoDominanceWeak<XES, XMES>(_multiEval)} {}
 
   virtual ~ParetoManager() {}
 
