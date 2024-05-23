@@ -15,22 +15,21 @@ namespace optframe {
 
 typedef int BasicHistory;
 
-template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-// template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
-class BasicMOILS
-    : public MultiObjILS<BasicHistory, typename XMES::first_type, XMEv, XMES> {
+template <XESolution XES, XEMSolution XMES>
+class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type,
+                                      typename XMES::second_type, XMES> {
   using S = typename XMES::first_type;
-  static_assert(is_same<S, typename XMES::first_type>::value);
-  static_assert(is_same<XMEv, typename XMES::second_type>::value);
-  using XEv = Evaluation<>;  // hardcoded.. TODO: fix
+  using XMEv = typename XMES::second_type;
+  using XEv = typename XES::second_type;
+
  private:
   sref<BasicMOILSPerturbation<XMES, XMEv>> p;
   int iterMax;
 
  public:
-  BasicMOILS(sref<IEvaluator<XMES>> _mev,
+  BasicMOILS(sref<MultiEvaluator<XES, XMES>> _mev,
              sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size,
-             sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg,
+             sref<MOLocalSearch<XES, XMES>> _ls, sref<RandGen> _rg,
              sref<BasicMOILSPerturbation<XMES, XMEv>> _p, int _iterMax)
       : MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev, _init_pareto,
                                                  _init_pop_size, _ls, _rg),

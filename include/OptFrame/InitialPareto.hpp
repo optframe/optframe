@@ -53,19 +53,18 @@ class InitialPareto : public InitialSearch<XMES, Pareto<XMES>> {
   std::string id() const override { return idComponent(); }
 };
 
-template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
+template <XESolution XES, XEMSolution XMES>
 class BasicInitialPareto : public InitialPareto<XMES> {
  public:
   using S = typename XMES::first_type;
-  static_assert(is_same<S, typename XMES::first_type>::value);
-  static_assert(is_same<XMEv, typename XMES::second_type>::value);
+  using XMEv = typename XMES::second_type;
 
   // Constructive<S>& constructive;
   InitialSearch<XMES>& constructive;
-  ParetoManager<XMES> pMan;
+  ParetoManager<XES, XMES> pMan;
 
   BasicInitialPareto(InitialSearch<XMES>& _constructive,
-                     ParetoManager<XMES>& _pman)
+                     ParetoManager<XES, XMES>& _pman)
       : constructive(_constructive), pMan(_pman) {}
 
   virtual ~BasicInitialPareto() {}
@@ -90,14 +89,15 @@ class BasicInitialPareto : public InitialPareto<XMES> {
   std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
-          XESolution XMES = pair<S, XMEv>>
+template <XESolution XES, XEMSolution XMES>
 class GRInitialPareto : public InitialPareto<XMES> {
+  using S = typename XES::first_type;
+
  public:
   GRConstructive<S>& constructive;
   RandGen& rg;
   double maxAlpha;  // limit the solution to be not so random
-  ParetoManager<XMES> pMan;
+  ParetoManager<XES, XMES> pMan;
 
   // GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double
   // _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
@@ -106,7 +106,7 @@ class GRInitialPareto : public InitialPareto<XMES> {
       : constructive(_constructive),
         rg(_rg),
         maxAlpha(_maxAlpha),
-        pMan(ParetoManager<XMES>(_mev)) {}
+        pMan(ParetoManager<XES, XMES>(_mev)) {}
 
   virtual ~GRInitialPareto() {}
 

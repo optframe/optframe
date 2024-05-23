@@ -19,9 +19,10 @@ using namespace std;
 
 namespace optframe {
 
-template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
+template <XESolution XES, XEMSolution XMES>
 class MOLocalSearch : public Component {
   using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
   static_assert(is_same<S, typename XMES::first_type>::value);
   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
@@ -39,7 +40,7 @@ class MOLocalSearch : public Component {
 
   // 2
   virtual void moSearchFrom(Pareto<XMES>& p, XMES& smev,
-                            ParetoManager<XMES>& pManager,
+                            ParetoManager<XES, XMES>& pManager,
                             const StopCriteria<XMEv>& stopCriteria) = 0;
 
   bool compatible(std::string s) override {

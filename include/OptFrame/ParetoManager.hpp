@@ -1,27 +1,26 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2024 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_PARETO_MANAGER_HPP
-#define OPTFRAME_PARETO_MANAGER_HPP
+#ifndef OPTFRAME_PARETOMANAGER_HPP_
+#define OPTFRAME_PARETOMANAGER_HPP_
 
 #include <cstring>
 #include <iostream>
+#include <utility>
 #include <vector>
 //
-#include "Pareto.hpp"
+#include "./Pareto.hpp"
 
 namespace optframe {
 
-template <XEMSolution XMES>
+template <XESolution XES, XEMSolution XMES>
 class ParetoManager {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   using XEv = typename XMEv::XEv;
-  using XES = std::pair<S, XEv>;
-  // using XEv = Evaluation<>;  // hardcoding this... TODO: solve by having a
-  // GeneralEvaluator down here!
+
  public:
-  IEvaluator<XMES>& multiEval;
+  sref<MultiEvaluator<XES, XMES>> multiEval;
   // GeneralEvaluator<XMES>& multiEval;
   // MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
   ParetoDominance<XES, XMES> dom;
@@ -29,7 +28,7 @@ class ParetoManager {
   // Pareto<XMES> x_e;
 
  public:
-  explicit ParetoManager(IEvaluator<XMES>& _multiEval)
+  explicit ParetoManager(sref<MultiEvaluator<XES, XMES>> _multiEval)
       :  // paretoManager(GeneralEvaluator<XMES>& _multiEval) : // cannot
          // be this, for now!
         multiEval{_multiEval},
@@ -67,7 +66,7 @@ class ParetoManager {
   //	}
 
   bool addSolution(Pareto<XMES>& p, const S& candidate) {
-    MultiEvaluation<> mev = multiEval.evaluate(candidate);
+    MultiEvaluation<> mev = multiEval->evaluate(candidate);
     XMES cand_smev = make_pair(candidate, mev);
     // bool added = addSolutionWithMEV(p, candidate, mev);
     bool added = addSolutionWithMEV(p, cand_smev);
@@ -186,4 +185,4 @@ class ParetoManager {
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_PARETO_MANAGER_HPP
+#endif  // OPTFRAME_PARETOMANAGER_HPP_

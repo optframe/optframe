@@ -72,7 +72,7 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
     while (a < level) {
       int x = rg->rand(ns.size());
 
-      uptr<Move<XMES, XMEv>> m = ns[x]->validRandomMove(smev);
+      uptr<Move<XMES>> m = ns[x]->validRandomMove(smev);
 
       if (m) {
         a++;

@@ -21,22 +21,23 @@ template <class H, XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<XMES>>
 class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
   using XEv = typename XMEv::XEv;
+  using XES = std::pair<S, XEv>;  // TODO:  remove
 
  private:
   sref<InitialPareto<XMES>> init_pareto;
   int init_pop_size;
-  sref<MOLocalSearch<XMES, XMEv>> ls;
-  ParetoManager<XMES> pMan;
+  sref<MOLocalSearch<XES, XMES>> ls;
+  ParetoManager<XES, XMES> pMan;
   sref<RandGen> rg;
 
  public:
-  MultiObjILS(sref<IEvaluator<XMES>> _mev,
+  MultiObjILS(sref<MultiEvaluator<XES, XMES>> _mev,
               sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size,
-              sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg)
+              sref<MOLocalSearch<XES, XMES>> _ls, sref<RandGen> _rg)
       : init_pareto(_init_pareto),
         init_pop_size(_init_pop_size),
         ls(_ls),
-        pMan(paretoManager<S, XMEv, XMES>(_mev)),
+        pMan(ParetoManager<XES, XMES>(_mev)),
         rg(_rg) {}
 
   ~MultiObjILS() override {}

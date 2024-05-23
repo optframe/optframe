@@ -393,7 +393,7 @@ class ForecastClass {
   // add solution to pareto front evaluating with forecasting class evaluators
   void addSolToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf,
                                        const SolutionHFM& candidateS) {
-    ParetoManager<EMSolutionHFM> paretoMan(*mev);
+    ParetoManager<ESolutionHFM, EMSolutionHFM> paretoMan(*mev);
     paretoMan.addSolution(pf, candidateS);
   }
 
@@ -402,7 +402,7 @@ class ForecastClass {
   // SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
   void addSolWithMevToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf,
                                               const EMSolutionHFM& cand_smev) {
-    ParetoManager<EMSolutionHFM> paretoMan(*mev);
+    ParetoManager<ESolutionHFM, EMSolutionHFM> paretoMan(*mev);
     // paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
     paretoMan.addSolutionWithMEV(pf, cand_smev);
   }
@@ -437,11 +437,11 @@ class ForecastClass {
     // BasicInitialPareto(InitialSearch<XMES>& _constructive,
     // GeneralEvaluator<XMES>& _mev) :
 
-    ParetoManager<EMSolutionHFM>* paretoMan =
-        new ParetoManager<EMSolutionHFM>(*mev);
+    ParetoManager<ESolutionHFM, EMSolutionHFM>* paretoMan =
+        new ParetoManager<ESolutionHFM, EMSolutionHFM>(*mev);
     // BasicInitialPareto<SolutionHFM, EvaluationHFM, MultiEvaluationHFM,
     // EMSolutionHFM> grIP(*cm, *mev);
-    BasicInitialPareto<EMSolutionHFM, MultiEvaluationHFM> grIP(*cm, *paretoMan);
+    BasicInitialPareto<ESolutionHFM, EMSolutionHFM> grIP(*cm, *paretoMan);
 
     sptr<GeneralEvaluator<EMSolutionHFM>> _sptrmev =
         std::static_pointer_cast<GeneralEvaluator<EMSolutionHFM>>(mev);
@@ -450,12 +450,16 @@ class ForecastClass {
     sref<GeneralEvaluator<EMSolutionHFM>> gmev = _sptrmev;  // mev;
 
     int maxTriesRI = 100;
-    MORandomImprovement<EMSolutionHFM> moriMFR(gmev, vNSeqMO.at(0), maxTriesRI);
-    MORandomImprovement<EMSolutionHFM> moriCSI(gmev, vNSeqMO.at(1), maxTriesRI);
-    MORandomImprovement<EMSolutionHFM> moriRSI(gmev, vNSeqMO.at(2), maxTriesRI);
-    MORandomImprovement<EMSolutionHFM> moriASI(gmev, vNSeqMO.at(3), maxTriesRI);
+    MORandomImprovement<ESolutionHFM, EMSolutionHFM> moriMFR(
+        gmev, vNSeqMO.at(0), maxTriesRI);
+    MORandomImprovement<ESolutionHFM, EMSolutionHFM> moriCSI(
+        gmev, vNSeqMO.at(1), maxTriesRI);
+    MORandomImprovement<ESolutionHFM, EMSolutionHFM> moriRSI(
+        gmev, vNSeqMO.at(2), maxTriesRI);
+    MORandomImprovement<ESolutionHFM, EMSolutionHFM> moriASI(
+        gmev, vNSeqMO.at(3), maxTriesRI);
 
-    vsref<MOLocalSearch<EMSolutionHFM>> vMOLS;
+    vsref<MOLocalSearch<ESolutionHFM, EMSolutionHFM>> vMOLS;
     vMOLS.push_back(moriMFR);
     vMOLS.push_back(moriRSI);
     vMOLS.push_back(moriASI);
@@ -468,15 +472,15 @@ class ForecastClass {
     sref<IEvaluator<XMES>> _mev,
                                sref<InitialPareto<XMES>> _init_pareto,
                                int _init_pop_size,
-                               vsref<MOLocalSearch<XMES, XMEv>> _vLS
+                               vsref<MOLocalSearch<XES, XMES>> _vLS
     */
     // sref<IEvaluator<EMSolutionHFM>> _imev =
     //     std::static_pointer_cast<IEvaluator<EMSolutionHFM>>(mev);
-    GeneralParetoLocalSearch<EMSolutionHFM, MultiEvaluation<>> generalPLS(
-        imev, grIP, initial_population_size, vMOLS);
+    GeneralParetoLocalSearch<ESolutionHFM, EMSolutionHFM> generalPLS(
+        _mev, grIP, initial_population_size, vMOLS);
 
-    BasicMOILS<EMSolutionHFM, MultiEvaluationHFM> basicMOILS(
-        imev, grIP, initial_population_size, moriASI, rg, basicMOILSPert, 100);
+    BasicMOILS<ESolutionHFM, EMSolutionHFM> basicMOILS(
+        _mev, grIP, initial_population_size, moriASI, rg, basicMOILSPert, 100);
 
     // for testing OptFrame v4
     // BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP,
@@ -484,8 +488,8 @@ class ForecastClass {
 
     int moIlslevelMax = 10;
     int moIlsIterMax = 100;
-    MOILSLevels<EMSolutionHFM, MultiEvaluationHFM> moILSLevels(
-        imev, grIP, initial_population_size, moriASI, rg, moILSPert,
+    MOILSLevels<ESolutionHFM, EMSolutionHFM> moILSLevels(
+        _mev, grIP, initial_population_size, moriASI, rg, moILSPert,
         moIlsIterMax, moIlslevelMax);
     // moILSLevels.setMessageLevel(3);
 
