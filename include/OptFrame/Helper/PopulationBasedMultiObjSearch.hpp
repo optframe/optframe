@@ -13,6 +13,7 @@
 #include <OptFrame/Heuristics/MultiObjective/MOPopulationManagement.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSSelection.hpp>
+#include <OptFrame/MultiDirection.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
