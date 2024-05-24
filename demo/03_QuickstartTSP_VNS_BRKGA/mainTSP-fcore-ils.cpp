@@ -84,11 +84,14 @@ IteratedLocalSearchLevels<ESolutionTSP> ils(demo.eval, initRand, VND, pert, 10,
                                             5);
 // ils.setVerbose();
 
-std::cout << "will start ILS for 3 seconds" << std::endl;
+std::cout << "will start ILS for 10 seconds" << std::endl;
 
+optframe::Timer t;
+ils.setVerbose();
 auto status = ils.search(
-    StopCriteria<ESolutionTSP::second_type>{3.0});  // 3.0 seconds max
+    StopCriteria<ESolutionTSP::second_type>{10.0});  // 3.0 seconds max
 ESolutionTSP best = *status.best;
+std::cout << "spent time: " << t.now() << "s" << std::endl;
 // best solution value
 best.second.print();
 std::cout << "solution: " << best.first << std::endl;

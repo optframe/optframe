@@ -1,38 +1,22 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_ILS_HPP_
-#define OPTFRAME_ILS_HPP_
+#ifndef OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_
 
+// C
 #include <math.h>
-
+// C++
+#include <string>
 #include <vector>
+//
 
 #include "../../Constructive.hpp"
 #include "../../Evaluator.hpp"
 #include "../../ITrajectory.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "../../Timer.hpp"
-#include "ILS.h"
+#include "./ILS.h"
 
 namespace optframe {
 
@@ -50,7 +34,7 @@ class IteratedLocalSearch : public ILS,
                       sref<InitialSearch<XES>> _constructive)
       : evaluator(_evaluator), constructive(_constructive) {}
 
-  virtual ~IteratedLocalSearch() {}
+  ~IteratedLocalSearch() override {}
 
   virtual sref<H> initializeHistory() = 0;
 
@@ -66,23 +50,20 @@ class IteratedLocalSearch : public ILS,
 
   // default search method (no initial solution passed)
   SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
-                             std::optional<XES> _best) override {
+                             std::optional<XES> opstar) override {
     if (Component::information)
-      std::cout << "ILS opt search(" << stopCriteria.timelimit << ")"
+      std::cout << "ILS::searchBy(" << stopCriteria.timelimit << ")"
                 << std::endl;
-    //
-    op<XES> opstar;  // TODO: receive on 'searchBy'
 
     if (Component::debug)
       std::cout << "ILS::build initial solution" << std::endl;
 
-    // star = star ?: constructive->initialSearch(stopCriteria).first;
     if (!opstar) opstar = constructive->initialSearch(stopCriteria).first;
     if (!opstar) return SearchStatus::NO_SOLUTION;
 
     XES& star = *opstar;
     if (Component::information)
-      std::cout << "ILS opt searchBy(" << stopCriteria.timelimit << ")"
+      std::cout << "ILS::searchBy(" << stopCriteria.timelimit << ")"
                 << std::endl;
 
     XEv& eStar = star.second;
@@ -109,22 +90,27 @@ class IteratedLocalSearch : public ILS,
     }
 
     do {
+      if (Component::debug) std::cout << "ILS::begin loop" << std::endl;
       XES p1 = star;  // derive new incumbent solution (copy-based solution, for
                       // generality)
-      perturbation(p1, stopCriteria, *history);
+      perturbation(p1, stopCriteria, history);
       localSearch(p1, stopCriteria);
       bool improvement = acceptanceCriterion(p1.second, star.second, history);
-      if (improvement) star = p1;  // copy-based
-      if (Component::debug) std::cout << "SHOULD STOP?" << std::endl;
+      if (improvement) {
+        if (Component::debug)
+          std::cout << "ILS::improvement! star <= new bound" << std::endl;
+        star = p1;  // copy-based
+      }
+      if (Component::debug) std::cout << "ILS::SHOULD STOP?" << std::endl;
     } while (!terminationCondition(history) &&
              !stopCriteria.shouldStop(star.second));
 
     if (!stopCriteria.target_f.isOutdated()) {
       if (Component::debug)
-        std::cout << "ILS will compare(" << eStar.isOutdated() << ";"
+        std::cout << "ILS:: will compare(" << eStar.isOutdated() << ";"
                   << stopCriteria.target_f.isOutdated() << ")" << std::endl;
       if (evaluator->betterStrict(eStar, stopCriteria.target_f)) {
-        cout << "ILS exit by target_f: " << eStar.evaluation()
+        cout << "ILS:: exit by target_f: " << eStar.evaluation()
              << " better than " << stopCriteria.target_f.evaluation() << endl;
         // cout << "isMin: " << eStar.isMini << endl;
       }
@@ -144,4 +130,4 @@ class IteratedLocalSearch : public ILS,
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_ILS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_

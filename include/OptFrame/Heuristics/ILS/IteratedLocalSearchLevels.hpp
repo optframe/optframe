@@ -1,36 +1,19 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_ILSL_HPP_
-#define OPTFRAME_ILSL_HPP_
+#ifndef OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCHLEVELS_HPP_
+#define OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCHLEVELS_HPP_
 
 #include <math.h>
-
-#include <OptFrame/LocalSearch.hpp>
+//
+#include <string>
 #include <vector>
+//
+#include <OptFrame/LocalSearch.hpp>
 
-#include "ILS.h"
-#include "ILSLPerturbation.hpp"
-#include "IteratedLocalSearch.hpp"
+#include "./ILS.h"
+#include "./ILSLPerturbation.hpp"
+#include "./IteratedLocalSearch.hpp"
 
 namespace optframe {
 
@@ -45,9 +28,6 @@ class IteratedLocalSearchLevels
   int iterMax, levelMax;
 
  public:
-  // IteratedLocalSearchLevels(Evaluator<XES, XEv>& e, Constructive<S>&
-  // constructive, LocalSearch<XES>& _ls, ILSLPerturbation<S, XEv>& _p, int
-  // _iterMax, int _levelMax) :
   IteratedLocalSearchLevels(sref<GeneralEvaluator<XES>> e,
                             sref<InitialSearch<XES>> constructive,
                             sref<LocalSearch<XES>> _ls,
@@ -71,20 +51,23 @@ class IteratedLocalSearchLevels
     return sref<levelHistory>(new levelHistory(vars, maxs));
   }
 
-  virtual void localSearch(XES& se,
-                           const StopCriteria<XEv>& stopCriteria) override {
+  void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) override {
     // cout << "localSearch(.)" << endl;
     ls->searchFrom(se, stopCriteria);
   }
 
-  virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria,
-                            sref<levelHistory> history) override {
+  void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria,
+                    sref<levelHistory> history) override {
     // cout << "perturbation(.)" << endl;
 
     int iter = history->first.first;
     int level = history->first.second;
     int iterMax = history->second.first;
     // int levelMax = history.second.second;
+
+    if (Component::debug)
+      cout << "ILSL::perturbation() history iter " << iter << " level " << level
+           << endl;
 
     // cout << "level = " << level << " e iter = " << iter << endl;
 
@@ -94,35 +77,40 @@ class IteratedLocalSearchLevels
     // Incrementa a iteracao
     iter++;
 
-    if (Component::debug) cout << "ILSL::iter " << iter << endl;
+    if (Component::debug) cout << "ILSL::perturbation() iter " << iter << endl;
 
     if (iter >= iterMax) {
       iter = 0;
       level++;
       if (Component::information)
-        cout << "ILSL::level " << level << ".." << endl;
+        cout << "ILSL::perturbation() level " << level << ".." << endl;
     }
 
     // Atualiza o historico
     history->first.first = iter;
     history->first.second = level;
+    if (Component::debug)
+      cout << "ILSL::new history iter " << iter << " level " << level << endl;
   }
 
-  virtual bool acceptanceCriterion(const XEv& e1, const XEv& e2,
-                                   sref<levelHistory> history) override {
+  bool acceptanceCriterion(const XEv& e1, const XEv& e2,
+                           sref<levelHistory> history) override {
     // cout << "acceptanceCriterion(.)" << endl;
 
     // if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1,
     // e2)) if (e1.betterStrict(e2))
     if (Component::debug)
-      std::cout << "ILSL will compare(" << e1.isOutdated() << ";"
-                << e2.isOutdated() << ")" << std::endl;
+      std::cout << "ILSL::acceptanceCriterion() will compare(outdated="
+                << e1.isOutdated() << " e=" << e1.evaluation()
+                << "; outdated=" << e2.isOutdated() << " e=" << e2.evaluation()
+                << ")" << std::endl;
 
     if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator->betterStrict(
             e1, e2)) {
       if (Component::information) {
-        cout << "ILSL::Best fo: on [iter " << history->first.first
-             << " of level " << history->first.second << "] => ";
+        cout << "ILSL::acceptanceCriterion() Best fo: on [iter "
+             << history->first.first << " of level " << history->first.second
+             << "] => ";
         e1.print();
       }
 
@@ -138,8 +126,9 @@ class IteratedLocalSearchLevels
       //    Retorna s2
       // =======================
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   bool terminationCondition(sref<levelHistory> history) override {
@@ -259,4 +248,4 @@ class IteratedLocalSearchLevelsBuilder : public ILS,
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_ILSL_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCHLEVELS_HPP_
