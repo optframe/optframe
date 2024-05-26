@@ -26,6 +26,11 @@
 * Focusing on achieving maximum C++ performance, solving too many memory management complex strategies (fully using self managed memory by smart pointers and move semantics)
 * Maximum personalization by the user
 
+### OptFrame v5
+* Stability and focus on long-term maintainance
+* Support for cross-language implementations, such as pyoptframe in Python
+* Improve examples, demos and documentation
+
 ## Special thanks for SourceForge.net (written at 2016)
 
 The OptFrame project was hosted in SourceForge.net for 8 years and we are
