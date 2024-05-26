@@ -57,8 +57,10 @@ BasicSimulatedAnnealing<ESolutionKP> sa{
     demo.evalKP, initRand, demo.nsFlip, 0.98, 100, 99999, rg};
 // executa o SA e coleta o 'status' de saída
 // passa um 'Criterio de Parada' por tempo (= 10 segundos)
+optframe::Timer t;
 auto searchOut = sa.search(
     StopCriteria<ESolutionKP::second_type>{10.0});  // 10.0 seconds max
+std::cout << "spent time: " << t.now() << "s" << std::endl;
 // pega melhor solução do método SA
 ESolutionKP melhor = *searchOut.best;  //*sa.getBestSolution();
 std::cout << "======== Imprime melhor solução do SA ========" << std::endl;
