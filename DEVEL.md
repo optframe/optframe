@@ -8,7 +8,7 @@
 
 ### Docs Requirements
 
-`python3 -m pip install -r requirements.txt`
+`python3 -m pip install -r docs/requirements.txt`
 
 TODO: use [exhale](https://exhale.readthedocs.io/en/latest/usage.html#usage-quickstart-guide)
 

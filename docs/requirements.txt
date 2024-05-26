@@ -5,5 +5,6 @@ exhale
 sphinx_rtd_theme
 sphinxcontrib-pseudocode
 Sphinx~=7.0.0
-setuptools~=57.0.0
+setuptools
 docutils~=0.18.1
+bumpver
