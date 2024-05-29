@@ -24,7 +24,7 @@ class ParetoDominanceWeak : public ParetoDominance<XES, XMES> {
   //
   using ParetoDominance<XES, XMES>::dominates;
 
-  explicit ParetoDominanceWeak(MultiEvaluator<XES, XMES>& _mev)
+  explicit ParetoDominanceWeak(sref<MultiEvaluator<XES, XMES>> _mev)
       : ParetoDominance<XES, XMES>(_mev) {}
 
   virtual ~ParetoDominanceWeak() {}

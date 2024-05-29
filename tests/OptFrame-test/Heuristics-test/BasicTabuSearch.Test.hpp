@@ -48,13 +48,14 @@ TEST_CASE("OptFrameHeuristicsTests: tabu_search_kp") {
   //
   KP_fcore::OptFrameCoreKP core{p};
 
-  sref<GeneralEvaluator<KP_fcore::ESolutionKP>> ev = core.evalKP;
+  sref<GeneralEvaluator<KP_fcore::ESolutionKP>> ev = nnptr::copy(core.evalKP);
+  sref<IEvaluator<KP_fcore::ESolutionKP>> iev = nnptr::copy(core.evalKP);
   sref<InitialSearch<KP_fcore::ESolutionKP>> constructive{
-      new BasicInitialSearch<KP_fcore::ESolutionKP>{core.randomConstructive,
-                                                    core.evalKP}};
+      new BasicInitialSearch<KP_fcore::ESolutionKP>(
+          nnptr::copy(core.randomConstructive), nnptr::copy(core.evalKP))};
 
-  BasicTabuSearch<KP_fcore::ESolutionKP> basicTabuSearch(ev, constructive,
-                                                         core.nsseqFlip, 2, 1);
+  BasicTabuSearch<KP_fcore::ESolutionKP> basicTabuSearch(
+      ev, constructive, nnptr::copy(core.nsseqFlip), 2, 1);
 
   // =============
   // base solution

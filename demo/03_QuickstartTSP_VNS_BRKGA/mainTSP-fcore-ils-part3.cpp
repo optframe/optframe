@@ -1,8 +1,9 @@
 //
 ILSLPerturbationLPlus2<ESolutionTSP> pert(demo.eval, demo.nsSwap, rg2);
 
-IteratedLocalSearchLevels<ESolutionTSP> ils(demo.eval, initRand, VND, pert, 10,
-                                            5);
+IteratedLocalSearchLevels<ESolutionTSP> ils(demo.eval, nnptr::copy(initRand),
+                                            nnptr::copy(VND), nnptr::copy(pert),
+                                            10, 5);
 // ils.setVerbose();
 
 std::cout << "will start ILS for 10 seconds" << std::endl;

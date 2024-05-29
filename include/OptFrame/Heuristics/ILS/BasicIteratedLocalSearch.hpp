@@ -61,7 +61,7 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
     iter++;
 
     // Atualiza o historico
-    history = iter;
+    history = nnptr::copy(iter);
   }
 
   bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2,

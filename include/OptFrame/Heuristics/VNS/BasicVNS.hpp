@@ -41,8 +41,8 @@ class BasicVNS : public VariableNeighborhoodSearch<XES> {
   virtual ~BasicVNS() = default;
 
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
-    return *new BestImprovement<XES>(super::evaluator,
-                                     super::vsearch.at(k_search));
+    return nnptr::copy(
+        BestImprovement<XES>(super::evaluator, super::vsearch.at(k_search)));
   }
 
   std::string id() const override { return idComponent(); }

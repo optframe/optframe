@@ -48,14 +48,15 @@ int main() {
       make_nsseq(pTSP)};
 
   sref<InitialSearch<ESolutionTSP>> initRand{
-      new BasicInitialSearch<ESolutionTSP>(crand, eval)};
+      new BasicInitialSearch<ESolutionTSP>(nnptr::copy(crand),
+                                           nnptr::copy(eval))};
 
   CheckCommand<ESolutionTSP> check(false);  // verbose
   //
-  check.addEvaluator(eval);
+  check.addEvaluator(nnptr::copy(eval));
   check.add(initRand);
-  check.addNS(nsswap);     // NS
-  check.addNSSeq(nsseq2);  // NSSeq
+  check.addNS(nnptr::copy(nsswap));  // NS
+  check.addNSSeq(nsseq2);            // NSSeq
 
   // bool run(int iterMax, int nSolNSSeq)
   check.run(100, 10);
