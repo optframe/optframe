@@ -33,6 +33,8 @@
 // ========== "not null shared pointer" shortcuts
 template <class R>
 using sref = nnptr::NNShared<R>;
+// NOLINTNEXTLINE
+#define sref_copy(X) nnptr::copy(X)
 //
 template <class R>
 using vsref = std::vector<sref<R>>;

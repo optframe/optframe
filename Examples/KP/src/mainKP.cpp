@@ -30,11 +30,13 @@ int main(int argc, char** argv) {
   // Problem Context
   ////////////////////////////////////////////////////////////////////////////
 
-  sref<RandGen> rg = RandGenMersenneTwister();  // declara um bom gerador de números aleatórios
+  sref<RandGen> rg =
+      RandGenMersenneTwister();  // declara um bom gerador de números aleatórios
 
   Scanner scanner(File("instance-4.txt"));  // carrega arquivo no disco
-  ProblemInstance p(scanner);               // cria um problema-teste usando o arquivo carregado
-  MyEvaluator ev(p);                        // cria o avaliador baseado no problema-teste
+  ProblemInstance p(
+      scanner);       // cria um problema-teste usando o arquivo carregado
+  MyEvaluator ev(p);  // cria o avaliador baseado no problema-teste
   StopCriteria<EvaluationKP> sosc;
 
   ConstructiveRandom c1(p, ev);  // construtor de vizinhanças aleatórias
@@ -46,38 +48,46 @@ int main(int argc, char** argv) {
   ////////////////////////////////////////////////////////////////////////////
   cout << "\nWill generate random solution" << endl;
 
-  //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
-  op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10)).first;  // timelimit (10???)
+  // SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
+  op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10))
+                             .first;  // timelimit (10???)
   ESolutionKP& se = *opse;
   std::cout << "solution: " << opse->first << std::endl;
   ev.reevaluate(se);
   se.second.print();
   cout << "GUD\n\n";  // qq é isso Igor?
 
-  // CheckCommand not working anymore... must CLEAN it!! not accepting R, ADS, ... simplify it, please!
+  // CheckCommand not working anymore... must CLEAN it!! not accepting R, ADS,
+  // ... simplify it, please!
 
   /*
-   CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes (opcional)
-   check.add(ev1);             // carrega a avaliação para testes
+   CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes
+   (opcional) check.add(ev1);             // carrega a avaliação para testes
    check.add(c1);             // carrega o construtivo para testes
    check.add(ns1);            // carrega a vizinhança para testes
    check.run(100, 10);        // executa testes com 10 iterações
    */
 
-  //BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+  // BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100,
+  // 900.0, rg);
   /*
-   std::function<bool(const op<ESolutionKP>&, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>*)> specificStopBy = 
-      [](const op<ESolutionKP>& se, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>* m) -> bool {
-         return ((m->getT() > 0.001) && (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
+   std::function<bool(const op<ESolutionKP>&,
+   BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>*)>
+   specificStopBy =
+      [](const op<ESolutionKP>& se, BasicSimulatedAnnealing<ESolutionKP,
+   EvaluationKP, Component>* m) -> bool { return ((m->getT() > 0.001) &&
+   (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       };
 
    auto soscSA { StopCriteria(specificStopBy) };
 */
 
   /*
-   SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>> spc {
-      [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
-         return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
+   SpecificMethodStop<ESolutionKP, EvaluationKP,
+   BasicSimulatedAnnealing<ESolutionKP>> spc {
+      [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc,
+   BasicSimulatedAnnealing<ESolutionKP>* me) -> bool { return ((me->getT() >
+   0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
    };
 */
@@ -86,20 +96,24 @@ int main(int argc, char** argv) {
   // Simulated Annealing
   ////////////////////////////////////////////////////////////////////////////
 
-  sref<GeneralEvaluator<ESolutionKP>> _evaluator = ev;
-  sref<InitialSearch<ESolutionKP>> _constructive = c1;
+  sref<GeneralEvaluator<ESolutionKP>> _evaluator = sref_copy(ev);
+  sref<InitialSearch<ESolutionKP>> _constructive = sref_copy(c1);
   sref<NS<ESolutionKP>> _ns1 = new NSSeqBitFlip(p, rg);
+  sref<NSSeq<ESolutionKP>> _nsseq1 = new NSSeqBitFlip(p, rg);
   sref<NS<ESolutionKP>> _neighbors = _ns1;
   double _alpha = 0.98;
   int _SAmax = 100;
   double _Ti = 900.0;
-  BasicSimulatedAnnealing<ESolutionKP> sa(_evaluator, _constructive, _neighbors, _alpha, _SAmax, _Ti, rg);
+  BasicSimulatedAnnealing<ESolutionKP> sa(_evaluator, _constructive, _neighbors,
+                                          _alpha, _SAmax, _Ti, rg);
 
   /*
-   sa.specificStopBy = 
-     SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>>(
-      [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
-         return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
+   sa.specificStopBy =
+     SpecificMethodStop<ESolutionKP, EvaluationKP,
+   BasicSimulatedAnnealing<ESolutionKP>>(
+      [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc,
+   BasicSimulatedAnnealing<ESolutionKP>* me) -> bool { return ((me->getT() >
+   0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
      );
    */
@@ -111,7 +125,7 @@ int main(int argc, char** argv) {
   SearchOutput<ESolutionKP> sout = sa.search(sosc);  // Faz a busca, de fato
   op<ESolutionKP> r = *sout.best;
 
-  //r->first.print();
+  // r->first.print();
   std::cout << r->first << std::endl;
   r->second.print();
 
@@ -120,25 +134,28 @@ int main(int argc, char** argv) {
   ////////////////////////////////////////////////////////////////////////////
   std::cout << "\nHill Climbing Search:";
 
-  BestImprovement<ESolutionKP> bi(ev, ns1);
-  FirstImprovement<ESolutionKP> fi(ev, ns1);
-  HillClimbing<ESolutionKP> sd(ev, bi);
-  HillClimbing<ESolutionKP> pm(ev, fi);
-  RandomDescentMethod<ESolutionKP> rdm(ev, ns1, 10);
+  BestImprovement<ESolutionKP> bi(_evaluator, _nsseq1);
+  FirstImprovement<ESolutionKP> fi(_evaluator, _nsseq1);
+  HillClimbing<ESolutionKP> sd(_evaluator, sref_copy(bi));
+  HillClimbing<ESolutionKP> pm(_evaluator, sref_copy(fi));
+  RandomDescentMethod<ESolutionKP> rdm(_evaluator, _ns1, 10);
   //
-  //pair<SolutionKP, Evaluation<>> se(s, e);
+  // pair<SolutionKP, Evaluation<>> se(s, e);
   std::cout << "Best Improvement Search: ";
   sd.lsearch(se, sosc).second.print();  // executa e imprime HC + BI
   std::cout << "First Improvement Search: ";
   pm.lsearch(se, sosc).second.print();  // executa e imprime HC + FI
   std::cout << "Random Descent Search: ";
-  rdm.lsearch(se, sosc).second.print();  // executa e imprime RDM com 10 iterações
+  rdm.lsearch(se, sosc)
+      .second.print();  // executa e imprime RDM com 10 iterações
 
-  // EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP> eprk(ev1, 0, p.N - 1);
-  //EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
-  //Evaluator<std::vector<double>, EvaluationKP, ESolutionKP>& _eprk = eprk;
-  //sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
-  //   *new DecoderRandomKeysEvaluator<SolutionKP, EvaluationKP, double, ESolutionKP>(_eprk);
+  // EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP> eprk(ev1, 0,
+  // p.N - 1);
+  // EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
+  // Evaluator<std::vector<double>, EvaluationKP, ESolutionKP>& _eprk = eprk;
+  // sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
+  //   *new DecoderRandomKeysEvaluator<SolutionKP, EvaluationKP, double,
+  //   ESolutionKP>(_eprk);
 
   ////////////////////////////////////////////////////////////////////////////
   // BRKGA
@@ -146,14 +163,16 @@ int main(int argc, char** argv) {
   std::cout << "\nBRKGA Search";
 
   sref<DecoderRandomKeys<ESolutionKP, double>> _decoder =
-      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev, 0, p.N - 1);
+      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev, 0,
+                                                                       p.N - 1);
 
-  sref<InitialEPopulation<std::pair<std::vector<double>, Evaluation<>>>> _genKeys =
-      new RandomKeysInitEPop<EvaluationKP, double>(p.N, rg);
+  sref<InitialEPopulation<std::pair<std::vector<double>, Evaluation<>>>>
+      _genKeys = new RandomKeysInitEPop<EvaluationKP, double>(p.N, rg);
 
-  BRKGA<ESolutionKP, double> brkga(_decoder, _genKeys, 1000, 30, 0.4, 0.3, 0.6, rg);
+  BRKGA<ESolutionKP, double> brkga(_decoder, _genKeys, 1000, 30, 0.4, 0.3, 0.6,
+                                   rg);
 
-  //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
+  // pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
   SearchOutput<ESolutionKP> sout2 = brkga.search(sosc);
 
   std::optional<pair<SolutionKP, EvaluationKP>> r2 = sout2.best;
