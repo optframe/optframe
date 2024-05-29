@@ -15,6 +15,7 @@ build/app_Example: $(OBJ_FILES)
 
 # compile each .cpp individually ($<)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p build/
 	$(CC) $(CXXFLAGS) -c -o $@ $<
 
 .PHONY: all clean
