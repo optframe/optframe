@@ -36,17 +36,17 @@ class IteratedLocalSearch : public ILS,
 
   ~IteratedLocalSearch() override {}
 
-  virtual sref<H> initializeHistory() = 0;
+  virtual uptr<H> initializeHistory() = 0;
 
   virtual void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
   virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria,
-                            sref<H> history) = 0;
+                            H& history) = 0;
 
   virtual bool acceptanceCriterion(const XEv& e1, const XEv& e2,
-                                   sref<H> history) = 0;
+                                   H& history) = 0;
 
-  virtual bool terminationCondition(sref<H> history) = 0;
+  virtual bool terminationCondition(const H& history) = 0;
 
   // default search method (no initial solution passed)
   SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
@@ -72,7 +72,7 @@ class IteratedLocalSearch : public ILS,
       eStar.print();
     }
 
-    sref<H> history = initializeHistory();
+    uptr<H> history = initializeHistory();
 
     // 's0' <- GenerateSolution
     // 's*' <- localSearch 's'
@@ -93,16 +93,16 @@ class IteratedLocalSearch : public ILS,
       if (Component::debug) std::cout << "ILS::begin loop" << std::endl;
       XES p1 = star;  // derive new incumbent solution (copy-based solution, for
                       // generality)
-      perturbation(p1, stopCriteria, history);
+      perturbation(p1, stopCriteria, *history);
       localSearch(p1, stopCriteria);
-      bool improvement = acceptanceCriterion(p1.second, star.second, history);
+      bool improvement = acceptanceCriterion(p1.second, star.second, *history);
       if (improvement) {
         if (Component::debug)
           std::cout << "ILS::improvement! star <= new bound" << std::endl;
         star = p1;  // copy-based
       }
       if (Component::debug) std::cout << "ILS::SHOULD STOP?" << std::endl;
-    } while (!terminationCondition(history) &&
+    } while (!terminationCondition(*history) &&
              !stopCriteria.shouldStop(star.second));
 
     if (!stopCriteria.target_f.isOutdated()) {

@@ -40,8 +40,8 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
 
   virtual ~BasicIteratedLocalSearch() {}
 
-  sref<BasicHistory> initializeHistory() override {
-    sref<int> iter = new int;
+  uptr<BasicHistory> initializeHistory() override {
+    uptr<int> iter(new int{});
     iter = 0;
 
     return iter;
@@ -52,7 +52,7 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
   }
 
   void perturbation(XES& se, const StopCriteria<XEv>& sosc,
-                    sref<BasicHistory> history) override {
+                    BasicHistory& history) override {
     int iter = history;
 
     p->perturb(se, sosc);
@@ -61,11 +61,11 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
     iter++;
 
     // Atualiza o historico
-    history = nnptr::copy(iter);
+    history = iter;
   }
 
   bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2,
-                           sref<BasicHistory> history) override {
+                           BasicHistory& history) override {
     if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator->betterStrict(
             e1, e2)) {
       // =======================
@@ -89,7 +89,7 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
     }
   }
 
-  bool terminationCondition(sref<BasicHistory> history) override {
+  bool terminationCondition(const BasicHistory& history) override {
     int iter = history;
 
     return (iter >= iterMax);

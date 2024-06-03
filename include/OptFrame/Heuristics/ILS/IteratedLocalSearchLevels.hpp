@@ -41,14 +41,14 @@ class IteratedLocalSearchLevels
 
   virtual ~IteratedLocalSearchLevels() {}
 
-  sref<levelHistory> initializeHistory() override {
+  uptr<levelHistory> initializeHistory() override {
     // cout << "initializeHistory()" << endl;
     pair<int, int> vars(0, 0);
 
     // IterMax e LevelMax
     pair<int, int> maxs(iterMax, levelMax);
 
-    return sref<levelHistory>(new levelHistory(vars, maxs));
+    return uptr<levelHistory>(new levelHistory(vars, maxs));
   }
 
   void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) override {
@@ -57,12 +57,12 @@ class IteratedLocalSearchLevels
   }
 
   void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria,
-                    sref<levelHistory> history) override {
+                    levelHistory& history) override {
     // cout << "perturbation(.)" << endl;
 
-    int iter = history->first.first;
-    int level = history->first.second;
-    int iterMax = history->second.first;
+    int iter = history.first.first;
+    int level = history.first.second;
+    int iterMax = history.second.first;
     // int levelMax = history.second.second;
 
     if (Component::debug)
@@ -87,14 +87,14 @@ class IteratedLocalSearchLevels
     }
 
     // Atualiza o historico
-    history->first.first = iter;
-    history->first.second = level;
+    history.first.first = iter;
+    history.first.second = level;
     if (Component::debug)
       cout << "ILSL::new history iter " << iter << " level " << level << endl;
   }
 
   bool acceptanceCriterion(const XEv& e1, const XEv& e2,
-                           sref<levelHistory> history) override {
+                           levelHistory& history) override {
     // cout << "acceptanceCriterion(.)" << endl;
 
     // if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1,
@@ -109,7 +109,7 @@ class IteratedLocalSearchLevels
             e1, e2)) {
       if (Component::information) {
         cout << "ILSL::acceptanceCriterion() Best fo: on [iter "
-             << history->first.first << " of level " << history->first.second
+             << history.first.first << " of level " << history.first.second
              << "] => ";
         e1.print();
       }
@@ -118,9 +118,9 @@ class IteratedLocalSearchLevels
       //  Atualiza o historico
       // =======================
       // iter = 0
-      history->first.first = 0;
+      history.first.first = 0;
       // level = 0
-      history->first.second = 0;
+      history.first.second = 0;
 
       // =======================
       //    Retorna s2
@@ -131,10 +131,10 @@ class IteratedLocalSearchLevels
     }
   }
 
-  bool terminationCondition(sref<levelHistory> history) override {
+  bool terminationCondition(const levelHistory& history) override {
     // cout << "terminationCondition(.)" << endl;
-    int level = history->first.second;
-    int levelMax = history->second.second;
+    int level = history.first.second;
+    int levelMax = history.second.second;
 
     return (level >= levelMax);
   }
