@@ -1,245 +1,230 @@
 #ifndef SVRPDSP_CONSTRUCTIVE_GRandTSPOptimalGLO_HPP_
 #define SVRPDSP_CONSTRUCTIVE_GRandTSPOptimalGLO_HPP_
 
-#include <OptFrame/Constructive.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.hpp"
-
-#include "Representation.h"
-#include "ADS.h"
-#include "MySolution.hpp"
-
-#include "Evaluator.hpp"
-
-#include <list>
+#include <stdlib.h>
 
 #include <algorithm>
-#include <stdlib.h>
+#include <list>
+
+#include "ADS.h"
+#include "Evaluator.hpp"
+#include "MySolution.hpp"
+#include "ProblemInstance.hpp"
+#include "Representation.h"
 
 using namespace std;
 
-namespace SVRPDSP
-{
+namespace SVRPDSP {
 
-class ConstructiveGRandTSPOptimalGLO: public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution>
-{
-private:
-	ProblemInstance& pSVRPDSP;
+class ConstructiveGRandTSPOptimalGLO
+    : public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution> {
+ private:
+  ProblemInstance& pSVRPDSP;
 
-	string str_tsp;
-	string str_knapsack;
-	double alpha;
-	int option;
+  string str_tsp;
+  string str_knapsack;
+  double alpha;
+  int option;
 
-public:
+ public:
+  static bool my_sort(pair<pair<int, int>, double> p1,
+                      pair<pair<int, int>, double> p2) {
+    return p1.second < p2.second;
+  }
 
-	static bool my_sort(pair<pair<int, int> , double> p1, pair<pair<int, int> , double> p2)
-	{
-		return p1.second < p2.second;
-	}
+  ConstructiveGRandTSPOptimalGLO(ProblemInstance& _pSVRPDSP, Scanner& _tsp,
+                                 Scanner& _knapsack, int _option = 0,
+                                 double _alpha = 1)
+      : pSVRPDSP(_pSVRPDSP),
+        str_tsp(_tsp.rest()),
+        str_knapsack(_knapsack.rest()),
+        option(_option) {
+    alpha = _alpha;
 
+    if (alpha < 0.0001) alpha = 0.0001;
+    if (alpha > 1) alpha = 1;
+  }
 
-	ConstructiveGRandTSPOptimalGLO(ProblemInstance& _pSVRPDSP, Scanner& _tsp, Scanner& _knapsack, int _option = 0, double _alpha = 1) :
-		pSVRPDSP(_pSVRPDSP), str_tsp(_tsp.rest()), str_knapsack(_knapsack.rest()), option(_option)
-	{
-		alpha = _alpha;
+  virtual ~ConstructiveGRandTSPOptimalGLO() {}
 
-		if (alpha < 0.0001)
-			alpha = 0.0001;
-		if (alpha > 1)
-			alpha = 1;
-	}
+  MySolution* generateSolution(double timelimit) override {
+    Scanner tsp(str_tsp);
+    Scanner knapsack(str_knapsack);
 
-	virtual ~ConstructiveGRandTSPOptimalGLO()
-	{
-	}
+    RepSVRPDSP rep;
 
-	MySolution* generateSolution(double timelimit) override
-	{
-		Scanner tsp(str_tsp);
-		Scanner knapsack(str_knapsack);
+    rep.push_back(0);  // depot
 
-		RepSVRPDSP rep;
+    // Read TSP
 
-		rep.push_back(0); // depot
+    int n_d = tsp.nextInt() - 1;
+    tsp.nextInt();  // drop depot
 
-		// Read TSP
+    vector<bool> missing(pSVRPDSP.n * 2 + 1, true);
 
-		int n_d = tsp.nextInt() - 1;
-		tsp.nextInt(); // drop depot
+    for (int i = 0; i < n_d; i++) {
+      int d = tsp.nextInt();
 
-		vector<bool> missing(pSVRPDSP.n * 2 + 1, true);
+      rep.push_back(d);
+      missing[d] = false;
+    }
 
-		for (int i = 0; i < n_d; i++)
-		{
-			int d = tsp.nextInt();
+    rep.push_back(0);  // depot
+    missing[0] = false;
 
-			rep.push_back(d);
-			missing[d] = false;
-		}
+    // Read Knapsack
 
-		rep.push_back(0); // depot
-		missing[0] = false;
+    int n_k = knapsack.nextInt();
+    vector<bool> knp(n_k, false);
 
-		// Read Knapsack
+    for (int i = 0; i < n_k; i++)
+      if (knapsack.nextInt()) knp[i] = true;
 
-		int n_k = knapsack.nextInt();
-		vector<bool> knp(n_k, false);
+    // greedy randomized step
 
-		for (int i = 0; i < n_k; i++)
-			if (knapsack.nextInt())
-				knp[i] = true;
+    vector<pair<pair<int, int>, double> > cList;
 
-		// greedy randomized step
+    do {
+      cList.clear();
 
-		vector<pair<pair<int, int> , double> > cList;
+      for (int c = 1; c < knp.size(); c++)
+        if (knp[c])  // available candidate
+        {
+          double q = pSVRPDSP.Q;
 
-		do
-		{
-			cList.clear();
+          for (int i = 0; i < rep.size() - 1; i++) {
+            int rep_i = rep[i];
+            if (rep_i > pSVRPDSP.n) rep_i -= pSVRPDSP.n;
 
-			for (int c = 1; c < knp.size(); c++)
-				if (knp[c]) // available candidate
-				{
-					double q = pSVRPDSP.Q;
+            int rep_ii = rep[i + 1];
+            if (rep_ii > pSVRPDSP.n) rep_ii -= pSVRPDSP.n;
 
-					for (int i = 0; i < rep.size() - 1; i++)
-					{
-						int rep_i = rep[i];
-						if (rep_i > pSVRPDSP.n)
-							rep_i -= pSVRPDSP.n;
+            // check 'q'
 
-						int rep_ii = rep[i + 1];
-						if (rep_ii > pSVRPDSP.n)
-							rep_ii -= pSVRPDSP.n;
+            bool q_ok = true;
 
-						// check 'q'
+            for (int j = 0; j <= i; j++)
+              if (rep[j] > pSVRPDSP.n)  // pickup
+                q += pSVRPDSP.p[rep[j] - pSVRPDSP.n];
+              else
+                q -= pSVRPDSP.d[rep[j]];
 
-						bool q_ok = true;
+            q += pSVRPDSP.p[c];
 
-						for (int j = 0; j <= i; j++)
-							if (rep[j] > pSVRPDSP.n) // pickup
-								q += pSVRPDSP.p[rep[j] - pSVRPDSP.n];
-							else
-								q -= pSVRPDSP.d[rep[j]];
+            if (q <= pSVRPDSP.Q)
+              for (int j = i + 1; j < rep.size() - 1; j++)
+                if (rep[j] > pSVRPDSP.n)  // pickup
+                {
+                  q += pSVRPDSP.p[rep[j] - pSVRPDSP.n];
+                  if (q > pSVRPDSP.Q) {
+                    q_ok = false;
+                    break;
+                  }
+                } else
+                  q -= pSVRPDSP.d[rep[j]];
+            else
+              q_ok = false;
 
-						q += pSVRPDSP.p[c];
+            if (q_ok)  // pickup ok
+              switch (option) {
+                case 0:  // distance
+                {
+                  double d1 = pSVRPDSP.c(rep_i, c);
+                  double d2 = pSVRPDSP.c(c, rep_ii);
+                  cList.push_back(make_pair(make_pair(c, i), d1 + d2));
+                  break;
+                }
+                case 1:  // -revenue
+                {
+                  double r = pSVRPDSP.r[c];
+                  cList.push_back(make_pair(make_pair(c, i), -r));
+                  break;
+                }
+                case 2:  // distance - revenue
+                {
+                  double d1 = pSVRPDSP.c(rep_i, c);
+                  double d2 = pSVRPDSP.c(c, rep_ii);
+                  double r = pSVRPDSP.r[c];
+                  cList.push_back(make_pair(make_pair(c, i), d1 + d2 - r));
+                  break;
+                }
+                case 3:  // pickup (best are smaller)
+                {
+                  double p = pSVRPDSP.p[c];
+                  cList.push_back(make_pair(make_pair(c, i), p));
+                  break;
+                }
+                case 4:  // -pickup (best are bigger)
+                {
+                  double p = pSVRPDSP.p[c];
+                  cList.push_back(make_pair(make_pair(c, i), -p));
+                  break;
+                }
+                case 5:  // balance dist and pickup | (DIST - REV) / ( (cap - A)
+                         // - PICKUP) | best are smaller pickups
+                {
+                  double d1 = pSVRPDSP.c(rep_i, c);
+                  double d2 = pSVRPDSP.c(c, rep_ii);
+                  double r = pSVRPDSP.r[c];
+                  double p = pSVRPDSP.p[c];
 
-						if (q <= pSVRPDSP.Q)
-							for (int j = i + 1; j < rep.size() - 1; j++)
-								if (rep[j] > pSVRPDSP.n) // pickup
-								{
-									q += pSVRPDSP.p[rep[j] - pSVRPDSP.n];
-									if (q > pSVRPDSP.Q)
-									{
-										q_ok = false;
-										break;
-									}
-								}
-								else
-									q -= pSVRPDSP.d[rep[j]];
-						else
-							q_ok = false;
+                  cList.push_back(make_pair(
+                      make_pair(c, i), (d1 + d2 - r) / ((pSVRPDSP.Q - q) - p)));
+                  break;
+                }
+                case 6:  // balance dist and pickup | (DIST - REV) / (PICKUP) |
+                         // best are bigger pickups
+                {
+                  double d1 = pSVRPDSP.c(rep_i, c);
+                  double d2 = pSVRPDSP.c(c, rep_ii);
+                  double r = pSVRPDSP.r[c];
+                  double p = pSVRPDSP.p[c];
 
-						if (q_ok) // pickup ok
-							switch (option)
-							{
-							case 0: // distance
-							{
-								double d1 = pSVRPDSP.c(rep_i, c);
-								double d2 = pSVRPDSP.c(c, rep_ii);
-								cList.push_back(make_pair(make_pair(c, i), d1 + d2));
-								break;
-							}
-							case 1: // -revenue
-							{
-								double r = pSVRPDSP.r[c];
-								cList.push_back(make_pair(make_pair(c, i), -r));
-								break;
-							}
-							case 2: // distance - revenue
-							{
-								double d1 = pSVRPDSP.c(rep_i, c);
-								double d2 = pSVRPDSP.c(c, rep_ii);
-								double r = pSVRPDSP.r[c];
-								cList.push_back(make_pair(make_pair(c, i), d1 + d2 - r));
-								break;
-							}
-							case 3: // pickup (best are smaller)
-							{
-								double p = pSVRPDSP.p[c];
-								cList.push_back(make_pair(make_pair(c, i), p));
-								break;
-							}
-							case 4: // -pickup (best are bigger)
-							{
-								double p = pSVRPDSP.p[c];
-								cList.push_back(make_pair(make_pair(c, i), -p));
-								break;
-							}
-							case 5: // balance dist and pickup | (DIST - REV) / ( (cap - A) - PICKUP) | best are smaller pickups
-							{
-								double d1 = pSVRPDSP.c(rep_i, c);
-								double d2 = pSVRPDSP.c(c, rep_ii);
-								double r = pSVRPDSP.r[c];
-								double p = pSVRPDSP.p[c];
+                  cList.push_back(
+                      make_pair(make_pair(c, i), (d1 + d2 - r) / p));
+                  break;
+                }
+                default:
+                  cout << "no option " << option << "!" << endl;
+                  exit(1);
+              }
+          }
+        }
 
-								cList.push_back(make_pair(make_pair(c, i), (d1 + d2 - r) / ((pSVRPDSP.Q - q) - p)));
-								break;
-							}
-							case 6: // balance dist and pickup | (DIST - REV) / (PICKUP) | best are bigger pickups
-							{
-								double d1 = pSVRPDSP.c(rep_i, c);
-								double d2 = pSVRPDSP.c(c, rep_ii);
-								double r = pSVRPDSP.r[c];
-								double p = pSVRPDSP.p[c];
+      sort(cList.begin(), cList.end(), my_sort);
 
-								cList.push_back(make_pair(make_pair(c, i), (d1 + d2 - r) / p));
-								break;
-							}
-							default:
-								cout << "no option " << option << "!" << endl;
-								exit(1);
-							}
-					}
-				}
+      if (cList.size() > 0) {
+        int rcl = (int)ceil(cList.size() * alpha);
+        int x = rand() % rcl;
 
-			sort(cList.begin(), cList.end(), my_sort);
+        int c = cList[x].first.first + pSVRPDSP.n;
+        int i = cList[x].first.second;
 
-			if (cList.size() > 0)
-			{
-				int rcl = (int) ceil(cList.size() * alpha);
-				int x = rand() % rcl;
-
-				int c = cList[x].first.first + pSVRPDSP.n;
-				int i = cList[x].first.second;
-
-				rep.insert(rep.begin() + i + 1, c);
-				missing[c] = false;
-				knp[c - pSVRPDSP.n] = false;
-			}
-
-		} while (cList.size() > 0);
-
-		for (int i = 0; i < missing.size(); i++)
-			if (missing[i])
-				rep.push_back(i);
-
-      MySolution* s = new MySolution(rep);
-
-      if(!s->syncADS(pSVRPDSP))
-      {
-         cout << "error syncronizing ADS (Const. GLO)" << endl;
-         cout << "rep: " << rep << endl;
-         exit(1);
+        rep.insert(rep.begin() + i + 1, c);
+        missing[c] = false;
+        knp[c - pSVRPDSP.n] = false;
       }
 
-      return s;
-	}
+    } while (cList.size() > 0);
 
+    for (int i = 0; i < missing.size(); i++)
+      if (missing[i]) rep.push_back(i);
+
+    MySolution* s = new MySolution(rep);
+
+    if (!s->syncADS(pSVRPDSP)) {
+      cout << "error syncronizing ADS (Const. GLO)" << endl;
+      cout << "rep: " << rep << endl;
+      exit(1);
+    }
+
+    return s;
+  }
 };
 
-}
+}  // namespace SVRPDSP
 
 #endif /*SVRPDSP_CONTRUCTIVE_GRandTSPOptimalGLO_HPP_*/

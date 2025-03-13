@@ -9,7 +9,7 @@
 #include <iostream>
 //
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>

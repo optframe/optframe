@@ -23,10 +23,10 @@
 #ifndef PCAP_EVALUATION_H_
 #define PCAP_EVALUATION_H_
 
-#include <OptFrame/Evaluation.hpp>
-//#include "../../OptFrame/Util/TestEvaluation.hpp"
+#include <OptFrame/Core/Evaluation.hpp>
+// #include "../../OptFrame/Util/TestEvaluation.hpp"
 
-using namespace optframe; // TODO: remove? or keep?
+using namespace optframe;  // TODO: remove? or keep?
 
 typedef Evaluation<> EvaluationPCAP;
 

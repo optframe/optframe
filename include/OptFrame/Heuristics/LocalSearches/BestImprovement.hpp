@@ -4,10 +4,10 @@
 #ifndef OPTFRAME_BI_HPP_
 #define OPTFRAME_BI_HPP_
 
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NSSeq.hpp"
-#include "../../Timer.hpp"
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Timer.hpp>
 
 namespace optframe {
 

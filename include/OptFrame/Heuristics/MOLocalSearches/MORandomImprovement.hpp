@@ -23,11 +23,12 @@
 #ifndef OPTFRAME_MORI_HPP_
 #define OPTFRAME_MORI_HPP_
 
-#include "../../Evaluator.hpp"
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Timer.hpp>
+
 #include "../../MOLocalSearch.hpp"
 #include "../../MultiObjSearch.hpp"
-#include "../../NSSeq.hpp"
-#include "../../Timer.hpp"
 
 namespace optframe {
 

@@ -7,10 +7,10 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NS.hpp"
+//
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
 
 #define BRAND_NEW
 

@@ -10,14 +10,14 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 #include <OptFrame/Hyper/ComponentHelper.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 
-//#include "Command.hpp"
+// #include "Command.hpp"
 
 // using namespace std;
 // using namespace scannerpp;

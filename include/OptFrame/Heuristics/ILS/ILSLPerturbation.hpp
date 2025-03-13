@@ -9,11 +9,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+//
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/StopCriteria.hpp>
 
-#include "../../Evaluator.hpp"
-#include "../../NS.hpp"
-#include "../../RandGen.hpp"
-#include "../../StopCriteria.hpp"
 #include "ILS.h"
 
 namespace optframe {

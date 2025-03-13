@@ -6,8 +6,8 @@
 
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
-#include <OptFrame/Move.hpp>
-#include <OptFrame/NSIterator.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSIterator.hpp>
 #define MOD_EXPORT
 #else
 

@@ -5,8 +5,8 @@
 #define PN_NSSEQSwap_H_
 
 // Framework includes
-#include <OptFrame/NSSeq.hpp>
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 
 // Own includes
 #include "DeltaStructure.h"

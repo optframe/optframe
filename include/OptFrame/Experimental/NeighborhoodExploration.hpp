@@ -30,7 +30,7 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/LocalSearch.hpp>

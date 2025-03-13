@@ -8,11 +8,11 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "../Evaluation.hpp"
-#include "../Evaluator.hpp"
-#include "../LocalSearch.hpp"
-#include "../NSSeq.hpp"
+//
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
 
 namespace optframe {
 

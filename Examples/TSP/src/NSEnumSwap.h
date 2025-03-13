@@ -26,16 +26,16 @@
 // C++
 #include <string>
 // Framework includes
-#include <OptFrame/Move.hpp>
-#include <OptFrame/NSEnum.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
 
 // Own includes
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 
 #include "ProblemInstance.h"
 #include "Solution.h"
 
-//#define MOV_Swap_DEBUG
+// #define MOV_Swap_DEBUG
 
 using namespace std;
 
@@ -333,7 +333,7 @@ class NSEnumSwap : public NSEnum<ESolutionTSP, ESolutionTSP> {
 
       return ant;
     } else {
-      return 2 * (comeca(n)) - comeca(corresp(d) + 1) + numElem(n);
+      return 2 * (comeca(n))-comeca(corresp(d) + 1) + numElem(n);
     }
   }
 

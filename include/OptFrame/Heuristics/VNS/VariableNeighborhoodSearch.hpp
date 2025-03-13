@@ -11,13 +11,14 @@
 #include <vector>
 //
 
-#include "../../Constructive.hpp"
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NS.hpp"
-#include "../../NSSeq.hpp"
-#include "../../SingleObjSearch.hpp"
-#include "../../Timer.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Timer.hpp>
+
 #include "VNS.h"
 
 namespace optframe {

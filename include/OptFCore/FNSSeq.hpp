@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 //
-#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 namespace optframe {
 

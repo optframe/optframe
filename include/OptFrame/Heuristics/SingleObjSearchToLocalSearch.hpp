@@ -9,12 +9,12 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "../Constructive.hpp"
-#include "../Evaluation.hpp"
-#include "../Evaluator.hpp"
-#include "../LocalSearch.hpp"
-#include "../SingleObjSearch.hpp"
+//
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
 
 namespace optframe {
 

@@ -10,9 +10,9 @@
 #include <utility>
 #include <vector>
 //
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
-#include <OptFrame/NS.hpp>
-#include <OptFrame/RandGen.hpp>
 
 #include "ILS.h"
 

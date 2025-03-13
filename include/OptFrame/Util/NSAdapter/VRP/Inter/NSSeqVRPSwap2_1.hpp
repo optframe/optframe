@@ -5,8 +5,8 @@
 #define OPTFRAME_UTIL_NEIGHBORHOODSTRUCTURES_VRP_INTER_NSSEQVRPSWAP2_1_HPP_
 
 // Framework includes
-#include "../../../../Move.hpp"
-#include "../../../../NSSeq.hpp"
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 namespace optframe {
 

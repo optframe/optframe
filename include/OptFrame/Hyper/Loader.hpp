@@ -20,14 +20,14 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/InitialPopulation.hpp>
-#include <OptFrame/Move.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Timer.hpp>
 #include <OptFrame/Util/Matrix.hpp>
@@ -37,9 +37,9 @@
 //       Neighborhood Structure
 // ==================================
 
-#include <OptFrame/NS.hpp>
-#include <OptFrame/NSEnum.hpp>
-#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 // ==================================
 //        Parallel Support
@@ -58,7 +58,7 @@
 #include <OptFrame/SingleObjSearch.hpp>
 
 // base components
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Helper/CloneConstructive.hpp>
 
 // local search
@@ -100,8 +100,8 @@
 
 // test local searches
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Heuristics/CompareLocalSearch.hpp>
-#include <OptFrame/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 // using namespace std;

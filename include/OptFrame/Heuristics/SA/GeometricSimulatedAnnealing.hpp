@@ -19,11 +19,12 @@
 #include <vector>
 //
 
-#include "../../Constructive.hpp"
-#include "../../Evaluator.hpp"
-#include "../../NS.hpp"
-#include "../../RandGen.hpp"
-#include "../../SingleObjSearch.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+
 #include "./HelperSA.hpp"
 #include "./SA.hpp"
 

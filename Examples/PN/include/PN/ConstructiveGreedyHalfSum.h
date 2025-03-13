@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <list>
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 // #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "Evaluator.h"

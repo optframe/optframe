@@ -8,7 +8,7 @@
 
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Move.hpp>
+#include <OptFrame/Core/Move.hpp>
 #define MOD_EXPORT
 #else
 

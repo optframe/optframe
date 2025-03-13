@@ -24,47 +24,40 @@
 #define OPTFRAME_NSSEQ_PAIRFIRST_ADAPTER_HPP_
 
 // Framework includes
+#include <OptFrame/Core/NSSeq.hpp>
+
 #include "../Move.hpp"
 #include "../NSIterator.hpp"
-#include "../NSSeq.hpp"
-
 #include "Moves/MovePairFirst.hpp"
 #include "NSIterators/IteratorNSSeqPairFirst.hpp"
 
 using namespace std;
 
-template<class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairFirst<T1, T2, DS>>
-class NSSeqPairFirstAdapter : public NSSeq<pair<T1, T2>, DS>
-{
-protected:
-   NSSeq<T1, DS>& ns;
+template <class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY,
+          class MOVE = MovePairFirst<T1, T2, DS>>
+class NSSeqPairFirstAdapter : public NSSeq<pair<T1, T2>, DS> {
+ protected:
+  NSSeq<T1, DS>& ns;
 
-public:
-   NSSeqPairFirstAdapter(NSSeq<T1, DS>& _ns)
-     : ns(_ns)
-   {
-   }
+ public:
+  NSSeqPairFirstAdapter(NSSeq<T1, DS>& _ns) : ns(_ns) {}
 
-   virtual ~NSSeqPairFirstAdapter()
-   {
-   }
+  virtual ~NSSeqPairFirstAdapter() {}
 
-   Move<pair<T1, T2>, DS>& move(const pair<T1, T2>& r)
-   {
-      return *new MOVE(ns.move(r.first));
-   }
+  Move<pair<T1, T2>, DS>& move(const pair<T1, T2>& r) {
+    return *new MOVE(ns.move(r.first));
+  }
 
-   virtual NSIterator<pair<T1, T2>, DS>& getIterator(const pair<T1, T2>& r)
-   {
-      return *new IteratorNSSeqPairFirst<T1, T2, DS, MOVE>(ns.getIterator(r.first));
-   }
+  virtual NSIterator<pair<T1, T2>, DS>& getIterator(const pair<T1, T2>& r) {
+    return *new IteratorNSSeqPairFirst<T1, T2, DS, MOVE>(
+        ns.getIterator(r.first));
+  }
 
-   virtual void print()
-   {
-      cout << "NSSeqPairFirstAdapter {" << endl;
-      ns.print();
-      cout << "}" << endl;
-   }
+  virtual void print() {
+    cout << "NSSeqPairFirstAdapter {" << endl;
+    ns.print();
+    cout << "}" << endl;
+  }
 };
 
 #endif /*OPTFRAME_NSSEQ_PAIRFIRST_ADAPTER_HPP_*/

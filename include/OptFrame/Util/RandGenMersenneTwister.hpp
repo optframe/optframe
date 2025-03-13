@@ -26,8 +26,8 @@
 #define OPTFRAME_UTIL_RANDGENMERSENNETWISTER_HPP_  // NOLINT
 
 #include <limits.h>
-
-#include "../RandGen.hpp"
+//
+#include <OptFrame/Core/RandGen.hpp>
 
 namespace optframe {
 

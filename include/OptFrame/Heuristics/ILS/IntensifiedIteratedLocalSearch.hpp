@@ -25,10 +25,9 @@
 
 #include <math.h>
 
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
 #include <vector>
-
-#include "../../Evaluator.hpp"
-#include "../../SingleObjSearch.hpp"
 
 namespace optframe {
 
@@ -39,30 +38,35 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
   InitialSearch<XES>& constructive;
 
  public:
-  IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, InitialSearch<XES>& _constructive)
-      : evaluator(_evaluator), constructive(_constructive) {
-  }
+  IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator,
+                                 InitialSearch<XES>& _constructive)
+      : evaluator(_evaluator), constructive(_constructive) {}
 
-  virtual ~IntensifiedIteratedLocalSearch() {
-  }
+  virtual ~IntensifiedIteratedLocalSearch() {}
 
-  Evaluator<S>& getEvaluator() {
-    return evaluator;
-  }
+  Evaluator<S>& getEvaluator() { return evaluator; }
 
   virtual H& initializeHistory() = 0;
 
-  virtual void localSearch(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f) = 0;
+  virtual void localSearch(Solution<R, ADS>& s, Evaluation<>& e,
+                           double timelimit, double target_f) = 0;
 
-  virtual void intensification(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f, H& history) = 0;
+  virtual void intensification(Solution<R, ADS>& s, Evaluation<>& e,
+                               double timelimit, double target_f,
+                               H& history) = 0;
 
-  virtual void perturbation(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f, H& history) = 0;
+  virtual void perturbation(Solution<R, ADS>& s, Evaluation<>& e,
+                            double timelimit, double target_f, H& history) = 0;
 
-  virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, H& history) = 0;
+  virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1,
+                                                const Solution<R, ADS>& s2,
+                                                H& history) = 0;
 
   virtual bool terminationCondition(H& history) = 0;
 
-  pair<Solution<R, ADS>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr) {
+  pair<Solution<R, ADS>&, Evaluation<>&>* search(
+      double timelimit = 100000000, double target_f = 0,
+      const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr) {
     cout << "IILS search(" << target_f << "," << timelimit << ")" << endl;
 
     Timer tnow;
@@ -106,7 +110,8 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
       sStar = sStar1;
       eStar = &evaluator.evaluate(*sStar);
 
-    } while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
+    } while (evaluator.betterThan(target_f, eStar->evaluation()) &&
+             !terminationCondition(*history) && ((tnow.now()) < timelimit));
 
     e = *eStar;
     s = *sStar;
@@ -119,9 +124,7 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
     return new pair<Solution<R, ADS>&, Evaluation<>&>(s, e);
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;

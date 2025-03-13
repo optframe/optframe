@@ -29,7 +29,7 @@
 #include "./NSIterators/IteratorNSSeqTSPOr1Opt.hpp"
 
 // Framework includes
-#include "../NSSeq.hpp"
+#include <OptFrame/Core/NSSeq.hpp>
 
 using namespace std;
 
@@ -38,7 +38,8 @@ using namespace std;
 
  The Neighborhood Structure Or-Opt has proposed by ??
 
- Or-Opt is aplied for any problem that representation is like a vector<T>, where T is the type of the vector.
+ Or-Opt is aplied for any problem that representation is like a vector<T>, where
+ T is the type of the vector.
 
  e.g: vector<T> where type of T is int
  s means Solution
@@ -55,45 +56,34 @@ using namespace std;
 
  */
 
-template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeqTSPOr1Opt : public NSSeq<vector<T>, DS>
-{
-private:
-   typedef vector<T> Route;
+template <class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class NSSeqTSPOr1Opt : public NSSeq<vector<T>, DS> {
+ private:
+  typedef vector<T> Route;
 
-public:
-   NSSeqTSPOr1Opt()
-   {
-   }
+ public:
+  NSSeqTSPOr1Opt() {}
 
-   virtual ~NSSeqTSPOr1Opt()
-   {
-   }
+  virtual ~NSSeqTSPOr1Opt() {}
 
-   using NSSeq<Route, DS>::move;
-   using NSSeq<Route, DS>::getIterator;
+  using NSSeq<Route, DS>::move;
+  using NSSeq<Route, DS>::getIterator;
 
-   Move<Route, DS>& move(const Route& rep)
-   {
-      if (rep.size() < 2)
-         return *new MoveTSPOr1Opt<T, DS>(-1, -1);
+  Move<Route, DS>& move(const Route& rep) {
+    if (rep.size() < 2) return *new MoveTSPOr1Opt<T, DS>(-1, -1);
 
-      int c = rand() % rep.size();
+    int c = rand() % rep.size();
 
-      int pos = rand() % (rep.size() + 1);
+    int pos = rand() % (rep.size() + 1);
 
-      return *new MoveTSPOr1Opt<T, DS>(c, pos);
-   }
+    return *new MoveTSPOr1Opt<T, DS>(c, pos);
+  }
 
-   virtual NSIterator<Route, DS>& getIterator(const Route& r)
-   {
-      return *new IteratorNSSeqTSPOr1Opt<T, DS>(r);
-   }
+  virtual NSIterator<Route, DS>& getIterator(const Route& r) {
+    return *new IteratorNSSeqTSPOr1Opt<T, DS>(r);
+  }
 
-   virtual void print()
-   {
-      cout << "NSSeqTSPOr1Opt" << endl;
-   }
+  virtual void print() { cout << "NSSeqTSPOr1Opt" << endl; }
 };
 
 #endif /*OPTFRAME_NSSEQTSP0R1OPT_HPP_*/

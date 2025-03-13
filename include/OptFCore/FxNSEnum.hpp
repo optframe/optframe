@@ -7,7 +7,7 @@
 #include <functional>
 #include <string>
 //
-#include <OptFrame/NSEnum.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
 
 // no need for coroutines
 

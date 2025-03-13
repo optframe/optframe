@@ -26,7 +26,7 @@
 #include <OptFrame/Helper/Solutions/ESolution.hpp>
 
 // #include <OptFrame/Concepts/BaseConcepts.ctest.hpp> // tsting concepts
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/printable/printable.hpp>
 // #include "../OptFrame/Util/TestSolution.hpp"
@@ -50,7 +50,7 @@ using namespace std;
 using namespace TSP;
 using namespace scannerpp;
 
-//#include "../OptFrame/Util/PackTypes.hpp" // deprecated!!
+// #include "../OptFrame/Util/PackTypes.hpp" // deprecated!!
 
 // gets real file path, if file exists, or empty string, if not
 std::string resolvePath(std::string sinstance, std::string appPath,

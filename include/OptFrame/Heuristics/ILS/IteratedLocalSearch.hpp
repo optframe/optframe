@@ -11,11 +11,12 @@
 #include <vector>
 //
 
-#include "../../Constructive.hpp"
-#include "../../Evaluator.hpp"
-#include "../../ITrajectory.hpp"
-#include "../../SingleObjSearch.hpp"
-#include "../../Timer.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/ITrajectory.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Timer.hpp>
+
 #include "./ILS.h"
 
 namespace optframe {

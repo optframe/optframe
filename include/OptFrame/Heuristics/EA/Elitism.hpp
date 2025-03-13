@@ -21,21 +21,24 @@
 #ifndef OPTFRAME_ELITISM_HPP_
 #define OPTFRAME_ELITISM_HPP_
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class Elitism {
  protected:
   typedef S chromossome;
-  //typedef vector<chromossome*> Population;
+  // typedef vector<chromossome*> Population;
   typedef vector<Evaluation<>*> FitnessValues;
 
  public:
-  virtual Population<XES>& doElitism(const Population<XES>& p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
+  virtual Population<XES>& doElitism(const Population<XES>& p,
+                                     const FitnessValues& fv_p,
+                                     unsigned popElitistSize) const = 0;
 };
 
 }  // namespace optframe

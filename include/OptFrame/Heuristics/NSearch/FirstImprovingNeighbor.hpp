@@ -9,9 +9,10 @@
 #include <utility>
 #include <vector>
 //
-#include "../../Evaluator.hpp"
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+
 #include "../../Experimental/NeighborhoodExploration.hpp"
-#include "../../NSSeq.hpp"
 
 namespace optframe {
 

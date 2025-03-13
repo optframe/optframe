@@ -9,13 +9,13 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
-#include <OptFrame/NSSeq.hpp>
 #include <OptFrame/ParetoDominance.hpp>
 
 namespace optframe {

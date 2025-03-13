@@ -1,117 +1,101 @@
 #ifndef SVRPDSP_CONSTRUCTIVE_TSPOptimal_HPP_
 #define SVRPDSP_CONSTRUCTIVE_TSPOptimal_HPP_
 
-#include <OptFrame/Constructive.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.hpp"
-
-#include "Representation.h"
-#include "ADS.h"
-#include "MySolution.hpp"
-
-#include "Evaluator.hpp"
-
-#include <list>
+#include <stdlib.h>
 
 #include <algorithm>
-#include <stdlib.h>
+#include <list>
+
+#include "ADS.h"
+#include "Evaluator.hpp"
+#include "MySolution.hpp"
+#include "ProblemInstance.hpp"
+#include "Representation.h"
 
 using namespace std;
 
-namespace SVRPDSP
-{
+namespace SVRPDSP {
 
-class ConstructiveTSPOptimal: public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution>
-{
-private:
-	ProblemInstance& pSVRPDSP;
-	Scanner& tsp;
-	Scanner& knapsack;
+class ConstructiveTSPOptimal
+    : public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution> {
+ private:
+  ProblemInstance& pSVRPDSP;
+  Scanner& tsp;
+  Scanner& knapsack;
 
-public:
+ public:
+  ConstructiveTSPOptimal(ProblemInstance& _pSVRPDSP, Scanner& _tsp,
+                         Scanner& _knapsack)
+      : pSVRPDSP(_pSVRPDSP), tsp(_tsp), knapsack(_knapsack) {}
 
+  virtual ~ConstructiveTSPOptimal() {}
 
-	ConstructiveTSPOptimal(ProblemInstance& _pSVRPDSP, Scanner& _tsp, Scanner& _knapsack) :
-		pSVRPDSP(_pSVRPDSP), tsp(_tsp), knapsack(_knapsack)
-	{
-	}
+  MySolution* generateSolution(double timelimit) override {
+    RepSVRPDSP rep;
 
-	virtual ~ConstructiveTSPOptimal()
-	{
-	}
+    rep.push_back(0);  // depot
 
-	MySolution* generateSolution(double timelimit) override
-	{
-		RepSVRPDSP rep;
+    int n_k = knapsack.nextInt();
+    vector<bool> knp(n_k, false);
 
-		rep.push_back(0); // depot
+    for (int i = 0; i < n_k; i++)
+      if (knapsack.nextInt()) knp[i] = true;
 
-		int n_k = knapsack.nextInt();
-		vector<bool> knp(n_k, false);
+    int n_d = tsp.nextInt() - 1;
+    int dep = tsp.nextInt();  // drop depot
 
-		for (int i = 0; i < n_k; i++)
-			if (knapsack.nextInt())
-				knp[i] = true;
+    if (dep != 0) {
+      cout << "ConstructiveTSPOptimal: NOT A DEPOT!!!" << endl;
+      exit(1);
+    }
 
-		int n_d = tsp.nextInt() - 1;
-		int dep = tsp.nextInt(); // drop depot
+    int count = 0;  // count deliveries to check if correct!
 
-		if(dep != 0)
-		{
-			cout << "ConstructiveTSPOptimal: NOT A DEPOT!!!" << endl;
-			exit(1);
-		}
+    for (int i = 0; i < n_d; i++) {
+      int d = tsp.nextInt();
+      count++;
 
-		int count = 0; // count deliveries to check if correct!
+      rep.push_back(d);
 
-		for (int i = 0; i < n_d; i++)
-		{
-			int d = tsp.nextInt();
-			count++;
+      if (knp[d]) rep.push_back(d + pSVRPDSP.n);
+    }
 
-			rep.push_back(d);
+    rep.push_back(0);  // depot
 
-			if (knp[d])
-				rep.push_back(d + pSVRPDSP.n);
-		}
+    for (int i = 1; i < knp.size(); i++)
+      if (!knp[i]) rep.push_back(i + pSVRPDSP.n);
 
-		rep.push_back(0); // depot
+    /*
+    cout << "ANALYSIS:" << endl;
+    cout << "NUM_TSP: " << n_d << endl;
+    cout << "NUM_KNP: " << (n_k-1) << endl;
+    cout << "SIZE: " << rep.size() << endl;
 
-		for (int i = 1; i < knp.size(); i++)
-			if (!knp[i])
-				rep.push_back(i + pSVRPDSP.n);
+    vector<bool> d(n_d, false);
+    for(unsigned i=0; i<rep.size(); i++)
+            if(rep[i]>0 && rep[i]<=pSVRPDSP.n)
+                    d[rep[i]-1] = true;
 
-		/*
-		cout << "ANALYSIS:" << endl;
-		cout << "NUM_TSP: " << n_d << endl;
-		cout << "NUM_KNP: " << (n_k-1) << endl;
-		cout << "SIZE: " << rep.size() << endl;
+    cout << "pSVRPDSP.n: " << pSVRPDSP.n << endl;
+    cout << "d: " << d << endl;
+    cout << "count: " << count << endl;
+    */
 
-		vector<bool> d(n_d, false);
-		for(unsigned i=0; i<rep.size(); i++)
-			if(rep[i]>0 && rep[i]<=pSVRPDSP.n)
-				d[rep[i]-1] = true;
+    MySolution* s = new MySolution(rep);
 
-		cout << "pSVRPDSP.n: " << pSVRPDSP.n << endl;
-		cout << "d: " << d << endl;
-		cout << "count: " << count << endl;
-		*/
+    if (!s->syncADS(pSVRPDSP)) {
+      cout << "error syncronizing ADS (Const. TSPOpt)" << endl;
+      cout << "rep: " << rep << endl;
+      exit(1);
+    }
 
-      MySolution* s = new MySolution(rep);
-
-      if(!s->syncADS(pSVRPDSP))
-      {
-         cout << "error syncronizing ADS (Const. TSPOpt)" << endl;
-         cout << "rep: " << rep << endl;
-         exit(1);
-      }
-
-      return s;
-	}
-
+    return s;
+  }
 };
 
-}
+}  // namespace SVRPDSP
 
 #endif /*SVRPDSP_CONTRUCTIVE_TSPOptimal_HPP_*/

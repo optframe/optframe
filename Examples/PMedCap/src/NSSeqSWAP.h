@@ -24,11 +24,11 @@
 #define PCAP_NSSEQSWAP_HPP_
 
 // Framework includes
-#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
-//#include "../../OptFrame/Util/TestMove.hpp"
+// #include "../../OptFrame/Util/TestMove.hpp"
 
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 
 // Own includes
 #include "ProblemInstance.h"

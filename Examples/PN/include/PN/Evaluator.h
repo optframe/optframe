@@ -4,11 +4,11 @@
 #ifndef PN_EVALUATOR_H_
 #define PN_EVALUATOR_H_
 
-//#include <cmath>
+// #include <cmath>
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 
 #include "DeltaStructure.h"

@@ -3,292 +3,296 @@
 // Project EFP
 // ===================================
 
-#include <stdlib.h>
 #include <math.h>
-#include <iostream>
-#include <iomanip>
-#include <numeric>
-#include <OptFrame/RandGen.hpp>
+#include <stdlib.h>
+
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
+#include <iomanip>
+#include <iostream>
+#include <numeric>
 
 using namespace std;
 using namespace optframe;
 using namespace HFM;
 
-int GAPSO_SKU(int argc, char **argv)
-{
-	cout << "Welcome to GAPSO-SKU calibration" << endl;
-	RandGenMersenneTwister rg;
-	//long  1412730737
-	long seed = time(nullptr); //CalibrationMode
-	seed = 111212101990;
-	cout << "Seed = " << seed << endl;
-	srand(seed);
-	rg.setSeed(seed);
+int GAPSO_SKU(int argc, char** argv) {
+  cout << "Welcome to GAPSO-SKU calibration" << endl;
+  RandGenMersenneTwister rg;
+  // long  1412730737
+  long seed = time(nullptr);  // CalibrationMode
+  seed = 111212101990;
+  cout << "Seed = " << seed << endl;
+  srand(seed);
+  rg.setSeed(seed);
 
-	if (argc != 5)
-	{
-		cout << "Parametros incorretos!" << endl;
-		cout << "Os parametros esperados sao: nomeOutput targetTS construtiveNRulesACF timeES" << endl;
-		exit(1);
-	}
+  if (argc != 5) {
+    cout << "Parametros incorretos!" << endl;
+    cout << "Os parametros esperados sao: nomeOutput targetTS "
+            "construtiveNRulesACF timeES"
+         << endl;
+    exit(1);
+  }
 
-	const char* caminhoOutput = argv[1];
-	int argvTargetTimeSeries = atoi(argv[2]);
-	int argvMaxLagRate = atoi(argv[3]);
-	int argvTimeES = atoi(argv[4]);
+  const char* caminhoOutput = argv[1];
+  int argvTargetTimeSeries = atoi(argv[2]);
+  int argvMaxLagRate = atoi(argv[3]);
+  int argvTimeES = atoi(argv[4]);
 
-	string nomeOutput = caminhoOutput;
-	//===================================
-	cout << "Parametros:" << endl;
-	cout << "nomeOutput=" << nomeOutput << endl;
-	cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-	cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
-	cout << "argvTimeES=" << argvTimeES << endl;
+  string nomeOutput = caminhoOutput;
+  //===================================
+  cout << "Parametros:" << endl;
+  cout << "nomeOutput=" << nomeOutput << endl;
+  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
+  cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
+  cout << "argvTimeES=" << argvTimeES << endl;
 
-   string gapsoTimeSeries = "./MyProjects/HFM/Instance/GAPSO/SKUPure";
-	File fileWCCIInstances { gapsoTimeSeries.c_str() };
-	
-//	gapsoTimeSeries = "./MyProjects/HFM/Instance/GAPSO/SKU";
-	
-   if(!fileWCCIInstances.isOpen())
-   {
-		cout << "File '" << gapsoTimeSeries.c_str() << "' not found" << endl;
-		exit(1);
-	}
+  string gapsoTimeSeries = "./MyProjects/HFM/Instance/GAPSO/SKUPure";
+  File fileWCCIInstances{gapsoTimeSeries.c_str()};
 
-	Scanner* scannerWCCI = new Scanner{ std::move(fileWCCIInstances) };
-	for (int i = 0; i < (argvTargetTimeSeries - 1); i++)
-		scannerWCCI->nextLine();
+  //	gapsoTimeSeries = "./MyProjects/HFM/Instance/GAPSO/SKU";
 
-	string testProblemWCCI = scannerWCCI->nextLine();
-	delete scannerWCCI;
-	scannerWCCI = new Scanner(testProblemWCCI);
+  if (!fileWCCIInstances.isOpen()) {
+    cout << "File '" << gapsoTimeSeries.c_str() << "' not found" << endl;
+    exit(1);
+  }
 
-//	cout << scannerWCCI->nextInt() << endl;
-	int GAPSOStepsAhead = 12;
-//	cout << "Required steps ahead:" << WCCIStepsAhead << endl;
+  Scanner* scannerWCCI = new Scanner{std::move(fileWCCIInstances)};
+  for (int i = 0; i < (argvTargetTimeSeries - 1); i++) scannerWCCI->nextLine();
 
-	vector<double> forecastsTSWCCI;
-	while (scannerWCCI->hasNext())
-		forecastsTSWCCI.push_back(*scannerWCCI->nextDouble());
-	cout << forecastsTSWCCI << endl;
+  string testProblemWCCI = scannerWCCI->nextLine();
+  delete scannerWCCI;
+  scannerWCCI = new Scanner(testProblemWCCI);
 
-	vector<vector<double> > forecastingWCCIExogenousVariables;
-	forecastingWCCIExogenousVariables.push_back(forecastsTSWCCI);
+  //	cout << scannerWCCI->nextInt() << endl;
+  int GAPSOStepsAhead = 12;
+  //	cout << "Required steps ahead:" << WCCIStepsAhead << endl;
 
-	treatForecasts rF(forecastingWCCIExogenousVariables);
+  vector<double> forecastsTSWCCI;
+  while (scannerWCCI->hasNext())
+    forecastsTSWCCI.push_back(*scannerWCCI->nextDouble());
+  cout << forecastsTSWCCI << endl;
 
-	int nBatches = 1;
+  vector<vector<double>> forecastingWCCIExogenousVariables;
+  forecastingWCCIExogenousVariables.push_back(forecastsTSWCCI);
 
-	vector<vector<double> > vfoIndicatorCalibration; //vector with the FO of each batch
+  treatForecasts rF(forecastingWCCIExogenousVariables);
 
-	vector<SolutionEFP> vSolutionsBatches; //vector with the solution of each batch
+  int nBatches = 1;
 
-	vector<double> vForecasts;
+  vector<vector<double>>
+      vfoIndicatorCalibration;  // vector with the FO of each batch
 
-	for (int n = 0; n < nBatches; n++)
-	{
-//		int contructiveNumberOfRules = rg.rand(maxPrecision) + 10;
-//		int evalFOMinimizer = rg.rand(NMETRICS); //tree is the number of possible objetive function index minimizers
-//		int evalAprox = rg.rand(2); //Enayatifar aproximation using previous values
-//		int construtive = rg.rand(3);
-//		double initialDesv = rg.rand(maxInitialDesv) + 1;
-//		double mutationDesv = rg.rand(maxMutationDesv) + 1;
-//		int mu = rg.rand(maxMu) + 1;
-//		int lambda = mu * 6;
+  vector<SolutionEFP>
+      vSolutionsBatches;  // vector with the solution of each batch
 
-		//limit ACF for construtive ACF
-//		double alphaACF = rg.rand01();
-//		int alphaSign = rg.rand(2);
-//		if (alphaSign == 0)
-//			alphaACF = alphaACF * -1;
+  vector<double> vForecasts;
 
-		// ============ FORCES ======================
-//		initialDesv = 10;
-//		mutationDesv = 20;
-		int mu = 100;
-		int lambda = mu * 6;
-		int evalFOMinimizer = WMAPE_INDEX;
-		int contructiveNumberOfRules = 10;
-		int evalAprox = 0;
-		double alphaACF = -1;
-		int construtive = 2;
-		// ============ END FORCES ======================
+  for (int n = 0; n < nBatches; n++) {
+    //		int contructiveNumberOfRules = rg.rand(maxPrecision) + 10;
+    //		int evalFOMinimizer = rg.rand(NMETRICS); //tree is the number of
+    //possible objetive function index minimizers 		int evalAprox = rg.rand(2);
+    ////Enayatifar aproximation using previous values 		int construtive =
+    //rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) + 1; 		double
+    //mutationDesv = rg.rand(maxMutationDesv) + 1; 		int mu = rg.rand(maxMu) + 1;
+    //		int lambda = mu * 6;
 
-		// ============= METHOD PARAMETERS=================
-		HFMParams methodParam;
-		//seting up Continous ES params
-		methodParam.setESInitialDesv(10);
-		methodParam.setESMutationDesv(20);
-		methodParam.setESMaxG(100000);
+    // limit ACF for construtive ACF
+    //		double alphaACF = rg.rand01();
+    //		int alphaSign = rg.rand(2);
+    //		if (alphaSign == 0)
+    //			alphaACF = alphaACF * -1;
 
-		//seting up ES params
-		methodParam.setESMU(mu);
-		methodParam.setESLambda(lambda);
+    // ============ FORCES ======================
+    //		initialDesv = 10;
+    //		mutationDesv = 20;
+    int mu = 100;
+    int lambda = mu * 6;
+    int evalFOMinimizer = WMAPE_INDEX;
+    int contructiveNumberOfRules = 10;
+    int evalAprox = 0;
+    double alphaACF = -1;
+    int construtive = 2;
+    // ============ END FORCES ======================
 
-		//seting up ACF construtive params
-		methodParam.setConstrutiveMethod(construtive);
-		methodParam.setConstrutivePrecision(contructiveNumberOfRules);
-		vector<double> vAlphaACFlimits;
-		vAlphaACFlimits.push_back(alphaACF);
-		methodParam.setConstrutiveLimitAlphaACF(vAlphaACFlimits);
+    // ============= METHOD PARAMETERS=================
+    HFMParams methodParam;
+    // seting up Continous ES params
+    methodParam.setESInitialDesv(10);
+    methodParam.setESMutationDesv(20);
+    methodParam.setESMaxG(100000);
 
-		//seting up Eval params
-		methodParam.setEvalAprox(evalAprox);
-		methodParam.setEvalFOMinimizer(evalFOMinimizer);
-		// ==========================================
+    // seting up ES params
+    methodParam.setESMU(mu);
+    methodParam.setESLambda(lambda);
 
-		// ================== READ FILE ============== CONSTRUTIVE 0 AND 1
-		ProblemParameters problemParam;
-		//ProblemParameters problemParam(vParametersFiles[randomParametersFiles]);
-		int nSA = GAPSOStepsAhead;
-		problemParam.setStepsAhead(nSA);
-		int stepsAhead = problemParam.getStepsAhead();
+    // seting up ACF construtive params
+    methodParam.setConstrutiveMethod(construtive);
+    methodParam.setConstrutivePrecision(contructiveNumberOfRules);
+    vector<double> vAlphaACFlimits;
+    vAlphaACFlimits.push_back(alphaACF);
+    methodParam.setConstrutiveLimitAlphaACF(vAlphaACFlimits);
 
-		int nTotalForecastingsTrainningSet = rF.getForecastsSize(0) - stepsAhead;
+    // seting up Eval params
+    methodParam.setEvalAprox(evalAprox);
+    methodParam.setEvalFOMinimizer(evalFOMinimizer);
+    // ==========================================
 
-		//========SET PROBLEM MAXIMUM LAG ===============
-		cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+    // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
+    ProblemParameters problemParam;
+    // ProblemParameters problemParam(vParametersFiles[randomParametersFiles]);
+    int nSA = GAPSOStepsAhead;
+    problemParam.setStepsAhead(nSA);
+    int stepsAhead = problemParam.getStepsAhead();
 
-		int iterationMaxLag = ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) / 100.0;
-		iterationMaxLag = ceil(iterationMaxLag);
-		if (iterationMaxLag > (nTotalForecastingsTrainningSet - stepsAhead))
-			iterationMaxLag--;
-		if (iterationMaxLag <= 0)
-			iterationMaxLag = 1;
+    int nTotalForecastingsTrainningSet = rF.getForecastsSize(0) - stepsAhead;
 
-		problemParam.setMaxLag(iterationMaxLag);
-		int maxLag = problemParam.getMaxLag(0);
+    //========SET PROBLEM MAXIMUM LAG ===============
+    cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
 
-		//If maxUpperLag is greater than 0 model uses predicted data
-		problemParam.setMaxUpperLag(0);
-		//int maxUpperLag = problemParam.getMaxUpperLag();
-		//=================================================
+    int iterationMaxLag =
+        ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) /
+        100.0;
+    iterationMaxLag = ceil(iterationMaxLag);
+    if (iterationMaxLag > (nTotalForecastingsTrainningSet - stepsAhead))
+      iterationMaxLag--;
+    if (iterationMaxLag <= 0) iterationMaxLag = 1;
 
-		int timeES = argvTimeES; // online training time
+    problemParam.setMaxLag(iterationMaxLag);
+    int maxLag = problemParam.getMaxLag(0);
 
-		vector<double> foIndicators;
+    // If maxUpperLag is greater than 0 model uses predicted data
+    problemParam.setMaxUpperLag(0);
+    // int maxUpperLag = problemParam.getMaxUpperLag();
+    //=================================================
 
-		int beginTrainingSet = 0;
-		//int nTrainningRounds = 3;
-		//int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds * stepsAhead;
+    int timeES = argvTimeES;  // online training time
 
-		cout << std::setprecision(9);
-		cout << std::fixed;
-		double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
-		cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-		cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet << endl;
-		cout << "#~NTR: " << NTRaprox << endl;
-		cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-		cout << "#maxNotUsed: " << maxLag << endl;
-		cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    vector<double> foIndicators;
 
-//		getchar();
-		vector<vector<double> > trainningSet; // trainningSetVector
-		trainningSet.push_back(rF.getPartsForecastsEndToBegin(0, stepsAhead, nTotalForecastingsTrainningSet));
-		cout << trainningSet << endl;
+    int beginTrainingSet = 0;
+    // int nTrainningRounds = 3;
+    // int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds *
+    // stepsAhead;
 
-		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    cout << std::setprecision(9);
+    cout << std::fixed;
+    double NTRaprox =
+        (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
+    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
+    cout << "#nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << endl;
+    cout << "#~NTR: " << NTRaprox << endl;
+    cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
+    cout << "#maxNotUsed: " << maxLag << endl;
+    cout << "#StepsAhead: " << stepsAhead << endl << endl;
 
-//		forecastObject.runMultiObjSearch();
-//		getchar();
-		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
-		sol = forecastObject.run(timeES, 0, 0);
-		cout << sol->first.getR() << endl;
-//		getchar();
+    //		getchar();
+    vector<vector<double>> trainningSet;  // trainningSetVector
+    trainningSet.push_back(rF.getPartsForecastsEndToBegin(
+        0, stepsAhead, nTotalForecastingsTrainningSet));
+    cout << trainningSet << endl;
 
-		vector<double> foIndicatorCalibration;
-		vector<vector<double> > validationSet;
-		validationSet.push_back(rF.getPartsForecastsEndToBegin(0, 0, maxLag + stepsAhead));
+    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		cout << validationSet << endl;
-//		getchar();
+    //		forecastObject.runMultiObjSearch();
+    //		getchar();
+    std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
+    sol = forecastObject.run(timeES, 0, 0);
+    cout << sol->first.getR() << endl;
+    //		getchar();
 
-		vector<double> errors = *forecastObject.returnErrors(sol->first.getR(), validationSet);
-		vForecasts = *forecastObject.returnForecasts(*sol, validationSet);
-		cout << "Vector of forecasts: \n " << vForecasts << endl;
-		vector<vector<double> > blind = validationSet;
-		blind[0].erase(blind[0].end() - stepsAhead, blind[0].end());
-		cout << "Blind forecasts: \n " << forecastObject.returnBlind(sol->first.getR(), blind) << endl;
+    vector<double> foIndicatorCalibration;
+    vector<vector<double>> validationSet;
+    validationSet.push_back(
+        rF.getPartsForecastsEndToBegin(0, 0, maxLag + stepsAhead));
 
-		foIndicators.push_back(errors[WMAPE_INDEX]);
-		foIndicators.push_back(sol->second.evaluation());
-		foIndicators.push_back(argvTargetTimeSeries);
-		foIndicators.push_back(argvMaxLagRate);
-		foIndicators.push_back(maxLag);
-		foIndicators.push_back(NTRaprox);
-		foIndicators.push_back(contructiveNumberOfRules);
-		foIndicators.push_back(timeES);
-		foIndicators.push_back(seed);
-		vfoIndicatorCalibration.push_back(foIndicators);
-	}
+    cout << validationSet << endl;
+    //		getchar();
 
-	cout << setprecision(3);
+    vector<double> errors =
+        *forecastObject.returnErrors(sol->first.getR(), validationSet);
+    vForecasts = *forecastObject.returnForecasts(*sol, validationSet);
+    cout << "Vector of forecasts: \n " << vForecasts << endl;
+    vector<vector<double>> blind = validationSet;
+    blind[0].erase(blind[0].end() - stepsAhead, blind[0].end());
+    cout << "Blind forecasts: \n "
+         << forecastObject.returnBlind(sol->first.getR(), blind) << endl;
 
-//	double averageError = 0;
-//	for (int t = 0; t < (vfoIndicatorCalibration[0].size() - 1); t++)
-//	{
-//		averageError += vfoIndicatorCalibration[0][t];
-//	}
-//
-//	averageError /= (vfoIndicatorCalibration[0].size() - 1);
-//	vfoIndicatorCalibration[0].push_back(averageError);
-	// =================== PRINTING RESULTS ========================
-	for (int n = 0; n < nBatches; n++)
-	{
+    foIndicators.push_back(errors[WMAPE_INDEX]);
+    foIndicators.push_back(sol->second.evaluation());
+    foIndicators.push_back(argvTargetTimeSeries);
+    foIndicators.push_back(argvMaxLagRate);
+    foIndicators.push_back(maxLag);
+    foIndicators.push_back(NTRaprox);
+    foIndicators.push_back(contructiveNumberOfRules);
+    foIndicators.push_back(timeES);
+    foIndicators.push_back(seed);
+    vfoIndicatorCalibration.push_back(foIndicators);
+  }
 
-		for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
-			cout << vfoIndicatorCalibration[n][i] << "\t";
+  cout << setprecision(3);
 
-		cout << endl;
-	}
-	// =======================================================
+  //	double averageError = 0;
+  //	for (int t = 0; t < (vfoIndicatorCalibration[0].size() - 1); t++)
+  //	{
+  //		averageError += vfoIndicatorCalibration[0][t];
+  //	}
+  //
+  //	averageError /= (vfoIndicatorCalibration[0].size() - 1);
+  //	vfoIndicatorCalibration[0].push_back(averageError);
+  // =================== PRINTING RESULTS ========================
+  for (int n = 0; n < nBatches; n++) {
+    for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
+      cout << vfoIndicatorCalibration[n][i] << "\t";
 
-	// =================== PRINTING RESULTS ON FILE ========================
-	string calibrationFile = "./GAPSO_InitialResults";
-	FILE* fResults = fopen(calibrationFile.c_str(), "a");
-	for (int n = 0; n < nBatches; n++)
-	{
-		for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
-			fprintf(fResults, "%.7f\t", vfoIndicatorCalibration[n][i]);
-		fprintf(fResults, "\n");
-	}
+    cout << endl;
+  }
+  // =======================================================
 
-	string calibrationFileForecasts = "./GAPSO_InitialResultsForecasts";
-	FILE* fResultsForecasts = fopen(calibrationFileForecasts.c_str(), "a");
-	for (int n = 0; n < nBatches; n++)
-	{
-		fprintf(fResultsForecasts, "%d\t", argvTargetTimeSeries);
-		for (int i = 0; i <  (int) vForecasts.size(); i++)
-			fprintf(fResultsForecasts, "%.7f\t", vForecasts[i]);
-		fprintf(fResultsForecasts, "\n");
-	}
+  // =================== PRINTING RESULTS ON FILE ========================
+  string calibrationFile = "./GAPSO_InitialResults";
+  FILE* fResults = fopen(calibrationFile.c_str(), "a");
+  for (int n = 0; n < nBatches; n++) {
+    for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
+      fprintf(fResults, "%.7f\t", vfoIndicatorCalibration[n][i]);
+    fprintf(fResults, "\n");
+  }
 
-	fclose(fResults);
-	fclose(fResultsForecasts);
-	// =======================================================
+  string calibrationFileForecasts = "./GAPSO_InitialResultsForecasts";
+  FILE* fResultsForecasts = fopen(calibrationFileForecasts.c_str(), "a");
+  for (int n = 0; n < nBatches; n++) {
+    fprintf(fResultsForecasts, "%d\t", argvTargetTimeSeries);
+    for (int i = 0; i < (int)vForecasts.size(); i++)
+      fprintf(fResultsForecasts, "%.7f\t", vForecasts[i]);
+    fprintf(fResultsForecasts, "\n");
+  }
 
-	return 0;
+  fclose(fResults);
+  fclose(fResultsForecasts);
+  // =======================================================
+
+  return 0;
 }
 
 //
-//for (int w = 4; w >= 1; w--)
+// for (int w = 4; w >= 1; w--)
 //	{
 //		vector<double> foIndicatorsMAPE;
 //		vector<double> foIndicatorsRMSE;
 //
 //		for (int day = 1; day <= 7; day++)
 //		{
-//			vector<vector<double> > validationSet; //validation set for calibration
-//			validationSet.push_back(rF.getPartsForecastsEndToBegin(0, w * 168 - stepsAhead * day, nValidationSamples));
-//			vector<double> foIndicators;
-//			foIndicators = forecastObject.returnErrors(sol, validationSet);
-//			foIndicatorsMAPE.push_back(foIndicators[MAPE_INDEX]);
+//			vector<vector<double> > validationSet; //validation set
+//for calibration 			validationSet.push_back(rF.getPartsForecastsEndToBegin(0, w *
+//168 - stepsAhead * day, nValidationSamples)); 			vector<double> foIndicators;
+//			foIndicators = forecastObject.returnErrors(sol,
+//validationSet); 			foIndicatorsMAPE.push_back(foIndicators[MAPE_INDEX]);
 //			foIndicatorsRMSE.push_back(foIndicators[RMSE_INDEX]);
 //		}
-//		double sumMAPE = accumulate(foIndicatorsMAPE.begin(), foIndicatorsMAPE.end(), 0.0);
-//		double sumRMSE = accumulate(foIndicatorsRMSE.begin(), foIndicatorsRMSE.end(), 0.0);
+//		double sumMAPE = accumulate(foIndicatorsMAPE.begin(),
+//foIndicatorsMAPE.end(), 0.0); 		double sumRMSE =
+//accumulate(foIndicatorsRMSE.begin(), foIndicatorsRMSE.end(), 0.0);
 //
 //		foIndicatorCalibration.push_back(sumMAPE/foIndicatorsMAPE.size());
 //		foIndicatorCalibration.push_back(sumRMSE/foIndicatorsRMSE.size());

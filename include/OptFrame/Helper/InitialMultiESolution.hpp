@@ -11,8 +11,8 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/Domain.hpp>
-#include <OptFrame/Constructive.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>

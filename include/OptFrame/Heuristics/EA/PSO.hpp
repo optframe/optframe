@@ -7,10 +7,10 @@
 // C++
 #include <algorithm>
 //
-//#include "../../IPopulational.hpp"
-///#include "../../InitialPopulation.hpp"
+// #include "../../IPopulational.hpp"
+/// #include "../../InitialPopulation.hpp"
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
-#include <OptFrame/RandGen.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 #include <OptFrame/printable/printable.hpp>  // TODO: remove!
 
@@ -154,7 +154,7 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
       }
       count++;
     }  // while
-  }    // BoundCheck
+  }  // BoundCheck
 
   virtual ~PSO() {
     // nothing to delete... NICE!

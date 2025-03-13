@@ -12,11 +12,12 @@
 #include <vector>
 //
 
-#include "../../ILoop.hpp"
-#include "../../ITrajectory.hpp"
-#include "../../NS.hpp"
-#include "../../RandGen.hpp"
-#include "../../SingleObjSearch.hpp"
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/ILoop.hpp>
+#include <OptFrame/ITrajectory.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+
 #include "./HelperSA.hpp"
 #include "./SA.hpp"
 

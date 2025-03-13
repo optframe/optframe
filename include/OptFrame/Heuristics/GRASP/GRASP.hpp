@@ -4,12 +4,12 @@
 #ifndef OPTFRAME_HEURISTICS_GRASP_GRASP_HPP_
 #define OPTFRAME_HEURISTICS_GRASP_GRASP_HPP_
 
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "../../LocalSearch.hpp"
-#include "../../SingleObjSearch.hpp"
 #include "GRASP.h"
 #include "GRConstructive.hpp"
 

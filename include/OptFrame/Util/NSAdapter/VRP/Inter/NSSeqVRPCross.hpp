@@ -15,8 +15,8 @@
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
 // Framework includes
-#include "../../../../Move.hpp"
-#include "../../../../NSSeq.hpp"
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 // Check if C++20 Concepts is supported
 // #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)

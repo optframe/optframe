@@ -23,20 +23,21 @@
 #ifndef OPTFRAME_DECODER_NONSORTINGGENETICALGORITHMII_HPP_
 #define OPTFRAME_DECODER_NONSORTINGGENETICALGORITHMII_HPP_
 
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
 #include <algorithm>
 
 #include "../../Evaluation.hpp"
-#include "../../Evaluator.hpp"
 #include "../../ExtendedMultiObjSearch.hpp"
-#include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"
 #include "../../Population.hpp"
 #include "../../RandGen.hpp"
 #include "InitialMultiSolution.hpp"
-//#include "../../ParetoDominanceStrict.hpp"
+// #include "../../ParetoDominanceStrict.hpp"
+
+#include <OptFrame/Timer.hpp>
 
 #include "../../Decoder.hpp"
-#include "../../Timer.hpp"
 #include "../../Util/printable.h"
 #include "NSGAII.hpp"
 
@@ -1405,7 +1406,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
         }
 
       }  // for each front
-    }    // for each objective
+    }  // for each objective
 
     IndividualExtNSGAII<R, X, ADS>::updateDistances(
         I);  // update parents' ranks

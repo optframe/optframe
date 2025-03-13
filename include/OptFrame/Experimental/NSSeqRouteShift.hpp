@@ -24,9 +24,10 @@
 #define OPTFRAME_NSSEQROUTESHIFT_HPP_
 
 // Framework includes
+#include <OptFrame/Core/NSSeq.hpp>
+
 #include "../Move.hpp"
 #include "../NSIterator.hpp"
-#include "../NSSeq.hpp"
 
 using namespace std;
 

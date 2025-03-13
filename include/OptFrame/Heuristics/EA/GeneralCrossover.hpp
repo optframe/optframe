@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 //
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 // #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Concepts/Domain.hpp>
 

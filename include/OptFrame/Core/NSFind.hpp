@@ -25,10 +25,10 @@
 
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
-#include "Component.hpp"
-#include "GeneralEvaluator.hpp"  // included for Neighborhood Exploration
-#include "Move.hpp"
-#include "NS.hpp"
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Core/GeneralEvaluator.hpp>  // included for Neighborhood Exploration
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NS.hpp>
 
 #define MOD_EXPORT
 #else

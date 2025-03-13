@@ -28,8 +28,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <OptFrame/Core/Move.hpp>  // for testing
 #include <OptFrame/Hyper/Loader.hpp>
-#include <OptFrame/Move.hpp>  // for testing
 #include <OptFrame/Timer.hpp>
 #include <iostream>
 

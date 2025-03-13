@@ -12,6 +12,7 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/MultiSolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
@@ -21,7 +22,6 @@
 #include <OptFrame/Hyper/OptFrameList.hpp>
 #include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
-#include <OptFrame/RandGen.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 
@@ -33,7 +33,7 @@
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
-//#include "Heuristics/LocalSearches/RVND.hpp"
+// #include "Heuristics/LocalSearches/RVND.hpp"
 
 // Metaheuristics
 #include <OptFrame/Heuristics/EmptySingleObjSearch.hpp>
@@ -41,17 +41,17 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearch.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 // TODO ERROR on IntensifiedIteratedLocalSearchLevels
-//#include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
+// #include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/Intensification.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 // TODO ERROR on BasicGeneticAlgorithm
-//#include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
+// #include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
 #include <OptFrame/Heuristics/EmptyMultiObjSearch.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
-//#include "Heuristics/VNS/MOVNS.hpp"
+// #include "Heuristics/VNS/MOVNS.hpp"
 
-//#include <OptFrame/Helper/Solutions/CopySolution.hpp>
+// #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
@@ -567,7 +567,7 @@ class HeuristicFactory {
 
           return true;
         }  // else return false?
-      }    // else return false?
+      }  // else return false?
     }
 
     return false;

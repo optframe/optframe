@@ -10,7 +10,7 @@
 
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 
 $include
 

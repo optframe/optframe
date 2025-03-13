@@ -9,9 +9,10 @@
 #include <utility>
 #include <vector>
 //
-#include "../../LocalSearch.hpp"
-#include "../../SingleObjSearch.hpp"
-#include "../../Timer.hpp"
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Timer.hpp>
+
 #include "GRASPFamily.h"
 #include "GRConstructive.hpp"
 

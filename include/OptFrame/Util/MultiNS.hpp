@@ -23,36 +23,34 @@
 #ifndef OPTFRAME_MULTI_NS_HPP_
 #define OPTFRAME_MULTI_NS_HPP_
 
+#include <OptFrame/Core/RandGen.hpp>
 #include <vector>
 
 #include "../Move.hpp"
 #include "../NS.hpp"
-#include "../RandGen.hpp"
 #include "../Solution.hpp"
 
 namespace optframe {
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
 class MultiMove : public Move<R, ADS, DS> {
  public:
   vector<Move<R, ADS, DS>*> vm;
 
-  MultiMove(vector<Move<R, ADS, DS>*>& _vm)
-      : vm(_vm) {
-  }
+  MultiMove(vector<Move<R, ADS, DS>*>& _vm) : vm(_vm) {}
 
   virtual ~MultiMove() {
-    for (unsigned i = 0; i < vm.size(); i++)
-      delete vm[i];
+    for (unsigned i = 0; i < vm.size(); i++) delete vm[i];
     vm.clear();
   }
 
   virtual bool canBeApplied(const R& r, const ADS& ads) {
     for (unsigned i = 0; i < vm.size(); i++)
-      if (!vm[i]->canBeApplied(r, ads))
-        return false;
+      if (!vm[i]->canBeApplied(r, ads)) return false;
     // MAY STILL BE UNAPPLIABLE!! SOLVE THIS WITH RETURN nullptr IN APPLY?? TODO
-    // OR... return an UNKNOWN state here (may be pointer, but better a tri-state element).
+    // OR... return an UNKNOWN state here (may be pointer, but better a
+    // tri-state element).
     return true;
   }
 
@@ -68,22 +66,18 @@ class MultiMove : public Move<R, ADS, DS> {
     return true;  // STUB
   }
 
-  static string idComponent() {
-    return "OptFrame:Move:MultiMove";
-  }
+  static string idComponent() { return "OptFrame:Move:MultiMove"; }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
   void print() const override {
     cout << "MultiMove(" << vm.size() << "):";
-    for (unsigned i = 0; i < vm.size(); i++)
-      vm[i]->print();
+    for (unsigned i = 0; i < vm.size(); i++) vm[i]->print();
   }
 };
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
 class MultiNS : public NS<R, ADS, DS> {
  public:
   RandGen& rg;
@@ -91,31 +85,24 @@ class MultiNS : public NS<R, ADS, DS> {
   unsigned kMin, kMax;
 
   MultiNS(RandGen& _rg, NS<R, ADS, DS>& _ns, unsigned _kMin, unsigned _kMax)
-      : rg(_rg), ns(_ns), kMin(_kMin), kMax(_kMax) {
-  }
+      : rg(_rg), ns(_ns), kMin(_kMin), kMax(_kMax) {}
 
-  virtual ~MultiNS() {
-  }
+  virtual ~MultiNS() {}
 
  protected:
   virtual Move<R, ADS, DS>& move(const R& r, const ADS& ads) {
     vector<Move<R, ADS, DS>*> vm;
     unsigned k = rg.rand(kMin, kMax);
-    //cout << "K=" << k << endl;
-    for (unsigned i = 0; i < k; i++)
-      vm.push_back(&ns.move(r, ads));
-    //cout << "created move!" << endl;
+    // cout << "K=" << k << endl;
+    for (unsigned i = 0; i < k; i++) vm.push_back(&ns.move(r, ads));
+    // cout << "created move!" << endl;
     return *new MultiMove<R, ADS, DS>(vm);
   }
 
  public:
-  static string idComponent() {
-    return "OptFrame:NS:MultiNS";
-  }
+  static string idComponent() { return "OptFrame:NS:MultiNS"; }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NS<R, ADS, DS>::compatible(s));

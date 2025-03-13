@@ -23,56 +23,60 @@
 #ifndef RANDGENMODULE_HPP_
 #define RANDGENMODULE_HPP_
 
+#include <OptFrame/Core/RandGen.hpp>
+
 #include "../Command.hpp"
-#include "../RandGen.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class RandGenSetSeedCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~RandGenSetSeedCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class RandGenSetSeedCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~RandGenSetSeedCommand() {}
 
-   string id()
-   {
-      return "randgen.set_seed";
-   }
+  string id() { return "randgen.set_seed"; }
 
-   string usage()
-   {
-      return "randgen.set_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
-   }
+  string usage() {
+    return "randgen.set_seed seed\n Where: 'seed' is a positive integer value "
+           "for the system random number generator.";
+  }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           map<string, string>& dictionary,
+           map<string, vector<string>>& ldictionary, string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         cout << "missing 'seed' positive integer value!" << endl;
-         cout << "Usage: " << usage() << endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      cout << "missing 'seed' positive integer value!" << endl;
+      cout << "Usage: " << usage() << endl;
+      return false;
+    }
 
-      unsigned long seed = *scanner.nextInt();
+    unsigned long seed = *scanner.nextInt();
 
-      cout << "randgen.set_seed command: setting system random number generator seed to: " << seed << endl;
+    cout << "randgen.set_seed command: setting system random number generator "
+            "seed to: "
+         << seed << endl;
 
-      RandGen& rg = factory.getRandGen();
-      rg.setSeed(seed);
-      rg.initialize();
+    RandGen& rg = factory.getRandGen();
+    rg.setSeed(seed);
+    rg.initialize();
 
-      return true;
-   }
+    return true;
+  }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary,
+      const map<string, vector<string>>& ldictionary, string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* RANDGENMODULE_HPP_ */

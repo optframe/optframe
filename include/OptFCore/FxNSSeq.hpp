@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 //
-#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 //
 #include "coro/Generator.hpp"  // this is a very special class!! coroutines support \o/
@@ -20,15 +20,10 @@ namespace optframe {
 // this NSSeq uses "Boring" iterator... first, next, bla, bla...
 // -------------------------------------------------------------
 
-template <
-    class IMS,
-    XESolution XES,
-    uptr<Move<XES>> (*fRandom)(const XES&),
-    IMS (*fIterator)(const XES&),
-    void (*fFirst)(IMS&),
-    void (*fNext)(IMS&),
-    bool (*fIsDone)(IMS&),
-    uptr<Move<XES>> (*fCurrent)(IMS&)>
+template <class IMS, XESolution XES, uptr<Move<XES>> (*fRandom)(const XES&),
+          IMS (*fIterator)(const XES&), void (*fFirst)(IMS&),
+          void (*fNext)(IMS&), bool (*fIsDone)(IMS&),
+          uptr<Move<XES>> (*fCurrent)(IMS&)>
 class FxNSSeqBoring final : public NSSeq<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
@@ -45,21 +40,13 @@ class FxNSSeqBoring final : public NSSeq<XES> {
   static auto ft_current = fCurrent;
 
   // iterator initialization (fGenerator)
-  static IMS sf_iterator(const XES& se) {
-    return fIterator(se);
-  }
+  static IMS sf_iterator(const XES& se) { return fIterator(se); }
 
-  static void sf_first(std::pair<int, int>& p) {
-    return fFirst(p);
-  }
+  static void sf_first(std::pair<int, int>& p) { return fFirst(p); }
 
-  static void sf_next(std::pair<int, int>& p) {
-    return fNext(p);
-  }
+  static void sf_next(std::pair<int, int>& p) { return fNext(p); }
 
-  static bool sf_isdone(std::pair<int, int>& p) {
-    return fIsDone(p);
-  }
+  static bool sf_isdone(std::pair<int, int>& p) { return fIsDone(p); }
 
   static uptr<Move<XES>> sf_current(std::pair<int, int>& p) {
     return std::move(fCurrent(p));
@@ -70,31 +57,19 @@ class FxNSSeqBoring final : public NSSeq<XES> {
   class FxNSIteratorBoring final : public NSIterator<XES> {
    public:
     IMS ims;
-    FxNSIteratorBoring(const IMS& _ims) noexcept
-        : ims(_ims) {
-    }
+    FxNSIteratorBoring(const IMS& _ims) noexcept : ims(_ims) {}
 
-    void first() override {
-      fFirst(ims);
-    }
+    void first() override { fFirst(ims); }
 
-    void next() override {
-      fNext(ims);
-    }
+    void next() override { fNext(ims); }
 
-    bool isDone() override {
-      return fIsDone(ims);
-    }
+    bool isDone() override { return fIsDone(ims); }
 
-    uptr<Move<XES>> current() override {
-      return fCurrent(ims);
-    }
+    uptr<Move<XES>> current() override { return fCurrent(ims); }
   };
 
  public:
-  uptr<Move<XES>> randomMove(const XES& se) override {
-    return fRandom(se);
-  }
+  uptr<Move<XES>> randomMove(const XES& se) override { return fRandom(se); }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
     return uptr<NSIterator<XES>>{new FxNSIteratorBoring{fIterator(se)}};
@@ -106,19 +81,15 @@ class FxNSSeqBoring final : public NSSeq<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // =============================================================
 // this NSSeq uses "fancy" iterator... Generators and coroutines
 // -------------------------------------------------------------
 
-template <
-    XESolution XES,
-    uptr<Move<XES>> (*fRandom)(const XES&),
-    Generator<Move<XES>*> (*fGenerator)(const XES&)>
+template <XESolution XES, uptr<Move<XES>> (*fRandom)(const XES&),
+          Generator<Move<XES>*> (*fGenerator)(const XES&)>
 class FxNSSeqFancy final : public NSSeq<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
@@ -134,9 +105,7 @@ class FxNSSeqFancy final : public NSSeq<XES> {
     // must initialize via move semantics
     Generator<Move<XES>*> gen;
 
-    FxNSIterator(Generator<Move<XES>*>&& _gen)
-        : gen(std::move(_gen)) {
-    }
+    FxNSIterator(Generator<Move<XES>*>&& _gen) : gen(std::move(_gen)) {}
 
     virtual void first() {
       done = !gen.next();       // advance and update bool
@@ -165,9 +134,7 @@ class FxNSSeqFancy final : public NSSeq<XES> {
   };
 
  public:
-  uptr<Move<XES>> randomMove(const XES& se) override {
-    return fRandom(se);
-  }
+  uptr<Move<XES>> randomMove(const XES& se) override { return fRandom(se); }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
     return uptr<NSIterator<XES>>{new FxNSIterator{std::move(fGenerator(se))}};
@@ -179,9 +146,7 @@ class FxNSSeqFancy final : public NSSeq<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // ======================================================
@@ -199,9 +164,7 @@ class FxNSSeq final : public NSSeq<XES> {
  public:
   FxNSSeq(std::function<uptr<Move<XES>>(const XES&)> _fRandom,
           std::function<Generator<Move<XES>*>(const XES&)> _fGenerator)
-      : fRandom{_fRandom},
-        fGenerator{_fGenerator} {
-  }
+      : fRandom{_fRandom}, fGenerator{_fGenerator} {}
 
  private:
   // internal class for iterator
@@ -214,9 +177,7 @@ class FxNSSeq final : public NSSeq<XES> {
     //
     Generator<Move<XES>*> gen;  // must initialize via move semantics
 
-    FxNSIterator(Generator<Move<XES>*>&& _gen)
-        : gen(std::move(_gen)) {
-    }
+    FxNSIterator(Generator<Move<XES>*>&& _gen) : gen(std::move(_gen)) {}
 
     virtual void first() {
       done = !gen.next();       // advance and update bool
@@ -245,13 +206,10 @@ class FxNSSeq final : public NSSeq<XES> {
   };
 
  public:
-  uptr<Move<XES>> randomMove(const XES& se) override {
-    return fRandom(se);
-  }
+  uptr<Move<XES>> randomMove(const XES& se) override { return fRandom(se); }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
-    return uptr<NSIterator<XES>>{
-        new FxNSIterator{std::move(fGenerator(se))}};
+    return uptr<NSIterator<XES>>{new FxNSIterator{std::move(fGenerator(se))}};
   }
 
   static std::string idComponent() {
@@ -260,9 +218,7 @@ class FxNSSeq final : public NSSeq<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

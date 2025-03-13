@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 

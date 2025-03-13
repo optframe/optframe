@@ -8,8 +8,8 @@
 #include <string>
 #include <utility>
 //
-#include <OptFrame/NSSeq.hpp>
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 //
 #include "coro/Generator.hpp"  // this is a very special class!! coroutines support \o/
 
@@ -23,12 +23,9 @@ namespace optframe {
 // ContextType: Context / Memory Type
 // fRGenerator:  must respect 'unique' semantics! never repeat pointer.
 //
-template <XESolution XES,
-          typename ContextType,
-          Generator<Move<XES>*> (*fRGenerator)(const XES&,
-                                               ContextType& ctx,
-                                               sref<RandGen> rg,
-                                               bool singleMove)>
+template <XESolution XES, typename ContextType,
+          Generator<Move<XES>*> (*fRGenerator)(
+              const XES&, ContextType& ctx, sref<RandGen> rg, bool singleMove)>
 class FxRNSSeq final : public NSSeq<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
@@ -39,9 +36,7 @@ class FxRNSSeq final : public NSSeq<XES> {
   ContextType ctx;
   //
  public:
-  FxRNSSeq(sref<RandGen> rg)
-      : rg{rg} {
-  }
+  FxRNSSeq(sref<RandGen> rg) : rg{rg} {}
 
  private:
   //
@@ -62,8 +57,7 @@ class FxRNSSeq final : public NSSeq<XES> {
     Generator<Move<XES>*> gen;  // must initialize via move semantics
 
     FxRNSIterator(Generator<Move<XES>*>&& _gen, sref<RandGen> rg)
-        : gen(std::move(_gen)), rg{rg} {
-    }
+        : gen(std::move(_gen)), rg{rg} {}
 
     virtual void first() {
       done = !gen.next();       // advance and update bool
@@ -95,9 +89,7 @@ class FxRNSSeq final : public NSSeq<XES> {
   uptr<Move<XES>> randomMove(const XES& se) override {
     // creates iterator for single use ('true')
     uptr<NSIterator<XES>> iter{
-        new FxRNSIterator{
-            std::move(fRGenerator(se, ctx, rg, true)),
-            rg}};
+        new FxRNSIterator{std::move(fRGenerator(se, ctx, rg, true)), rg}};
     iter->first();
     uptr<Move<XES>> mv = iter->current();
     return mv;
@@ -105,9 +97,7 @@ class FxRNSSeq final : public NSSeq<XES> {
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
     return uptr<NSIterator<XES>>{
-        new FxRNSIterator{
-            std::move(fRGenerator(se, ctx, rg, false)),
-            rg}};
+        new FxRNSIterator{std::move(fRGenerator(se, ctx, rg, false)), rg}};
   }
 
   static std::string idComponent() {
@@ -116,9 +106,7 @@ class FxRNSSeq final : public NSSeq<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

@@ -9,8 +9,8 @@
 #include <iostream>
 #include <utility>
 //
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Direction.hpp>
-#include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/MultiEvaluator.hpp>

@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-//#include <OptFrame/OptFrame.hpp>
-#include <OptFrame/NSSeq.hpp>
-#include <OptFrame/RandGen.hpp>
+// #include <OptFrame/OptFrame.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSP2Opt.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPOrOptk.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPSwap.hpp>

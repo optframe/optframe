@@ -24,38 +24,38 @@
 #define VShuffle_HPP_
 
 #include <math.h>
+
+#include <OptFrame/Evaluator.hpp>
 #include <vector>
 
-#include "../Evaluator.hpp"
 #include "../HTrajectory.hpp"
 #include "../NS.hpp"
 #include "../Solution.hpp"
 
-//#define VShuffle_DEBUG
+// #define VShuffle_DEBUG
 
 #ifdef METHOD_DEBUG
 #define VShuffle_DEBUG
 #endif
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class VShuffle : public HTrajectory<R, ADS, DS>
-{
-public:
-   using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_EMEMORY>
+class VShuffle : public HTrajectory<R, ADS, DS> {
+ public:
+  using HTrajectory<R, ADS, DS>::exec;  // prevents name hiding
 
-   virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
-   {
-      cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << endl;
-      random_shuffle(s.getR().begin(), s.getR().end());
-   }
+  virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f) {
+    cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << endl;
+    random_shuffle(s.getR().begin(), s.getR().end());
+  }
 
-   virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
-   {
-      cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << endl;
-      random_shuffle(s.getR().begin(), s.getR().end());
-   }
+  virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
+                    double target_f) {
+    cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << endl;
+    random_shuffle(s.getR().begin(), s.getR().end());
+  }
 
-private:
+ private:
 };
 
 #endif

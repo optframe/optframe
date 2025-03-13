@@ -18,9 +18,9 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Concepts/MyConcepts.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/ICompare.hpp>
-#include <OptFrame/Move.hpp>
 // #include <OptFrame/MoveCost.hpp>
 
 namespace optframe {

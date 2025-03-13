@@ -26,7 +26,7 @@
 // C++
 #include <vector>
 //
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
 #include "EA.hpp"

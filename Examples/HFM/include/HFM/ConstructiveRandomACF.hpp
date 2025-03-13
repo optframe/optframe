@@ -10,7 +10,7 @@
 // #include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
 
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
 
 #include "./Evaluator.hpp"

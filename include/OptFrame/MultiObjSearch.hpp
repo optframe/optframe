@@ -12,8 +12,8 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Direction.hpp>
-#include <OptFrame/Evaluation.hpp>
 #include <OptFrame/GlobalSearch.hpp>  // Base class
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Helper/Population.hpp>

@@ -23,7 +23,7 @@
 #ifndef OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 #define OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
 #include "GRASPFamily.h"

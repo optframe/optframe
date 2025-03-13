@@ -27,55 +27,48 @@
 
 // Framework includes
 
+#include <OptFrame/Core/NSSeq.hpp>
+
 #include "../Move.hpp"
 #include "../NSIterator.hpp"
-#include "../NSSeq.hpp"
-
 #include "Moves/MoveMultiRoute.hpp"
 #include "NSIterators/IteratorNSSeqMultiRoute.hpp"
 
 using namespace std;
 
-template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveMultiRoute<T, DS>>
-class NSSeqMultiRouteAdapter : public NSSeq<vector<vector<T>>, DS>
-{
-   typedef vector<T> Route;
-   typedef vector<vector<T>> MultiRoute;
+template <class T, class DS = OPTFRAME_DEFAULT_EMEMORY,
+          class MOVE = MoveMultiRoute<T, DS>>
+class NSSeqMultiRouteAdapter : public NSSeq<vector<vector<T>>, DS> {
+  typedef vector<T> Route;
+  typedef vector<vector<T>> MultiRoute;
 
-private:
-   NSSeq<Route, DS>& ns;
+ private:
+  NSSeq<Route, DS>& ns;
 
-public:
-   NSSeqMultiRouteAdapter(NSSeq<Route, DS>& _ns)
-     : ns(_ns)
-   {
-   }
+ public:
+  NSSeqMultiRouteAdapter(NSSeq<Route, DS>& _ns) : ns(_ns) {}
 
-   virtual ~NSSeqMultiRouteAdapter()
-   {
-   }
+  virtual ~NSSeqMultiRouteAdapter() {}
 
-   Move<MultiRoute, DS>& move(const MultiRoute& r)
-   {
-      int x = rand() % r.size();
-      return *new MOVE(x, ns.move(r[x]));
-   }
+  Move<MultiRoute, DS>& move(const MultiRoute& r) {
+    int x = rand() % r.size();
+    return *new MOVE(x, ns.move(r[x]));
+  }
 
-   virtual NSIterator<MultiRoute, DS>& getIterator(const MultiRoute& r)
-   {
-      vector<NSIterator<Route, DS>*>& iterators = *new vector<NSIterator<Route, DS>*>;
-      for (int i = 0; i < r.size(); i++)
-         iterators.push_back(&ns.getIterator(r[i]));
+  virtual NSIterator<MultiRoute, DS>& getIterator(const MultiRoute& r) {
+    vector<NSIterator<Route, DS>*>& iterators =
+        *new vector<NSIterator<Route, DS>*>;
+    for (int i = 0; i < r.size(); i++)
+      iterators.push_back(&ns.getIterator(r[i]));
 
-      return *new IteratorNSSeqMultiRoute<T, DS, MOVE>(iterators);
-   }
+    return *new IteratorNSSeqMultiRoute<T, DS, MOVE>(iterators);
+  }
 
-   virtual void print()
-   {
-      cout << "NSSeqMultiRouteAdapter {" << endl;
-      ns.print();
-      cout << "}" << endl;
-   }
+  virtual void print() {
+    cout << "NSSeqMultiRouteAdapter {" << endl;
+    ns.print();
+    cout << "}" << endl;
+  }
 };
 
 #endif /*OPTFRAME_NSSEQMULTIROUTEADAPTER_HPP_*/

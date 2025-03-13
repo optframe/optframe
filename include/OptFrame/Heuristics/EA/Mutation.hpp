@@ -12,10 +12,10 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/NS.hpp>
-#include <OptFrame/RandGen.hpp>
 
 #include "EA.hpp"
 

@@ -24,9 +24,9 @@
 #define OPTFRAME_EMPTY_HPP_
 
 #include <vector>
-
-#include "../Evaluation.hpp"
-#include "../LocalSearch.hpp"
+//
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/LocalSearch.hpp>
 
 namespace optframe {
 

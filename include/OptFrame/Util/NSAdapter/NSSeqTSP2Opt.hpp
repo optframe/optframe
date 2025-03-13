@@ -26,9 +26,9 @@
 #include <type_traits>  // static assert is_same
 //
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 #include "../../Move.hpp"
-#include "../../NSSeq.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "Moves/MoveTSP2Opt.hpp"
 #include "NSIterators/IteratorTSP2Opt.hpp"

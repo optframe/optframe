@@ -27,8 +27,8 @@
 #include <string>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Constructive.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/MultiSolution.hpp>
 
 // #include "EA.hpp"

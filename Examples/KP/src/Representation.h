@@ -1,13 +1,9 @@
 #ifndef KP_REPRESENTATION_H_
 #define KP_REPRESENTATION_H_
 
-#include <OptFrame/printable/printable.hpp>
-#include <vector>
-
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-
-#include <OptFrame/Evaluation.hpp>
-
+#include <OptFrame/printable/printable.hpp>
 #include <vector>
 
 using namespace std;

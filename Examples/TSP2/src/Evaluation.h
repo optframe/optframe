@@ -23,7 +23,7 @@
 #ifndef TSP2_EVALUATION_H_
 #define TSP2_EVALUATION_H_
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 
 using namespace optframe;
 

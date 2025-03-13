@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Heuristics/EA/EA.hpp>
 #include <OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp>
 #include <OptFrame/Heuristics/EA/RK/RK.hpp>

@@ -7,13 +7,13 @@
 #include <string>
 #include <vector>
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
 #include <OptFrame/InitialSearch.hpp>
-#include <OptFrame/NS.hpp>
-#include <OptFrame/NSEnum.hpp>
-#include <OptFrame/NSSeq.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "KahanSummation.hpp"
@@ -1769,8 +1769,8 @@ class CheckCommand : public Component {  // NOLINT
                 // false negative
                 countFNMoveIndependent += !indep && realIndep;
               }  // if officialy supported move independence
-            }    // first if !conflict
-          }      // for every move
+            }  // first if !conflict
+          }  // for every move
           if (this->information)
             (*this->logdata) << "checkcommand: found " << count_ind_m1
                              << " independent move pairs." << endl;
@@ -1825,7 +1825,7 @@ class CheckCommand : public Component {  // NOLINT
         for (unsigned k = 0; k < allMoves.size(); k++) delete allMoves.at(k);
         allMoves.clear();
       }  // if param independent
-    }    // for NS
+    }  // for NS
 
     // ====================================================================
     // testing every NSSeq that isSolutionIndependent()
@@ -2016,8 +2016,8 @@ class CheckCommand : public Component {  // NOLINT
                 // false negative
                 countFNMoveIndependent += !indep && realIndep;
               }  // if officialy supported move independence
-            }    // first if !conflict
-          }      // for every move
+            }  // first if !conflict
+          }  // for every move
           if (this->information)
             (*this->logdata) << "checkcommand: found " << count_ind_m1
                              << " independent move pairs." << endl;

@@ -23,14 +23,14 @@
 
 #include <math.h>
 
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Timer.hpp>
 #include <vector>
 
 #include "../../Constructive.hpp"
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NSSeq.hpp"
-#include "../../SingleObjSearch.hpp"
-#include "../../Timer.hpp"
 namespace optframe {
 
 // ESTRUTURA DA ESTRATEGIA EVOLUTIVA

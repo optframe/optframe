@@ -38,7 +38,7 @@
 // basic elements of an OptFrame Component
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
 namespace optframe {
@@ -284,7 +284,7 @@ void static_check() {
 //
 // compilation tests for concepts
 // TODO: only in unit tests (or somehow prevent #include "printable.h")
-//#include "ESolution.ctest.hpp"
+// #include "ESolution.ctest.hpp"
 
 #endif
 

@@ -4,7 +4,7 @@
 #ifndef MODM_EVALUATION_H_
 #define MODM_EVALUATION_H_
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 
 using namespace optframe;

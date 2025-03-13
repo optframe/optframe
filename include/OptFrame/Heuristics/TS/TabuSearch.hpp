@@ -24,9 +24,10 @@
 #ifndef OPTFRAME_HEURISTICS_TS_TABUSEARCH_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_TS_TABUSEARCH_HPP_  // NOLINT
 
-#include "../../Evaluator.hpp"
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+
 #include "../../NSEnum.hpp"
-#include "../../SingleObjSearch.hpp"
 
 namespace optframe {
 

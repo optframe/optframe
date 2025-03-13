@@ -4,14 +4,13 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_BESTIMPROVEMENTLOS_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_BESTIMPROVEMENTLOS_HPP_
 
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Timer.hpp>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NSSeq.hpp"
-#include "../../Timer.hpp"
 
 namespace optframe {
 

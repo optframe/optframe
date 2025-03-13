@@ -11,8 +11,8 @@
 
 // Framework includes
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Move.hpp>
-#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 namespace optframe {
 
@@ -187,13 +187,13 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
 // (0) automatic when no conversion is needed
 #ifndef _MSC_VER  // NO USE IN MSVC
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-  explicit NSSeqVRP2Opt(
-      P* p = nullptr) requires std::is_same_v<typename XES::first_type, Routes>
+  explicit NSSeqVRP2Opt(P* p = nullptr)
+    requires std::is_same_v<typename XES::first_type, Routes>
       : getRoutes{[](const XES& se) -> Routes& {
-        // hiding the innevitable const_cast from the user...
-        // NOLINTNEXTLINE
-        return const_cast<Routes&>(se.first);
-      }},
+          // hiding the innevitable const_cast from the user...
+          // NOLINTNEXTLINE
+          return const_cast<Routes&>(se.first);
+        }},
         p{p} {}
 #else
   // (0) automatic when no conversion is needed

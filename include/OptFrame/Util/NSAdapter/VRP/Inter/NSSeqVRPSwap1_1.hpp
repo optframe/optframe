@@ -12,10 +12,9 @@
 // Framework includes
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Concepts/MyConcepts.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
-
-#include "../../../../Move.hpp"
-#include "../../../../NSSeq.hpp"
 
 // Check if C++20 Concepts is supported
 // #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)

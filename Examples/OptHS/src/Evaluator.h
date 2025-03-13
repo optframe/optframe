@@ -4,11 +4,11 @@
 #ifndef OptHS_EVALUATOR_HPP_
 #define OptHS_EVALUATOR_HPP_
 
-//#include <cmath>
+// #include <cmath>
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"

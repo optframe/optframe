@@ -23,11 +23,11 @@
 #ifndef TSP2_EVALUATOR_HPP_
 #define TSP2_EVALUATOR_HPP_
 
-//#include <cmath>
+// #include <cmath>
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"

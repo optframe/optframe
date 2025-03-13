@@ -10,9 +10,10 @@
 #include <utility>
 #include <vector>
 //
-#include "../../Evaluator.hpp"
-#include "../../NSEnum.hpp"
-#include "../../SingleObjSearch.hpp"
+#include <OptFrame/Core/NSEnum.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+
 #include "TS.h"
 
 namespace optframe {

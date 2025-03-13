@@ -13,17 +13,18 @@
 #include <vector>
 
 // optframe
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Timer.hpp>
+
 #include "../../Constructive.hpp"
 #include "../../Evaluation.hpp"
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NS.hpp"
 #include "../../RandGen.hpp"
-#include "../../SingleObjSearch.hpp"
-#include "../../Timer.hpp"
 // #include <gsl/gsl_rng.h>
 // #include <gsl/gsl_randist.h>
-// #include "../../NSSeq.hpp"
+// #include <OptFrame/Core/NSSeq.hpp>
 
 // NGES - Neighborhood Guided Evolution Strategies
 

@@ -2,8 +2,8 @@
 #define HFM_NSSEQREMOVESINGLEINPUT_HPP_
 
 // Framework includes
-#include <OptFrame/NSSeq.hpp>
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 
 // Own includes
 #include "../ProblemInstance.hpp"

@@ -8,7 +8,7 @@
 #include <optional>
 #include <string>
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 
 namespace optframe {
 
@@ -25,9 +25,7 @@ class FxConstructive final : public Constructive<S> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

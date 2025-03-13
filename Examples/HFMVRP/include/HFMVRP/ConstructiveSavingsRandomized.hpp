@@ -12,9 +12,9 @@
 #include <list>
 //
 // #include "../../OptFrame/Util/TestSolution.hpp"
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
-#include <OptFrame/RandGen.hpp>
 //
 #include "Evaluator.hpp"
 #include "ProblemInstance.hpp"
@@ -83,9 +83,9 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
                     (*dist)(0, LC.at(c)));  // custo de ir do depósito ao
                                             // cliente e do cliente ao depósito
       aux.push_back(loads->at(LC.at(c)));   // demanda do cliente
-      aux.push_back(1);         // número de clientes para essa rota
-      aux.push_back(LC.at(c));  // primeiro extremo da rota
-      aux.push_back(LC.at(c));  // segundo extremo da rota
+      aux.push_back(1);                     // número de clientes para essa rota
+      aux.push_back(LC.at(c));              // primeiro extremo da rota
+      aux.push_back(LC.at(c));              // segundo extremo da rota
       // adicionando os valores à tabela
       t->push_back(aux);
       // adicionando esse cliente a lista de clientes por rota

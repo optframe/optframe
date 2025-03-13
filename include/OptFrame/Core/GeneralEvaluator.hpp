@@ -9,10 +9,10 @@
 #include <iostream>
 #include <string>
 //
-#include "./Concepts/Domain.hpp"
-#include "./Direction.hpp"
-#include "./Evaluation.hpp"
-#include "./Move.hpp"
+#include <OptFrame/Concepts/Domain.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Direction.hpp>
 // #include "MoveCost.hpp"
 
 #define MOD_EXPORT

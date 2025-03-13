@@ -6,11 +6,11 @@
 
 #include <math.h>
 
+#include <OptFrame/LocalSearch.hpp>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "../../LocalSearch.hpp"
 #include "BasicILSPerturbation.hpp"
 #include "ILS.h"
 #include "IteratedLocalSearch.hpp"

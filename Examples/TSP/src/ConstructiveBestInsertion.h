@@ -23,13 +23,13 @@
 #ifndef TSP_BEST_INSERTION_CONSTRUCTIVE_HPP_
 #define TSP_BEST_INSERTION_CONSTRUCTIVE_HPP_
 
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
+// #include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include <stdlib.h>
 
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <algorithm>
 #include <list>
 
@@ -42,30 +42,35 @@ using namespace std;
 
 namespace TSP {
 
-//class ConstructiveBestInsertion: public Constructive<SolutionTSP>
+// class ConstructiveBestInsertion: public Constructive<SolutionTSP>
 class ConstructiveBestInsertion : public InitialSearch<ESolutionTSP> {
  private:
   sref<ProblemInstance> pI;
   sref<GeneralEvaluator<ESolutionTSP>> eval;
   sref<RandGen> rg;
 
-  static bool compare(const pair<double, pair<int, int>>& p1, const pair<double, pair<int, int>>& p2) {
+  static bool compare(const pair<double, pair<int, int>>& p1,
+                      const pair<double, pair<int, int>>& p2) {
     return p1.first < p2.first;
   }
 
  public:
-  ConstructiveBestInsertion(sref<ProblemInstance> pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg)
-      : pI(pI), eval(_eval), rg(_rg)  // If necessary, add more parameters
-        {
-            // Put the rest of your code here
-        };
+  ConstructiveBestInsertion(sref<ProblemInstance> pI,
+                            sref<GeneralEvaluator<ESolutionTSP>> _eval,
+                            sref<RandGen> _rg)
+      : pI(pI),
+        eval(_eval),
+        rg(_rg)  // If necessary, add more parameters
+  {
+    // Put the rest of your code here
+  };
 
-  virtual ~ConstructiveBestInsertion() {
-  }
+  virtual ~ConstructiveBestInsertion() {}
 
-  //std::optional<SolutionTSP> generateSolution(double timelimit) override
-  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override {
-    //cout << "Generating solution" << endl;
+  // std::optional<SolutionTSP> generateSolution(double timelimit) override
+  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(
+      const StopCriteria<>& sosc) override {
+    // cout << "Generating solution" << endl;
     RepTSP newRep;
     vector<bool> used(pI->n, false);
 
@@ -75,8 +80,7 @@ class ConstructiveBestInsertion : public InitialSearch<ESolutionTSP> {
     used[first] = true;
 
     int second = rg->rand(pI->n);
-    while (second == first)
-      second = rg->rand(pI->n);
+    while (second == first) second = rg->rand(pI->n);
 
     newRep.push_back(second);
     used[second] = true;
@@ -84,26 +88,28 @@ class ConstructiveBestInsertion : public InitialSearch<ESolutionTSP> {
     while (((int)newRep.size()) < pI->n) {
       vector<pair<double, pair<int, int>>> candidates;
 
-      //cout << "BASE: " << newRep << endl;
+      // cout << "BASE: " << newRep << endl;
 
       for (unsigned i = 0; i < used.size(); i++)
         if (!used[i])
           for (unsigned j = 0; j < newRep.size(); j++) {
             // city i will be in position j
             unsigned bj = j - 1;
-            if (j == 0)
-              bj = newRep.size() - 1;
+            if (j == 0) bj = newRep.size() - 1;
 
             double cost = -(*pI->dist)(newRep[bj], newRep[j]);  // remove arc
-            //cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" << cost << endl;
+            // cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
+            // cost << endl;
             cost += (*pI->dist)(newRep[bj], i);
-            //cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" << cost << endl;
+            // cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
+            // cost << endl;
             cost += (*pI->dist)(i, newRep[j]);
-            //cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" << cost << endl;
+            // cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
+            // cost << endl;
             candidates.push_back(make_pair(cost, make_pair(i, j)));
           }
 
-      //cout << "before sort: " << newRep << endl;
+      // cout << "before sort: " << newRep << endl;
       sort(candidates.begin(), candidates.end(), compare);
 
       int best_pos = candidates[0].second.second;
@@ -113,7 +119,8 @@ class ConstructiveBestInsertion : public InitialSearch<ESolutionTSP> {
 
       /*
             cout << "Solution is now: " << newRep << endl;
-            cout << "Best insertion is: city=" << best_city << " in position=" << best_pos << " value=" << candidates[0].first << endl;
+            cout << "Best insertion is: city=" << best_city << " in position="
+         << best_pos << " value=" << candidates[0].first << endl;
             */
 
       newRep.insert(newRep.begin() + best_pos, best_city);
@@ -124,31 +131,32 @@ class ConstructiveBestInsertion : public InitialSearch<ESolutionTSP> {
             int bef_pos = best_pos-1;
             int aft_pos = best_pos+1;
             if(best_pos==0)
-            	bef_pos = ((int)newRep.size())-1;
+                bef_pos = ((int)newRep.size())-1;
             if(best_pos==((int)newRep.size()))
-            	aft_pos = 0;
+                aft_pos = 0;
 
             double calcCost = -(*pI->dist)(newRep[bef_pos], newRep[aft_pos]);
-            cout << "calcCost = -d(" << newRep[bef_pos] << "," << newRep[aft_pos] << ") ";
-            calcCost += (*pI->dist)(newRep[bef_pos], newRep[best_pos]);
-            cout << "calcCost += d(" << newRep[bef_pos] << "," << newRep[best_pos] << ") ";
-            calcCost += (*pI->dist)(newRep[best_pos], newRep[aft_pos]);
-            cout << "calcCost += d(" << newRep[best_pos] << "," << newRep[aft_pos] << ") " << endl;
-            cout << "Solution became: " << newRep << endl;
+            cout << "calcCost = -d(" << newRep[bef_pos] << "," <<
+         newRep[aft_pos] << ") "; calcCost += (*pI->dist)(newRep[bef_pos],
+         newRep[best_pos]); cout << "calcCost += d(" << newRep[bef_pos] << ","
+         << newRep[best_pos] << ") "; calcCost += (*pI->dist)(newRep[best_pos],
+         newRep[aft_pos]); cout << "calcCost += d(" << newRep[best_pos] << ","
+         << newRep[aft_pos] << ") " << endl; cout << "Solution became: " <<
+         newRep << endl;
 
 
             if(candidates[0].first != calcCost)
             {
-            	cout << "DIFFERENCE BETWEEN COSTS! Best: "<<candidates[0].first << " CALC: " << calcCost << endl;
-            	exit(1);
+                cout << "DIFFERENCE BETWEEN COSTS! Best: "<<candidates[0].first
+         << " CALC: " << calcCost << endl; exit(1);
             }
             */
 
-      //cout << "after sort: " << newRep << endl;
+      // cout << "after sort: " << newRep << endl;
     }
 
-    //return new CopySolution<RepTSP>(newRep);
-    //return make_optional(SolutionTSP(newRep));
+    // return new CopySolution<RepTSP>(newRep);
+    // return make_optional(SolutionTSP(newRep));
     EvaluationTSP etsp;
     ESolutionTSP se(SolutionTSP(newRep), etsp);
     eval->reevaluate(se);

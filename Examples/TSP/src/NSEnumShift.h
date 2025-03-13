@@ -8,7 +8,7 @@
 
 #include "OptFrame/Move.hpp"
 //
-#include <OptFrame/NSEnum.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Util/NSAdapter/NSEnumVectorShift.hpp>
 
 // Own includes

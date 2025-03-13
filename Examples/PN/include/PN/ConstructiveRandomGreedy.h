@@ -4,8 +4,8 @@
 #ifndef PN_CONSTRUCTIVE_RandomGreedy_H_
 #define PN_CONSTRUCTIVE_RandomGreedy_H_
 
-#include <OptFrame/Constructive.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include <stdlib.h>
 

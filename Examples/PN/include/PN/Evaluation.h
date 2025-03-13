@@ -4,7 +4,7 @@
 #ifndef PN_EVALUATION_H_
 #define PN_EVALUATION_H_
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 
 #include "DeltaStructure.h"
 

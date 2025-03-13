@@ -8,9 +8,9 @@
 #include <utility>
 #include <vector>
 //
-#include "../../LocalSearch.hpp"
-#include "../../NS.hpp"
-#include "../../Timer.hpp"
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Timer.hpp>
 
 namespace optframe {
 

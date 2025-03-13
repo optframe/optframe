@@ -23,12 +23,12 @@
 #ifndef PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 #define PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+// #include "../../OptFrame/Util/TestSolution.hpp"
 #include <stdlib.h>
 
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <algorithm>
 #include <list>
 

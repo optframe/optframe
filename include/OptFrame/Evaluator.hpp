@@ -9,13 +9,13 @@
 #include <string>
 #include <utility>
 //
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/GeneralEvaluator.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Direction.hpp>
-#include <OptFrame/Evaluation.hpp>
-#include <OptFrame/GeneralEvaluator.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/ICompare.hpp>
 #include <OptFrame/IEvaluator.hpp>
-#include <OptFrame/Move.hpp>
 
 namespace optframe {
 

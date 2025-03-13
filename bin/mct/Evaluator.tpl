@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 
 #include "Representation.h"

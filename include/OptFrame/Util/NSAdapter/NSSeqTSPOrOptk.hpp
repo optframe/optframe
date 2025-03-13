@@ -24,8 +24,9 @@
 #define OPTFRAME_NSSEQ_TSP_OROPTK_HPP_
 
 // Framework includes
+#include <OptFrame/Core/NSSeq.hpp>
+
 #include "../../Move.hpp"
-#include "../../NSSeq.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "Moves/MoveTSPOrOptk.hpp"
 #include "NSIterators/IteratorTSPOrOptk.hpp"

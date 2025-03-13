@@ -23,13 +23,13 @@
 #ifndef TSP_NN_CONSTRUCTIVE_HPP_
 #define TSP_NN_CONSTRUCTIVE_HPP_
 
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include <stdlib.h>
 
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <algorithm>
 #include <list>
 
@@ -42,30 +42,35 @@ using namespace std;
 
 namespace TSP {
 
-//class NearestNeighborConstructive: public Constructive<SolutionTSP>
+// class NearestNeighborConstructive: public Constructive<SolutionTSP>
 class NearestNeighborConstructive : public InitialSearch<ESolutionTSP> {
  private:
   sref<ProblemInstance> pI;
   sref<GeneralEvaluator<ESolutionTSP>> eval;
   sref<RandGen> rg;
 
-  static bool compare(const pair<double, int>& p1, const pair<double, int>& p2) {
+  static bool compare(const pair<double, int>& p1,
+                      const pair<double, int>& p2) {
     return p1.first < p2.first;
   }
 
  public:
-  NearestNeighborConstructive(sref<ProblemInstance> pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg)
-      : pI(pI), eval(_eval), rg(_rg)  // If necessary, add more parameters
-        {
-            // Put the rest of your code here
-        };
+  NearestNeighborConstructive(sref<ProblemInstance> pI,
+                              sref<GeneralEvaluator<ESolutionTSP>> _eval,
+                              sref<RandGen> _rg)
+      : pI(pI),
+        eval(_eval),
+        rg(_rg)  // If necessary, add more parameters
+  {
+    // Put the rest of your code here
+  };
 
-  virtual ~NearestNeighborConstructive() {
-  }
+  virtual ~NearestNeighborConstructive() {}
 
-  //std::optional<SolutionTSP> generateSolution(double timelimit) override
-  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override {
-    //cout << "Generating solution" << endl;
+  // std::optional<SolutionTSP> generateSolution(double timelimit) override
+  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(
+      const StopCriteria<>& sosc) override {
+    // cout << "Generating solution" << endl;
     RepTSP newRep;
     vector<bool> used(pI->n, false);
 
@@ -73,22 +78,23 @@ class NearestNeighborConstructive : public InitialSearch<ESolutionTSP> {
 
     newRep.push_back(first);
     used[first] = true;
-    //cout << "first is " << first << endl;
+    // cout << "first is " << first << endl;
 
     while (((int)newRep.size()) < pI->n - 1) {
       vector<pair<double, int>> candidates;
 
       for (unsigned i = 0; i < used.size(); i++)
         if (!used[i])
-          candidates.push_back(make_pair((*pI->dist)(i, newRep.at(newRep.size() - 1)), i));
+          candidates.push_back(
+              make_pair((*pI->dist)(i, newRep.at(newRep.size() - 1)), i));
 
-      //cout << "before sort: " << newRep << endl;
+      // cout << "before sort: " << newRep << endl;
       sort(candidates.begin(), candidates.end(), compare);
 
       newRep.push_back(candidates[0].second);
       used[candidates[0].second] = true;
 
-      //cout << "after sort: " << newRep << endl;
+      // cout << "after sort: " << newRep << endl;
     }
 
     // add last
@@ -99,8 +105,8 @@ class NearestNeighborConstructive : public InitialSearch<ESolutionTSP> {
         break;
       }
 
-    //return new CopySolution<RepTSP>(newRep);
-    //return make_optional(SolutionTSP(newRep));
+    // return new CopySolution<RepTSP>(newRep);
+    // return make_optional(SolutionTSP(newRep));
     EvaluationTSP etsp;
     ESolutionTSP se(SolutionTSP(newRep), etsp);
     eval->reevaluate(se);

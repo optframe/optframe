@@ -8,10 +8,10 @@
 #include <utility>
 #include <vector>
 //
+#include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/NSEnum.hpp>
 
 #include "VND.h"
 

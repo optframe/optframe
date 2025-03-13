@@ -24,8 +24,9 @@
 #define OPTFRAME_NSSEQVECTOROROPT_HPP_
 
 // Framework includes
+#include <OptFrame/Core/NSSeq.hpp>
+
 #include "../../Move.hpp"
-#include "../../NSSeq.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "NSSeqTSPOrOptk.hpp"
 #include "NSSeqUnionAdapter.hpp"

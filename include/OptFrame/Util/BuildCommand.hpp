@@ -23,7 +23,8 @@
 #ifndef BUILDMODULE_HPP_
 #define BUILDMODULE_HPP_
 
-#include "../LocalSearch.hpp"
+#include <OptFrame/LocalSearch.hpp>
+
 #include "../MultiObjSearch.hpp"
 #include "../SingleObjSearch.hpp"
 

@@ -16,7 +16,8 @@
 
 #include <OptFrame/Heuristics/LocalSearches/VND.h>
 
-#include <OptFrame/GeneralEvaluator.hpp>
+#include <OptFrame/Core/GeneralEvaluator.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
 #include <OptFrame/Heuristics/Empty.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
@@ -34,7 +35,6 @@
 #include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
-#include <OptFrame/NSSeq.hpp>
 #include <OptFrame/ParetoManager.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 

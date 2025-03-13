@@ -17,6 +17,7 @@
 
 #include <OptFrame/printable/printable.hpp>
 //
+#include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Helper/CloneConstructive.hpp>
 #include <OptFrame/Heuristics/EA/ESContinuous.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
@@ -28,7 +29,6 @@
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
-#include <OptFrame/NSSeq.hpp>
 #include <OptFrame/Timer.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>

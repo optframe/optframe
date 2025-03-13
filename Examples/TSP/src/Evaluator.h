@@ -23,15 +23,15 @@
 #ifndef TSP_EVALUATOR_HPP_
 #define TSP_EVALUATOR_HPP_
 
-//#include <cmath>
-// C
+// #include <cmath>
+//  C
 #include <math.h>
 #include <stdlib.h>
 // C++
 #include <string>
 #include <utility>
 //
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPSwap.hpp>
 

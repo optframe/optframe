@@ -10,8 +10,8 @@
 #include <vector>
 
 // Framework includes
-#include "../../../../Move.hpp"
-#include "../../../../NSSeq.hpp"
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSSeq.hpp>
 
 namespace optframe {
 template <class T, class ADS = OPTFRAME_DEFAULT_ADS,

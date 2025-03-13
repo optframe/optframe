@@ -4,15 +4,15 @@
 #ifndef OPTFRAME_HEURISTICS_EA_BASICGENETICALGORITHM_HPP_
 #define OPTFRAME_HEURISTICS_EA_BASICGENETICALGORITHM_HPP_
 
+#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/SingleObjSearch.hpp>
 #include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "../../LocalSearch.hpp"
 #include "../../MultiSolution.hpp"
 #include "../../RandGen.hpp"
-#include "../../SingleObjSearch.hpp"
 #include "BinarySelection.hpp"
 #include "Crossover.hpp"
 #include "EA.hpp"

@@ -23,57 +23,48 @@
 #ifndef OptHS_INITIALSOLUTION_Random_HPP_
 #define OptHS_INITIALSOLUTION_Random_HPP_
 
-#include <OptFrame/Constructive.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp"
+#include <OptFrame/Core/Constructive.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.h"
+#include <stdlib.h>
 
-#include "Representation.h"
-#include "Solution.h"
-
-#include "Evaluator.h"
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+#include <algorithm>
 #include <list>
 
-#include <algorithm>
-#include <stdlib.h>
+#include "Evaluator.h"
+#include "ProblemInstance.h"
+#include "Representation.h"
+#include "Solution.h"
 
 using namespace std;
 using namespace optframe;
 
 namespace OptHS {
 
-class ConstructiveRandom : public Constructive<SolutionOptHS>
-{
-private:
-   ProblemInstance& p;
-   RandGen& rg;
+class ConstructiveRandom : public Constructive<SolutionOptHS> {
+ private:
+  ProblemInstance& p;
+  RandGen& rg;
 
-public:
-   ConstructiveRandom(ProblemInstance& _p, RandGen& _rg)
-     : p(_p)
-     , rg(_rg)
-   {
-   }
+ public:
+  ConstructiveRandom(ProblemInstance& _p, RandGen& _rg) : p(_p), rg(_rg) {}
 
-   virtual ~ConstructiveRandom()
-   {
-   }
+  virtual ~ConstructiveRandom() {}
 
-   std::optional<SolutionOptHS> generateSolution(double timelimit) override
-   {
-      RepOptHS newRep;
+  std::optional<SolutionOptHS> generateSolution(double timelimit) override {
+    RepOptHS newRep;
 
-      for (unsigned i = 0; i < p.members.size() - 1; i++)
-         for (unsigned j = i + 1; j < p.members.size(); j++)
-            newRep.push_back(make_pair(p.members[i], p.members[j]));
+    for (unsigned i = 0; i < p.members.size() - 1; i++)
+      for (unsigned j = i + 1; j < p.members.size(); j++)
+        newRep.push_back(make_pair(p.members[i], p.members[j]));
 
-      rg.shuffle(newRep); // shuffle elements of newRep
+    rg.shuffle(newRep);  // shuffle elements of newRep
 
-      return make_optional(SolutionOptHS(newRep));
-   }
+    return make_optional(SolutionOptHS(newRep));
+  }
 };
 
-}
+}  // namespace OptHS
 
 #endif /*OptHS_INITIALSOLUTION_Random_HPP_*/

@@ -12,8 +12,8 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Constructive.hpp>  // for helper only  (TODO: make special class)
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Constructive.hpp>  // for helper only  (TODO: make special class)
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>  // for helper only (TODO: make special class)
 #include <OptFrame/GlobalSearch.hpp>
 #include <OptFrame/Helper/Solution.hpp>
@@ -28,9 +28,8 @@ namespace optframe {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 template <class Self>
-concept XSingleObjSearch = requires(Self a) {
-  requires XESolution<typename Self::BestType>;
-};
+concept XSingleObjSearch =
+    requires(Self a) { requires XESolution<typename Self::BestType>; };
 
 #endif  // cpp_concepts
 

@@ -29,8 +29,8 @@
 #include <utility>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Evaluation.hpp>
-#include <OptFrame/NSIterator.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/NSIterator.hpp>
 
 #define MOD_EXPORT
 #else

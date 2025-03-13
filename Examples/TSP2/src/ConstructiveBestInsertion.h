@@ -23,12 +23,12 @@
 #ifndef TSP2_BEST_INSERTION_CONSTRUCTIVE_HPP_
 #define TSP2_BEST_INSERTION_CONSTRUCTIVE_HPP_
 
-//#include <OptFrame/Util/TestSolution.hpp"
+// #include <OptFrame/Util/TestSolution.hpp"
 
 #include <stdlib.h>
 
-#include <OptFrame/Constructive.hpp>
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <algorithm>
 #include <list>
 
@@ -54,7 +54,7 @@ class ConstructiveBestInsertion : public Constructive<RepTSP> {
   ConstructiveBestInsertion(ProblemInstance& _pTSP, RandGen& _rg)
       : pTSP(_pTSP),
         rg(_rg)  // If necessary, add more parameters
-        {};
+  {};
 
   virtual ~ConstructiveBestInsertion() {}
 

@@ -7,7 +7,7 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/MultiSolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 

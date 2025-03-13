@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 //
-#include <OptFrame/Move.hpp>
+#include <OptFrame/Core/Move.hpp>
 
 namespace optframe {
 

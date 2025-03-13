@@ -10,12 +10,12 @@
 #include <utility>
 //
 
-#include "Component.hpp"
-#include "Concepts/Domain.hpp"
-#include "Helper/MultiEvaluation.hpp"
-#include "Move.hpp"
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Helper/MultiEvaluation.hpp>
 // included for Neighborhood Exploration
-#include "GeneralEvaluator.hpp"
+#include <OptFrame/Core/GeneralEvaluator.hpp>
 
 #define MOD_EXPORT
 #else

@@ -23,16 +23,18 @@
 #ifndef OPTFRAME_PATHRELINKING_HPP_
 #define OPTFRAME_PATHRELINKING_HPP_
 
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+
 #include "../Component.hpp"
-#include "../Evaluation.hpp"
-#include "../Evaluator.hpp"
-#include "../LocalSearch.hpp"
 #include "../Solution.hpp"
 
 namespace optframe {
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
 {
   typedef vector<Evaluation<DS>*> FitnessValues;
   typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
@@ -44,23 +46,34 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
   LocalSearch<R, ADS, DS>& localSearch;
 
  public:
-  //using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
+  // using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-  PathRelinking(LocalSearch<R, ADS, DS>& localSearch, Evaluator<R, ADS, DS>& evaluator, int k = 1, bool forward = false)
-      : localSearch(localSearch), evaluator(evaluator), k(k), forward(forward) {
-  }
+  PathRelinking(LocalSearch<R, ADS, DS>& localSearch,
+                Evaluator<R, ADS, DS>& evaluator, int k = 1,
+                bool forward = false)
+      : localSearch(localSearch),
+        evaluator(evaluator),
+        k(k),
+        forward(forward) {}
 
-  virtual ~PathRelinking() {
-  }
+  virtual ~PathRelinking() {}
 
-  virtual vector<pair<Move<R, ADS, DS>*, double>>& symmetric_difference(Solution<R, ADS>& x, Evaluation<DS>& e_x, const Solution<R, ADS>& xt, const Evaluation<DS>& e_xt) = 0;
+  virtual vector<pair<Move<R, ADS, DS>*, double>>& symmetric_difference(
+      Solution<R, ADS>& x, Evaluation<DS>& e_x, const Solution<R, ADS>& xt,
+      const Evaluation<DS>& e_xt) = 0;
 
-  virtual void update_delta(vector<pair<Move<R, ADS, DS>*, double>>& delta, int index_best, Solution<R, ADS>& x, Evaluation<DS>& e_x, const Solution<R, ADS>& xt, const Evaluation<DS>& e_xt) {
+  virtual void update_delta(vector<pair<Move<R, ADS, DS>*, double>>& delta,
+                            int index_best, Solution<R, ADS>& x,
+                            Evaluation<DS>& e_x, const Solution<R, ADS>& xt,
+                            const Evaluation<DS>& e_xt) {
     delta.erase(delta.begin() + index_best);
   }
 
   // path-relinking from starting solution 'xs' to target solution 'xt'
-  virtual pair<Solution<R, ADS>&, Evaluation<DS>&>& path_relinking(const Solution<R, ADS>& xs, const Evaluation<DS>& e_xs, const Solution<R, ADS>& xt, const Evaluation<DS>& e_xt, double timelimit, double target_f) {
+  virtual pair<Solution<R, ADS>&, Evaluation<DS>&>& path_relinking(
+      const Solution<R, ADS>& xs, const Evaluation<DS>& e_xs,
+      const Solution<R, ADS>& xt, const Evaluation<DS>& e_xt, double timelimit,
+      double target_f) {
     cout << "path_relinking " << (forward ? "forward" : "backward") << endl;
     cout << "from: ";
     e_xs.print();
@@ -71,7 +84,8 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
     Evaluation<DS>& e_x = e_xs.clone();
 
     // compute the symmetric difference 'delta' between xs and xt
-    vector<pair<Move<R, ADS, DS>*, double>>& delta = symmetric_difference(x, e_x, xt, e_xt);
+    vector<pair<Move<R, ADS, DS>*, double>>& delta =
+        symmetric_difference(x, e_x, xt, e_xt);
 
     // compute f*
     Solution<R, ADS>* s_star;
@@ -88,12 +102,11 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
     // while 'delta' > 0, i.e., 'xs' are 'xt' are different
     while (delta.size() > 0) {
       /*
-			 cout << "\nNOVA ITERACAO = |delta| = " << delta.size() << endl;
-			 cout << "waiting...";
-			 getchar();
-			 */
+                         cout << "\nNOVA ITERACAO = |delta| = " << delta.size()
+         << endl; cout << "waiting..."; getchar();
+                         */
 
-      //1. find best move
+      // 1. find best move
       unsigned index_best = 0;
 
       for (unsigned i = 1; i < delta.size(); i++)
@@ -103,20 +116,21 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
       Move<R, ADS, DS>* m_star = delta[index_best].first;
       double f_m_star = delta[index_best].second;
 
-      //2. update 'x' and 'e_x'
+      // 2. update 'x' and 'e_x'
       m_star->apply(e_x, x);
-      //m_star->print();
-      //cout << "FO ATUAL ANTES BUSCA= " << evaluator.evaluate(x).evaluation() << endl;
+      // m_star->print();
+      // cout << "FO ATUAL ANTES BUSCA= " << evaluator.evaluate(x).evaluation()
+      // << endl;
       localSearch.searchFrom(x, e_x, timelimit, target_f);
-      //cout << "FO ATUAL= " << evaluator.evaluate(x).evaluation() << endl;
+      // cout << "FO ATUAL= " << evaluator.evaluate(x).evaluation() << endl;
 
       evaluator.evaluate(e_x, x);
 
-      //3. update 'delta'
+      // 3. update 'delta'
       update_delta(delta, index_best, x, e_x, xt, e_xt);
-      //delta.erase(delta.begin() + index_best);
+      // delta.erase(delta.begin() + index_best);
 
-      //4. compare with 'x*'
+      // 4. compare with 'x*'
       if (evaluator.betterThan(e_x, *e_star)) {
         delete e_star;
         delete s_star;
@@ -129,16 +143,18 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
     delete &x;
     delete &e_x;
 
-    pair<Solution<R, ADS>&, Evaluation<DS>&>& r = *new pair<Solution<R, ADS>&, Evaluation<DS>&>(*s_star, *e_star);
+    pair<Solution<R, ADS>&, Evaluation<DS>&>& r =
+        *new pair<Solution<R, ADS>&, Evaluation<DS>&>(*s_star, *e_star);
     cout << "best path_relinking: ";
     e_star->print();
-    //getchar();
+    // getchar();
     return r;
   }
 
   // rewritting search method for efficiency purposes!
   // safe use of const_cast
-  Population<XES>& search(const Population<XES>& p, double timelimit = 100000000, double target_f = 0) {
+  Population<XES>& search(const Population<XES>& p,
+                          double timelimit = 100000000, double target_f = 0) {
     int p_size = p.size();
 
     Population<XES>* v = new Population<XES>;
@@ -148,8 +164,7 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
 
     exec(*v, timelimit, target_f);
 
-    for (int i = 0; i < p_size; i++)
-      v->remove(0);
+    for (int i = 0; i < p_size; i++) v->remove(0);
 
     return *v;
   }
@@ -161,14 +176,16 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
 
     exec(p, ev, timelimit, target_f);
 
-    for (int i = 0; i < ev.size(); i++)
-      delete ev[i];
+    for (int i = 0; i < ev.size(); i++) delete ev[i];
     delete &ev;
   }
 
   // rewritting search method for efficiency purposes!
   // safe use of const_cast
-  pair<Population<XES>&, FitnessValues&>& search(const Population<XES>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0) {
+  pair<Population<XES>&, FitnessValues&>& search(const Population<XES>& p,
+                                                 ConstFitnessValues& ev,
+                                                 double timelimit = 100000000,
+                                                 double target_f = 0) {
     Population<XES>* p2 = new Population<XES>;
     for (unsigned i = 0; i < p.size(); i++)
       p2->push_back(const_cast<Solution<R, ADS>&>(p.at(i)));
@@ -184,9 +201,12 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
     return *new pair<Population<XES>&, FitnessValues&>(*p2, *ev2);
   }
 
-  void exec(Population<XES>& p, vector<Evaluation<DS>*>& ev, double timelimit, double target_f) {
+  void exec(Population<XES>& p, vector<Evaluation<DS>*>& ev, double timelimit,
+            double target_f) {
     if (p.size() <= 1) {
-      cout << "Path Relinking exec(p&,e&) warning: empty or only one solution in the pool!" << endl;
+      cout << "Path Relinking exec(p&,e&) warning: empty or only one solution "
+              "in the pool!"
+           << endl;
       return;
     }
 
@@ -205,22 +225,24 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
       int x1 = rand() % p.size();
       // different values of x, for efficiency purposes
       int x2 = x1;
-      while (x2 == x1)
-        x2 = rand() % p.size();
+      while (x2 == x1) x2 = rand() % p.size();
 
-      if (forward && evaluator.betterThan(ev[x1]->evaluation(), ev[x2]->evaluation())) {
+      if (forward &&
+          evaluator.betterThan(ev[x1]->evaluation(), ev[x2]->evaluation())) {
         int aux = x1;
         x1 = x2;
         x2 = aux;
       }
 
-      if ((!forward) && evaluator.betterThan(ev[x2]->evaluation(), ev[x1]->evaluation())) {
+      if ((!forward) &&
+          evaluator.betterThan(ev[x2]->evaluation(), ev[x1]->evaluation())) {
         int aux = x1;
         x1 = x2;
         x2 = aux;
       }
 
-      pair<Solution<R, ADS>&, Evaluation<DS>&>& ret_path = path_relinking(p.at(x1), *ev[x1], p.at(x2), *ev[x2], timelimit, target_f);
+      pair<Solution<R, ADS>&, Evaluation<DS>&>& ret_path = path_relinking(
+          p.at(x1), *ev[x1], p.at(x2), *ev[x2], timelimit, target_f);
 
       new_s.push_back(&ret_path.first);
       new_e.push_back(&ret_path.second);
@@ -231,8 +253,7 @@ class PathRelinking : public Component  //LocalSearch<R, ADS, DS>
       iter++;
     }
 
-    for (int i = 0; i < new_s.size(); i++)
-      p.push_back(*new_s[i]);
+    for (int i = 0; i < new_s.size(); i++) p.push_back(*new_s[i]);
 
     new_s.clear();
     ev.insert(ev.end(), new_e.begin(), new_e.end());

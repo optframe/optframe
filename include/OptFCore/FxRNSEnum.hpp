@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 //
-#include <OptFrame/NSEnum.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
 
 // no need for coroutines
 

@@ -6,10 +6,11 @@
 
 #include <vector>
 //
-#include "../../Evaluator.hpp"
-#include "../../LocalSearch.hpp"
-#include "../../NSEnum.hpp"
-#include "../../RandGen.hpp"
+#include <OptFrame/Core/NSEnum.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/LocalSearch.hpp>
+
 #include "VND.h"
 
 namespace optframe {

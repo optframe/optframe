@@ -17,7 +17,7 @@
 // important stuff TO TEST
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 // for testing
 #include <OptFrame/BasicPareto.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>

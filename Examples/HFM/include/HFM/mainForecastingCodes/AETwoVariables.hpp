@@ -8,7 +8,7 @@
 //
 #include <iostream>
 //
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 using namespace std;

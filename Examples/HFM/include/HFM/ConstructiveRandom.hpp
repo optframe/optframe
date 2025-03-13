@@ -8,10 +8,10 @@
 #include <list>
 #include <set>
 //
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
-#include <OptFrame/RandGen.hpp>
 
 #include "Evaluator.hpp"
 #include "ProblemInstance.hpp"

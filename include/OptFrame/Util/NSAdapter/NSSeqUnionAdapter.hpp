@@ -26,9 +26,10 @@
 // C++
 #include <string>
 // Framework includes
+#include <OptFrame/Core/NSSeq.hpp>
+
 #include "../../Move.hpp"
 #include "../../NSIterator.hpp"
-#include "../../NSSeq.hpp"
 #include "./Moves/MoveNSSeqUnion.hpp"
 #include "./NSIterators/IteratorNSSeqUnion.hpp"
 

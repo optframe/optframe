@@ -7,7 +7,7 @@
 #include <functional>
 #include <string>
 //
-#include <OptFrame/NS.hpp>
+#include <OptFrame/Core/NS.hpp>
 
 namespace optframe {
 

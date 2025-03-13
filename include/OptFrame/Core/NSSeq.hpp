@@ -9,9 +9,9 @@
 #include <string>
 #include <type_traits>  // static assert is_same
 //
+#include <OptFrame/Core/NSFind.hpp>
+#include <OptFrame/Core/NSIterator.hpp>
 #include <OptFrame/Experimental/NSBlockIterator.hpp>
-#include <OptFrame/NSFind.hpp>
-#include <OptFrame/NSIterator.hpp>
 
 #define MOD_EXPORT
 #else

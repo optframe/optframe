@@ -27,7 +27,7 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
@@ -36,8 +36,9 @@ namespace optframe {
 //
 // Population class is 'final'
 //
-// NOTE that this Population is legacy, before concepts, so it won't support XES (only separated S and XEv)
-// For supporting XES, it's required to rebuild this class, in newer standard (supporting 'getP' method from X2ESolution powerset)
+// NOTE that this Population is legacy, before concepts, so it won't support XES
+// (only separated S and XEv) For supporting XES, it's required to rebuild this
+// class, in newer standard (supporting 'getP' method from X2ESolution powerset)
 // XES is only present for Evaluation purposes!
 //
 template <XESolution XES>  // XES only for evaluation purposes!
@@ -46,9 +47,9 @@ class Population final : public Component {
   using XEv = typename XES::first_type;
 
  protected:
-  //typedef S chromossome;
-  //typedef vector<chromossome*> population;
-  //typedef vector<vector<XEv> > populationFitness;
+  // typedef S chromossome;
+  // typedef vector<chromossome*> population;
+  // typedef vector<vector<XEv> > populationFitness;
 
   vector<S*> p;
   vector<vector<XEv>> pFitness;
@@ -56,8 +57,7 @@ class Population final : public Component {
  public:
   vector<double> fitness;
 
-  Population() {
-  }
+  Population() {}
 
   Population(const Population& pop) {
     for (unsigned i = 0; i < pop.size(); i++) {
@@ -75,29 +75,22 @@ class Population final : public Component {
     pop_corpse.clearNoKill();
   }
 
-  virtual ~Population() {
-    clear();
-  }
+  virtual ~Population() { clear(); }
 
-  unsigned size() const {
-    return p.size();
-  }
+  unsigned size() const { return p.size(); }
 
-  // TODO: conflicting with "newer" vision of Population... 'at' should return XES, not single element 'S'.
-  // Population will not be supported anymore, please use EPopulation instead
-  S& at(unsigned c) {
-    return (*p.at(c));
-  }
+  // TODO: conflicting with "newer" vision of Population... 'at' should return
+  // XES, not single element 'S'. Population will not be supported anymore,
+  // please use EPopulation instead
+  S& at(unsigned c) { return (*p.at(c)); }
 
-  const S& at(unsigned c) const {
-    return (*p.at(c));
-  }
+  const S& at(unsigned c) const { return (*p.at(c)); }
 
   // IMPORTANT: 'getP' is not supported here
   // This is Legacy Population... we will need "newer" versions to support this.
 
   XES& getP(unsigned index) {
-    //return make_pair(uptr<S>(), uptr<XEv>());
+    // return make_pair(uptr<S>(), uptr<XEv>());
     XES* p = nullptr;
     std::cerr << "SHOULD NOT USE getP for POPULATION! TODO: fix" << std::endl;
     exit(1);
@@ -122,7 +115,7 @@ class Population final : public Component {
   }
 
   void push_back(const S& c) {
-    //p.push_back(&c.clone());
+    // p.push_back(&c.clone());
     p.push_back(new S(c));  // copy constructor is required
     fitness.push_back(0);
     vector<XEv> a;
@@ -131,7 +124,7 @@ class Population final : public Component {
 
   // chromossome is near dying... take everything and drop the corpse!!
   void push_back(const S&& c) {
-    //p.push_back(&c.clone());
+    // p.push_back(&c.clone());
     p.push_back(new S(std::move(c)));
     fitness.push_back(0);
     vector<XEv> a;
@@ -152,17 +145,11 @@ class Population final : public Component {
     return c;
   }
 
-  vector<XEv> getFitness(int pos) const {
-    return pFitness[pos];
-  }
+  vector<XEv> getFitness(int pos) const { return pFitness[pos]; }
 
-  double getSingleFitness(int pos) const {
-    return fitness[pos];
-  }
+  double getSingleFitness(int pos) const { return fitness[pos]; }
 
-  void setFitness(unsigned i, double v) {
-    fitness[i] = v;
-  }
+  void setFitness(unsigned i, double v) { fitness[i] = v; }
 
   void add(const Population<XES>& pop) {
     for (unsigned i = 0; i < pop.size(); i++) {
@@ -173,8 +160,7 @@ class Population final : public Component {
 
   // clear and kill
   void clear() {
-    for (unsigned i = 0; i < p.size(); i++)
-      delete p.at(i);
+    for (unsigned i = 0; i < p.size(); i++) delete p.at(i);
 
     p.clear();
     fitness.clear();
@@ -187,9 +173,7 @@ class Population final : public Component {
     pFitness.clear();
   }
 
-  bool empty() {
-    return p.empty();
-  }
+  bool empty() { return p.empty(); }
 
   // operates for Single Obj Populations
   // TODO: divide class in SOPop and MOPop
@@ -198,7 +182,8 @@ class Population final : public Component {
     for (int i = 0; i < int(p.size()) - 1; i++) {
       int best = i;
       for (int j = i + 1; j < int(p.size()); j++)
-        if ((isMin && fitness[j] < fitness[best]) || (!isMin && fitness[j] > fitness[best]))
+        if ((isMin && fitness[j] < fitness[best]) ||
+            (!isMin && fitness[j] > fitness[best]))
           best = j;
       // swap best
       if (best != i) {
@@ -277,9 +262,7 @@ class Population final : public Component {
     return (*this);
   }
 
-  virtual Population<XES>& clone() const {
-    return *new Population<XES>(*this);
-  }
+  virtual Population<XES>& clone() const { return *new Population<XES>(*this); }
 
   static string idComponent() {
     stringstream ss;
@@ -287,20 +270,16 @@ class Population final : public Component {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   void print() const override {
     cout << "Population(" << p.size() << ")";
     cout << endl;
 
     for (unsigned i = 0; i < p.size(); i++) {
-      //p.at(i)->print();
+      // p.at(i)->print();
       std::cout << *p.at(i) << std::endl;
     }
   }
@@ -339,9 +318,10 @@ class Population final : public Component {
 
 // TODO: add tests only if not include "printable.h"
 // compilation tests
-//static_assert(X2ESolution<Population< std::pair<Solution<double>, Evaluation<double>> >, std::pair<Solution<double>, Evaluation<double>>>);
+// static_assert(X2ESolution<Population< std::pair<Solution<double>,
+// Evaluation<double>> >, std::pair<Solution<double>, Evaluation<double>>>);
 //
 // population compilation tests (these are NOT unit tests)
-//#include "Population.ctest.hpp"
+// #include "Population.ctest.hpp"
 
 #endif  // OPTFRAME_BASIC_POPULATION_HPP_

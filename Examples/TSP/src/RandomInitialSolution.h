@@ -23,13 +23,13 @@
 #ifndef TSP_INITIALSOLUTION_Random_HPP_
 #define TSP_INITIALSOLUTION_Random_HPP_
 
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/InitialSearch.hpp>
-//#include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
+// #include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include <stdlib.h>
 
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <algorithm>
 #include <list>
 
@@ -42,7 +42,7 @@ using namespace std;
 
 namespace TSP {
 
-//class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
+// class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
 class RandomInitialSolutionTSP : public InitialSearch<ESolutionTSP> {
  private:
   sref<ProblemInstance> pI;
@@ -52,30 +52,32 @@ class RandomInitialSolutionTSP : public InitialSearch<ESolutionTSP> {
   // Your private vars
 
  public:
-  RandomInitialSolutionTSP(sref<ProblemInstance> _pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg)
-      : pI(_pI), eval(_eval), rg(_rg)  // If necessary, add more parameters
-        {
-            // Put the rest of your code here
-        };
+  RandomInitialSolutionTSP(sref<ProblemInstance> _pI,
+                           sref<GeneralEvaluator<ESolutionTSP>> _eval,
+                           sref<RandGen> _rg)
+      : pI(_pI),
+        eval(_eval),
+        rg(_rg)  // If necessary, add more parameters
+  {
+    // Put the rest of your code here
+  };
 
-  virtual ~RandomInitialSolutionTSP() {
-  }
+  virtual ~RandomInitialSolutionTSP() {}
 
-  //std::optional<SolutionTSP> generateSolution(double timelimit) override
-  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override {
+  // std::optional<SolutionTSP> generateSolution(double timelimit) override
+  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(
+      const StopCriteria<>& sosc) override {
     RepTSP newRep(pI->n);
 
     vector<int> r(pI->n);
-    for (unsigned int i = 0; i < r.size(); i++)
-      r[i] = i;
+    for (unsigned int i = 0; i < r.size(); i++) r[i] = i;
 
     rg->shuffle(r);  // shuffle elements of r
 
-    for (unsigned int i = 0; i < newRep.size(); i++)
-      newRep[i] = r[i];
+    for (unsigned int i = 0; i < newRep.size(); i++) newRep[i] = r[i];
 
-    //return new CopySolution<RepTSP>(newRep);
-    //return make_optional(SolutionTSP(newRep));
+    // return new CopySolution<RepTSP>(newRep);
+    // return make_optional(SolutionTSP(newRep));
     ESolutionTSP se(newRep, EvaluationTSP());
     eval->reevaluate(se);
     return make_pair(make_optional(se), SearchStatus::NO_REPORT);
@@ -83,13 +85,12 @@ class RandomInitialSolutionTSP : public InitialSearch<ESolutionTSP> {
 
   static string idComponent() {
     stringstream ss;
-    ss << InitialSearch<ESolutionTSP>::idComponent() << ":RandomInitialSolution";
+    ss << InitialSearch<ESolutionTSP>::idComponent()
+       << ":RandomInitialSolution";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (InitialSearch<ESolutionTSP>::compatible(s));

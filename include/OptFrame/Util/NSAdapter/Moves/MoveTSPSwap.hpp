@@ -27,8 +27,8 @@
 #include <string>
 // Framework includes
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
-#include <OptFrame/Move.hpp>
 
 using namespace std;  // NOLINT
 

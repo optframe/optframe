@@ -11,11 +11,11 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
-#include <OptFrame/RandGen.hpp>
 
 namespace optframe {
 

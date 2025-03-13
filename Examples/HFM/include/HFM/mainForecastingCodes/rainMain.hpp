@@ -3,293 +3,304 @@
 // Project EFP
 // ===================================
 
-#include <stdlib.h>
 #include <math.h>
-#include <iostream>
-#include <OptFrame/RandGen.hpp>
+#include <stdlib.h>
+
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
+#include <iostream>
 
 using namespace std;
 using namespace optframe;
 using namespace HFM;
 
-int rainMain(int argc, char **argv)
-{
+int rainMain(int argc, char** argv) {
+  cout << "Welcome to rain forecast place" << endl;
+  RandGenMersenneTwister rg;
+  // long
+  long seed = time(nullptr);  // CalibrationMode
+  seed = 1;
+  cout << "Seed = " << seed << endl;
+  srand(seed);
+  rg.setSeed(seed);
 
-	cout << "Welcome to rain forecast place" << endl;
-	RandGenMersenneTwister rg;
-	//long
-	long seed = time(nullptr); //CalibrationMode
-	seed = 1;
-	cout << "Seed = " << seed << endl;
-	srand(seed);
-	rg.setSeed(seed);
+  if (argc != 10) {
+    cout << "Parametros incorretos!" << endl;
+    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+            "parameters options precision"
+         << endl;
+    exit(1);
+  }
 
-	if (argc != 10)
-	{
-		cout << "Parametros incorretos!" << endl;
-		cout << "Os parametros esperados sao: nome nomeValidationSet saida parameters options precision" << endl;
-		exit(1);
-	}
+  const char* caminho = argv[1];
+  const char* caminhoValidation = argv[2];
+  const char* caminhoOutput = argv[3];
+  const char* caminhoParameters = argv[4];
+  int instN = atoi(argv[5]);
+  int stepsAhead = atoi(argv[6]);
+  int mu = atoi(argv[9]);
 
-	const char* caminho = argv[1];
-	const char* caminhoValidation = argv[2];
-	const char* caminhoOutput = argv[3];
-	const char* caminhoParameters = argv[4];
-	int instN = atoi(argv[5]);
-	int stepsAhead = atoi(argv[6]);
-	int mu = atoi(argv[9]);
+  string nome = caminho;
+  string nomeValidationSet = caminhoValidation;
+  string nomeOutput = caminhoOutput;
+  string parametersFile = caminhoParameters;
 
-	string nome = caminho;
-	string nomeValidationSet = caminhoValidation;
-	string nomeOutput = caminhoOutput;
-	string parametersFile = caminhoParameters;
+  //===================================
+  cout << "Parametros:" << endl;
+  cout << "nome=" << nome << endl;
+  cout << "nomeValidationSet=" << nomeValidationSet << endl;
+  cout << "nomeOutput=" << nomeOutput << endl;
+  cout << "nomeParameters=" << parametersFile << endl;
+  cout << "instN=" << instN << endl;
+  cout << "stepsAhead=" << stepsAhead << endl;
+  cout << "mu=" << mu << endl;
+  //======================================
 
-	//===================================
-	cout << "Parametros:" << endl;
-	cout << "nome=" << nome << endl;
-	cout << "nomeValidationSet=" << nomeValidationSet << endl;
-	cout << "nomeOutput=" << nomeOutput << endl;
-	cout << "nomeParameters=" << parametersFile << endl;
-	cout << "instN=" << instN << endl;
-	cout << "stepsAhead=" << stepsAhead << endl;
-	cout << "mu=" << mu << endl;
-	//======================================
+  vector<string> vParametersFiles;
+  vParametersFiles.push_back(
+      "./MyProjects/ConfigParameters/JTEuropean/1Column_124Points");
+  vParametersFiles.push_back(
+      "./MyProjects/ConfigParameters/JTEuropean/1Column_7Points");
+  vParametersFiles.push_back(
+      "./MyProjects/ConfigParameters/JTEuropean/1Column_2Points");
+  vParametersFiles.push_back(
+      "./MyProjects/ConfigParameters/JTEuropean/1Column_BasedOnAutoCor");
+  vParametersFiles.push_back(
+      "./MyProjects/ConfigParameters/JTEuropean/1Column_BasedOnAutoCor2");
 
-	vector<string> vParametersFiles;
-	vParametersFiles.push_back("./MyProjects/ConfigParameters/JTEuropean/1Column_124Points");
-	vParametersFiles.push_back("./MyProjects/ConfigParameters/JTEuropean/1Column_7Points");
-	vParametersFiles.push_back("./MyProjects/ConfigParameters/JTEuropean/1Column_2Points");
-	vParametersFiles.push_back("./MyProjects/ConfigParameters/JTEuropean/1Column_BasedOnAutoCor");
-	vParametersFiles.push_back("./MyProjects/ConfigParameters/JTEuropean/1Column_BasedOnAutoCor2");
+  // parametersFile = "./MyProjects/configParametersBestPrice3ColunaseForward";
 
-	//parametersFile = "./MyProjects/configParametersBestPrice3ColunaseForward";
+  vector<string> explanatoryVariables;
 
-	vector<string> explanatoryVariables;
+  string TriUm = "./MyProjects/EFP/Instance/rain/vitoriaMaxMensal";
 
-	string TriUm = "./MyProjects/EFP/Instance/rain/vitoriaMaxMensal";
+  explanatoryVariables.push_back(TriUm);
 
-	explanatoryVariables.push_back(TriUm);
+  treatForecasts rF(explanatoryVariables);
 
-	treatForecasts rF(explanatoryVariables);
+  // vector<vector<double> > batchOfBlindResults; //vector with the blind
+  // results of each batch
 
-	//vector<vector<double> > batchOfBlindResults; //vector with the blind results of each batch
+  /*int beginValidationSet = 0;
+   int nTrainningRoundsValidation = 50;
+   int nValidationSamples = problemParam.getNotUsedForTest() +
+   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
+   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nValidationSamples;
 
-	/*int beginValidationSet = 0;
-	 int nTrainningRoundsValidation = 50;
-	 int nValidationSamples = problemParam.getNotUsedForTest() + nTrainningRoundsValidation * stepsAhead;
-	 cout << "nValidationSamples = " << nValidationSamples << endl;
-	 int nTotalForecastingsValidationSet = nValidationSamples;
+   vector<vector<double> > validationSet; //validation set for calibration
+   validationSet.push_back(rF.getPartsForecastsEndToBegin(0, beginValidationSet,
+   nTotalForecastingsValidationSet));
+   validationSet.push_back(rF.getPartsForecastsEndToBegin(1, beginValidationSet,
+   nTotalForecastingsValidationSet + stepsAhead));
+   validationSet.push_back(rF.getPartsForecastsEndToBegin(2, beginValidationSet,
+   nTotalForecastingsValidationSet + stepsAhead));
+   */
 
-	 vector<vector<double> > validationSet; //validation set for calibration
-	 validationSet.push_back(rF.getPartsForecastsEndToBegin(0, beginValidationSet, nTotalForecastingsValidationSet));
-	 validationSet.push_back(rF.getPartsForecastsEndToBegin(1, beginValidationSet, nTotalForecastingsValidationSet + stepsAhead));
-	 validationSet.push_back(rF.getPartsForecastsEndToBegin(2, beginValidationSet, nTotalForecastingsValidationSet + stepsAhead));
-	 */
+  int maxPrecision = 80;
 
-	int maxPrecision = 80;
+  int lambda = mu * 6;
+  double initialDesv;
+  double mutationDesv;
 
+  int maxMu = 100;
+  int maxInitialDesv = 10;
+  int maxMutationDesv = 30;
 
+  int timeES = 120;
+  int timeVND = 0;
+  int timeILS = 0;
+  int timeGRASP = 0;
 
-	int lambda = mu * 6;
-	double initialDesv;
-	double mutationDesv;
+  vector<vector<double>>
+      vfoIndicatorCalibration;  // vector with the FO of each batch
 
-	int maxMu = 100;
-	int maxInitialDesv = 10;
-	int maxMutationDesv = 30;
+  vector<SolutionHFM>
+      vSolutionsBatches;  // vector with the solution of each batch
+  int nBatches = 500;
+  vector<vector<double>> batchOfResults;
+  int stepsAheadR = 12;
+  for (int n = 0; n < nBatches; n++) {
+    int randomPrecision = rg.rand(maxPrecision) + 20;
+    int randomParametersFiles = rg.rand(vParametersFiles.size());
+    int evalFOMinimizer = rg.rand(
+        EVALUTORS_NMETRICS_ENUM_COUNT);  // tree is the number of possible
+                                         // objetive function index minimizers
+    int evalAprox = rg.rand(2);  // Enayatifar aproximation using previous
+                                 // values
+    int construtive = rg.rand(2);
+    initialDesv = rg.rand(maxInitialDesv) + 1;
+    mutationDesv = rg.rand(maxMutationDesv) + 1;
+    mu = rg.rand(maxMu) + 1;
+    lambda = mu * 6;
+    double alphaACF = rg.rand01();  // limit ACF for construtive ACF
+    int alphaSign = rg.rand(2);
+    if (alphaSign == 0) alphaACF = alphaACF * -1;
 
+    // ============ FORCES ======================
+    // mu = 100;
+    // lambda = mu * 6;
+    // initialDesv = 10;
+    // mutationDesv = 20;
+    // randomPrecision = 20;
+    randomParametersFiles = 1;
+    evalFOMinimizer = MAPE_INDEX;
+    evalAprox = 0;
+    construtive = 2;
+    alphaACF = -1;
+    cout << "mu = " << mu << endl;
+    cout << "initialDesv = " << initialDesv << endl;
+    cout << "mutationDesv = " << mutationDesv << endl;
+    cout << "randomPrecision = " << randomPrecision << endl;
+    // ============ END FORCES ======================
 
-	int timeES = 120;
-	int timeVND = 0;
-	int timeILS = 0;
-	int timeGRASP = 0;
+    // ============= METHOD PARAMETERS=================
+    HFMParams methodParam;
 
-	vector<vector<double> > vfoIndicatorCalibration; //vector with the FO of each batch
+    // seting up ES params
+    methodParam.setESMU(mu);
+    methodParam.setESLambda(lambda);
+    methodParam.setESInitialDesv(initialDesv);
+    methodParam.setESMutationDesv(mutationDesv);
+    methodParam.setESMaxG(100000);
+    // seting up Construtive params
+    methodParam.setConstrutiveMethod(construtive);
+    methodParam.setConstrutivePrecision(randomPrecision);
+    vector<double> vAlphaACFlimits;
+    vAlphaACFlimits.push_back(alphaACF);
+    methodParam.setConstrutiveLimitAlphaACF(vAlphaACFlimits);
+    // seting up Eval params
+    methodParam.setEvalAprox(evalAprox);
+    methodParam.setEvalFOMinimizer(evalFOMinimizer);
+    // ==========================================
 
-	vector<SolutionHFM> vSolutionsBatches; //vector with the solution of each batch
-	int nBatches = 500;
-	vector<vector<double> > batchOfResults;
-	int stepsAheadR = 12;
-	for (int n = 0; n < nBatches; n++)
-	{
-		int randomPrecision = rg.rand(maxPrecision) + 20;
-		int randomParametersFiles = rg.rand(vParametersFiles.size());
-		int evalFOMinimizer = rg.rand(EVALUTORS_NMETRICS_ENUM_COUNT); //tree is the number of possible objetive function index minimizers
-		int evalAprox = rg.rand(2); //Enayatifar aproximation using previous values
-		int construtive = rg.rand(2);
-		initialDesv = rg.rand(maxInitialDesv) + 1;
-		mutationDesv = rg.rand(maxMutationDesv) + 1;
-		mu = rg.rand(maxMu) + 1;
-		lambda = mu * 6;
-		double alphaACF = rg.rand01(); //limit ACF for construtive ACF
-		int alphaSign = rg.rand(2);
-		if (alphaSign == 0)
-			alphaACF = alphaACF * -1;
+    // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
+    //		ProblemParameters
+    //problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
+    ProblemParameters problemParam;
+    problemParam.setStepsAhead(stepsAheadR);
+    stepsAhead = problemParam.getStepsAhead();
+    // stepsAhead = 1;
+    //  =========================================== CONSTRUTIVE 0 AND 1
+    //========ADAPTATION FOR CONSTRUTIVE 2 ===============
+    int maxNotUsedMAX = 200;
+    int maxNotUsedR = rg.rand(maxNotUsedMAX) + 2;
+    if (construtive == 2)  // ACF construtive
+      problemParam.setMaxLag(maxNotUsedR);
 
-		// ============ FORCES ======================
-		//mu = 100;
-		//lambda = mu * 6;
-		//initialDesv = 10;
-		//mutationDesv = 20;
-		//randomPrecision = 20;
-		randomParametersFiles = 1;
-		evalFOMinimizer = MAPE_INDEX;
-		evalAprox = 0;
-		construtive = 2;
-		alphaACF = -1;
-		cout<<"mu = "<<mu<<endl;
-		cout<<"initialDesv = "<<initialDesv<<endl;
-		cout<<"mutationDesv = "<<mutationDesv<<endl;
-		cout<<"randomPrecision = "<<randomPrecision<<endl;
-		// ============ END FORCES ======================
+    int maxNotUsedForTest = problemParam.getMaxLag(0);
 
-		// ============= METHOD PARAMETERS=================
-		HFMParams methodParam;
+    cout << "maxNotUsedForTest: " << maxNotUsedForTest << endl;
 
-		//seting up ES params
-		methodParam.setESMU(mu);
-		methodParam.setESLambda(lambda);
-		methodParam.setESInitialDesv(initialDesv);
-		methodParam.setESMutationDesv(mutationDesv);
-		methodParam.setESMaxG(100000);
-		//seting up Construtive params
-		methodParam.setConstrutiveMethod(construtive);
-		methodParam.setConstrutivePrecision(randomPrecision);
-		vector<double> vAlphaACFlimits;
-		vAlphaACFlimits.push_back(alphaACF);
-		methodParam.setConstrutiveLimitAlphaACF(vAlphaACFlimits);
-		//seting up Eval params
-		methodParam.setEvalAprox(evalAprox);
-		methodParam.setEvalFOMinimizer(evalFOMinimizer);
-		// ==========================================
+    // getchar();
+    // int randomObjFunc = rg.rand(2);
+    // cout<<"randomObjFunc = "<<randomObjFunc<<endl;
+    // problemParam.setFunction(randomObjFunc);
 
-		// ================== READ FILE ============== CONSTRUTIVE 0 AND 1
-//		ProblemParameters problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
-		ProblemParameters problemParam;
-		problemParam.setStepsAhead(stepsAheadR);
-		stepsAhead = problemParam.getStepsAhead();
-		//stepsAhead = 1;
-		// =========================================== CONSTRUTIVE 0 AND 1
-		//========ADAPTATION FOR CONSTRUTIVE 2 ===============
-		int maxNotUsedMAX = 200;
-		int maxNotUsedR = rg.rand(maxNotUsedMAX) + 2;
-		if (construtive == 2) //ACF construtive
-			problemParam.setMaxLag(maxNotUsedR);
+    // validationBlindForecastings.clear();
+    int maxTrainningRounds = 20;
+    int nTrainningRounds = rg.rand(maxTrainningRounds) + 1;
+    // nTrainningRounds = 10;
+    int nTotalForecastingsTrainningSet =
+        maxNotUsedForTest + nTrainningRounds * stepsAhead;
+    cout << "nTrainningRounds: " << nTrainningRounds << endl;
+    cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+         << endl;
 
-		int maxNotUsedForTest = problemParam.getMaxLag(0);
+    vector<vector<double>> trainningSet;  // trainningSetVector
+    int beginTrainingSet = stepsAhead;
+    trainningSet.push_back(rF.getPartsForecastsEndToBegin(
+        0, beginTrainingSet, nTotalForecastingsTrainningSet));
+    // cout<<trainningSet<<endl;
+    // cout<< rF.getForecastsDataSize()<<endl;
+    // getchar();
 
-		cout << "maxNotUsedForTest: " << maxNotUsedForTest << endl;
+    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		//getchar();
-		//int randomObjFunc = rg.rand(2);
-		//cout<<"randomObjFunc = "<<randomObjFunc<<endl;
-		//problemParam.setFunction(randomObjFunc);
+    std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
-		//validationBlindForecastings.clear();
-		int maxTrainningRounds = 20;
-		int nTrainningRounds = rg.rand(maxTrainningRounds) + 1;
-		//nTrainningRounds = 10;
-		int nTotalForecastingsTrainningSet = maxNotUsedForTest + nTrainningRounds * stepsAhead;
-		cout << "nTrainningRounds: " << nTrainningRounds << endl;
-		cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet << endl;
+    int optMethod = rg.rand(2);
+    optMethod = 0;
+    if (optMethod == 0)
+      sol = forecastObject.run(timeES, timeVND, timeILS);
+    else
+      sol = forecastObject.runGILS(timeGRASP, timeILS);  // GRASP + ILS
 
-		vector<vector<double> > trainningSet; // trainningSetVector
-		int beginTrainingSet = stepsAhead;
-		trainningSet.push_back(rF.getPartsForecastsEndToBegin(0, beginTrainingSet, nTotalForecastingsTrainningSet));
-		//cout<<trainningSet<<endl;
-		//cout<< rF.getForecastsDataSize()<<endl;
-		//getchar();
+    // int needInputs = sol->first.getR().earliestInput;
+    int needInputs = problemParam.getMaxLag(0);
 
-		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    vector<vector<double>> validationSet;  // validation set for calibration
+    validationSet.push_back(
+        rF.getPartsForecastsEndToBegin(0, 0, needInputs + stepsAhead));
+    // validationSet.push_back(validationSetPure);
 
-		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
+    double intervalOfBeginTrainningSet =
+        double(beginTrainingSet) / double(rF.getForecastsDataSize());
 
-		int optMethod = rg.rand(2);
-		optMethod = 0;
-		if (optMethod == 0)
-			sol = forecastObject.run(timeES, timeVND, timeILS);
-		else
-			sol = forecastObject.runGILS(timeGRASP, timeILS); // GRASP + ILS
+    batchOfResults.push_back(
+        *forecastObject.returnForecasts(*sol, validationSet));
 
-		//int needInputs = sol->first.getR().earliestInput;
-		int needInputs = problemParam.getMaxLag(0);
+    vector<double> foIndicatorCalibration;
+    foIndicatorCalibration =
+        *forecastObject.returnErrors(sol->first.getR(), validationSet);
+    foIndicatorCalibration.push_back(randomPrecision);
+    foIndicatorCalibration.push_back(randomParametersFiles);
+    foIndicatorCalibration.push_back(nTrainningRounds);
+    foIndicatorCalibration.push_back(beginTrainingSet);
+    foIndicatorCalibration.push_back(intervalOfBeginTrainningSet);
+    foIndicatorCalibration.push_back(nTotalForecastingsTrainningSet);
+    foIndicatorCalibration.push_back(mu);
+    foIndicatorCalibration.push_back(lambda);
+    foIndicatorCalibration.push_back(initialDesv);
+    foIndicatorCalibration.push_back(mutationDesv);
+    foIndicatorCalibration.push_back(timeES);
+    foIndicatorCalibration.push_back(timeVND);
+    foIndicatorCalibration.push_back(timeILS);
+    foIndicatorCalibration.push_back(timeGRASP);
+    foIndicatorCalibration.push_back(evalFOMinimizer);
+    foIndicatorCalibration.push_back(evalAprox);
+    foIndicatorCalibration.push_back(construtive);
+    foIndicatorCalibration.push_back(alphaACF);
+    foIndicatorCalibration.push_back(optMethod);
+    foIndicatorCalibration.push_back(seed);
+    // getchar();
+    // cout << foIndicatorCalibration << endl;
+    vfoIndicatorCalibration.push_back(foIndicatorCalibration);
+    vSolutionsBatches.push_back(sol->first);
+  }
 
-		vector<vector<double> > validationSet; //validation set for calibration
-		validationSet.push_back(rF.getPartsForecastsEndToBegin(0, 0, needInputs + stepsAhead));
-		//validationSet.push_back(validationSetPure);
+  vector<vector<double>> finalResultQuantis;
 
-		double intervalOfBeginTrainningSet = double(beginTrainingSet) / double(rF.getForecastsDataSize());
+  for (int sa = 0; sa < stepsAheadR; sa++) {
+    vector<double> distribution;
+    for (int n = 0; n < nBatches; n++) {
+      distribution.push_back(batchOfResults[n][sa]);
+    }
+    vector<double> quantis;
+    quantis = rF.generateQuantis(distribution, 1, 99);
+    finalResultQuantis.push_back(quantis);
+  }
 
-		batchOfResults.push_back(*forecastObject.returnForecasts(*sol, validationSet));
+  rF.exportQuantisVector(finalResultQuantis, "./Quantis12AFrente");
 
-		vector<double> foIndicatorCalibration;
-		foIndicatorCalibration = *forecastObject.returnErrors(sol->first.getR(), validationSet);
-		foIndicatorCalibration.push_back(randomPrecision);
-		foIndicatorCalibration.push_back(randomParametersFiles);
-		foIndicatorCalibration.push_back(nTrainningRounds);
-		foIndicatorCalibration.push_back(beginTrainingSet);
-		foIndicatorCalibration.push_back(intervalOfBeginTrainningSet);
-		foIndicatorCalibration.push_back(nTotalForecastingsTrainningSet);
-		foIndicatorCalibration.push_back(mu);
-		foIndicatorCalibration.push_back(lambda);
-		foIndicatorCalibration.push_back(initialDesv);
-		foIndicatorCalibration.push_back(mutationDesv);
-		foIndicatorCalibration.push_back(timeES);
-		foIndicatorCalibration.push_back(timeVND);
-		foIndicatorCalibration.push_back(timeILS);
-		foIndicatorCalibration.push_back(timeGRASP);
-		foIndicatorCalibration.push_back(evalFOMinimizer);
-		foIndicatorCalibration.push_back(evalAprox);
-		foIndicatorCalibration.push_back(construtive);
-		foIndicatorCalibration.push_back(alphaACF);
-		foIndicatorCalibration.push_back(optMethod);
-		foIndicatorCalibration.push_back(seed);
-		//getchar();
-		//cout << foIndicatorCalibration << endl;
-		vfoIndicatorCalibration.push_back(foIndicatorCalibration);
-		vSolutionsBatches.push_back(sol->first);
+  cout << vfoIndicatorCalibration << endl;
+  for (int n = 0; n < nBatches; n++) {
+    for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
+      cout << vfoIndicatorCalibration[n][i] << "\t";
 
-	}
+    cout << endl;
+  }
 
-	vector<vector<double> > finalResultQuantis;
+  string calibrationFile = "./rainLe";
 
-	for (int sa = 0; sa < stepsAheadR; sa++)
-	{
-		vector<double> distribution;
-		for (int n = 0; n < nBatches; n++)
-		{
-			distribution.push_back(batchOfResults[n][sa]);
-		}
-		vector<double> quantis;
-		quantis = rF.generateQuantis(distribution, 1, 99);
-		finalResultQuantis.push_back(quantis);
-	}
+  FILE* fResults = fopen(calibrationFile.c_str(), "a");
+  for (int n = 0; n < nBatches; n++) {
+    for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
+      fprintf(fResults, "%.7f\t", vfoIndicatorCalibration[n][i]);
+    fprintf(fResults, "\n");
+  }
 
-	rF.exportQuantisVector(finalResultQuantis, "./Quantis12AFrente");
+  fclose(fResults);
 
-	cout << vfoIndicatorCalibration << endl;
-	for (int n = 0; n < nBatches; n++)
-	{
-
-		for (int i = 0; i <  (int) vfoIndicatorCalibration[n].size(); i++)
-			cout << vfoIndicatorCalibration[n][i] << "\t";
-
-		cout << endl;
-	}
-
-	string calibrationFile = "./rainLe";
-
-	FILE* fResults = fopen(calibrationFile.c_str(), "a");
-	for (int n = 0; n < nBatches; n++)
-	{
-
-		for (int i = 0; i <  (int) vfoIndicatorCalibration[n].size(); i++)
-			fprintf(fResults, "%.7f\t", vfoIndicatorCalibration[n][i]);
-		fprintf(fResults, "\n");
-	}
-
-	fclose(fResults);
-
-	return 0;
+  return 0;
 }

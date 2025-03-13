@@ -20,7 +20,7 @@
 // https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // core includes
-#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 using namespace std;       // NOLINT

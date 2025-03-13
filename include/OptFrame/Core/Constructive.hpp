@@ -10,10 +10,9 @@
 #include <string>
 //
 
+#include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-
-#include "Component.hpp"
-#include "Concepts/Domain.hpp"
+#include <OptFrame/Concepts/Domain.hpp>
 
 #define MOD_EXPORT
 #else
