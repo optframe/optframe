@@ -23,8 +23,8 @@
 #ifndef OPTFRAME_MOS_EXTENDED_INDIVIDUAL_HPP_
 #define OPTFRAME_MOS_EXTENDED_INDIVIDUAL_HPP_
 
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <algorithm>
 
 #include "../../Evaluation.hpp"

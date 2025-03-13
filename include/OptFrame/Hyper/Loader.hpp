@@ -22,7 +22,7 @@
 //
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>

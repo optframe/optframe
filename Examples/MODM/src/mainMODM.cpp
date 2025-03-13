@@ -15,7 +15,7 @@
 
 //
 
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Helper/Solutions/ESolution.hpp>  // TODO: remove.. just to enforce compilation errors.
 #include <OptFrame/Hyper/Loader.hpp>
 

@@ -12,7 +12,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Direction.hpp>
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 // #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solutions/ESolution.hpp>

@@ -4,12 +4,30 @@
 #ifndef OPTFRAME_IEVALUATOR_HPP_
 #define OPTFRAME_IEVALUATOR_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 // Allows Single (XEv) and Multi (XMEv)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class IEvaluator  // NO INHERITANCE HERE!
 {
  private:

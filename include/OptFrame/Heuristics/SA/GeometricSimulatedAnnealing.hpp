@@ -20,9 +20,9 @@
 //
 
 #include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 
 #include "./HelperSA.hpp"

@@ -10,8 +10,8 @@
 #include <vector>
 //
 #include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>

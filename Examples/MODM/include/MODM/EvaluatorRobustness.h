@@ -7,7 +7,7 @@
 
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "ADS.h"

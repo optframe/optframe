@@ -25,7 +25,7 @@
 
 #include <math.h>
 
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <vector>
 
 #include "../HTrajectory.hpp"

@@ -4,8 +4,8 @@
 #ifndef OPTFRAME_FI_HPP_
 #define OPTFRAME_FI_HPP_
 
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 
 namespace optframe {

@@ -27,13 +27,13 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Helper/MultiSolution.hpp>
 
 #include "EA.hpp"
 
-//#include "../../printable/printable.h" // this should not be required here
+// #include "../../printable/printable.h" // this should not be required here
 
 #ifndef _OPTFRAME_DBG_SELECTION_
 #ifdef OPTFRAME_DEBUG
@@ -107,7 +107,8 @@ class SimpleSelection {
   Evaluator<S, XEv, XES>& evaluator;
 
  public:
-  SimpleSelection(Evaluator<S, XEv, XES>& _evaluator) : evaluator(_evaluator){};
+  SimpleSelection(Evaluator<S, XEv, XES>& _evaluator)
+      : evaluator(_evaluator) {};
   virtual ~SimpleSelection() = default;
 
   virtual void select(VPopulation& population) = 0;

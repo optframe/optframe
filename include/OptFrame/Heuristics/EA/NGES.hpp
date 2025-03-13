@@ -13,8 +13,8 @@
 #include <vector>
 
 // optframe
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>

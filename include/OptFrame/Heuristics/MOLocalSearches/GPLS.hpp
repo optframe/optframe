@@ -8,8 +8,8 @@
 #include <algorithm>
 #include <vector>
 //
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 
 #include "../../Concepts/BaseConcepts.hpp"
 #include "../../Heuristics/MOLocalSearches/MOBestImprovement.hpp"

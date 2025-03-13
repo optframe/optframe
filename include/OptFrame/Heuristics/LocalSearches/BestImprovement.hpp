@@ -4,8 +4,8 @@
 #ifndef OPTFRAME_BI_HPP_
 #define OPTFRAME_BI_HPP_
 
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/Timer.hpp>
 

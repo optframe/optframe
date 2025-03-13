@@ -4,18 +4,36 @@
 #ifndef OPTFRAME_EVALUATOR_HPP_
 #define OPTFRAME_EVALUATOR_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <iostream>
 #include <string>
 #include <utility>
 //
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/GeneralEvaluator.hpp>
+#include <OptFrame/Core/ICompare.hpp>
+#include <OptFrame/Core/IEvaluator.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Direction.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/ICompare.hpp>
-#include <OptFrame/IEvaluator.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -44,7 +62,8 @@ namespace optframe {
 // pair<S, XEv>>
 //
 // TODO: adopt XES or XESS only
-template <XSolution _S, XEvaluation _XEv, XESolution XES = pair<_S, _XEv>>
+MOD_EXPORT template <XSolution _S, XEvaluation _XEv,
+                     XESolution XES = std::pair<_S, _XEv>>
 class Evaluator : public GeneralEvaluator<XES, XES>,
                   public IEvaluator<XES>,
                   public ICompare<typename XES::second_type> {
@@ -104,7 +123,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
  public:
   // Apply movement without considering a previous XEv => Slower.
   // Return new XEv 'e'
-  pair<uptr<Move<XES, XSH>>, XEv> applyMove(Move<XES, XSH>& m, XES& se) {
+  std::pair<uptr<Move<XES, XSH>>, XEv> applyMove(Move<XES, XSH>& m, XES& se) {
     // apply move and get reverse move
     uptr<Move<XES, XSH>> rev = m.apply(se);
     // for now, must be not nullptr
@@ -138,9 +157,9 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
     // original solution/evaluation)
     assert(m.hasReverse());
 
-    pair<uptr<Move<XES, XSH>>, XEv> rev = applyMove(m, se);
+    std::pair<uptr<Move<XES, XSH>>, XEv> rev = applyMove(m, se);
 
-    pair<uptr<Move<XES, XSH>>, XEv> ini = applyMove(*rev.first, se);
+    std::pair<uptr<Move<XES, XSH>>, XEv> ini = applyMove(*rev.first, se);
 
     // Difference: new - original
 
@@ -245,7 +264,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
 
   // ============= Component ===============
 
-  string toString() const override { return id(); }
+  std::string toString() const override { return id(); }
 
   bool compatible(std::string s) override {
     // forcing comparison here (with GeneralEvaluator) due to Multiple
@@ -258,8 +277,8 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
     return (s == idComponent()) || (GeneralEvaluator<XES, XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     // ss << Component::idComponent() << ":Evaluator";
     ss << GeneralEvaluator<XES>::idComponent() << ":Evaluator"
 
@@ -282,20 +301,6 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
 */
 };
 
-template <XRepresentation R, XEvaluation XEv = Evaluation<>>
-class BasicEvaluator : public Evaluator<RSolution<R>, XEv> {
- public:
-  // only representation
-  virtual XEv evaluate(const R&) = 0;
-
- private:
-  /* Use this if don't need ADS */
-  /* Use isto se você não precisa do ADS */
-
-  using ADS = OPTFRAME_DEFAULT_ADS;
-
-  XEv evaluate(const RSolution<R>& s) override { return evaluate(s.getR()); }
-};
 }  // namespace optframe
 
 #endif /*OPTFRAME_EVALUATOR_HPP_*/

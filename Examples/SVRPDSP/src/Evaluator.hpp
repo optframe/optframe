@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 
 #include "ADS.h"
 #include "Delta.h"

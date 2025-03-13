@@ -7,7 +7,7 @@
 #include <functional>
 #include <string>
 //
-#include <OptFrame/Direction.hpp>
+#include <OptFrame/Core/Direction.hpp>
 
 namespace optframe {
 

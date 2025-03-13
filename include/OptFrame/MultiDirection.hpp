@@ -15,7 +15,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Direction.hpp>
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Hyper/Action.hpp>
 // #include <OptFrame/MoveCost.hpp>
 //

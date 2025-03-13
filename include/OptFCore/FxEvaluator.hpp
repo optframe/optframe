@@ -7,7 +7,7 @@
 #include <functional>
 #include <string>
 //
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 
 namespace optframe {
 

@@ -26,7 +26,7 @@
 #include <math.h>
 
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 
 #include "../Component.hpp"
 #include "../Constructive.hpp"

@@ -12,7 +12,7 @@
 //
 
 #include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/ITrajectory.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>

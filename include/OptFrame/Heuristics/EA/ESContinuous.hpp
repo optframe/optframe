@@ -23,8 +23,8 @@
 
 #include <math.h>
 
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>

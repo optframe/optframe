@@ -11,7 +11,7 @@
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
 #include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/Timer.hpp>

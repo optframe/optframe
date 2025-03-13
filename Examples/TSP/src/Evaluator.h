@@ -32,7 +32,7 @@
 #include <utility>
 //
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPSwap.hpp>
 
 #include "Evaluation.h"

@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 //
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 

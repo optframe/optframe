@@ -10,8 +10,8 @@
 #include <utility>
 //
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Direction.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 

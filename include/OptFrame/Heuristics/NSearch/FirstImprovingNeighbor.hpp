@@ -9,8 +9,8 @@
 #include <utility>
 #include <vector>
 //
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 
 #include "../../Experimental/NeighborhoodExploration.hpp"
 

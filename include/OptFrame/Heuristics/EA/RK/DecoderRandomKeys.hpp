@@ -9,7 +9,7 @@
 // #include "../../../Evaluator.hpp"
 // #include "../../../Solution.hpp"
 // #include "../../../Solutions/CopySolution.hpp"
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Heuristics/EA/EA.hpp>
 #include <OptFrame/Heuristics/EA/RK/RK.hpp>

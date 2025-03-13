@@ -63,8 +63,7 @@ concept XOStreamable = requires(std::ostream& os, T value) {
 };
 
 // Representation type just requires some Copy Constructive behavior
-template <class R>
-// concept bool Representation = true;
+MOD_EXPORT template <class R>
 concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     XRepresentation = requires(R self) {

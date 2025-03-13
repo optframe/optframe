@@ -13,6 +13,9 @@ int main() {
   sptr<optframe::NS<MyESolution>> ns;
   sptr<optframe::NSSeq<MyESolution>> nsseq;
   optframe::Timer t;
+  sptr<optframe::Evaluator<std::vector<int>, optframe::Evaluation<int>,
+                           MyESolution>>
+      ev;
   std::print("now {}", t.now());
   return 0;
 }

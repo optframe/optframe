@@ -24,7 +24,7 @@
 #define OPTFRAME_PATHRELINKING_HPP_
 
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 
 #include "../Component.hpp"

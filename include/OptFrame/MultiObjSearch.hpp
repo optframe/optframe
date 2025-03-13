@@ -13,7 +13,7 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Direction.hpp>
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/GlobalSearch.hpp>  // Base class
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Helper/Population.hpp>

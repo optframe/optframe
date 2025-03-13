@@ -6,9 +6,9 @@
 
 #include <vector>
 //
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 
 #include "VND.h"

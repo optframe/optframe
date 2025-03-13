@@ -23,7 +23,7 @@
 #ifndef OptFrameMapReduce_HPP_
 #define OptFrameMapReduce_HPP_
 
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 
 #include "../HTrajectory.hpp"
 #include "../NSEnum.hpp"

@@ -24,7 +24,7 @@
 #define OPTFRAME_DECODER_NONSORTINGGENETICALGORITHMII_HPP_
 
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <algorithm>
 
 #include "../../Evaluation.hpp"

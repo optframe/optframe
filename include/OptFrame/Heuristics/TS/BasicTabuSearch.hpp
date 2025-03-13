@@ -10,8 +10,8 @@
 #include <utility>
 #include <vector>
 //
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSEnum.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 
 #include "TS.h"

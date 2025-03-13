@@ -11,12 +11,12 @@
 #include <vector>
 //
 #include <OptFrame/Concepts/MyConcepts.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
+#include <OptFrame/Core/IEvaluator.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
-#include <OptFrame/IEvaluator.hpp>
 // #include <OptFrame/MultiDirection.hpp>
 // #include <OptFrame/MultiEvaluator.hpp>
 

@@ -14,7 +14,15 @@
 //
 #include <OptFrame/Core/Move.hpp>
 //
+#include <OptFrame/Core/ICompare.hpp>
+//
+#include <OptFrame/Core/IEvaluator.hpp>
+//
+#include <OptFrame/Core/Direction.hpp>
+//
 #include <OptFrame/Core/GeneralEvaluator.hpp>
+//
+#include <OptFrame/Core/Evaluator.hpp>
 //
 #include <OptFrame/Core/NS.hpp>
 //

@@ -4,12 +4,30 @@
 #ifndef OPTFRAME_ICOMPARE_HPP_
 #define OPTFRAME_ICOMPARE_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 // Allows Single (XEv) and Multi (XMEv)
-template <XEvaluation XEv>
+MOD_EXPORT template <XEvaluation XEv>
 class ICompare  // NO INHERITANCE HERE!
 {
  public:

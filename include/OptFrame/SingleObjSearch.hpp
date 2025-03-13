@@ -14,7 +14,7 @@
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Constructive.hpp>  // for helper only  (TODO: make special class)
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>  // for helper only (TODO: make special class)
+#include <OptFrame/Core/Evaluator.hpp>  // for helper only (TODO: make special class)
 #include <OptFrame/GlobalSearch.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Hyper/Action.hpp>

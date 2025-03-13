@@ -2,7 +2,7 @@
 #define KP2_EVALUATOR_H_
 
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 
 #include "./ProblemInstance.h"
 #include "./Representation.h"

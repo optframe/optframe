@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 
 #include "Evaluation.h"
 #include "OptFrame/Direction.hpp"

@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp>
 
 namespace optframe {

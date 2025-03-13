@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_DIRECTION_HPP_  // NOLINT
 #define OPTFRAME_DIRECTION_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <assert.h>
 #include <float.h>
@@ -19,14 +21,30 @@
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/ICompare.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/ICompare.hpp>
 // #include <OptFrame/MoveCost.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 // Direction 'betterThan' depends on a 'totally_ordered' type XEv::objType
-template <XEvaluation XEv>
+MOD_EXPORT template <XEvaluation XEv>
 class Direction : public Component, public ICompare<XEv> {
   using objType = typename XEv::objType;
 
@@ -174,8 +192,8 @@ class Direction : public Component, public ICompare<XEv> {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << "Direction";
     return ss.str();
   }
@@ -189,7 +207,7 @@ class Direction : public Component, public ICompare<XEv> {
       return "Direction(MAX)";
   }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 };
 
 // Minimization implementation

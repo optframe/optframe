@@ -12,7 +12,7 @@
 #include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Direction.hpp>
+#include <OptFrame/Core/Direction.hpp>
 // #include "MoveCost.hpp"
 
 #define MOD_EXPORT

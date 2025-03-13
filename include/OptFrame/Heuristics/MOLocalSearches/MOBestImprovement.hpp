@@ -23,8 +23,8 @@
 #ifndef OPTFRAME_MOBI_HPP_
 #define OPTFRAME_MOBI_HPP_
 
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "../../MOLocalSearch.hpp"

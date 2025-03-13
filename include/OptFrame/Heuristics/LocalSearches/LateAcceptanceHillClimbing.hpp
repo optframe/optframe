@@ -8,8 +8,8 @@
 #include <utility>
 #include <vector>
 //
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 
 #define BRAND_NEW

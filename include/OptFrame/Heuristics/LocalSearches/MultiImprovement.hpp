@@ -24,8 +24,8 @@
 // "Finding the Maximum Multi Improvement on neighborhood exploration"
 // ======================================================================================================
 
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/Timer.hpp>
 #include <string>
