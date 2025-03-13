@@ -13,7 +13,7 @@
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 
 #include "Component.hpp"
-#include "Domain.hpp"
+#include "Concepts/Domain.hpp"
 
 #define MOD_EXPORT
 #else

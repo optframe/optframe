@@ -15,7 +15,7 @@
 #include <tuple>
 //
 #include <OptFrame/Concepts/MyConcepts.hpp>
-#include <OptFrame/SingleObjValue.hpp>  // must re-use some structures
+#include <OptFrame/Values/SingleObjValue.hpp>  // must re-use some structures
 
 // #include <OptFrame/printable/printable.hpp>
 

@@ -9,8 +9,8 @@
 #include <iostream>
 #include <string>
 //
+#include "./Concepts/Domain.hpp"
 #include "./Direction.hpp"
-#include "./Domain.hpp"
 #include "./Evaluation.hpp"
 #include "./Move.hpp"
 // #include "MoveCost.hpp"

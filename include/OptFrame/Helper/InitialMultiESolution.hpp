@@ -10,8 +10,8 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Constructive.hpp>
-#include <OptFrame/Domain.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>

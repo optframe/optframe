@@ -11,7 +11,7 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Domain.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Heuristics/EA/GeneralCrossover.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>

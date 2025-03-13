@@ -11,4 +11,4 @@ export import std;
 
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 // TODO: move Domain to concepts
-#include <OptFrame/Domain.hpp>
+#include <OptFrame/Concepts/Domain.hpp>

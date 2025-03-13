@@ -10,7 +10,7 @@
 //
 #include <OptFrame/Evaluation.hpp>
 // #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/Domain.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
 
 namespace optframe {
 
@@ -18,11 +18,10 @@ namespace optframe {
 template <XSolution S>
 class GeneralCrossover : public Component {
  public:
-  virtual ~GeneralCrossover() {
-  }
+  virtual ~GeneralCrossover() {}
 
-  virtual pair<std::optional<S>, std::optional<S>>
-  cross(const S&, const S&) = 0;
+  virtual pair<std::optional<S>, std::optional<S>> cross(const S&,
+                                                         const S&) = 0;
 
  public:
   bool compatible(std::string s) override {
@@ -32,21 +31,17 @@ class GeneralCrossover : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GeneralCrossover"
-    #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-    << Domain::getAlternativeDomain<S>("<XS>");
-    #else
-    << Domain::getAlternativeDomain<S>("<X?>");
-    #endif
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+       << Domain::getAlternativeDomain<S>("<XS>");
+#else
+       << Domain::getAlternativeDomain<S>("<X?>");
+#endif
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 };
 
 }  // namespace optframe

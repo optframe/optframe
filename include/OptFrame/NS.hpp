@@ -11,7 +11,7 @@
 //
 
 #include "Component.hpp"
-#include "Domain.hpp"
+#include "Concepts/Domain.hpp"
 #include "Helper/MultiEvaluation.hpp"
 #include "Move.hpp"
 // included for Neighborhood Exploration

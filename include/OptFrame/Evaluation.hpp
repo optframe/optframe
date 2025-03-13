@@ -17,8 +17,8 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Helper/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
-#include <OptFrame/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
+#include <OptFrame/Values/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
+#include <OptFrame/Values/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
 
 #define MOD_EXPORT
 #else

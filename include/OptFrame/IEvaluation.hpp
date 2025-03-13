@@ -32,7 +32,7 @@
 #include <string>
 //
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/SingleObjValue.hpp>
+#include <OptFrame/Values/SingleObjValue.hpp>
 // #include "MultiObjValue.hpp"   // inserting this beforehand.. who knows!!!
 // #include "SingleObjValue.hpp"  // basic value 'evtype' comes from here!
 

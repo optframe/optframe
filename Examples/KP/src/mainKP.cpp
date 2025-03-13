@@ -6,8 +6,10 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <iostream>
+//
+
 #include <OptFrame/Evaluation.hpp>
-#include <OptFrame/Helper/MultiObjValue.hpp>  // just for testing
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
@@ -17,8 +19,8 @@
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
+#include <OptFrame/Values/MultiObjValue.hpp>  // just for testing
 #include <OptFrame/printable/printable.hpp>
-#include <iostream>
 
 #include "KP.h"
 using namespace std;

@@ -9,8 +9,8 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Constructive.hpp>
-#include <OptFrame/Domain.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/SearchStatus.hpp>
 #include <OptFrame/StopCriteria.hpp>

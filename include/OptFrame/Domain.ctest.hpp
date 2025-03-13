@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Domain.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
 // important stuff TO TEST
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>

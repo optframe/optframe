@@ -13,7 +13,7 @@
 //
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>
-#include <OptFrame/Domain.hpp>
+#include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Heuristics/EA/RK/InitialEPopulationRK.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/InitialPopulation.hpp>
