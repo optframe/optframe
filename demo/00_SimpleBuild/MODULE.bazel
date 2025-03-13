@@ -11,5 +11,6 @@ git_override(
     module_name = "optframe",
     remote = "https://github.com/optframe/optframe.git",
     branch='master'
+    # commit = "87ce7ebcfb495b9535729d4a31ea1a50b6a6b95a"
 )
 

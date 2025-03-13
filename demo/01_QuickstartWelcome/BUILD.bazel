@@ -2,7 +2,7 @@
 cc_binary(
     name = "demo_welcome",
     srcs = ["src/mytest.cpp"],
-    deps=["@OptFrame//include:OptFCore"],
+    deps=["@optframe//include:OptFCore"],
     copts = select({
         "@bazel_tools//src/conditions:windows": ["/std:c++17"],
         "@bazel_tools//src/conditions:darwin": ["--std=c++17"],
