@@ -4,18 +4,34 @@
 #ifndef OPTFRAME_NSENUM_HPP_
 #define OPTFRAME_NSENUM_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include "NSEnumIterator.hpp"
 #include "NSSeq.hpp"
 #include "RandGen.hpp"
 
-// using namespace std;
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH>
 #else
-template <typename XES, typename XSH>
+MOD_EXPORT template <typename XES, typename XSH>
 #endif
 class NSEnum : public NSSeq<XES, XSH> {
   using XEv = typename XES::second_type;
@@ -47,11 +63,10 @@ class NSEnum : public NSSeq<XES, XSH> {
 
  public:
   // findFrom: returns the *next* move starting from index k (inclusive), that
-  // strictly improves current solution 'se', according 'gev' RETURNS: pair<
-  // uptr<Move<XES, XSH>>, op<XEv> >
-  virtual pair<Move<XES, XSH>*, op<XEv>> findFrom(unsigned int& k,
-                                                  GeneralEvaluator<XES>& gev,
-                                                  XES& se) {
+  // strictly improves current solution 'se', according 'gev' RETURNS:
+  // std::pair< uptr<Move<XES, XSH>>, op<XEv> >
+  virtual std::pair<Move<XES, XSH>*, op<XEv>> findFrom(
+      unsigned int& k, GeneralEvaluator<XES>& gev, XES& se) {
     // iterates from k
     for (unsigned xk = k; xk < this->size(); xk++) {
       // gets variable index 'xk'
@@ -71,8 +86,8 @@ class NSEnum : public NSSeq<XES, XSH> {
 
   // findBest: returns move that greatly improves current solution 'se',
   // according 'gev' iterates using findFrom: 0..size-1
-  pair<Move<XES, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev,
-                                          XES& se) override {
+  std::pair<Move<XES, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev,
+                                               XES& se) override {
     // starts count iterator
     unsigned int k = 0;
     // best move
@@ -81,7 +96,7 @@ class NSEnum : public NSSeq<XES, XSH> {
     // stops at maximum (or return)
     while (k < this->size()) {
       // gets index 'k'
-      pair<Move<XES, XSH>*, op<XEv>> mve = findFrom(k, gev, se);
+      std::pair<Move<XES, XSH>*, op<XEv>> mve = findFrom(k, gev, se);
       // if not good, process is finished: returns existing best
       if (!mve.second) return std::make_pair(bestMove, bestCost);
       // if improvement exists, try to improve best
@@ -95,13 +110,13 @@ class NSEnum : public NSSeq<XES, XSH> {
   }
 
  public:
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NSSeq<XES, XSH>::idComponent() << ":NSEnum";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NSSeq<XES, XSH>::compatible(s));

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_COMPONENT_HPP_
 #define OPTFRAME_COMPONENT_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <cstdlib>
 #include <iostream>
 #include <memory>  // for shared_ptr
@@ -14,7 +16,20 @@
 //
 #include <OptFrame/SemStream.hpp>
 
-//
+#define MOD_EXPORT
+#else
+
+// import optframe.component;
+import std;
+
+import optframe.semstream;
+
+// maybe do not export here? leave it to .cppm only...
+// export module optframe.core.move;
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -54,16 +69,16 @@ enum StringFormat {
   JSON = 3        // json format
 };
 
-class Component;
+MOD_EXPORT class Component;
 
-class ContextAC {
+MOD_EXPORT class ContextAC {
  public:
   std::string id;
   std::string message;
   std::shared_ptr<Component> payload;
 };
 
-class Component {
+MOD_EXPORT class Component {
  public:
   // Log* logdata;
   //

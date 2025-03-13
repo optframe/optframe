@@ -6,14 +6,7 @@
 
 // general concepts expected to exist on c++20
 
-#include <memory>    // unique_ptr
-#include <optional>  // optional
-#include <vector>    // for vsref
-
-// "not null shared pointer" library (local copy!)
-#include <OptFrame/nnptr/nnshared.hpp>
-// "optional_view" library (local copy!)
-#include <OptFrame/opview/optional_view.hpp>
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 // Check if C++20 Concepts is supported
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
@@ -29,26 +22,48 @@
 
 #endif  // cpp_concepts
 
+#include <memory>    // unique_ptr
+#include <optional>  // optional
+#include <vector>    // for vsref
+
+// "not null shared pointer" library (local copy!)
+#include <OptFrame/nnptr/nnshared.hpp>
+// "optional_view" library (local copy!)
+#include <OptFrame/opview/optional_view.hpp>
+
+#define MOD_EXPORT
+#else
+
+import std;
+import optframe.nnptr;
+import optframe.opview;
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 // =========== OUTSIDE optframe scope (to make error tracking easier...)
 // ========== "not null shared pointer" shortcuts
-template <class R>
+MOD_EXPORT template <class R>
 using sref = nnptr::NNShared<R>;
 // NOLINTNEXTLINE
 #define sref_copy(X) nnptr::copy(X)
 //
-template <class R>
+MOD_EXPORT template <class R>
 using vsref = std::vector<sref<R>>;
 //
-template <class R>
+MOD_EXPORT template <class R>
 using sptr = std::shared_ptr<R>;
 //
-template <class R>
+MOD_EXPORT template <class R>
 using vsptr = std::vector<sptr<R>>;
 //
-template <class R>
+MOD_EXPORT template <class R>
 using op_view = opview::optional_view<R>;
 //
-template <class R>
+MOD_EXPORT template <class R>
 using cop_view = opview::const_optional_view<R>;
 
 typedef void OPTFRAME_DEFAULT_PROBLEM;
@@ -68,7 +83,7 @@ using remove_ref = std::remove_reference_t<Self>;
 //    else if (__cplusplus == 201402L) std::cout << "C++14\n";)
 
 // default renaming of std::unique_ptr (too long!!)
-template <class T>
+MOD_EXPORT template <class T>
 using uptr = std::unique_ptr<T>;
 
 // default renaming of std::observer_ptr (too long!!)
@@ -76,11 +91,11 @@ using uptr = std::unique_ptr<T>;
 // using optr = std::observer_ptr<T>;
 
 // default renaming of std::optional (too long!!)
-template <class T>
+MOD_EXPORT template <class T>
 using op = std::optional<T>;
 
 // id type for move id, neighborhood id, etc.
-using id_type = std::size_t;
+MOD_EXPORT using id_type = std::size_t;
 
 // ================ BEGIN CONCEPTS ================
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
@@ -101,20 +116,20 @@ concept convertible_to =
   */
 template <class From, class To>
 concept my_convertible_to = std::is_convertible_v<From, To> &&
-    requires(std::add_rvalue_reference_t<From> (&f)()) {
-  static_cast<To>(f());
-};
+                            requires(std::add_rvalue_reference_t<From> (&f)()) {
+                              static_cast<To>(f());
+                            };
 
 // https://en.cppreference.com/w/cpp/concepts/equality_comparable
 template <class T, class U>
 concept __WeaklyEqualityComparableWith =  // exposition only
     requires(const std::remove_reference_t<T>& t,
              const std::remove_reference_t<U>& u) {
-  { t == u } -> my_same_as<bool>;  // std::boolean;
-  { t != u } -> my_same_as<bool>;  // std::boolean;
-  { u == t } -> my_same_as<bool>;  // std::boolean;
-  { u != t } -> my_same_as<bool>;  // std::boolean;
-};
+      { t == u } -> my_same_as<bool>;  // std::boolean;
+      { t != u } -> my_same_as<bool>;  // std::boolean;
+      { u == t } -> my_same_as<bool>;  // std::boolean;
+      { u != t } -> my_same_as<bool>;  // std::boolean;
+    };
 //
 
 template <class T>
@@ -152,15 +167,15 @@ concept equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 
 // weak dominance is always 'reflexive'.
 
-template <class T>
+MOD_EXPORT template <class T>
 concept comparability = optframe::equality_comparable<T> &&
-    requires(const std::remove_reference_t<T>& a,
-             const std::remove_reference_t<T>& b) {
-  { a < b } -> my_same_as<bool>;
-  { a > b } -> my_same_as<bool>;
-  { a <= b } -> my_same_as<bool>;
-  { a >= b } -> my_same_as<bool>;
-};
+                        requires(const std::remove_reference_t<T>& a,
+                                 const std::remove_reference_t<T>& b) {
+                          { a < b } -> my_same_as<bool>;
+                          { a > b } -> my_same_as<bool>;
+                          { a <= b } -> my_same_as<bool>;
+                          { a >= b } -> my_same_as<bool>;
+                        };
 
 // The 'comparability' name was 'totally_ordered' (as C++ proposal), but it's
 // neither partial or total... one can easily return 'false' to all operators,
@@ -194,46 +209,48 @@ concept comparability = optframe::equality_comparable<T> &&
 // (weight scalar *= was dropped for now, too hard)
 
 template <class T>
-concept basic_arithmetics_assign = requires(
-    std::remove_reference_t<T>& a, const std::remove_reference_t<T>& b) {
-  { a += b } -> my_same_as<T>;
-  { a -= b } -> my_same_as<T>;
-}
-|| requires(std::remove_reference_t<T>& a,
-            const std::remove_reference_t<T>& b) {
-  { a += b } -> my_same_as<T&>;
-  { a -= b } -> my_same_as<T&>;
-};
+concept basic_arithmetics_assign =
+    requires(std::remove_reference_t<T>& a,
+             const std::remove_reference_t<T>& b) {
+      { a += b } -> my_same_as<T>;
+      { a -= b } -> my_same_as<T>;
+    } ||
+    requires(std::remove_reference_t<T>& a,
+             const std::remove_reference_t<T>& b) {
+      { a += b } -> my_same_as<T&>;
+      { a -= b } -> my_same_as<T&>;
+    };
 
-template <class T>
+MOD_EXPORT template <class T>
 concept basic_arithmetics = optframe::basic_arithmetics_assign<T> &&
-    requires(const std::remove_reference_t<T>& a,
-             const std::remove_reference_t<T>& b) {
-  // { a + b } -> my_same_as<T>;
-  { a + b } -> std::convertible_to<T>;
-  // { a - b } -> my_same_as<T>;
-  { a - b } -> std::convertible_to<T>;
-};
+                            requires(const std::remove_reference_t<T>& a,
+                                     const std::remove_reference_t<T>& b) {
+                              // { a + b } -> my_same_as<T>;
+                              { a + b } -> std::convertible_to<T>;
+                              // { a - b } -> my_same_as<T>;
+                              { a - b } -> std::convertible_to<T>;
+                            };
 
 template <class T>
-concept extended_arithmetics = optframe::basic_arithmetics<T> &&
+concept extended_arithmetics =
+    optframe::basic_arithmetics<T> &&
     requires(const std::remove_reference_t<T>& a,
              const std::remove_reference_t<T>& b) {
-  {
-    a* b
-    } -> my_same_as<T>;  // std::remove_reference_t<T>; // useful for weighted
-                         // computation
-                         //{ a / b } -> std::remove_reference_t<T>;  // NOT
-                         // actually necessary (until
-                         // today!)
-};
+      {
+        a* b
+      } -> my_same_as<T>;  // std::remove_reference_t<T>; // useful for weighted
+                           // computation
+                           //{ a / b } -> std::remove_reference_t<T>;  // NOT
+                           // actually necessary (until
+                           // today!)
+    };
 
 // capability to move to ostream&
-template <class Self>
+MOD_EXPORT template <class Self>
 concept ostreamable = requires(std::ostream& os,
                                // const std::remove_reference_t<Self>& obj) {
                                const Self& obj) {
-  {os << obj};
+  { os << obj };
 };
 
 #endif  // cpp_concepts
@@ -343,8 +360,15 @@ struct MyConceptsLocalTestBedArithmetics {
 
 #endif  // NDEBUG
 
-#define ConceptsBasicArithmetics optframe::basic_arithmetics
-#define ConceptsComparability optframe::comparability
+// WARNING: #define CANNOT WORK WITH CXX MODULES!!!
+//
+// #define ConceptsBasicArithmetics optframe::basic_arithmetics
+MOD_EXPORT template <class T>
+concept ConceptsBasicArithmetics = optframe::basic_arithmetics<T>;
+
+// #define ConceptsComparability optframe::comparability;
+MOD_EXPORT template <class T>
+concept ConceptsComparability = optframe::comparability<T>;
 
 #else  // NO CONCEPTS
 

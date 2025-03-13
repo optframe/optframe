@@ -52,6 +52,8 @@
 // ==================================
 
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
+#include <OptFrame/Hyper/RandGenBuilder.hpp>
+#include <OptFrame/Hyper/TimerBuilder.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 
@@ -89,7 +91,7 @@
 #include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
 
 // TODO ERROR on DecoderNSGAII
-//#include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
+// #include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>

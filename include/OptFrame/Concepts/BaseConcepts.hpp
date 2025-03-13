@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
-// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_CONCEPTS_BASECONCEPTS_HPP_
 #define OPTFRAME_CONCEPTS_BASECONCEPTS_HPP_
@@ -13,8 +13,31 @@
 // XBaseSolution
 // =============================
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <cstddef>  // nullptr_t
 #include <string>
+
+// Check if C++20 Concepts is supported
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
+// this is NOT official c++20 concepts... just some for OptFrame! (based on lite
+// concepts g++ 7)
+#include <OptFrame/Concepts/MyConcepts.hpp>
+
+#endif
+
+#define MOD_EXPORT
+#else
+
+import std;
+// NO NEED TO IMPORT concepts:my module partition... already imported!
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
@@ -27,21 +50,14 @@ typedef OPTFRAME_DEFAULT_ADS _ADS;         // more beautiful :)
 // Check if C++20 Concepts is supported
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
-// this is NOT official c++20 concepts... just some for OptFrame! (based on lite
-// concepts g++ 7)
-#include <OptFrame/Concepts/MyConcepts.hpp>
-
-// may require some basic printing capabilities
-// #include <OptFrame/printable/printable.hpp>
-
 namespace optframe {
 
 template <class T>
 concept IsComplete = requires(T self) {
-  {sizeof(self)};
+  { sizeof(self) };
 };
 
-template <typename T>
+MOD_EXPORT template <typename T>
 concept XOStreamable = requires(std::ostream& os, T value) {
   { os << value } -> std::convertible_to<std::ostream&>;
 };
@@ -52,8 +68,8 @@ template <class R>
 concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     XRepresentation = requires(R self) {
-  {new R(self)};
-};
+      { new R(self) };
+    };
 #else
     XRepresentation = std::copy_constructible<R>;
 #endif
@@ -63,10 +79,10 @@ concept
 // requires Self& clone() method
 // there may be some "Cloneable" in std future...
 // TODO: change return to unique_ptr instead of reference
-template <class Self>
+MOD_EXPORT template <class Self>
 concept HasClone = true;
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept HasToString = requires(Self self) {
   { self.toString() } -> my_same_as<std::string>;
 };
@@ -74,7 +90,7 @@ concept HasToString = requires(Self self) {
 // TODO: should we require 'copy constructive' for 'XSolution'? or for
 // 'XRepresentation'?
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XSolution = XRepresentation<Self>;
 
 // -------
@@ -103,7 +119,7 @@ concept XSolutionOrIncomplete = !IsComplete<S> || XSolution<S>;
 // concepts not allowed"
 // note that "auto" is an "unconstrained concept", while "XRepresentation"
 // forced a filter that cannot be done during concept definition.
-template <class S, class R>
+MOD_EXPORT  template <class S, class R>
 concept HasGetR = XRepresentation<R> &&(
     requires(S a) {
       { a.getR() } -> my_same_as<R&>;
@@ -112,7 +128,7 @@ concept HasGetR = XRepresentation<R> &&(
       { a.getR() } -> my_same_as<R>;
     });
 
-template <class S, class ADS = _ADS>
+MOD_EXPORT template <class S, class ADS = _ADS>
 concept HasGetADS = requires(S a) {
   { a.getADSptr() } -> my_same_as<ADS*>;
 };
@@ -120,19 +136,19 @@ concept HasGetADS = requires(S a) {
 // gcc bug allowed "XRepresentation R" here, but "error: a variable concept
 // cannot be constrained" so, we should explicitly pass constraints on next line
 // as: "XRepresentation<R>"
-template <class S, class R, class ADS = _ADS>
+MOD_EXPORT template <class S, class R, class ADS = _ADS>
 concept XBaseSolution =
     XRepresentation<R> && HasGetR<S, R> && HasGetADS<S, ADS> && XSolution<S>;
 
 // same gcc bug: "error: a variable concept cannot be constrained" for
 // "XRepresentation R"
-template <class Self, class R>
+MOD_EXPORT template <class Self, class R>
 concept XRSolution = XRepresentation<R> && HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
 // 'objval' means total order: basic arithmetics (+/-) and comparability
-template <class T>
+MOD_EXPORT template <class T>
 concept objval = optframe::basic_arithmetics<T> && optframe::comparability<T>;
 
 //
@@ -142,7 +158,7 @@ concept objval = optframe::basic_arithmetics<T> && optframe::comparability<T>;
 // TODO(igormcoelho): OLD rename 'update' to 'add'?
 // TODO(igormcoelho): OLD rename 'diff' to 'sub'?
 //
-template <class Self>
+MOD_EXPORT  template <class Self>
 concept evgoal = (optframe::basic_arithmetics<Self> ||
                   (
                       requires(Self e, remove_ref<Self>& e2) {
@@ -161,7 +177,7 @@ concept hasUpdateDiff = (
       { e.diff(e2) } -> my_same_as<Self>;
     });
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept HasGetObj = requires(Self a) {
   typename Self::objType;  // requires 'objType' on XEvaluation...
   //
@@ -188,13 +204,12 @@ concept HasGetObj = requires(Self a) {
 // "thing" note that getObjValue and getInfeasibleValue are not necessary here,
 // just getObj one can implement this way if preferred, separating or not both
 // "values"... not mandatory anymore
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XEvaluation =  // sing obj. evaluation part (standard multi obj)
     (
-        optframe::evgoal<Self>&& HasClone<Self>&& HasToString<Self>&&
-            HasGetObj<Self>&& optframe::ostreamable<Self>&& requires(Self e) {
-              typename Self::objType;
-            } &&
+        optframe::evgoal<Self> && HasClone<Self> && HasToString<Self> &&
+        HasGetObj<Self> && optframe::ostreamable<Self> &&
+        requires(Self e) { typename Self::objType; } &&
         requires(Self e) {
           // variable 'outdated' is still useful for optimizations
           //{ e.outdated } -> my_convertible_to<bool>;
@@ -225,7 +240,7 @@ concept XEvaluation =  // sing obj. evaluation part (standard multi obj)
 // concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
 // -----> now concept also allows pair<S, XEv> to represent composed space
 // <-----
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XESolution = XSolution<Self> && requires(Self p) {
   typename Self::first_type;   // requires a "first_type" with some "XSolution
                                // properties"
@@ -271,14 +286,14 @@ template <class Self, class P>
 concept XPowerSet = requires(Self a, size_t idx) {
   {
     a.size()
-    } -> my_convertible_to<size_t>;  // could this be 'int' as well? TODO: test
+  } -> my_convertible_to<size_t>;  // could this be 'int' as well? TODO: test
 
   {
     // a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
     // with 'vector'
     //
     a.at(idx)
-    } -> my_convertible_to<P>;
+  } -> my_convertible_to<P>;
   //
   typename Self::value_type;
 };
@@ -292,7 +307,8 @@ concept XPowerSet = requires(Self a, size_t idx) {
 // template<class Self, XSolution S> // needs to fix this 'XSolution S'
 template <class Self, class S>  // fixed "constrained variable concept" on line
                                 // below... "XSolution<S>&&..."
-concept X2Solution = XSolution<S> &&
+concept X2Solution =
+    XSolution<S> &&
     XPowerSet<Self, S>;  // Too bad, this is unused on OptFrame... :'(
 
 // ---
@@ -363,8 +379,9 @@ concept X2ESolution = XESolution<XES> && XPowerSet<Self, XES>;
 // same bug as before... cannot have "XESolution XES" during concept definition!
 // template<class Self, XESolution XES> // TODO: should remove S and XEv, by
 // changing X2ESolution concept...
-template <class Self, class XES>  // TODO: should remove S and XEv, by changing
-                                  // X2ESolution concept...
+MOD_EXPORT template <class Self,
+                     class XES>  // TODO: should remove S and XEv, by changing
+                                 // X2ESolution concept...
 concept
     // XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self,
     // XES>);
@@ -405,13 +422,15 @@ concept XSEvaluation =
 // XMEvaluation mimics XPowerSet... but could not use it directly!
 
 template <class Self>
-concept XMEvaluation = XEvaluation<Self> &&
+concept XMEvaluation =
+    XEvaluation<Self> &&
     requires(Self e, typename Self::objType m,
              typename Self::objType::value_type v,
              typename Self::objType::value_type::objType vm, size_t idx) {
-  { m.size() } -> std::convertible_to<size_t>;
-  { m[idx] } -> std::convertible_to<typename Self::objType::value_type>;
-} && comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
+      { m.size() } -> std::convertible_to<size_t>;
+      { m[idx] } -> std::convertible_to<typename Self::objType::value_type>;
+    } &&
+    comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
 
 template <class Self>
 concept XESSolution =
@@ -440,7 +459,12 @@ concept XFamily = requires(Self a) {
 
 // compilation tests for concepts (these are NOT unit tests)
 // TODO: put on unit tests or directly here (without #include "printable.h")
+//
+//
+
+#if 0  // DO NOT DO THIS
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
+#endif
 
 #else  // No Concepts!!!
 

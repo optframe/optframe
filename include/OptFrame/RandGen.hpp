@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_RANDGEN_HPP_
 #define OPTFRAME_RANDGEN_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C includes
 #include <math.h>
 // #include <time.h> // WHY?
@@ -20,6 +22,22 @@
 // #include "Action.hpp"
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -47,7 +65,7 @@ namespace optframe {
 // randB(double base, int tries) -> double (non-negative)
 // randBN(double base, int tries) -> double (including negative values)
 
-class RandGen : public Component {
+MOD_EXPORT class RandGen : public Component {
  protected:
   // usual seeds has this standard (uint32)
   unsigned seed;
@@ -181,7 +199,7 @@ significantly higher and, in most cases, independent of the seed size.
 
   // deterministic shuffle using RandGen object
   template <class T>
-  void shuffle(vector<T>& v) {
+  void shuffle(std::vector<T>& v) {
     if (v.size() > 0)
       for (unsigned int i = 0; i < v.size() - 1; i++) {
         int x = i + this->rand(v.size() - i - 1) + 1;
@@ -192,7 +210,7 @@ significantly higher and, in most cases, independent of the seed size.
       }
   }
 
-  static string idComponent() { return "OptFrame:RandGen"; }
+  static std::string idComponent() { return "OptFrame:RandGen"; }
 
   std::string id() const override { return idComponent(); }
 
@@ -201,45 +219,6 @@ significantly higher and, in most cases, independent of the seed size.
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
-#else
-template <typename XES>
-#endif
-class RandGenBuilder : public ComponentBuilder<XES> {
- public:
-  virtual ~RandGenBuilder() {}
-
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    if (!scanner.hasNext()) return nullptr;
-
-    long seed = *scanner.nextLong();
-
-    return new RandGen(seed);
-  }
-
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair("long", "seed"));
-    return params;
-  }
-
-  bool canBuild(std::string component) override {
-    return component == RandGen::idComponent();
-  }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << "RandGen";
-    return ss.str();
-  }
-
-  std::string toString() const override { return id(); }
-
-  virtual std::string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 

@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
+#load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
 cc_binary(
     name = "demo_welcome",
     srcs = ["src/mytest.cpp"],

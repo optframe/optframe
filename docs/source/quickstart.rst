@@ -88,7 +88,7 @@ And use the following *BUILD.bazel* file (with dependency to @OptFrame):
 
 ..
     # COMMENTS!!
-    load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
+    #load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
     cc_binary(
         name = "fcore_localtest",
         srcs = ["mytest.cpp"],

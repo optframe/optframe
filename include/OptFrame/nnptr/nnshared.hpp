@@ -18,8 +18,12 @@ commit d1089edbaaeb59ed2d179569e94e77f7bc34f11f (HEAD -> master, tag: v0.2,
 origin/master, origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:
 Fri Jun 18 20:10:45 2021 -0300 fix link
 */
+// TODO FIX ABOVE HASH... NOW WE NEED CXX_MODULES!!
 
-//#include <gsl/gsl> // NotNull (local copy)
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#include <stdlib.h>  // for exit()
+// #include <gsl/gsl> // NotNull (local copy)
 #include <memory>  // shared_ptr
 
 // ====================================================================
@@ -73,6 +77,17 @@ Fri Jun 18 20:10:45 2021 -0300 fix link
 // date: 17-jun-2021
 // ==============================================
 
+#define MOD_EXPORT
+#else
+
+import std;
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace nnptr {
 
 namespace details {
@@ -86,7 +101,7 @@ struct is_comparable_to_nullptr<
     : std::true_type {};
 }  // namespace details
 
-template <class T>
+MOD_EXPORT template <class T>
 class NotNull {
  public:
   static_assert(details::is_comparable_to_nullptr<T>::value,
@@ -96,7 +111,11 @@ class NotNull {
             typename = std::enable_if_t<std::is_convertible<U, T>::value>>
   constexpr NotNull(U&& u) : ptr_(std::forward<U>(u)) {
 #ifndef NDEBUG
-    if (ptr_ == nullptr) std::terminate();
+    if (ptr_ == nullptr) {
+      // #include <exception>
+      // std::terminate();
+      // exit(1); // TODO: Fix
+    }
 #endif
   }
 
@@ -122,7 +141,11 @@ class NotNull {
                                const T&>
   get() const {
 #ifndef NDEBUG
-    if (ptr_ == nullptr) std::terminate();
+    if (ptr_ == nullptr) {
+      // #include <exception>
+      // std::terminate();
+      // exit(1); // TODO: fix
+    }
 #endif
     return ptr_;
   }
@@ -235,7 +258,7 @@ struct hash<nnptr::NotNull<T>> {
 
 namespace nnptr {
 //
-template <typename T>
+MOD_EXPORT template <typename T>
 class NNShared {
   using shared_type = T;
 
@@ -267,7 +290,9 @@ class NNShared {
   // ============= begin added
   // needed by nnptr::copy helper...
 
-  explicit NNShared(std::shared_ptr<T>&& other) : data_{other} {}
+  // TODO: why 'explicit'? Should be implicit, otherwise breaks conversion op...
+  // TODO (igormcoelho): check with newer type checking project, IMPORTANT!!!
+  /* explicit */ NNShared(std::shared_ptr<T>&& other) : data_{other} {}
 
   // ============= end added
 

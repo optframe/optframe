@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <assert.h>
 // C++
@@ -18,7 +20,21 @@
 #include <OptFrame/Helper/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
 #include <OptFrame/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
 
-// using namespace std;
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import optframe.component;
+import optframe.concepts;
+import std;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -39,8 +55,8 @@ namespace optframe {
  infMeasure. \endportuguese
  */
 
-//#include "Util/PackTypes.hpp"
-//#define EVALUATION_TYPE PackTypes
+// #include "Util/PackTypes.hpp"
+// #define EVALUATION_TYPE PackTypes
 
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
@@ -67,7 +83,7 @@ namespace optframe {
 // SEE PARAM 'isMini'
 //
 // template <optframe::basic_arithmetics ObjType = evtype>
-template <ConceptsBasicArithmetics ObjType = evtype>
+MOD_EXPORT template <ConceptsBasicArithmetics ObjType = evtype>
 class Evaluation final : public Component {
  public:
   // exporting 'objType' type, based on template 'ObjType'
@@ -253,8 +269,8 @@ class Evaluation final : public Component {
     // take my own information
     // -----------------------
 
-    pair<ObjType, ObjType> e_begin =
-        make_pair(this->getObjFunction(), this->getInfMeasure());
+    std::pair<ObjType, ObjType> e_begin =
+        std::make_pair(this->getObjFunction(), this->getInfMeasure());
 
     // -----------------------
     // compute cost difference
@@ -324,13 +340,13 @@ class Evaluation final : public Component {
 
   std::string id() const override { return idComponent(); }
 
-  void print() const override { std::cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   std::string toString() const override {
     // ONE SHOULD NEVER PRINT AN EVALUATION WITH OUTDATED FLAG... SANITY CHECK!
     assert(!outdated);
     std::stringstream ss;
-    ss << fixed;  // disable scientific notation
+    ss << std::fixed;  // disable scientific notation
     ss << "Evaluation function value = " << evaluation();
     ss << (isFeasible() ? " " : " (not feasible) ");
     ss << (outdated ? " OUTDATED " : " ");
@@ -381,10 +397,13 @@ struct basic_ev_test_copy {
   }
 };
 
+// CANNOT TEST HERE ANYMORE!
+/*
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 // Compilation tests for XEvaluation concepts
 // These are NOT unit tests... Unit Tests are on tests/ folder
 #include <OptFrame/Evaluation.test.hpp>
 #endif
+*/
 
 #endif  // OPTFRAME_EVALUATION_HPP_

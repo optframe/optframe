@@ -25,3 +25,5 @@ vgcore.*
 /.cache/
 build/
 *.lock
+
+Examples/SUKP

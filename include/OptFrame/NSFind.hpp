@@ -23,19 +23,35 @@
 #ifndef OPTFRAME_NSFIND_HPP_
 #define OPTFRAME_NSFIND_HPP_
 
-#include "Move.hpp"
-// #include "Solution.hpp"
-//#include "Action.hpp"
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include "Component.hpp"
 #include "GeneralEvaluator.hpp"  // included for Neighborhood Exploration
+#include "Move.hpp"
 #include "NS.hpp"
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
 class NSFind : public NS<XES, XSH> {
  public:
@@ -51,12 +67,12 @@ class NSFind : public NS<XES, XSH> {
   // according 'gev' RETURNS: pair< uptr<Move<XES, XSH>>, op<XEv> > NSFind
   // is useful for exponential-sized neighborhoods, without requiring any
   // iterator structure
-  virtual pair<Move<XES, XSH>*, op<XEv>> findBest(
+  virtual std::pair<Move<XES, XSH>*, op<XEv>> findBest(
       GeneralEvaluator<XES, XSH>& gev, XES& se) = 0;
 
  public:
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << ":NSFind";
     return ss.str();
   }

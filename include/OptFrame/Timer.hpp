@@ -1,27 +1,10 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef TIMER_HPP
 #define TIMER_HPP
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 // C includes
 #ifdef WIN32
@@ -36,9 +19,25 @@
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-class Timer : public Component {
+MOD_EXPORT class Timer : public Component {
  private:
   bool showMessageOnDestroy;
 
@@ -61,7 +60,7 @@ class Timer : public Component {
   }
 
   virtual ~Timer() {
-    if (showMessageOnDestroy) printf("Spent time: %f secs\n", now());
+    if (showMessageOnDestroy) std::printf("Spent time: %f secs\n", now());
   }
 
   double now() const { return inSecs(); }
@@ -92,8 +91,8 @@ class Timer : public Component {
     return end - start;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":Timer";
     return ss.str();
   }
@@ -105,40 +104,6 @@ class Timer : public Component {
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
-#else
-template <typename XES>
-#endif
-class TimerBuilder : public ComponentBuilder<XES> {
- public:
-  virtual ~TimerBuilder() {}
-
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    return new Timer;
-  }
-
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    return params;
-  }
-
-  bool canBuild(std::string component) override {
-    return component == Timer::idComponent();
-  }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << "Timer";
-    return ss.str();
-  }
-
-  std::string toString() const override { return id(); }
-
-  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

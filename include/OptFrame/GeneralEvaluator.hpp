@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_GENERAL_EVALUATOR_HPP_
 #define OPTFRAME_GENERAL_EVALUATOR_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <iostream>
 #include <string>
 //
@@ -12,6 +14,22 @@
 #include "./Evaluation.hpp"
 #include "./Move.hpp"
 // #include "MoveCost.hpp"
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // This evaluator intends to run for both Single and MultiObj
 
@@ -24,9 +42,11 @@ namespace optframe {
 // template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH =
 // XES> // defaults to single obj.
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>  // defaults to single obj.
+MOD_EXPORT template <XESolution XES,
+                     XSearch<XES> XSH = XES>  // defaults to single obj.
 #else
-template <typename XES, typename XSH = XES>  // defaults to single obj.
+MOD_EXPORT template <typename XES,
+                     typename XSH = XES>  // defaults to single obj.
 #endif
 class GeneralEvaluator : public Component {
   using XEv = typename XES::second_type;

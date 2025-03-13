@@ -323,9 +323,10 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
           // });
           return uptr<Move<ESolutionBTSP>>(makeMoveSwap(p.first, p.second));
         }}  // FNSSeq
-};          // nsseq2
+};  // nsseq2
 
-vsref<NS<ESolutionBTSP>> nslist{nsseq2};
+sref<NS<ESolutionBTSP>> _sref_ns2{nsseq2.sptr()};
+vsref<NS<ESolutionBTSP>> nslist{_sref_ns2};
 
 using ESolutionBTSP_RSK = std::pair<std::vector<double>, MultiEvaluation<int>>;
 

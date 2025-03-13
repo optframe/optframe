@@ -4,22 +4,39 @@
 #ifndef OPTFRAME_NSSEQ_HPP_
 #define OPTFRAME_NSSEQ_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <type_traits>  // static assert is_same
 //
 #include <OptFrame/Experimental/NSBlockIterator.hpp>
+#include <OptFrame/NSFind.hpp>
+#include <OptFrame/NSIterator.hpp>
 
-#include "NSFind.hpp"
-#include "NSIterator.hpp"
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // using namespace std;
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
 class NSSeq : public NSFind<XES, XSH> {
   using XEv = typename XES::second_type;
@@ -61,10 +78,10 @@ class NSSeq : public NSFind<XES, XSH> {
 
  public:
   // findFirst (from NSSeq): returns the *first* move that strictly improves
-  // current solution 'se', according 'gev' RETURNS: pair< uptr<Move<XES, XEv,
-  // XSH>>, op<XEv> > note that this method is *not stateless* regarding NSSeq
-  // class, as a *stateful* iterator variable is locally stored
-  virtual pair<Move<XES, XSH>*, op<XEv>> findFirst(
+  // current solution 'se', according 'gev' RETURNS: std::pair< uptr<Move<XES,
+  // XEv, XSH>>, op<XEv> > note that this method is *not stateless* regarding
+  // NSSeq class, as a *stateful* iterator variable is locally stored
+  virtual std::pair<Move<XES, XSH>*, op<XEv>> findFirst(
       GeneralEvaluator<XES, XSH>& gev, XES& se) {
     // initializes iterator
     it = this->getIterator(se);
@@ -97,10 +114,10 @@ class NSSeq : public NSFind<XES, XSH> {
   }
 
   // findNext (from NSSeq): returns the *next* move that strictly improves
-  // current solution 'se', according 'gev' RETURNS: pair< uptr<Move<XES, XEv,
-  // XSH>>, op<XEv> > note that this method is *not stateless* regarding NSSeq
-  // class, as a *stateful* iterator variable is locally stored
-  virtual pair<Move<XES, XSH>*, op<XEv>> findNext(
+  // current solution 'se', according 'gev' RETURNS: std::pair< uptr<Move<XES,
+  // XEv, XSH>>, op<XEv> > note that this method is *not stateless* regarding
+  // NSSeq class, as a *stateful* iterator variable is locally stored
+  virtual std::pair<Move<XES, XSH>*, op<XEv>> findNext(
       GeneralEvaluator<XES, XSH>& gev, XES& se) {
     // checks if iterator is initialized or finished
     if (!it || it->isDone()) return std::make_pair(nullptr, std::nullopt);
@@ -135,17 +152,17 @@ class NSSeq : public NSFind<XES, XSH> {
   // findBest (from NSFind): returns move that greatly improves current solution
   // 'se', according 'gev' NSFind is useful for exponential-sized neighborhoods,
   // without requiring any iterator structure
-  virtual pair<Move<XES, XSH>*, op<XEv>> findBest(
+  virtual std::pair<Move<XES, XSH>*, op<XEv>> findBest(
       GeneralEvaluator<XES, XSH>& gev, XES& se) override {
     // finds first improving move
-    pair<Move<XES, XSH>*, op<XEv>> mve = this->findFirst(gev, se);
+    std::pair<Move<XES, XSH>*, op<XEv>> mve = this->findFirst(gev, se);
     if (!mve.second) return std::make_pair(nullptr, std::nullopt);
     op<XEv> bestCost = std::move(mve.second);
     Move<XES, XSH>* bestMove = mve.first;
     // iterates while iterator is valid
     while (!it->isDone()) {
       // gets next improving move
-      pair<Move<XES, XSH>*, op<XEv>> mveNext = this->findNext(gev, se);
+      std::pair<Move<XES, XSH>*, op<XEv>> mveNext = this->findNext(gev, se);
       // checks if it surpasses existing best move
       if (mve.second && gev.betterStrict(*mve.second, *bestCost)) {
         bestCost = std::move(mve.second);
@@ -176,6 +193,8 @@ class NSSeq : public NSFind<XES, XSH> {
 // General test for NSSeq
 // TODO: only if not #include "printable.h"
 
+// SHOULD NOT DO CTESTS HERE!
+/*
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
@@ -188,5 +207,7 @@ using nsseq_test_base =
 
 }  // namespace optframe
 #endif  // cpp_concepts
+
+*/
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

@@ -29,11 +29,24 @@
 // and avoid user to take pointer (and maybe even ban pointer interface here).
 // Unsafe ref passing as T& is natural and should be kept.
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <optional>  // for std::nullopt
+
+#define MOD_EXPORT
+#else
+
+import std;
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace opview {
 //
-template <typename T>
+MOD_EXPORT template <typename T>
 class optional_view {
   using value_type = T;
 
@@ -127,7 +140,7 @@ class optional_view {
 #endif
 };
 
-template <typename T>
+MOD_EXPORT template <typename T>
 using const_optional_view = optional_view<const T>;
 
 }  // namespace opview

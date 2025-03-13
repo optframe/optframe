@@ -8,14 +8,27 @@
 // The stream indicates its purpose, so formatting can change according to
 // stream
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <iostream>
 #include <sstream>
 #include <string>
 
+#define MOD_EXPORT
+#else
+
+import std;
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 // semantic streams (optframe::cjson, ctxt, etc)
-struct SemStream : private std::streambuf, public std::ostream {
+MOD_EXPORT struct SemStream : private std::streambuf, public std::ostream {
  private:
   // possibly storing locally
   std::stringstream oss;
@@ -70,9 +83,9 @@ struct NullSemStream : private std::streambuf, public std::ostream {
 
 // extern SemStream cjson; // only in .cpp
 // extern SemStream ctxt;  // only in .cpp
-inline SemStream cjson{};       // (C++17 extern linkage is implicit)
-inline SemStream ctxt{};        // (C++17 extern linkage is implicit)
-inline NullSemStream osNull{};  // (C++17 extern linkage is implicit)
+MOD_EXPORT inline SemStream cjson{};       // (C++17 extern linkage is implicit)
+MOD_EXPORT inline SemStream ctxt{};        // (C++17 extern linkage is implicit)
+MOD_EXPORT inline NullSemStream osNull{};  // (C++17 extern linkage is implicit)
 
 }  // namespace optframe
 

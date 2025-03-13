@@ -1,3 +1,4 @@
+#define NO_CXX_MODULES 1  // disable CXX_MODULES for optframe
 
 // load first to guarantee all tests work fine!
 #include <OptFrame/printable/printable.hpp>

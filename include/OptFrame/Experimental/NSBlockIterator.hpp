@@ -23,6 +23,8 @@
 #ifndef OPTFRAME_EXPERIMENTAL_NSBLOCKITERATOR_HPP_
 #define OPTFRAME_EXPERIMENTAL_NSBLOCKITERATOR_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 //
@@ -30,7 +32,21 @@
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/NSIterator.hpp>
 
-// using namespace std;
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -38,8 +54,8 @@ namespace optframe {
 // these parts may share any characteristic that may help predicting the
 // behavior of local optima
 
-template <XSolution S, XEvaluation XEv = Evaluation<>,
-          XESolution XES = std::pair<S, XEv>>
+MOD_EXPORT template <XSolution S, XEvaluation XEv = Evaluation<>,
+                     XESolution XES = std::pair<S, XEv>>
 class NSBlockIterator : public Component {
  public:
   virtual ~NSBlockIterator() {}
@@ -49,8 +65,8 @@ class NSBlockIterator : public Component {
   virtual bool isDone() = 0;
   virtual NSIterator<XES>& current() = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":NSBlockIterator";
     return ss.str();
   }
@@ -77,8 +93,8 @@ class DefaultNSBlockIterator : public NSBlockIterator<S, XEv, XES> {
 
   virtual NSIterator<XES>& current() override { return *it; }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":NSBlockIterator";
     return ss.str();
   }

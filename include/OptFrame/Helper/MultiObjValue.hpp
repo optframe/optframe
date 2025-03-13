@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef OPTFRAME_MULTI_OBJ_VALUE_HPP
 #define OPTFRAME_MULTI_OBJ_VALUE_HPP
 
@@ -14,7 +17,7 @@
 #include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/SingleObjValue.hpp>  // must re-use some structures
 
-//#include <OptFrame/printable/printable.hpp>
+// #include <OptFrame/printable/printable.hpp>
 
 namespace optframe {
 

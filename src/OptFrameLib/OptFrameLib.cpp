@@ -1,3 +1,5 @@
+#define NO_CXX_MODULES 1  // disable CXX_MODULES for optframe
+
 #include <OptFrameLib/OptFrameLib.h>
 //
 

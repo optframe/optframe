@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 //
 
@@ -12,9 +14,25 @@
 #include "Component.hpp"
 #include "Domain.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import optframe.component;
+import optframe.concepts;
+import std;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XSolution S>
+MOD_EXPORT template <XSolution S>
 class Constructive : public Component {
  public:
   ~Constructive() override = default;
@@ -31,12 +49,12 @@ class Constructive : public Component {
     std::stringstream ss;
     std::string s = Component::idComponent();
 
-    ss << s << ":Constructive" 
-    #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-    << Domain::getAlternativeDomain<S>("<XS>");
-    #else
-    << Domain::getAlternativeDomain<S>("<X?>");
-    #endif
+    ss << s << ":Constructive"
+#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+       << Domain::getAlternativeDomain<S>("<XS>");
+#else
+       << Domain::getAlternativeDomain<S>("<X?>");
+#endif
 
     return ss.str();
   }
