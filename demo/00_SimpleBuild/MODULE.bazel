@@ -4,3 +4,12 @@
 #
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
+
+
+bazel_dep(name = "optframe", dev_dependency = True)
+git_override(
+    module_name = "optframe",
+    remote = "https://github.com/optframe/optframe.git",
+    branch='master'
+)
+
