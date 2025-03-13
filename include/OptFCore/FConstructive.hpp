@@ -8,6 +8,7 @@
 #include <functional>
 #include <string>
 // OptFrame
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Constructive.hpp>
 //
 

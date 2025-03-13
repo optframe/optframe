@@ -6,6 +6,7 @@
 
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
+#include <optional>
 #include <string>
 //
 
