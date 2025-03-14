@@ -48,25 +48,25 @@ public:
       return u;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "component.action: " << input << endl;
+      //cout << "component.action: " << input << std::endl;
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
 
-         cout << factory.actions.size() << " available action handlers:" << endl;
-         cout << "===============================================" << endl;
-         cout << "Component index  |  action  | action parameters" << endl;
-         cout << "===============================================" << endl;
+         std::cout << factory.actions.size() << " available action handlers:" << std::endl;
+         std::cout << "===============================================" << std::endl;
+         std::cout << "Component index  |  action  | action parameters" << std::endl;
+         std::cout << "===============================================" << std::endl;
 
          for (unsigned a = 0; a < factory.actions.size(); a++)
-            cout << factory.actions[a]->usage() << endl
-                 << endl;
+            std::cout << factory.actions[a]->usage() << std::endl
+                 << std::endl;
 
-         cout << "===============================================" << endl;
+         std::cout << "===============================================" << std::endl;
 
          return false;
       }
@@ -76,20 +76,20 @@ public:
       Component* comp = factory.getNextComponent(scanner, &compName, &compNumber);
 
       if (!comp) {
-         cout << "module " << id() << " error: nullptr component!" << endl;
+         std::cout << "module " << id() << " error: nullptr component!" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "module " << id() << " error: missing action name!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "module " << id() << " error: missing action name!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string action = scanner.next();
 
-      //cout << "FOUND COMPONENT '" << compName << "' and action '" << action << "'" << endl;
-      //cout << "will look for action: '" << action << "'" << endl;
+      //cout << "FOUND COMPONENT '" << compName << "' and action '" << action << "'" << std::endl;
+      //cout << "will look for action: '" << action << "'" << std::endl;
 
       for (unsigned a = 0; a < factory.actions.size(); a++)
          if (factory.actions[a]->handleComponent(compName) && factory.actions[a]->handleAction(action)) {
@@ -99,11 +99,11 @@ public:
             return factory.actions[a]->doAction(ssaction.str(), factory, dictionary, ldictionary);
          }
 
-      cout << "component.action error: component '" << compName << "' and action '" << action << "' not found!" << endl;
+      std::cout << "component.action error: component '" << compName << "' and action '" << action << "' not found!" << std::endl;
       return false;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

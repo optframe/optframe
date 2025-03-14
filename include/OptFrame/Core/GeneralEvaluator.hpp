@@ -172,7 +172,7 @@ class GeneralEvaluator : public Component {
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(),
          e.getInfMeasure());
          // get final values for lexicographic part
-         vector<pair<evtype, evtype>>
+         std::vector<std::pair<evtype, evtype>>
          alternatives(e.getAlternativeCosts().size()); for (unsigned i = 0; i <
          alternatives.size(); i++) { alternatives[i].first =
          e.getAlternativeCosts()[i].first; alternatives[i].second =

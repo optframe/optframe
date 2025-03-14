@@ -32,7 +32,7 @@ class MOPopulationManagement : public Component {
   virtual vector<MOSIndividual<XMES2>> createNext(
       unsigned target_size, const vector<MOSIndividual<XMES2>>& P) = 0;
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -160,12 +160,12 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
 
     if (children.size() != target_size) {
       if (Component::warning) {
-        cout << "WARNING: BasicPopulationManagement::createNext()";
-        cout << " tried to create population of " << target_size;
-        cout << " but got " << children.size();
-        cout << endl;
-        cout << "I THINK NSGA-II requires double population, not more...";
-        cout << endl;
+        std::cout << "WARNING: BasicPopulationManagement::createNext()";
+        std::cout << " tried to create population of " << target_size;
+        std::cout << " but got " << children.size();
+        std::cout << std::endl;
+        std::cout << "I THINK NSGA-II requires double population, not more...";
+        std::cout << std::endl;
       }
     }
 
@@ -370,18 +370,18 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<XES> {
         initEPop, hlist, _mutationRate, clist, _renew_rate, hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(InitialMultiESolution<XMES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(InitialMultiESolution<XMES>::idComponent(),
                                "initial epopulation"));
-    stringstream ss;
+    std::stringstream ss;
     ss << NS<XMES>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
-    params.push_back(make_pair("OptFrame:double", "mutation rate"));
+    params.push_back(std::make_pair(ss.str(), "list of NS"));
+    params.push_back(std::make_pair("OptFrame:double", "mutation rate"));
     stringstream ss2;
     ss2 << GeneralCrossover<S>::idComponent() << "[]";
-    params.push_back(make_pair(ss2.str(), "list of crossover"));
-    params.push_back(make_pair("OptFrame:double", "renew rate"));
+    params.push_back(std::make_pair(ss2.str(), "list of crossover"));
+    params.push_back(std::make_pair("OptFrame:double", "renew rate"));
     return params;
   }
 
@@ -389,15 +389,15 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<XES> {
     return component == BasicMOPopulationManagement<XMES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "BasicMOPopulationManagement";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

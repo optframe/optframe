@@ -370,7 +370,7 @@ class MyRandomKeysInitEPop
 
 pair<MultiEvaluation<int>, vector<int>> fDecodeBiEval(
     sref<IEvaluator<ESolutionBTSP>> eval, const vector<double>& rk) {
-  vector<pair<double, int>> v(rk.size());
+  std::vector<std::pair<double, int>> v(rk.size());
   //
   for (unsigned i = 0; i < v.size(); i++) v[i] = pair<double, int>(rk[i], i);
 

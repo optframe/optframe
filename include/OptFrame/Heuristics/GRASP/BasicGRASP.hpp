@@ -88,7 +88,7 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
     while ((iter < iterMax) &&
            (tNow.now() < timelimit))  //&& (evaluator.betterThan(target_f, e)))
     {
-      if (Component::verbose) cout << "GRASP::iter=" << iter << endl;
+      if (Component::verbose) std::cout << "GRASP::iter=" << iter << std::endl;
 
       XES p1 = genGRPair(timelimit - tNow.now());
       ////S* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
@@ -109,7 +109,7 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
         se = p1;  // TODO: better move perhaps??
 
         if (Component::information) {
-          cout << "GRASP iter " << iter << ": ";
+          std::cout << "GRASP iter " << iter << ": ";
           e.print();
         }
       }
@@ -127,10 +127,10 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
     return {SearchStatus::NO_REPORT, star};
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << GRASP::family()
        << ":BasicGRASP";
     return ss.str();
@@ -182,16 +182,16 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
     return new BasicGRASP<XES>(eval, constructive, h, alpha, iterMax);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(GRConstructive<S>::idComponent(),
+    params.push_back(std::make_pair(GRConstructive<S>::idComponent(),
                                "greedy randomized constructive heuristic"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
-    params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));
-    params.push_back(make_pair("OptFrame:int", "max number of iterations"));
+    params.push_back(std::make_pair("OptFrame:float", "alpha parameter [0,1]"));
+    params.push_back(std::make_pair("OptFrame:int", "max number of iterations"));
 
     return params;
   }
@@ -201,7 +201,7 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
   }
 
   static std::string idComponent() {
-    stringstream ss;
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << GRASP::family()
        << ":BasicGRASP";
     return ss.str();

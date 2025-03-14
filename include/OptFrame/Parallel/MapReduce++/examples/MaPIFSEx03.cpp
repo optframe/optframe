@@ -65,7 +65,7 @@ fmap(string i_j, Shared _shared)
    stringstream r;
    r << result;
 
-   cout << i_j << " = " << r.str() << "\n";
+   std::cout << i_j << " = " << r.str() << "\n";
 
    return r.str();
 };
@@ -73,7 +73,7 @@ fmap(string i_j, Shared _shared)
 /* Função de redução */
 
 vector<string>*
-freduce(vector<string>* mapped, Shared _shared)
+freduce(std::vector<string>* mapped, Shared _shared)
 {
    vector<string>* reduced = new vector<string>;
 

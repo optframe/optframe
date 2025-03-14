@@ -26,7 +26,7 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
   DeltaMove2Opt(const super& s, ProblemInstance* _svrpdsp)
       : super(s.get_p1(), s.get_p2(), _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -35,7 +35,7 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
   DeltaMove2Opt(int p1, int p2, ProblemInstance* _svrpdsp)
       : super(p1, p2, _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -97,7 +97,7 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
 */
 
     if (verbose) {
-      // cout << "Cost() of rep: " << rep << endl;
+      // std::cout << "Cost() of rep: " << rep << std::endl;
       // ads.print();
     }
 
@@ -115,36 +115,36 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
 
     if (p1 == p2) {
       f = 0;
-      cout << "2OPT SHOULDN'T BE APPLIED! p1==p2" << endl;
+      std::cout << "2OPT SHOULDN'T BE APPLIED! p1==p2" << std::endl;
       getchar();
     }
 
     if ((p1 > ads.zero) && (p2 > ads.zero))  // all zero!
     {
       f = 0;
-      cout << "2OPT SHOULDN'T BE APPLIED! both after zero." << endl;
+      std::cout << "2OPT SHOULDN'T BE APPLIED! both after zero." << std::endl;
       getchar();
     }
 
     if (p2 < ads.zero)  // inside zeros (p1 < p2) (distance of 2)
     {
-      // cout << "CASE 1" << endl;
+      // std::cout << "CASE 1" << std::endl;
       f -= svrpdsp->dc(rep[bp1], rep[p1]);
-      if (verbose) cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
+      if (verbose) std::cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
       f -= svrpdsp->dc(rep[p2], rep[ap2]);
-      if (verbose) cout << "-d(" << rep[p2] << "," << rep[ap2] << ") ";
+      if (verbose) std::cout << "-d(" << rep[p2] << "," << rep[ap2] << ") ";
 
       f += svrpdsp->dc(rep[bp1], rep[p2]);
-      if (verbose) cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
+      if (verbose) std::cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
       f += svrpdsp->dc(rep[p1], rep[ap2]);
-      if (verbose) cout << "+d(" << rep[p1] << "," << rep[ap2] << ") ";
+      if (verbose) std::cout << "+d(" << rep[p1] << "," << rep[ap2] << ") ";
     } else {
-      cout << "DELTA 2OPT DON'T KNOW!!" << endl;
+      std::cout << "DELTA 2OPT DON'T KNOW!!" << std::endl;
       exit(1);
     }
 
-    // cout << endl;
-    if (verbose) cout << "f is: " << f << endl;
+    // std::cout << std::endl;
+    if (verbose) std::cout << "f is: " << f << std::endl;
 
     // ==========
     // Infeasible
@@ -152,12 +152,12 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
 
     long long f_inv = 0;
 
-    if (verbose) cout << endl << "INF C++:";
+    if (verbose) std::cout << std::endl << "INF C++:";
 
     int nQ = svrpdsp->Q;  // FULL Q
     for (int c = 0; c < ads.zero; c++) {
       if (verbose)
-        cout << "{" << nQ << "->" << f_inv << "}\t"
+        std::cout << "{" << nQ << "->" << f_inv << "}\t"
              << "c:" << c << " ";
 
       if ((c >= p1) && (c <= p2)) {
@@ -165,26 +165,26 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
         int nc = diff - (c - p1) + p1 - 1;
         nQ += svrpdsp->dp[rep[nc]] - svrpdsp->dd[rep[nc]];
         f_inv += infv(nQ, ads.load[0]);
-        if (verbose) cout << "add_" << rep[c] << "_rev_" << rep[nc] << " ";
+        if (verbose) std::cout << "add_" << rep[c] << "_rev_" << rep[nc] << " ";
       }
 
       if ((c < p1) || (c > p2)) {
         nQ += svrpdsp->dp[rep[c]] - svrpdsp->dd[rep[c]];
         f_inv += infv(nQ, ads.load[0]);
-        if (verbose) cout << "add_" << rep[c] << " ";
+        if (verbose) std::cout << "add_" << rep[c] << " ";
       }
     }
 
-    if (verbose) cout << endl;
+    if (verbose) std::cout << std::endl;
 
-    if (verbose) cout << "finv is: " << f_inv << endl;
+    if (verbose) std::cout << "finv is: " << f_inv << std::endl;
 
     long long f_inv2 = ((long long)f_inv) * 100000 - e.getInfMeasure();
 
     if (verbose) {
-      cout << "finv2 is: " << f_inv << "*100000 - " << e.getInfMeasure()
-           << endl;
-      cout << "finv2 is: " << f_inv2 << endl;
+      std::cout << "finv2 is: " << f_inv << "*100000 - " << e.getInfMeasure()
+           << std::endl;
+      std::cout << "finv2 is: " << f_inv2 << std::endl;
       getchar();
     }
 
@@ -215,7 +215,7 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
   // infeasible value
   int infv(int nv, int Q) { return max((nv - Q), 0); }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMove2Opt");
     return idComp;
@@ -227,9 +227,9 @@ class DeltaMove2Opt : public MoveTSP2Opt<int, AdsSVRPDSP> {
   }
 
   void print() const override {
-    cout << "DeltaMove2Opt( ";
-    cout << " edge " << p1 << " <=>  edge " << p2 << " )";
-    cout << endl;
+    std::cout << "DeltaMove2Opt( ";
+    std::cout << " edge " << p1 << " <=>  edge " << p2 << " )";
+    std::cout << std::endl;
   }
 };
 

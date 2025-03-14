@@ -54,7 +54,7 @@ class ConstructiveRandom : public Constructive<RepTSP> {
     return *new Solution<RepTSP>(r);
   }
 
-  void print() const override { cout << "Random Constructive" << endl; }
+  void print() const override { std::cout << "Random Constructive" << std::endl; }
 };
 
 }  // namespace TSP2

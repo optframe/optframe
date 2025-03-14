@@ -82,7 +82,7 @@ class PCAPEvaluator
       double yMed = pPCAP.vecCidades[med].y;
 
       fo += sqrt(pow((x - xMed), 2) + pow((y - yMed), 2));
-      // cout << "i = " << i << " fo = " << fo << endl;
+      // std::cout << "i = " << i << " fo = " << fo << std::endl;
       // getchar();
     }
 

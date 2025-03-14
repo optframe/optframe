@@ -53,11 +53,11 @@ public:
       N = n + 1;
       dN = 2 * n + 1;
       dn = 2 * n;
-      cout << "Problem size: " << N << " => " << dN;
+      std::cout << "Problem size: " << N << " => " << dN;
 #ifdef  ALL_INTEGER
-      cout << " (INTEGER)" << endl;
+      std::cout << " (INTEGER)" << std::endl;
 #else
-      cout << " (DOUBLE)" << endl;
+      std::cout << " (DOUBLE)" << std::endl;
 #endif
 
       Q = 0;
@@ -86,14 +86,14 @@ public:
       }
 
       // capacity
-      cout << endl << "Q = " << Q << endl;
+      std::cout << std::endl << "Q = " << Q << std::endl;
 
       // demands
 
 
-		//cout << "d: " << d << endl;
-		//cout << "p: " << p << endl;
-		//cout << "r: " << r << endl;
+		//cout << "d: " << d << std::endl;
+		//cout << "p: " << p << std::endl;
+		//cout << "r: " << r << std::endl;
 
                 // duplicates
 
@@ -113,10 +113,10 @@ public:
 
                 // duplicate demands
 
-        cout << "N=" << N << " dN=" << dN << endl;
-		//cout << "dd: " << dd << endl;
-		//cout << "dp: " << dp << endl;
-		//cout << "dr: " << dr << endl;
+        std::cout << "N=" << N << " dN=" << dN << std::endl;
+		//cout << "dd: " << dd << std::endl;
+		//cout << "dp: " << dp << std::endl;
+		//cout << "dr: " << dr << std::endl;
         
                 // -----------
                 // cost matrix
@@ -140,10 +140,10 @@ public:
            for(int j=0; j<N; j++)
                if(c(i,j) != c(j,i))
                {
-                   cout << "Simmetry error at i=" <<i << " j=" << j << endl;
+                   std::cout << "Simmetry error at i=" <<i << " j=" << j << std::endl;
                    exit(1);
                }
-        cout << "Matrix c checked for simmetry!" << endl;
+        std::cout << "Matrix c checked for simmetry!" << std::endl;
 
                 // duplicate
 
@@ -167,18 +167,18 @@ public:
                   for(int j=0; j<dN; j++)
                      if(dc(i,j) != dc(j,i))
                      {
-                        cout << "erro em (" << i << "," << j << ")! matriz nao simetrica." << endl;
+                        std::cout << "erro em (" << i << "," << j << ")! matriz nao simetrica." << std::endl;
                         exit(1);
                      }
 
 
-                //cout << "costs:" << endl;
-		//cout << c << endl;
+                //cout << "costs:" << std::endl;
+		//cout << c << std::endl;
 
-                //cout << "duplicate costs:" << endl;
-		//cout << dc << endl;
+                //cout << "duplicate costs:" << std::endl;
+		//cout << dc << std::endl;
 
-		cout << "Problem read successfully!" << endl;
+		cout << "Problem read successfully!" << std::endl;
 	}
 
    bool isDelivery(int c)
@@ -193,7 +193,7 @@ public:
 	
 	virtual ~ProblemInstance()
 	{
-		cout << "unloaded problem instance" << endl;
+		cout << "unloaded problem instance" << std::endl;
 	}
 };
 

@@ -79,7 +79,7 @@ class MoveTSPSwap : public Move<XES> {
   }
 
   void print() const override {
-    cout << "MoveTSPSwap( " << p1 << " <=> " << p2 << " )" << endl;
+    std::cout << "MoveTSPSwap( " << p1 << " <=> " << p2 << " )" << std::endl;
   }
 };
 

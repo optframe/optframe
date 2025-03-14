@@ -44,12 +44,12 @@ public:
       return "initservers";
    }
 
-   void run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
+   void run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
    {
       factory->mapReduce->initServers(factory->argc, factory->argv);
    }
 
-   virtual string preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, map<string, string>&, map<string, vector<string>>&, string input)
+   virtual string preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, map<std::string, std::string>&, map<string, vector<string>>&, string input)
    {
       Scanner scanner(input);
 

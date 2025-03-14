@@ -32,19 +32,19 @@ class MoveNT : public Move<RepOPM> {
     rep.second(i, j) += inc_dec;
 
     if (rep.first[i] < 0) {
-      cout << "Erro CARREGS!" << endl;
+      std::cout << "Erro CARREGS!" << std::endl;
       this->print();
       exit(1);
     }
 
     if (rep.second(i, j) < 0) {
-      cout << "Erro VIAGENS NEG!" << endl;
+      std::cout << "Erro VIAGENS NEG!" << std::endl;
       this->print();
       exit(1);
     }
 
     if (!opm.isCompatible(j, rep.first[i])) {
-      cout << "NT Erro Incompatibilidade!" << endl;
+      std::cout << "NT Erro Incompatibilidade!" << std::endl;
       this->print();
       exit(1);
     }
@@ -58,7 +58,7 @@ class MoveNT : public Move<RepOPM> {
   }
 
   void print() const override {
-    cout << "MoveNT(" << i << " , " << j << ") += " << inc_dec << "\n";
+    std::cout << "MoveNT(" << i << " , " << j << ") += " << inc_dec << "\n";
   }
 };
 
@@ -87,7 +87,7 @@ class NSEnumNT : public NSEnum<RepOPM> {
     } else {
       cerr << "Neighborhood NT Error! Move " << m
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
     }
   }
@@ -96,7 +96,7 @@ class NSEnumNT : public NSEnum<RepOPM> {
     return opm.getNumFrentes() * opm.getNumCaminhoes() * 2;
   }
 
-  void print() { cout << "NSEnum NT (" << size() << ")" << endl; }
+  void print() { std::cout << "NSEnum NT (" << size() << ")" << std::endl; }
 };
 
 }  // namespace POLAD

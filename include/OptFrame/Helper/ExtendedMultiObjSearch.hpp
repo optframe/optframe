@@ -116,8 +116,8 @@ class ExtendedPareto {
   vector<vector<Evaluation<>*>> getParetoFront() { return paretoFront; }
 
   void print() const override {
-    cout << "ExtendedPareto size=" << paretoFront.size();
-    cout << endl;
+    std::cout << "ExtendedPareto size=" << paretoFront.size();
+    std::cout << std::endl;
   }
 };
 
@@ -138,13 +138,13 @@ class ExtendedMultiObjSearch : public Component {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << "ExtendedMultiObjSearch:";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 
 template <class R, class X, class ADS = OPTFRAME_DEFAULT_ADS>
@@ -161,12 +161,12 @@ class ExtendedMultiObjSearchBuilder : public ComponentBuilder<R, ADS> {
     return build(scanner, hf, family);
   }
 
-  vector<pair<string, string>> parameters() override = 0;
+  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
 
   virtual bool canBuild(string) = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<R, ADS>::idComponent() << "ExtendedMultiObjSearch:";
     return ss.str();
   }

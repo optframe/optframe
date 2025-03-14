@@ -104,8 +104,8 @@ class EPopulation : public Component {
     return *new EPopulation<XES>(*this);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":EPopulation";
     return ss.str();
   }
@@ -117,7 +117,7 @@ class EPopulation : public Component {
   std::string toString() const override {
     std::stringstream ss;
     ss << "EPopulation(" << p.size() << ")";
-    ss << endl;
+    ss << std::endl;
 
     for (unsigned i = 0; i < p.size(); i++) {
       // ss << *p.at(i) << std::endl;

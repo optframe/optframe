@@ -30,7 +30,7 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
                    int _r, int _p1, int _p2, ProblemInstance* _hfmvrp)
       : super(getRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp) {
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -42,7 +42,7 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
           {
                   if (!_hfmvrp)
                   {
-                          cout << "Error: hfmvrp problem is NULL!" << endl;
+                          std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
                           print();
                           exit(1);
                   }
@@ -67,19 +67,19 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
                           (p2 >= 1) && p2 < (((int)rep[r].size()) - 1);
       bool minSize = (rep[r].size() >= 3);
 
-      // cout << "VRP 2 OPT canBeApplied 1 " << endl;
-      // cout << "idComponent() = " << idComponent() << endl;
-      // cout << "VRP 2 OPT upNeigh 1" << endl;
+      // std::cout << "VRP 2 OPT canBeApplied 1 " << std::endl;
+      // std::cout << "idComponent() = " << idComponent() << std::endl;
+      // std::cout << "VRP 2 OPT upNeigh 1" << std::endl;
 
-      // cout << "ads.neighborhoodStatus.size() = " <<
-      // ads.neighborhoodStatus.size() << endl;
-      ////cout << "r = " << r << endl;
-      // cout << "ads.neighborhoodStatus.find(idComponent())->second)[r] = " <<
-      // (ads.neighborhoodStatus.find(idComponent())->second)[r] << endl; cout
-      // << "VRP 2 OPT upNeigh 2" << endl;
+      // std::cout << "ads.neighborhoodStatus.size() = " <<
+      // ads.neighborhoodStatus.size() << std::endl;
+      ////cout << "r = " << r << std::endl;
+      // std::cout << "ads.neighborhoodStatus.find(idComponent())->second)[r] = " <<
+      // (ads.neighborhoodStatus.find(idComponent())->second)[r] << std::endl; std::cout
+      // << "VRP 2 OPT upNeigh 2" << std::endl;
 
       // getchar();
-      // cout << "VRP 2 OPT canBeApplied 2 " << endl;
+      // std::cout << "VRP 2 OPT canBeApplied 2 " << std::endl;
       // getchar();
       return all_positive && minSize;
     } else {
@@ -197,22 +197,22 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
 
     if (myabs(k1 - k2) >= 2) {
       f -= hfmvrp->getDist(route[bk1], route[k1]) * vTDC;
-      // cout << "-d(" << rep[bk1] << "," << rep[k1] << ") ";
+      // std::cout << "-d(" << rep[bk1] << "," << rep[k1] << ") ";
       f -= hfmvrp->getDist(route[bk2], route[k2]) * vTDC;
-      // cout << "-d(" << rep[bk2] << "," << rep[k2] << ") ";
+      // std::cout << "-d(" << rep[bk2] << "," << rep[k2] << ") ";
 
       f += hfmvrp->getDist(route[bk1], route[bk2]) * vTDC;
-      // cout << "+d(" << rep[bk1] << "," << rep[bk2] << ") ";
+      // std::cout << "+d(" << rep[bk1] << "," << rep[bk2] << ") ";
       f += hfmvrp->getDist(route[k1], route[k2]) * vTDC;
-      // cout << "+d(" << rep[k1] << "," << rep[k2] << ") ";
+      // std::cout << "+d(" << rep[k1] << "," << rep[k2] << ") ";
     }
-    // cout << endl;
+    // std::cout << std::endl;
 
     /// return new MoveCost<> (f, 0);
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMoveVRP2Opt");
     return idComp;
@@ -224,9 +224,9 @@ class DeltaMoveVRP2Opt : public MoveVRP2Opt<ESolutionHFMVRP> {
   }
 
   void print() const override {
-    cout << "DeltaMoveVRP2Opt( route: " << r << " : ";
-    cout << " edge " << p1 << " <=>  edge " << p2 << " )";
-    cout << endl;
+    std::cout << "DeltaMoveVRP2Opt( route: " << r << " : ";
+    std::cout << " edge " << p1 << " <=>  edge " << p2 << " )";
+    std::cout << std::endl;
   }
 };
 

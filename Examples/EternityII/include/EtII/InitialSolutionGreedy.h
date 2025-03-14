@@ -259,7 +259,7 @@ class EtIIInitialSolutionGreedy : public Constructive<SolutionEtII> {
 
     if (corner_pieces.size() > 0 || side_pieces.size() > 0 ||
         center_pieces.size() > 0) {
-      cout << "Warning: construction problem!" << endl;
+      std::cout << "Warning: construction problem!" << std::endl;
     }
 
     return make_optional(SolutionEtII(*tab));

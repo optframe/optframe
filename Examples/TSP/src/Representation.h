@@ -44,7 +44,7 @@ public:
    {
       //printf("\nINIT================\n");
       RepTSP r;
-      //cout << "# "<< s << endl;
+      //cout << "# "<< s << std::endl;
       //int i;
       //cin >> i;
       Scanner scan(s);
@@ -56,7 +56,7 @@ public:
       while (scan.hasNext())
          r.push_back(scan.nextInt());
 
-      //cout << "##" << r << endl;
+      //cout << "##" << r << std::endl;
 
       //printf("\nFIM================\n");
       return r;
@@ -99,12 +99,12 @@ public:
    virtual pair<RepTSP, double> B_fromString(string s) // TODO
    {
       //printf("\nINIT================\n%s\n",s.c_str());
-      //cout << "Initializing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+      //cout << "Initializing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
 
       RepTSP r;
       double c;
 
-      //cout << endl << "# "<< s << endl;
+      //cout << std::endl << "# "<< s << std::endl;
 
       Scanner scan(s);
       scan.useSeparators("()[], \t\n");
@@ -120,20 +120,20 @@ public:
 
       int size = scan.nextInt(); // int size
 
-      //cout << size << "!" << endl;
+      //cout << size << "!" << std::endl;
 
       for (int i = 0; i < size && scan.hasNext(); i++)
          r.push_back(scan.nextInt());
 
       //int i;				cin >> i;
 
-      //cout << "rest" << scan.rest() << endl;
+      //cout << "rest" << scan.rest() << std::endl;
 
       c = scan.nextDouble();
 
-      //cout << c << endl;
+      //cout << c << std::endl;
 
-      //cout << "##" << r << " c=" << c << endl;
+      //cout << "##" << r << " c=" << c << std::endl;
       //printf("\nFIM================\n");
       return make_pair(r, c);
    };
@@ -147,7 +147,7 @@ public:
    virtual RepTSP C_fromString(string s)
    {
       RepTSP r;
-      //cout << "# "<< s << endl;
+      //cout << "# "<< s << std::endl;
       //int i;
       //cin >> i;
       Scanner scan(s);
@@ -159,7 +159,7 @@ public:
       while (scan.hasNext())
          r.push_back(scan.nextInt());
 
-      //cout << "##" << r << endl;
+      //cout << "##" << r << std::endl;
 
       return r;
    };

@@ -84,7 +84,7 @@ class EFPESContinous
 
   void applyParameters(Solution<RepHFM>* s,
                        ESContinuousStructure<esParameters>* p) {
-    // cout<<p->desvs.singleParams<<endl;
+    // std::cout<<p->desvs.singleParams<<endl;
 
     int sizeSP = s->getR().singleFuzzyRS.size();
     int sizeMP = s->getR().averageFuzzyRS.size();
@@ -147,9 +147,9 @@ class EFPESContinous
     int sizeMP = s->getR().averageFuzzyRS.size();
     int sizeDP = s->getR().derivativeFuzzyRS.size();
     /*
-     cout << sizeSP << endl;
-     cout << sizeMP << endl;
-     cout << sizeDP << endl;
+     std::cout << sizeSP << std::endl;
+     std::cout << sizeMP << std::endl;
+     std::cout << sizeDP << std::endl;
      s->print();
      getchar();*/
 

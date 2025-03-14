@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_ILS_ILSLPERTURBATION_HPP_
 #define OPTFRAME_HEURISTICS_ILS_ILSLPERTURBATION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <math.h>
 
 #include <string>
@@ -15,7 +17,23 @@
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Search/StopCriteria.hpp>
 
-#include "ILS.h"
+#include "ILS.hpp"
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -33,10 +51,10 @@ class ILSLPerturbation : public Component, public ILS {
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << ILS::family() << "LevelPert";
     return ss.str();
   }
@@ -82,8 +100,8 @@ class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
         m->applyUpdate(se);
       } else {
         if (Component::warning)
-          cout << "ILS Warning: perturbation had no effect in level " << a
-               << "!" << endl;
+          std::cout << "ILS Warning: perturbation had no effect in level " << a
+               << "!" << std::endl;
       }
     }
 
@@ -94,15 +112,15 @@ class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
     return (s == idComponent()) || (ILSLPerturbation<XES, XEv>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 template <XESolution XES, XEvaluation XEv = typename XES::second_type>
@@ -111,7 +129,7 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
 
  private:
   vsref<NS<XES, XSH>> ns;
-  vector<pair<int, double>> pNS;
+  std::vector<std::pair<int, double>> pNS;
   sref<GeneralEvaluator<XES>> evaluator;
   sref<RandGen> rg;
 
@@ -120,24 +138,24 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
                              sref<NS<XES, XSH>> _ns, sref<RandGen> _rg)
       : evaluator(e), rg(_rg) {
     ns.push_back(_ns);
-    pNS.push_back(make_pair(1, 1));
+    pNS.push_back(std::make_pair(1, 1));
   }
 
   virtual ~ILSLPerturbationLPlus2Prob() = default;
 
   void add_ns(sref<NS<XES, XSH>> _ns) {
     ns.push_back(_ns);
-    pNS.push_back(make_pair(1, 1));
+    pNS.push_back(std::make_pair(1, 1));
 
     double soma = 0;
     for (int i = 0; i < ns.size(); i++) soma += pNS[i].first;
     for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
   }
 
-  void changeProb(vector<int> pri) {
+  void changeProb(std::vector<int> pri) {
     int nNeighborhoods = ns.size();
     if (pri.size() != nNeighborhoods) {
-      cout << "ERROR ON PRIORITES SIZE!" << endl;
+      std::cout << "ERROR ON PRIORITES SIZE!" << std::endl;
       return;
     }
 
@@ -149,11 +167,11 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
 
     for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
 
-    cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << endl;
+    std::cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << std::endl;
     for (int i = 0; i < ns.size(); i++)
-      cout << "pNS[i].first: " << pNS[i].first
-           << "\t pNS[i].second: " << pNS[i].second << endl;
-    cout << endl;
+      std::cout << "pNS[i].first: " << pNS[i].first
+           << "\t pNS[i].second: " << pNS[i].second << std::endl;
+    std::cout << std::endl;
   }
 
   void perturb(XES& se, const StopCriteria<XEv>& stopCriteria,
@@ -182,134 +200,25 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
         m->applyUpdate(se);
       } else {
         if (Component::warning)
-          cout << "ILS Warning: perturbation had no effect in level " << a
-               << "!" << endl;
+          std::cout << "ILS Warning: perturbation had no effect in level " << a
+               << "!" << std::endl;
       }
     }
 
     evaluator->reevaluate(se);  // updates 'e'
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2Prob";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
-#else
-template <typename XES>
-#endif
-class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
-  using S = typename XES::first_type;
-  using XEv = typename XES::second_type;
-  using XSH = XES;  // primary-based search type only (BestType)
-
- public:
-  virtual ~ILSLPerturbationLPlus2Builder() = default;
-
-  // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    sptr<GeneralEvaluator<XES>> eval;
-    std::string sid_0 = scanner.next();
-    int id_0 = *scanner.nextInt();
-    hf.assign(eval, id_0, sid_0);
-
-    sptr<NS<XES, XSH>> ns;
-    std::string sid_1 = scanner.next();
-    int id_1 = *scanner.nextInt();
-    hf.assign(ns, id_1, sid_1);
-
-    // NOLINTNEXTLINE
-    return new ILSLPerturbationLPlus2<XES>(eval, ns, hf.getRandGen());
-  }
-
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
-    params.push_back(
-        make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
-
-    return params;
-  }
-
-  bool canBuild(std::string component) override {
-    return component == ILSLPerturbationLPlus2<XES, XEv>::idComponent();
-  }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << ILS::family()
-       << "LevelPert:LPlus2";
-    return ss.str();
-  }
-
-  std::string toString() const override { return id(); }
-
-  string id() const override { return idComponent(); }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
-#else
-template <typename XES>
-#endif
-class ILSLPerturbationLPlus2ProbBuilder : public ComponentBuilder<XES> {
-  using XSH = XES;  // primary-based search type only (BestType)
-
- public:
-  virtual ~ILSLPerturbationLPlus2ProbBuilder() = default;
-
-  // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    sptr<GeneralEvaluator<XES>> eval;
-    std::string comp_id1 = scanner.next();
-    int id1 = *scanner.nextInt();
-    hf.assign(eval, id1, comp_id1);
-
-    sptr<NS<XES, XSH>> ns;
-    std::string comp_id2 = scanner.next();
-    int id2 = *scanner.nextInt();
-    hf.assign(ns, id2, comp_id2);
-
-    // NOLINTNEXTLINE
-    return new ILSLPerturbationLPlus2Prob<XES>(eval, ns, hf.getRandGen());
-  }
-
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(
-        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    params.push_back(
-        make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
-
-    return params;
-  }
-
-  bool canBuild(std::string component) override {
-    return component == ILSLPerturbationLPlus2Prob<XES>::idComponent();
-  }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << ILS::family()
-       << "LevelPert:LPlus2Prob";
-    return ss.str();
-  }
-
-  std::string toString() const override { return id(); }
-
-  string id() const override { return idComponent(); }
-};
 
 }  // namespace optframe
 

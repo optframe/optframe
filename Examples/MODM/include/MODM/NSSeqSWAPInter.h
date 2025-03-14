@@ -30,9 +30,9 @@ class MoveSWAPInter : public Move<ESolutionMODM> {
     const SolutionMODM& s = se.first;
     const RepMODM& rep = s.getR();
     const AdsMODM& ads = s.getADS();
-    // cout<<"canBeApplied!"<<endl;
-    // cout<<"y1 = "<<y1<<endl;
-    // cout<<"y2 = "<<y2<<endl;
+    // std::cout<<"canBeApplied!"<<endl;
+    // std::cout<<"y1 = "<<y1<<endl;
+    // std::cout<<"y2 = "<<y2<<endl;
 
     bool usedProduct1 = ads.productOffers[y1];
     bool usedProduct2 = ads.productOffers[y2];
@@ -83,14 +83,14 @@ class MoveSWAPInter : public Move<ESolutionMODM> {
     if (ads.totalCost[y2] + costDiff2 > dmproblem->getProductBudget(y2))
       budget2 = false;
 
-    // cout<<"canBeApplied FINISH!"<<endl;
+    // std::cout<<"canBeApplied FINISH!"<<endl;
     // bool budget = true;
     // if (ads.totalCost[y1] + costDiff > dmproblem->getProductBudget(y1))
     //	budget = false;
     bool restr = budget1 && budget2 && pOffers1 && pOffers2;
 
-    // cout<<"c1Saturado = "<<!c1Saturado <<endl;
-    // cout<<"c2Saturado = "<<!c2Saturado <<endl <<endl;
+    // std::cout<<"c1Saturado = "<<!c1Saturado <<endl;
+    // std::cout<<"c2Saturado = "<<!c2Saturado <<endl <<endl;
 
     // return differentOffers && differentProducts && (usedProduct1 > 0) &&
     // (usedProduct2 > 0);
@@ -163,11 +163,11 @@ class MoveSWAPInter : public Move<ESolutionMODM> {
     SolutionMODM& s = se.first;
     RepMODM& rep = s.getR();
     AdsMODM& ads = s.getADS();
-    // cout<<rep<<endl;
-    // cout<<ads.clientOffers<<endl;
-    // cout<<ads.productOffers<<endl;
-    // cout<<ads.totalCost<<endl;
-    // cout<<ads.totalRevenue<<endl;
+    // std::cout<<rep<<endl;
+    // std::cout<<ads.clientOffers<<endl;
+    // std::cout<<ads.productOffers<<endl;
+    // std::cout<<ads.totalCost<<endl;
+    // std::cout<<ads.totalRevenue<<endl;
     // getchar();
 
     int oldC1 = rep[c1][y1];
@@ -198,9 +198,9 @@ class MoveSWAPInter : public Move<ESolutionMODM> {
   }
 
   void print() const override {
-    cout << "MoveSWAPInter( ";
-    cout << y1 << ", " << y2 << ", " << c1 << ", " << c2 << " )";
-    cout << endl;
+    std::cout << "MoveSWAPInter( ";
+    std::cout << y1 << ", " << y2 << ", " << c1 << ", " << c2 << " )";
+    std::cout << std::endl;
   }
 };
 
@@ -232,7 +232,7 @@ class NSIteratorSWAPInter : public NSIterator<ESolutionMODM> {
       c2 = 0;
       if (c1 >= nClients) {
         y2++;
-        // cout << "y = " << y << endl;
+        // std::cout << "y = " << y << std::endl;
         c1 = 0;
         c2 = 0;
         if (y2 >= nProducts) {
@@ -249,8 +249,8 @@ class NSIteratorSWAPInter : public NSIterator<ESolutionMODM> {
 
   uptr<Move<ESolutionMODM>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqSWAPDM. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqSWAPDM. Aborting." << std::endl;
       exit(1);
     }
 
@@ -303,13 +303,13 @@ class NSSeqSWAPInter : public NSSeq<ESolutionMODM> {
         dmproblem));  // return an iterator to the neighbors of 'rep'
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NS<ESolutionMODM>::idComponent() << ":NSSeqSWAPInter";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 
 }  // namespace MODM

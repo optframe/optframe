@@ -143,7 +143,7 @@ class HFMEvaluator
       }
 
       for (int nMP = 0; nMP < sizeAP; nMP++) {
-        vector<pair<int, int>> meansK = rep.averageIndex[nMP];
+        std::vector<std::pair<int, int>> meansK = rep.averageIndex[nMP];
         int nAveragePoints = meansK.size();
 
         double mean = 0;
@@ -169,7 +169,7 @@ class HFMEvaluator
       }
 
       for (int nDP = 0; nDP < sizeDP; nDP++) {
-        vector<pair<int, int>> derivateK = rep.derivativeIndex[nDP];
+        std::vector<std::pair<int, int>> derivateK = rep.derivativeIndex[nDP];
 
         double d = 0;
         for (int dK = 0; dK < (int)derivateK.size(); dK++) {
@@ -226,11 +226,11 @@ class HFMEvaluator
     int nSamplesVar = matrixWithSamples.at(expVariable).size();
 
     if (((begin + pa - K) < 0)) {
-      cout << "BUG Evaluator (function getKValue): (i + pa - K) = "
-           << begin + pa - K << endl;
-      cout << matrixWithSamples.size() << endl;
-      cout << "vForecastings[" << expVariable << "].size() = " << nSamplesVar
-           << endl;
+      std::cout << "BUG Evaluator (function getKValue): (i + pa - K) = "
+           << begin + pa - K << std::endl;
+      std::cout << matrixWithSamples.size() << std::endl;
+      std::cout << "vForecastings[" << expVariable << "].size() = " << nSamplesVar
+           << std::endl;
       assert((begin + pa - K) < 0);
     }
 
@@ -241,11 +241,11 @@ class HFMEvaluator
       assert(expVariable != targetFile);
 
       if (!problemParam.getForceSampleLearningWithEndogenous(expVariable)) {
-        cout << "Wrong Lag request (function getKValue): K = " << K
-             << " expVar = " << expVariable << endl;
-        cout << "Current sample learning is not allowed for this Endogenous "
+        std::cout << "Wrong Lag request (function getKValue): K = " << K
+             << " expVar = " << expVariable << std::endl;
+        std::cout << "Current sample learning is not allowed for this Endogenous "
                 "variable!"
-             << endl;
+             << std::endl;
         exit(1);
       } else {
         if ((begin + pa) < nSamplesVar)
@@ -256,7 +256,7 @@ class HFMEvaluator
 
         //				cout << "Go Ahead! Sample learning mode
         //on! Current sample value = " << value<< "\texpVar = " << expVariable
-        //<< endl; 				getchar();
+        //<< std::endl; 				getchar();
         return value;
       }
     }
@@ -409,7 +409,7 @@ class HFMEvaluator
           //(vIndex[ind] > maxLag))
           //					{
           //						cout << "vIndex[ind]:"
-          //<< vIndex[ind] << "maxLag:" << maxLag << endl; 						cout << "Erro on
+          //<< vIndex[ind] << "maxLag:" << maxLag << std::endl; 						cout << "Erro on
           //INDEX of the adjustment"; 						getchar();
           //					}
         }
@@ -498,9 +498,9 @@ class HFMEvaluator
                               const int accIndicator) {
     int nSamples = targetValues.size();
     if (nSamples != (int)estimatedValues.size()) {
-      cout << "ERROR on GetAccuracy! Different sizes!" << endl;
-      cout << "targetValues.size() = " << targetValues.size() << "\t";
-      cout << "estimatedValues.size() = " << estimatedValues.size() << endl;
+      std::cout << "ERROR on GetAccuracy! Different sizes!" << std::endl;
+      std::cout << "targetValues.size() = " << targetValues.size() << "\t";
+      std::cout << "estimatedValues.size() = " << estimatedValues.size() << std::endl;
     }
     vector<double>* foIndicator =
         new vector<double>(EVALUTORS_NMETRICS_ENUM_COUNT, 0);
@@ -631,7 +631,7 @@ class HFMEvaluator
                }
                */
     // ===================  MAPE FOR EACH STEP AHEAD ========================
-    // cout << foIndicator[MAPE_INDEX] << endl;
+    // std::cout << foIndicator[MAPE_INDEX] << std::endl;
     // MSE AND RSME FINAL CALC
     // PINBALL FINAL CALC
     //		vector<pair<double, double> > vPinballFunctions(20, make_pair(0,
@@ -652,10 +652,10 @@ class HFMEvaluator
                foIndicator[PINBALL_INDEX] = minPinball;
                foIndicator[PINBALL_ERROR_INDEX] = pinbalError;*/
 
-    // cout << "Fo Indicator:";
-    // cout << foIndicator << endl;
-    // cout << "steps Ahead:";
-    // cout << foIndicatorStepsAhead << endl;
+    // std::cout << "Fo Indicator:";
+    // std::cout << foIndicator << std::endl;
+    // std::cout << "steps Ahead:";
+    // std::cout << foIndicatorStepsAhead << std::endl;
     return foIndicator;
   }
 
@@ -741,9 +741,9 @@ class HFMEvaluator
 
   virtual bool isMinimization() const override { return true; }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
-  static string idComponent() { return "OptFrame:Evaluator:HFMEvaluator"; }
+  static std::string idComponent() { return "OptFrame:Evaluator:HFMEvaluator"; }
 
   //	virtual bool betterThan(double a, double b)
   //	{
@@ -793,8 +793,8 @@ class HFMEvaluator
   //		}
   //		if (foIndicator2 != foIndicator)
   //		{
-  //			cout << foIndicator2 << endl;
-  //			cout << foIndicator << endl;
+  //			cout << foIndicator2 << std::endl;
+  //			cout << foIndicator << std::endl;
   //			getchar();
   //		}
   //
@@ -822,7 +822,7 @@ class HFMEvaluator
   ////		omp_set_num_threads(4);
   //		//			int np = omp_get_num_threads();
   //		//					cout << "number of
-  //threads: " << np << endl;
+  //threads: " << np << std::endl;
   //		// getchar();
   //
   //////		#pragma omp parallel for ordered
@@ -876,7 +876,7 @@ class HFMEvaluator
   ////		 nEvalForSpeedUp++;
   ////		 if (nEvalForSpeedUp == 1000)
   ////		 {
-  ////		 cout << "Total time: " << timeInMS / 1000 << endl;
+  ////		 std::cout << "Total time: " << timeInMS / 1000 << std::endl;
   ////
   ////		 string speedUpFile = "./apen_SI_speedUpFile";
   ////		 FILE* fResults = fopen(speedUpFile.c_str(), "a");
@@ -895,7 +895,7 @@ class HFMEvaluator
   //allForecasts.size() - nExtraForecasts, allForecasts.end());
   ////			cout<<"number of forecasts is bigger than the number of
   ///samples"<<endl; /			cout<<"nExtraForecasts: "<<
-  ///nExtraForecasts << endl; /			exit(1);
+  ///nExtraForecasts << std::endl; /			exit(1);
   //		}
   //
   //		return allForecasts;
@@ -947,11 +947,11 @@ class HFMEvaluator
   //					if ((i + pa - K) >
   //vForecastings[file].size())
   //					{
-  //						//cout << nForecastings << endl;
+  //						//cout << nForecastings << std::endl;
   //						//cout <<
-  //pEFP.getForecastings(file, i + pa - K) << endl;
+  //pEFP.getForecastings(file, i + pa - K) << std::endl;
   //						//cout << i + pa - K << "\t" <<
-  //i << "\t" << pa << "\t" << K << endl;
+  //i << "\t" << pa << "\t" << K << std::endl;
   //						//getchar();
   //						value = 0;
   //					}
@@ -978,7 +978,7 @@ class HFMEvaluator
   //			{
   //				vector<pair<int, int> > meansK =
   //rep.averageIndex[nMP];
-  //				//cout << meansK << endl;
+  //				//cout << meansK << std::endl;
   //				//getchar();
   //				double mean = 0;
   //				for (int mK = 0; mK < meansK.size(); mK++)
@@ -986,7 +986,7 @@ class HFMEvaluator
   //					int file = meansK[mK].first;
   //					int K = meansK[mK].second;
   //
-  //					//cout << "K = " << K << endl;
+  //					//cout << "K = " << K << std::endl;
   //					if (file == 0)
   //					{
   //						if (pa >= K)
@@ -1010,7 +1010,7 @@ class HFMEvaluator
   //				}
   //
   //				mean = mean / meansK.size();
-  //				//cout << mean << endl;
+  //				//cout << mean << std::endl;
   //
   //				double ruleGreater =
   //rep.averageFuzzyRS[nMP][GREATER]; 				double greaterWeight =
@@ -1030,7 +1030,7 @@ class HFMEvaluator
   //			{
   //				vector<pair<int, int> > derivateK =
   //rep.derivativeIndex[nDP];
-  //				//cout << derivateK << endl;
+  //				//cout << derivateK << std::endl;
   //				//getchar();
   //
   //				double d = 0;
@@ -1038,7 +1038,7 @@ class HFMEvaluator
   //				{
   //					int file = derivateK[dK].first;
   //					int K = derivateK[dK].second;
-  //					//cout << "K = " << K << endl;
+  //					//cout << "K = " << K << std::endl;
   //
   //					if (file == 0)
   //					{
@@ -1103,7 +1103,7 @@ class HFMEvaluator
   //
   //		}
   //
-  //		cout << "Returning blind forecasts..." << endl;
+  //		cout << "Returning blind forecasts..." << std::endl;
   //
   //		return predicteds;
   //	}

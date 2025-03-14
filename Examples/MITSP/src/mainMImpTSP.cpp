@@ -407,7 +407,7 @@ list<pair<int, int>> MiTSP2OptDynProg::Selected2OptMoves;
 // ======================
 
 int main() {
-  cout << "Begin MI experiments (N = " << MiTSP2OptDynProg::N << ")" << endl;
+  std::cout << "Begin MI experiments (N = " << MiTSP2OptDynProg::N << ")" << std::endl;
   TSPProblemData::seed = (mt19937)time(0);
 
   clock_t ini_t_global, end_t_global;
@@ -458,9 +458,9 @@ int main() {
 
   printf("\nTempo da Busca Local: %.2Lf", time_elapsed_ms);
 
-  cout << "\n\nFim" << endl;
+  std::cout << "\n\nFim" << std::endl;
 
-  cout << "finished successfully" << endl;
+  std::cout << "finished successfully" << std::endl;
   return 0;
 }
 
@@ -1313,7 +1313,7 @@ CLOCKS_PER_SEC;
 
    printf("\nTempo da Busca Local: %.2Lf", time_elapsed_ms);
 
-   cout << "\n\nFim" << endl;
+   std::cout << "\n\nFim" << std::endl;
 
    return 0;
 }

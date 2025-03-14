@@ -119,8 +119,8 @@ class MultiDirection : public Component {
 
   std::string toString() const override { return id(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":MultiDirection";
     return ss.str();
   }

@@ -63,7 +63,7 @@ class IntensifiedIteratedLocalSearchLevels
   virtual ~IntensifiedIteratedLocalSearchLevels() {}
 
   virtual levelHistory& initializeHistory() {
-    // cout << "initializeHistory()" << endl;
+    // std::cout << "initializeHistory()" << std::endl;
     pair<int, int> vars(0, 0);
 
     // IterMax e LevelMax
@@ -97,20 +97,20 @@ class IntensifiedIteratedLocalSearchLevels
 
   virtual void localSearch(S& s, Evaluation<>& e, double timelimit,
                            double target_f) {
-    // cout << "localSearch(.)" << endl;
+    // std::cout << "localSearch(.)" << std::endl;
     ls.searchFrom(s, e, timelimit, target_f);
   }
 
   virtual void perturbation(S& s, Evaluation<>& e, double timelimit,
                             double target_f, levelHistory& history) {
-    // cout << "perturbation(.)" << endl;
+    // std::cout << "perturbation(.)" << std::endl;
 
     int iter = history.first.first;
     int level = history.first.second;
     int iterMax = history.second.first;
     // int levelMax = history.second.second;
 
-    // cout << "level = " << level << " e iter = " << iter << endl;
+    // std::cout << "level = " << level << " e iter = " << iter << std::endl;
 
     // nivel atual: 'level'
     p.perturb(s, e, timelimit, target_f, level);
@@ -121,7 +121,7 @@ class IntensifiedIteratedLocalSearchLevels
     if (iter >= iterMax) {
       iter = 0;
       level++;
-      cout << "level " << level << ".." << endl;
+      std::cout << "level " << level << ".." << std::endl;
     }
 
     // Atualiza o historico
@@ -137,9 +137,9 @@ class IntensifiedIteratedLocalSearchLevels
       // =======================
       //   Melhor solucao: 's2'
       // =======================
-      cout << "Best fo: " << e1.evaluation();
-      cout << " on [iter " << history.first.first << " of level "
-           << history.first.second << "]" << endl;
+      std::cout << "Best fo: " << e1.evaluation();
+      std::cout << " on [iter " << history.first.first << " of level "
+           << history.first.second << "]" << std::endl;
 
       // =======================
       //  Atualiza o historico
@@ -161,17 +161,17 @@ class IntensifiedIteratedLocalSearchLevels
   }
 
   virtual bool terminationCondition(levelHistory& history) {
-    // cout << "terminationCondition(.)" << endl;
+    // std::cout << "terminationCondition(.)" << std::endl;
     int level = history.first.second;
     int levelMax = history.second.second;
 
     return (level >= levelMax);
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << IntensifiedIteratedLocalSearch<levelHistory, R, ADS>::idComponent()
        << "iils";
     return ss.str();

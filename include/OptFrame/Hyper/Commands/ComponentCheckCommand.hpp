@@ -54,12 +54,12 @@ public:
    void message(string component, int iter, string text)
    {
       if (verbose)
-         cout << "module " << id() << " iter: " << iter << " testing component '" << component << "' => " << text << endl;
+         std::cout << "module " << id() << " iter: " << iter << " testing component '" << component << "' => " << text << std::endl;
    }
 
    void error(string text)
    {
-      cout << "module " << id() << " error: " << text << endl;
+      std::cout << "module " << id() << " error: " << text << std::endl;
    }
 
    bool parseBool(string b)
@@ -67,9 +67,9 @@ public:
       return b == "true";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      cout << "check: " << input << endl;
+      std::cout << "check: " << input << std::endl;
       Scanner scanner(input);
 
       // -------------------
@@ -77,7 +77,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -86,7 +86,7 @@ public:
       try {
          iterMax = Scanner::parseInt(sIterMax);
       } catch (ConversionError& e) {
-         cout << "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)" << endl;
+         std::cout << "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)" << std::endl;
          return false;
       }
 
@@ -95,7 +95,7 @@ public:
       // -----------------------------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       int nSolNSSeq;
@@ -103,7 +103,7 @@ public:
       try {
          nSolNSSeq = Scanner::parseInt(sNSolNSSeq);
       } catch (ConversionError& e) {
-         cout << "component.check module error: no such integer 'number of solutions to test NSSeq exploration'" << endl;
+         std::cout << "component.check module error: no such integer 'number of solutions to test NSSeq exploration'" << std::endl;
          return false;
       }
 
@@ -122,49 +122,49 @@ public:
       if (!scanner.hasNext()) {
          // check dependency on 'command.rename' module
          if (!Command<R, ADS, DS>::run_module("system.require", allCommands, allFunctions, factory, dictionary, ldictionary, "component.list")) {
-            cout << "error: system.use module depends on 'component.list' module, which is not loaded!" << endl;
+            std::cout << "error: system.use module depends on 'component.list' module, which is not loaded!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:Constructive _aux_check_lconstructive")) {
-            cout << "error: reading list of OptFrame:Constructive!" << endl;
+            std::cout << "error: reading list of OptFrame:Constructive!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator")) {
-            cout << "error: reading list of OptFrame:Evaluator!" << endl;
+            std::cout << "error: reading list of OptFrame:Evaluator!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove")) {
-            cout << "error: reading list of OptFrame:Move!" << endl;
+            std::cout << "error: reading list of OptFrame:Move!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns")) {
-            cout << "error: reading list of OptFrame:NS!" << endl;
+            std::cout << "error: reading list of OptFrame:NS!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq")) {
-            cout << "error: reading list of OptFrame:NS:NSSeq!" << endl;
+            std::cout << "error: reading list of OptFrame:NS:NSSeq!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum")) {
-            cout << "error: reading list of OptFrame:NS:NSSeq:NSEnum!" << endl;
+            std::cout << "error: reading list of OptFrame:NS:NSSeq:NSEnum!" << std::endl;
             return false;
          }
 
          Command<R, ADS, DS>::undefine("_aux_check_ladsmanager", dictionary, ldictionary);
          if (!Command<R, ADS, DS>::run_module("component.list", allCommands, allFunctions, factory, dictionary, ldictionary, "OptFrame:ADSManager _aux_check_ladsmanager")) {
-            cout << "error: reading list of OptFrame:ADSManager!" << endl;
+            std::cout << "error: reading list of OptFrame:ADSManager!" << std::endl;
             return false;
          }
 
@@ -172,7 +172,7 @@ public:
       }
 
       //string rest = scanner.rest();
-      //cout << "REST: '" << rest << "'" << endl;
+      //cout << "REST: '" << rest << "'" << std::endl;
       //scanner = Scanner(rest);
 
       // -------------------
@@ -180,7 +180,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lConstructive;
@@ -189,7 +189,7 @@ public:
          lConstructive = vector<string>(*p_lConstructive);
          delete p_lConstructive;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!" << std::endl;
          return false;
       }
 
@@ -201,7 +201,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lEvaluator;
@@ -210,7 +210,7 @@ public:
          lEvaluator = vector<string>(*p_lEvaluator);
          delete p_lEvaluator;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << std::endl;
          return false;
       }
 
@@ -222,7 +222,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lMove;
@@ -231,7 +231,7 @@ public:
          lMove = vector<string>(*p_lMove);
          delete p_lMove;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:Move!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:Move!" << std::endl;
          return false;
       }
 
@@ -243,7 +243,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lNS;
@@ -252,7 +252,7 @@ public:
          lNS = vector<string>(*p_lNS);
          delete p_lNS;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:NS!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:NS!" << std::endl;
          return false;
       }
 
@@ -264,7 +264,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lNSSeq;
@@ -273,7 +273,7 @@ public:
          lNSSeq = vector<string>(*p_lNSSeq);
          delete p_lNSSeq;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq!" << std::endl;
          return false;
       }
 
@@ -285,7 +285,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lNSEnum;
@@ -294,7 +294,7 @@ public:
          lNSEnum = vector<string>(*p_lNSEnum);
          delete p_lNSEnum;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!" << std::endl;
          return false;
       }
 
@@ -306,7 +306,7 @@ public:
       // -------------------
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       vector<string> lADSManager;
@@ -316,7 +316,7 @@ public:
          lADSManager = vector<string>(*p_lADSManager);
          delete p_lADSManager;
       } else {
-         cout << "module " << id() << " error: couldn't read list of OptFrame:ADSManager!" << endl;
+         std::cout << "module " << id() << " error: couldn't read list of OptFrame:ADSManager!" << std::endl;
          return false;
       }
 
@@ -345,10 +345,10 @@ public:
          factory.assign(adsMan, scan.nextInt(), scan.next()); // reversed!
 
          if (lADSManager.size() > 1)
-            cout << id() << " module warning: more than 1 ADSManager (" << lADSManager.size() << ")" << endl;
+            std::cout << id() << " module warning: more than 1 ADSManager (" << lADSManager.size() << ")" << std::endl;
       }
 
-      vector<pair<int, double>> timeInitializeADS(1, make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeInitializeADS(1, make_pair(0, 0.0));
 
       // ----------------
       // read evaluators
@@ -361,15 +361,15 @@ public:
          factory.assign(evaluator, scan.nextInt(), scan.next()); // reversed!
 
          if (!evaluator) {
-            cout << "module " << id() << " error: nullptr evaluator!" << endl;
+            std::cout << "module " << id() << " error: nullptr evaluator!" << std::endl;
             return false;
          }
 
          evaluators.push_back(evaluator);
       }
 
-      vector<pair<int, double>> fullTimeEval(evaluators.size(), make_pair(0, 0.0));
-      vector<pair<int, double>> timeReeval(evaluators.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> fullTimeEval(evaluators.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeReeval(evaluators.size(), make_pair(0, 0.0));
 
       // ----------------------------------------------------------------------------------------
       // generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
@@ -378,21 +378,21 @@ public:
       vector<Solution<R, ADS>*> solutions;
       vector<vector<Evaluation<DS>*>> evaluations(evaluators.size());
 
-      vector<pair<int, double>> timeConstructive(lConstructive.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeConstructive(lConstructive.size(), make_pair(0, 0.0));
 
-      cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
+      std::cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << std::endl;
       for (unsigned c = 0; c < lConstructive.size(); c++) {
          Scanner scan(lConstructive.at(c));
          Constructive<S>* constructive;
          factory.assign(constructive, scan.nextInt(), scan.next()); // reversed!
 
          if (!constructive) {
-            cout << "module " << id() << " error: nullptr constructive!" << endl;
+            std::cout << "module " << id() << " error: nullptr constructive!" << std::endl;
             return false;
          }
 
-         cout << "component.check command: testing " << constructive->toString();
-         cout << endl;
+         std::cout << "component.check command: testing " << constructive->toString();
+         std::cout << std::endl;
 
          for (int iter = 1; iter <= iterMax; iter++) {
             message(lConstructive.at(c), iter, "generating solution.");
@@ -422,21 +422,21 @@ public:
             }
          }
          if(logLevel >= LogLevel::Info)
-            cout << "component.check: " << lConstructive.at(c) << " finished." << endl;
+            std::cout << "component.check: " << lConstructive.at(c) << " finished." << std::endl;
          if (verbose)
-            cout << endl << endl;
+            std::cout << std::endl << std::endl;
       }
 
       if (verbose)
-         cout << endl
-              << endl;
+         std::cout << std::endl
+              << std::endl;
 
       // ====================================================================
       // testing Move
       // ====================================================================
 
-      cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")";
-      cout << endl;
+      std::cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")";
+      std::cout << std::endl;
 
       for (unsigned id_move = 0; id_move < lMove.size(); id_move++) {
          Scanner scan(lMove.at(id_move));
@@ -444,16 +444,16 @@ public:
          factory.assign(pmove, scan.nextInt(), scan.next()); // reversed!
 
          if (!pmove) {
-            cout << "module " << id() << " error: nullptr OptFrame:Move!" << endl;
+            std::cout << "module " << id() << " error: nullptr OptFrame:Move!" << std::endl;
             return false;
          }
 
-         cout << "component.check command: testing " << pmove->toString();
-         cout << endl;
+         std::cout << "component.check command: testing " << pmove->toString();
+         std::cout << std::endl;
 
          for (unsigned id_s = 0; id_s < solutions.size(); id_s++) {
             if (verbose)
-               cout << endl;
+               std::cout << std::endl;
             message(lMove.at(id_move), -1, "working on move.");
 
             Solution<R, ADS>& s = *solutions.at(id_s);
@@ -462,7 +462,7 @@ public:
 
             if (!move.canBeApplied(s)) {
                if (verbose) {
-                  cout << "move cannot be applied: ";
+                  std::cout << "move cannot be applied: ";
                   move.print();
                }
                continue;
@@ -498,7 +498,7 @@ public:
                   timeInitializeADS[0].first++;
 
                   if (!adsMan->compareADS(ads, sNeighbor.getADS())) {
-                     cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+                     std::cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
                      move.print();
                      return false;
                   }
@@ -520,7 +520,7 @@ public:
                   timeInitializeADS[0].first++;
 
                   if (!adsMan->compareADS(ads, s.getADS())) {
-                     cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+                     std::cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
                      rev.print();
                      return false;
                   }
@@ -531,11 +531,11 @@ public:
                if (ini != move) {
                   error("reverse of reverse is not the original move!");
                   move.print();
-                  cout << "move: ";
+                  std::cout << "move: ";
                   move.print();
-                  cout << "rev: ";
+                  std::cout << "rev: ";
                   rev.print();
-                  cout << "ini (reverse of rev): ";
+                  std::cout << "ini (reverse of rev): ";
                   ini.print();
 
                   return false;
@@ -547,11 +547,11 @@ public:
                if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001) {
                   error("reverse of reverse has a different evaluation value!");
                   move.print();
-                  cout << "move: ";
+                  std::cout << "move: ";
                   move.print();
-                  cout << "original: ";
+                  std::cout << "original: ";
                   e.print();
-                  cout << "reverse of reverse:";
+                  std::cout << "reverse of reverse:";
                   e_ini.print();
 
                   return false;
@@ -613,11 +613,11 @@ public:
                      printf("==============\n");
                      printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
                      printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-                     cout << "s: ";
+                     std::cout << "s: ";
                      s.print();
-                     cout << "s': ";
+                     std::cout << "s': ";
                      sNeighbor.print();
-                     cout << "move: ";
+                     std::cout << "move: ";
                      move.print();
                      printf("==============\n");
                      printf("  GOOD LUCK!  \n");
@@ -642,22 +642,22 @@ public:
       }
 
       if (verbose)
-         cout << endl
-              << endl;
+         std::cout << std::endl
+              << std::endl;
 
       // ====================================================================
       // testing NS
       // ====================================================================
 
-      cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")";
-      cout << endl;
+      std::cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")";
+      std::cout << std::endl;
 
-      vector<pair<int, double>> timeNSApply(lNS.size(), make_pair(0, 0.0));
-      vector<pair<int, double>> timeNSCostApply(lNS.size(), make_pair(0, 0.0));
-      vector<pair<int, double>> timeNSCostApplyDelta(lNS.size(), make_pair(0, 0.0));
-      vector<pair<int, double>> timeNSCost(lNS.size(), make_pair(0, 0.0));
-      vector<pair<int, double>> timeNSEstimatedCost(lNS.size(), make_pair(0, 0.0));
-      vector<pair<int, double>> errorNSEstimatedCost(lNS.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeNSApply(lNS.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeNSCostApply(lNS.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeNSCostApplyDelta(lNS.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeNSCost(lNS.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> timeNSEstimatedCost(lNS.size(), make_pair(0, 0.0));
+      std::vector<std::pair<int, double>> errorNSEstimatedCost(lNS.size(), make_pair(0, 0.0));
 
       for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
          Scanner scan(lNS.at(id_ns));
@@ -665,19 +665,19 @@ public:
          factory.assign(ns, scan.nextInt(), scan.next()); // reversed!
 
          if (!ns) {
-            cout << "module " << id() << " error: nullptr OptFrame:NS!" << endl;
+            std::cout << "module " << id() << " error: nullptr OptFrame:NS!" << std::endl;
             return false;
          }
 
-         cout << "component.check command: testing " << ns->toString();
-         cout << endl;
+         std::cout << "component.check command: testing " << ns->toString();
+         std::cout << std::endl;
 
          for (int iter = 1; iter <= iterMax; iter++) {
             message(lNS.at(id_ns), iter, "starting tests!");
 
             for (unsigned id_s = 0; id_s < solutions.size(); id_s++) {
                if (verbose)
-                  cout << endl;
+                  std::cout << std::endl;
 
                stringstream ss_msg1;
                ss_msg1 << "generating random move for solution id=" << id_s;
@@ -691,7 +691,7 @@ public:
 
                if (!move.canBeApplied(s)) {
                   if (verbose) {
-                     cout << "move cannot be applied: ";
+                     std::cout << "move cannot be applied: ";
                      move.print();
                   }
 
@@ -741,13 +741,13 @@ public:
                      timeInitializeADS[0].first++;
 
                      if (!adsMan->compareADS(ads, sNeighbor.getADS())) {
-                        cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+                        std::cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
                         move.print();
-                        cout << "S (sOriginal.getADS()): " << endl;
+                        std::cout << "S (sOriginal.getADS()): " << std::endl;
                         adsMan->printADS(sOriginal.getADS());
-                        cout << "WRONG: (sNeighbor.getADS())" << endl;
+                        std::cout << "WRONG: (sNeighbor.getADS())" << std::endl;
                         adsMan->printADS(ads);
-                        cout << "RIGHT (re-initialized): " << endl;
+                        std::cout << "RIGHT (re-initialized): " << std::endl;
                         adsMan->printADS(sNeighbor.getADS());
                         return false;
                      }
@@ -775,13 +775,13 @@ public:
                      timeInitializeADS[0].first++;
 
                      if (!adsMan->compareADS(ads, s.getADS())) {
-                        cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+                        std::cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
                         rev.print();
-                        cout << "S (sOriginal.getADS()): " << endl;
+                        std::cout << "S (sOriginal.getADS()): " << std::endl;
                         adsMan->printADS(sOriginal.getADS());
-                        cout << "WRONG (s.getADS()): " << endl;
+                        std::cout << "WRONG (s.getADS()): " << std::endl;
                         adsMan->printADS(ads);
-                        cout << "RIGHT (re-initialized): " << endl;
+                        std::cout << "RIGHT (re-initialized): " << std::endl;
                         adsMan->printADS(s.getADS());
                         return false;
                      }
@@ -797,11 +797,11 @@ public:
                   if (ini != move) {
                      error("reverse of reverse is not the original move!");
                      move.print();
-                     cout << "move: ";
+                     std::cout << "move: ";
                      move.print();
-                     cout << "rev: ";
+                     std::cout << "rev: ";
                      rev.print();
-                     cout << "ini (reverse of rev): ";
+                     std::cout << "ini (reverse of rev): ";
                      ini.print();
 
                      return false;
@@ -813,11 +813,11 @@ public:
                   if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001) {
                      error("reverse of reverse has a different evaluation value!");
                      move.print();
-                     cout << "move: ";
+                     std::cout << "move: ";
                      move.print();
-                     cout << "original: ";
+                     std::cout << "original: ";
                      e.print();
-                     cout << "reverse of reverse:";
+                     std::cout << "reverse of reverse:";
                      e_ini.print();
 
                      return false;
@@ -901,11 +901,11 @@ public:
                         printf("==============\n");
                         printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
                         printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-                        cout << "s: ";
+                        std::cout << "s: ";
                         s.print();
-                        cout << "s': ";
+                        std::cout << "s': ";
                         sNeighbor.print();
-                        cout << "move: ";
+                        std::cout << "move: ";
                         move.print();
                         printf("==============\n");
                         printf("  GOOD LUCK!  \n");
@@ -917,13 +917,13 @@ public:
 
                      Move<R, ADS, DS>& move2 = ns->move(s);
                      if (verbose) {
-                        cout << "testing double move!" << endl;
+                        std::cout << "testing double move!" << std::endl;
                         move2.print();
                      }
 
                      if (!move2.canBeApplied(s)) {
                         if (verbose) {
-                           cout << "double move cannot be applied: ";
+                           std::cout << "double move cannot be applied: ";
                            move2.print();
                         }
                      } else {
@@ -957,17 +957,17 @@ public:
             }
          }
          if(logLevel >= LogLevel::Info)
-            cout << "component.check: " << lNS.at(id_ns) << " finished." << endl;
+            std::cout << "component.check: " << lNS.at(id_ns) << " finished." << std::endl;
          if (verbose)
-            cout << endl << endl;
+            std::cout << std::endl << std::endl;
       }
 
       // ====================================================================
       // testing NSSeq
       // ====================================================================
 
-      cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")";
-      cout << endl;
+      std::cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")";
+      std::cout << std::endl;
 
       vector<int> vCountMoves(lNSSeq.size());
       vector<int> vCountValidMoves(lNSSeq.size());
@@ -978,12 +978,12 @@ public:
          factory.assign(nsseq, scan.nextInt(), scan.next()); // reversed!
 
          if (!nsseq) {
-            cout << "module " << id() << " error: nullptr OptFrame:NS:NSSeq!" << endl;
+            std::cout << "module " << id() << " error: nullptr OptFrame:NS:NSSeq!" << std::endl;
             return false;
          }
 
-         cout << "component.check command: testing " << nsseq->toString();
-         cout << endl;
+         std::cout << "component.check command: testing " << nsseq->toString();
+         std::cout << std::endl;
 
          int countMoves = 0;
          int countValidMoves = 0;
@@ -1025,7 +1025,7 @@ public:
 
             for (it.first(); !it.isDone(); it.next()) {
                if (verbose)
-                  cout << endl;
+                  std::cout << std::endl;
                message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
                Move<R, ADS, DS>& move = it.current();
@@ -1033,7 +1033,7 @@ public:
 
                if (!move.canBeApplied(s)) {
                   if (verbose) {
-                     cout << "move cannot be applied (NSSeq tests): ";
+                     std::cout << "move cannot be applied (NSSeq tests): ";
                      move.print();
                   }
                   continue;
@@ -1086,11 +1086,11 @@ public:
                   if (ini != move) {
                      error("reverse of reverse is not the original move!");
                      move.print();
-                     cout << "move: ";
+                     std::cout << "move: ";
                      move.print();
-                     cout << "rev: ";
+                     std::cout << "rev: ";
                      rev.print();
-                     cout << "ini (reverse of rev): ";
+                     std::cout << "ini (reverse of rev): ";
                      ini.print();
 
                      return false;
@@ -1101,11 +1101,11 @@ public:
                   if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001) {
                      error("reverse of reverse has a different evaluation value!");
                      move.print();
-                     cout << "move: ";
+                     std::cout << "move: ";
                      move.print();
-                     cout << "original: ";
+                     std::cout << "original: ";
                      e.print();
-                     cout << "reverse of reverse:";
+                     std::cout << "reverse of reverse:";
                      e_ini.print();
 
                      return false;
@@ -1123,7 +1123,7 @@ public:
                      timeInitializeADS[0].first++;
 
                      if (!adsMan->compareADS(ads, sNeighbor.getADS())) {
-                        cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+                        std::cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
                         move.print();
                         return false;
                      }
@@ -1135,7 +1135,7 @@ public:
                      timeInitializeADS[0].first++;
 
                      if (!adsMan->compareADS(ads, s.getADS())) {
-                        cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+                        std::cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
                         rev.print();
                         return false;
                      }
@@ -1214,11 +1214,11 @@ public:
                         printf("==============\n");
                         printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
                         printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-                        cout << "s: ";
+                        std::cout << "s: ";
                         s.print();
-                        cout << "s': ";
+                        std::cout << "s': ";
                         sNeighbor.print();
-                        cout << "move: ";
+                        std::cout << "move: ";
                         move.print();
                         printf("==============\n");
                         printf("  GOOD LUCK!  \n");
@@ -1250,9 +1250,9 @@ public:
          vCountValidMoves[id_nsseq] += countValidMoves;
 
          if(logLevel >= LogLevel::Info)
-            cout << "component.check: " << lNSSeq.at(id_nsseq) << " finished." << endl;
+            std::cout << "component.check: " << lNSSeq.at(id_nsseq) << " finished." << std::endl;
          if (verbose)
-            cout << endl << endl;
+            std::cout << std::endl << std::endl;
       }
 
       for (unsigned i = 0; i < solutions.size(); i++)
@@ -1262,10 +1262,10 @@ public:
          for (unsigned j = 0; j < evaluations[i].size(); j++)
             delete evaluations[i][j];
 
-      cout << "===============================" << endl;
-      cout << "           SUMMARY             " << endl;
-      cout << "===============================" << endl
-           << endl;
+      std::cout << "===============================" << std::endl;
+      std::cout << "           SUMMARY             " << std::endl;
+      std::cout << "===============================" << std::endl
+           << std::endl;
 
       printSingleSummary("Solution", timeCloneSolution, "Time to clone a solution");
 
@@ -1274,9 +1274,9 @@ public:
       if (adsMan)
          printSummary(convertVector(lADSManagerComp), timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
       else
-         cout << endl
-              << "No ADSManager was tested." << endl
-              << endl;
+         std::cout << std::endl
+              << "No ADSManager was tested." << std::endl
+              << std::endl;
 
       printSummary(convertVector(lEvaluatorComp), fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
@@ -1296,7 +1296,7 @@ public:
 
       printSummarySimple(convertVector(lNSSeqComp), vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
 
-      cout << "component.check command: tests finished successfully!" << endl;
+      std::cout << "component.check command: tests finished successfully!" << std::endl;
       return true;
    }
 
@@ -1310,7 +1310,7 @@ public:
          factory.assign(type, scan.nextInt(), scan.next()); // reversed!
 
          if (!type) {
-            cout << "module " << id() << " warning: nullptr component " << lComponents[i] << "!" << endl;
+            std::cout << "module " << id() << " warning: nullptr component " << lComponents[i] << "!" << std::endl;
          } else
             vComp.push_back(type);
       }
@@ -1331,7 +1331,7 @@ public:
    void printSingleSummary(string component, const pair<int, double>& value, string title)
    {
       printf("---------------------------------\n");
-      cout << component << "\t" << title << endl;
+      std::cout << component << "\t" << title << std::endl;
       printf("---------------------------------\n");
       printf("title\t#tests\tavg(ms)\tsum(ms)\n");
       double avg = 0;
@@ -1344,13 +1344,13 @@ public:
          printf("%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", component.c_str(), 0);
       printf("---------------------------------\n");
       printf("all\t-\t%.4f\t-\n", (avg / validValues));
-      cout << endl;
+      std::cout << std::endl;
    }
 
-   void printSummary(const vector<Component*>& vcomp, const vector<pair<int, double>>& values, string type, string title)
+   void printSummary(const vector<Component*>& vcomp, const std::vector<std::pair<int, double>>& values, string type, string title)
    {
       printf("---------------------------------\n");
-      cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
+      std::cout << "|" << type << "|=" << values.size() << "\t" << title << std::endl;
       printf("---------------------------------\n");
       printf("#id\ttitle\t#tests\tavg(ms)\tsum(ms)\n");
       double avg = 0;
@@ -1365,13 +1365,13 @@ public:
       }
       printf("---------------------------------\n");
       printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
-      cout << endl;
+      std::cout << std::endl;
    }
 
    void printSummarySimple(const vector<Component*>& vcomp, const vector<int>& values, int numTests, string type, string title)
    {
       printf("---------------------------------\n");
-      cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
+      std::cout << "|" << type << "|=" << values.size() << "\t" << title << std::endl;
       printf("---------------------------------\n");
       printf("#id\ttitle\t#tests\tavg of %d tests\n", numTests);
       double avg = 0;
@@ -1386,10 +1386,10 @@ public:
       }
       printf("---------------------------------\n");
       printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
-      cout << endl;
+      std::cout << std::endl;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

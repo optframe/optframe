@@ -70,12 +70,12 @@ class ComponentMultiBuilder : public Component {
                                          HeuristicFactory<XES>& hf,
                                          string family = "") = 0;
 
-  virtual vector<pair<string, string>> parameters() = 0;
+  virtual std::vector<std::pair<std::string, std::string>> parameters() = 0;
 
   virtual bool canBuild(string) = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":ComponentMultiBuilder:";
     return ss.str();
   }

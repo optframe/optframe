@@ -37,8 +37,8 @@ class Mutation : public Component, public EA {
 
   virtual void mutate(S& individual, XEv& e) = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << EA::family() << ":Mutation";
     return ss.str();
   }
@@ -67,7 +67,7 @@ class BasicMutation : public Mutation<S, XEv> {
       int x = rg.rand(vNS.size());
       Move<S, XEv>* mp = vNS[x]->validMove(s);
       if (!mp) {
-        cout << "Warning: no move in BasicMutation!" << endl;
+        std::cout << "Warning: no move in BasicMutation!" << std::endl;
       } else {
         delete &mp->apply(e, s);
         delete mp;
@@ -75,8 +75,8 @@ class BasicMutation : public Mutation<S, XEv> {
     }
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << EA::family() << ":Mutation";
     return ss.str();
   }
@@ -108,12 +108,12 @@ class BasicMutationBuilder : public ComponentBuilder<XES> {
     return new BasicMutation<XES>(n, ns_list, hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair("OptFrame:int", "number of moves"));
-    stringstream ss;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair("OptFrame:int", "number of moves"));
+    std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
+    params.push_back(std::make_pair(ss.str(), "list of neighborhood structures"));
 
     return params;
   }
@@ -122,8 +122,8 @@ class BasicMutationBuilder : public ComponentBuilder<XES> {
     return component == BasicMutation<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "" << EA::family()
        << ":BasicMutation";
     return ss.str();

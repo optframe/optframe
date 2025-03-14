@@ -29,7 +29,7 @@ class DeltaMoveVRPOrOpt1
       : super(_getRoutes, _r, _c, _pos), hfmvrp(_hfmvrp) {
     k = 1;  // OrOpt1
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -162,8 +162,8 @@ class DeltaMoveVRPOrOpt1
     // const AdsHFMVRP& ads = s.getADS();
     vector<int> route = rep[r];
     int routeSize = route.size();
-    // cout << "routeSize = " << routeSize << endl;
-    // cout << route << endl;
+    // std::cout << "routeSize = " << routeSize << std::endl;
+    // std::cout << route << std::endl;
 
     int vType = -1;
     if (r >= hfmvrp->nVehicles)
@@ -178,12 +178,12 @@ class DeltaMoveVRPOrOpt1
     int bj = pos - 1;
 
     if (bi < 0) {
-      cout << "BUGGGGGG====================" << endl;
+      std::cout << "BUGGGGGG====================" << std::endl;
       getchar();
       bi = routeSize - 2;
     }
     if (bj < 0) {
-      cout << "BUGGGGGG====================" << endl;
+      std::cout << "BUGGGGGG====================" << std::endl;
       getchar();
       bj = routeSize - 2;
     }
@@ -194,7 +194,7 @@ class DeltaMoveVRPOrOpt1
     if (aj == (unsigned)routeSize)  // depot at the for each route
     {
       aj = 1;
-      cout << "BUGGGGGG====================" << endl;
+      std::cout << "BUGGGGGG====================" << std::endl;
       getchar();
     }
 
@@ -206,7 +206,7 @@ class DeltaMoveVRPOrOpt1
 
     if (aik == (unsigned)routeSize) {
       aik = 1;
-      cout << "BUGGGGGG====================" << endl;
+      std::cout << "BUGGGGGG====================" << std::endl;
       getchar();
     }
 
@@ -219,45 +219,45 @@ class DeltaMoveVRPOrOpt1
     } else {
       if (c < pos) {
         f -= hfmvrp->getDist(route[bi], route[c]) * vTDC;
-        // cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f <<
-        // endl;
+        // std::cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f <<
+        // std::endl;
         f -= hfmvrp->getDist(route[lik], route[aik]) * vTDC;
-        // cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f
-        // << endl;
+        // std::cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f
+        // << std::endl;
         f -= hfmvrp->getDist(route[pos], route[aj]) * vTDC;
-        // cout << "-d(" << rep[r][pos] << "," << rep[r][aj] << ") \t f= " << f
-        // << endl;
+        // std::cout << "-d(" << rep[r][pos] << "," << rep[r][aj] << ") \t f= " << f
+        // << std::endl;
 
         f += hfmvrp->getDist(route[bi], route[aik]) * vTDC;
-        // cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f
-        // << endl;
+        // std::cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f
+        // << std::endl;
         f += hfmvrp->getDist(route[pos], route[c]) * vTDC;
-        // cout << "+d(" << rep[r][pos] << "," << rep[r][c] << ") \t f= " << f
-        // << endl;
+        // std::cout << "+d(" << rep[r][pos] << "," << rep[r][c] << ") \t f= " << f
+        // << std::endl;
         f += hfmvrp->getDist(route[lik], route[aj]) * vTDC;
-        // cout << "+d(" << rep[r][lik] << "," << rep[r][aj] << ") \t f= " << f
-        // << endl;
+        // std::cout << "+d(" << rep[r][lik] << "," << rep[r][aj] << ") \t f= " << f
+        // << std::endl;
       } else  // c > pos
       {
         f -= hfmvrp->getDist(route[bi], route[c]) * vTDC;
-        // cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f <<
-        // endl;
+        // std::cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f <<
+        // std::endl;
         f -= hfmvrp->getDist(route[lik], route[aik]) * vTDC;
-        // cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f
-        // << endl;
+        // std::cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f
+        // << std::endl;
         f -= hfmvrp->getDist(route[bj], route[pos]) * vTDC;
-        // cout << "-d(" << rep[r][bj] << "," << rep[r][pos] << ") \t f= " << f
-        // << endl;
+        // std::cout << "-d(" << rep[r][bj] << "," << rep[r][pos] << ") \t f= " << f
+        // << std::endl;
 
         f += hfmvrp->getDist(route[bi], route[aik]) * vTDC;
-        // cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f
-        // << endl;
+        // std::cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f
+        // << std::endl;
         f += hfmvrp->getDist(route[bj], route[c]) * vTDC;
-        // cout << "+d(" << rep[r][bj] << "," << rep[r][c] << ") \t f= " << f <<
-        // endl;
+        // std::cout << "+d(" << rep[r][bj] << "," << rep[r][c] << ") \t f= " << f <<
+        // std::endl;
         f += hfmvrp->getDist(route[lik], route[pos]) * vTDC;
-        // cout << "+d(" << rep[r][lik] << "," << rep[r][pos] << ") \t f= " << f
-        // << endl;
+        // std::cout << "+d(" << rep[r][lik] << "," << rep[r][pos] << ") \t f= " << f
+        // << std::endl;
       }
     }
 
@@ -272,7 +272,7 @@ class DeltaMoveVRPOrOpt1
     return ssIdRoute.str();
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMoveVRPOrOpt1");
     return idComp;
@@ -284,8 +284,8 @@ class DeltaMoveVRPOrOpt1
   }
 
   void print() const override {
-    cout << "DeltaMoveVRPOrOpt1( route: " << r << " , " << c << " , " << pos
-         << " )" << endl;
+    std::cout << "DeltaMoveVRPOrOpt1( route: " << r << " , " << c << " , " << pos
+         << " )" << std::endl;
   }
 };
 

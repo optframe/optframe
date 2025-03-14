@@ -30,9 +30,9 @@ class Reducer
 public:
    ///Iterator reducing execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, C>> run(vector<pair<KeyB, B>>&) = 0;
+   virtual std::vector<std::pair<KeyB, C>> run(std::vector<pair<KeyB, B>>&) = 0;
 #else
-   virtual vector<pair<KeyB, C>> run(multimap<KeyB, B>&) = 0;
+   virtual std::vector<std::pair<KeyB, C>> run(multimap<KeyB, B>&) = 0;
 #endif
    ///Reduce function (implemented by user).
    virtual pair<KeyB, C> reduce(pair<KeyB, vector<B>>) = 0;

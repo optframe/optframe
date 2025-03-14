@@ -42,7 +42,7 @@ class NSEnumVVSwapk : public NSEnum<vector<vector<T>>, DS>
 {
 protected:
    int k1, k2;
-   vector<pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>* moves;
+   std::vector<std::pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>* moves;
 
 public:
    using NSEnum<vector<vector<T>>, DS>::move; // prevents name hiding
@@ -51,7 +51,7 @@ public:
    {
       this->k1 = k1;
       this->k2 = k2;
-      moves = new vector<pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>;
+      moves = new std::vector<std::pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>;
    }
 
    /*virtual void init(Solution<vector<vector<int> > >* s)
@@ -59,7 +59,7 @@ public:
 		init(s->getR());
 	}
 
-	virtual void init(vector<vector<int> >& rep)
+	virtual void init(std::vector<vector<int> >& rep)
 	{
 		delete moves;
 		moves = NSVector<int>::Swapk_appliableMoves(rep,k);
@@ -77,7 +77,7 @@ public:
    virtual Move<vector<vector<T>>, DS>& move(unsigned int _k)
    {
       if (_k > size()) {
-         cerr << "Neighborhood Swap Error! Move " << _k << " does not exist! Valid Interval from 0 to " << (size() - 1) << "." << endl;
+         cerr << "Neighborhood Swap Error! Move " << _k << " does not exist! Valid Interval from 0 to " << (size() - 1) << "." << std::endl;
          exit(1);
 
          //return nullptr;
@@ -113,7 +113,7 @@ public:
 
    virtual void print()
    {
-      cout << "NSEnum Vector Vector Swapk (" << size() << ")" << endl;
+      std::cout << "NSEnum Vector Vector Swapk (" << size() << ")" << std::endl;
    }
 };
 

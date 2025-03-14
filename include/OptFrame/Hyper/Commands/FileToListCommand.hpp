@@ -46,12 +46,12 @@ public:
       return "file.to_list new_list_name filename";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scan(input);
       if (!scan.hasNext()) // no file
       {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -59,7 +59,7 @@ public:
 
       if (!scan.hasNext()) // no file
       {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -69,8 +69,8 @@ public:
       try {
          scanner = new Scanner(new File(scan.trim(scan.rest())));
       } catch (FileNotFound& e) {
-         cout << "File '" << e.getFile() << "' not found!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "File '" << e.getFile() << "' not found!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -99,7 +99,7 @@ public:
       return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, listContent.str());
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

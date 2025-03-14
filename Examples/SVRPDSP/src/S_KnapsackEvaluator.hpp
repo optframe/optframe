@@ -30,7 +30,7 @@ class S_KNPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
         pSVRPDSP(_pSVRPDSP) {}
 
   Evaluation<> evaluate(const RepSVRPDSP& rep) {
-    cout << "DEPRECATED:DO NOT USE THIS METHOD!" << endl;
+    std::cout << "DEPRECATED:DO NOT USE THIS METHOD!" << std::endl;
     exit(1);
     const AdsSVRPDSP ads1;
     return evaluate(rep, &ads1);
@@ -63,7 +63,7 @@ class S_KNPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
 #endif
 
     if (rep.size() == 0) {
-      cout << "Evaluator Error: rep.size() == 0!" << endl;
+      std::cout << "Evaluator Error: rep.size() == 0!" << std::endl;
       exit(1);
     }
 
@@ -72,7 +72,7 @@ class S_KNPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
         break;
       else if (rep[i] > pSVRPDSP.n) {
         int p_cust = rep[i] - pSVRPDSP.n;
-        // cout << "PICKUP OF " << p_cust << endl;
+        // std::cout << "PICKUP OF " << p_cust << std::endl;
         // getchar();
 
         sum_q += pSVRPDSP.p[p_cust];

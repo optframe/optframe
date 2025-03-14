@@ -41,14 +41,14 @@ private:
       return false;
    }
 
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module, string rest)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
    {
       for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
          if (modules[i]->canHandle(module, rest))
             return modules[i];
       }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
       return nullptr;
    }
 
@@ -67,13 +67,13 @@ public:
       return "command.unit_test list_target_modules_names list_of_testers [validation_key]";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
-      //cout << "command.unit_test run: '" << input << "'" << endl;
+      //cout << "command.unit_test run: '" << input << "'" << std::endl;
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -83,18 +83,18 @@ public:
          targets = vector<string>(*plist2);
          delete plist2;
       } else {
-         cout << "command.unit_test error: ill-formed targets list!" << endl;
+         std::cout << "command.unit_test error: ill-formed targets list!" << std::endl;
          return false;
       }
 
       for (unsigned t = 0; t < targets.size(); t++)
          if (!moduleExists(targets[t], modules)) {
-            cout << "command.unit_test command: can't test module '" << targets[t] << "' because it doesn't exist!" << endl;
+            std::cout << "command.unit_test command: can't test module '" << targets[t] << "' because it doesn't exist!" << std::endl;
             return false;
          }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -104,7 +104,7 @@ public:
          testers = vector<string>(*plist1);
          delete plist1;
       } else {
-         cout << "command.unit_test error: ill-formed testers list!" << endl;
+         std::cout << "command.unit_test error: ill-formed testers list!" << std::endl;
          return false;
       }
 
@@ -115,7 +115,7 @@ public:
          skey = scanner.next();
          std::istringstream iss(skey);
          if (!(iss >> std::hex >> key)) {
-            cout << "command.unit_test error: failed to convert key '" << skey << "' to unsigned long!" << endl;
+            std::cout << "command.unit_test error: failed to convert key '" << skey << "' to unsigned long!" << std::endl;
             return false;
          }
       }
@@ -128,7 +128,7 @@ public:
       for (unsigned i = 0; i < targets.size(); i++) {
          Command<R, ADS, DS>* m = getCommand(modules, targets[i], "");
          if (!m) {
-            cout << "command.unit_test error: target '" << targets[i] << "' doesn't exist!" << endl;
+            std::cout << "command.unit_test error: target '" << targets[i] << "' doesn't exist!" << std::endl;
             return false;
          }
 
@@ -143,7 +143,7 @@ public:
       for (unsigned i = 0; i < testers.size(); i++) {
          Command<R, ADS, DS>* m = getCommand(modules, testers[i], "");
          if (!m) {
-            cout << "command.unit_test error: tester '" << testers[i] << "' doesn't exist!" << endl;
+            std::cout << "command.unit_test error: tester '" << testers[i] << "' doesn't exist!" << std::endl;
             return false;
          }
 
@@ -166,9 +166,9 @@ public:
          if (check_key == key)
             return true;
          else {
-            cout << "command.unit_test WARNING: different key=" << skey << " calculated=";
+            std::cout << "command.unit_test WARNING: different key=" << skey << " calculated=";
             printf("%#lx\n", check_key);
-            cout << "Will perform tests! Press any key to continue..." << endl;
+            std::cout << "Will perform tests! Press any key to continue..." << std::endl;
             getchar();
          }
       }
@@ -180,17 +180,17 @@ public:
       for (unsigned int i = 0; i < mtesters.size(); i++) {
          string inp = ""; // no need to preprocess
          if (!mtesters[i]->run(modules, allFunctions, factory, dictionary, ldictionary, inp)) {
-            cout << "command.unit_test error: failed to test with tester '" << mtesters[i]->id() << "'!" << endl;
+            std::cout << "command.unit_test error: failed to test with tester '" << mtesters[i]->id() << "'!" << std::endl;
             return false;
          }
       }
 
-      cout << "command.unit_test message: performed " << mtesters.size() << " tests! validation key is: ";
+      std::cout << "command.unit_test message: performed " << mtesters.size() << " tests! validation key is: ";
       printf("%#lx\n", check_key);
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

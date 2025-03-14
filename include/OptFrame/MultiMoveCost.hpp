@@ -49,7 +49,7 @@ class MultiMoveCost : public Component {
   vector<MoveCost<ObjType, XEv>*> vmc;
 
  public:
-  explicit MultiMoveCost(vector<MoveCost<>*> _vmc) : vmc(_vmc) {}
+  explicit MultiMoveCost(std::vector<MoveCost<>*> _vmc) : vmc(_vmc) {}
 
   MultiMoveCost(const MultiMoveCost<>& mc) : vmc(mc.vmc) {}
 
@@ -61,7 +61,7 @@ class MultiMoveCost : public Component {
 
   bool isEstimated(int k) const { return vmc[k]->estimated; }
 
-  const vector<pair<ObjType, ObjType>>& getAlternativeCosts(int k) const {
+  const std::vector<std::pair<ObjType, ObjType>>& getAlternativeCosts(int k) const {
     return vmc[k]->alternatives;
   }
 
@@ -75,7 +75,7 @@ class MultiMoveCost : public Component {
   }
 
   void setAlternativeCosts(
-      const vector<pair<ObjType, ObjType>>& alternativeCosts, int k) {
+      const std::vector<std::pair<ObjType, ObjType>>& alternativeCosts, int k) {
     vmc[k]->alternatives = alternativeCosts;
   }
 
@@ -85,20 +85,20 @@ class MultiMoveCost : public Component {
 
   ObjType cost(int k) const { return vmc[k]->cost(); }
 
-  static string idComponent() { return "OptFrame:MultiMoveCost"; }
+  static std::string idComponent() { return "OptFrame:MultiMoveCost"; }
 
   std::string id() const override { return idComponent(); }
 
   virtual std::string toString() const override { return id(); }
 
   void print() const override {
-    cout << fixed;  // disable scientific notation
-    cout << "MultiMoveCost for " << size() << " objectives:" << endl;
+    std::cout << fixed;  // disable scientific notation
+    std::cout << "MultiMoveCost for " << size() << " objectives:" << std::endl;
     for (unsigned i = 0; i < vmc.size(); i++)
       if (vmc[i])
         vmc[i]->print();
       else
-        cout << "NO COST" << endl;
+        std::cout << "NO COST" << std::endl;
   }
 
   virtual MultiMoveCost<>& operator=(const MultiMoveCost<>& mmc) {

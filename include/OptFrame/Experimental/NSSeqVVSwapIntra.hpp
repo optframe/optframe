@@ -65,7 +65,7 @@ class NSSeqVVSwapIntra : public NSSeq<vector<vector<T>>, DS> {
     return *new NSIteratorVVSwapIntra<T, DS>(r);
   }
 
-  virtual void print() { cout << "NSSeqVVSwapIntra" << endl; }
+  virtual void print() { std::cout << "NSSeqVVSwapIntra" << std::endl; }
 };
 
 #endif /*OPTFRAME_NSSEQVVSWAPINTRA_HPP_*/

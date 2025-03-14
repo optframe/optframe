@@ -170,8 +170,8 @@ class MoveSwapSide : public Move<ESolutionEtII> {
   }
 
   void print() const override {
-    cout << "MoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2
-         << ")" << endl;
+    std::cout << "MoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2
+         << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveSwapSide"; }
@@ -292,7 +292,7 @@ class NSSeqSwapSide : public NSSeq<ESolutionEtII> {
         new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols()));
   }
 
-  void print() const override { cout << "NSSeqSwapSide" << endl; }
+  void print() const override { std::cout << "NSSeqSwapSide" << std::endl; }
 
   std::string id() const override { return "OptFrame:NS:NSSeqSwapSide"; }
 };

@@ -64,7 +64,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -77,7 +77,7 @@ public:
 		}
 		else
 		{
-			cout << "Function " << id() << " error: couldn't read list!" << endl;
+			cout << "Function " << id() << " error: couldn't read list!" << std::endl;
 			return nullptr;
 		}
 
@@ -99,7 +99,7 @@ public:
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == nullptr)
 		{
-		    cout << "shapiro_test command: PIPE NOT OPEN!" << endl;
+		    std::cout << "shapiro_test command: PIPE NOT OPEN!" << std::endl;
 		    return nullptr;
 		}
 
@@ -115,7 +115,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "shapiro_test command: OUTPUT '" << output << "'" << endl;
+		//cout << "shapiro_test command: OUTPUT '" << output << "'" << std::endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return nullptr;
 

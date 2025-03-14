@@ -77,7 +77,7 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
 
   using NSPopulationBasedMultiObjSearch<XMES>::search;
 
-  vector<double> evaluate(vector<MOSIndividual<XMES>>& P) override {
+  vector<double> evaluate(std::vector<MOSIndividual<XMES>>& P) override {
     vector<double> best(mevr->nObjectives);
     for (unsigned i = 0; i < best.size(); i++) best[i] = mdir->nadir(i);
 
@@ -95,13 +95,13 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
     return best;
   }
 
-  // void assignFitness(vector<MOSIndividual<XMES>>& g,
+  // void assignFitness(std::vector<MOSIndividual<XMES>>& g,
   void assignFitness(const vector<int>& g,
                      vector<MOSIndividual<XMES>>& P) override {
     fa->assignFitnessGroup(g, P);
   }
 
-  // void assignDiversity(vector<MOSIndividual<XMES>>& g,
+  // void assignDiversity(std::vector<MOSIndividual<XMES>>& g,
   void assignDiversity(const vector<int>& g,
                        vector<MOSIndividual<XMES>>& P) override {
     dm->assignDiversityGroup(g, P);
@@ -117,7 +117,7 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
     sel->select(popSize, P, archive);
   }
 
-  void freePopulation(vector<MOSIndividual<XMES>>& P,
+  void freePopulation(std::vector<MOSIndividual<XMES>>& P,
                       vector<MOSIndividual<XMES>>& archive) override {
     sel->free(P, archive);
   }

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <math.h>
 // C++
@@ -18,11 +20,28 @@
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 #include <OptFrame/Timer.hpp>
 
-#include "./ILS.h"
+#include "ILS.hpp"
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
-template <class H, XESolution XES, XEvaluation XEv = typename XES::second_type>
+MOD_EXPORT template <class H, XESolution XES,
+                     XEvaluation XEv = typename XES::second_type>
 class IteratedLocalSearch : public ILS,
                             public SingleObjSearch<XES>,
                             public ITrajectory<XES> {
@@ -112,17 +131,18 @@ class IteratedLocalSearch : public ILS,
         std::cout << "ILS:: will compare(" << eStar.isOutdated() << ";"
                   << stopCriteria.target_f.isOutdated() << ")" << std::endl;
       if (evaluator->betterStrict(eStar, stopCriteria.target_f)) {
-        cout << "ILS:: exit by target_f: " << eStar.evaluation()
-             << " better than " << stopCriteria.target_f.evaluation() << endl;
-        // cout << "isMin: " << eStar.isMini << endl;
+        std::cout << "ILS:: exit by target_f: " << eStar.evaluation()
+                  << " better than " << stopCriteria.target_f.evaluation()
+                  << std::endl;
+        // std::cout << "isMin: " << eStar.isMini << std::endl;
       }
     }
 
     return {SearchStatus::NO_REPORT, star};
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << ILS::family();
     return ss.str();
   }

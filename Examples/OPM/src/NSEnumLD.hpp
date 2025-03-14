@@ -47,7 +47,7 @@ class MoveLD : public Move<RepOPM> {
   }
 
   void print() const override {
-    cout << "MoveLD(" << f1 << " , " << f2 << ")" << endl;
+    std::cout << "MoveLD(" << f1 << " , " << f2 << ")" << std::endl;
   }
 };
 
@@ -73,7 +73,7 @@ class NSEnumLD : public NSEnum<RepOPM> {
     } else {
       cerr << "Neighborhood LD Error! Move " << m
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
     }
   }
@@ -82,7 +82,7 @@ class NSEnumLD : public NSEnum<RepOPM> {
     return opm.getNumFrentes() * (opm.getNumFrentes() - 1) / 2;
   }
 
-  void print() { cout << "NSEnum LD (" << size() << ")" << endl; }
+  void print() { std::cout << "NSEnum LD (" << size() << ")" << std::endl; }
 };
 }  // namespace POLAD
 #endif /*OPM_NSENUMLD_HPP_*/

@@ -300,7 +300,7 @@ class RKGA : public Populational<XES, XES, XES2> {
 
     if (Component::information)
       (*Component::logdata)
-          << "RKGA: best fitness at initial population: " << best_f << endl;
+          << "RKGA: best fitness at initial population: " << best_f << std::endl;
 
     // stop by number of generations.
     // other stopping criteria? TIME, GAP, ...
@@ -395,7 +395,7 @@ class RKGA : public Populational<XES, XES, XES2> {
         best_f = pop_best;
         if (Component::debug)
           (*Component::logdata) << "RKGA: best fitness " << best_f
-                                << " at generation " << ctx.count_gen << endl;
+                                << " at generation " << ctx.count_gen << std::endl;
 
         // send machine logs (TODO: check which format... txt, json... suppose
         // 'txt')
@@ -453,22 +453,22 @@ class RKGA : public Populational<XES, XES, XES2> {
     return new pair<RSK, XEv>(best, e);
     */
     if (Component::debug) {
-      cout << "RKGA print sol: optional(" << ((bool)pe.second) << ") -> ";
+      std::cout << "RKGA print sol: optional(" << ((bool)pe.second) << ") -> ";
       if (!pe.second) {
-        cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: "
-             << pe.first.evaluation() << endl;
-        cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO "
+        std::cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: "
+             << pe.first.evaluation() << std::endl;
+        std::cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO "
                 "AT "
                 "LEAST PROVIDE A SOLUTION?"
-             << endl;
+             << std::endl;
         assert(false);
       }
     }
 
     S finalSol(*pe.second);  // TODO: avoid loss
 
-    // return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e));
-    star = std::make_optional(make_pair(finalSol, e));
+    // return std::optional<pair<XRS, XEv>>(std::make_pair(finalSol, e));
+    star = std::make_optional(std::make_pair(finalSol, e));
     // this->best = star;
     return {SearchStatus::NO_REPORT, *star};
   }

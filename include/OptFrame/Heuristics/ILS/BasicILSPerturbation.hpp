@@ -14,7 +14,7 @@
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 
-#include "ILS.h"
+#include "ILS.hpp"
 
 namespace optframe {
 
@@ -34,15 +34,15 @@ class BasicILSPerturbation : public ILS, public Component {
                        vsref<NS<XES, XSH>>& _ns, sref<RandGen> _rg)
       : evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg) {
     if (pMax < pMin) {
-      cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
-           << endl;
+      std::cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
+           << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
     }
 
     if (ns.size() == 0)
-      cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
+      std::cout << "BasicILSPerturbation warning: empty neighborhood list." << std::endl;
   }
 
   BasicILSPerturbation(sref<GeneralEvaluator<XES>> e, int _pMin, int _pMax,
@@ -50,15 +50,15 @@ class BasicILSPerturbation : public ILS, public Component {
       : evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg) {
     ns.push_back(&_ns);
     if (pMax < pMin) {
-      cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
-           << endl;
+      std::cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
+           << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
     }
 
     if (ns.size() == 0)
-      cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
+      std::cout << "BasicILSPerturbation warning: empty neighborhood list." << std::endl;
   }
 
   virtual ~BasicILSPerturbation() {}
@@ -77,7 +77,7 @@ class BasicILSPerturbation : public ILS, public Component {
       uptr<Move<XES, XSH>> mp = ns[nk]->validRandomMove(se);
 
       if (!mp) {
-        cout << "BasicILSPerturbation warning: perturbation found no valid "
+        std::cout << "BasicILSPerturbation warning: perturbation found no valid "
                 "move for neighborhood: ";
         ns[nk]->print();
       } else {
@@ -92,8 +92,8 @@ class BasicILSPerturbation : public ILS, public Component {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << ILS::family() << "basic_pert";
     return ss.str();
   }
@@ -132,15 +132,15 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
                                          hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
-    params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
-    stringstream ss;
+    params.push_back(std::make_pair("OptFrame:int", "pMin: min number of moves"));
+    params.push_back(std::make_pair("OptFrame:int", "pMax: max number of moves"));
+    std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
+    params.push_back(std::make_pair(ss.str(), "list of neighborhood structures"));
 
     return params;
   }
@@ -149,8 +149,8 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
     return component == BasicILSPerturbation<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << ILS::family() << "basic_pert";
     return ss.str();
   }

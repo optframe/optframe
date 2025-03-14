@@ -85,7 +85,7 @@ class ConstructiveGRandTSPOptimalGLO
 
     // greedy randomized step
 
-    vector<pair<pair<int, int>, double> > cList;
+    std::vector<std::pair<pair<int, int>, double> > cList;
 
     do {
       cList.clear();
@@ -134,13 +134,13 @@ class ConstructiveGRandTSPOptimalGLO
                 {
                   double d1 = pSVRPDSP.c(rep_i, c);
                   double d2 = pSVRPDSP.c(c, rep_ii);
-                  cList.push_back(make_pair(make_pair(c, i), d1 + d2));
+                  cList.push_back(std::make_pair(std::make_pair(c, i), d1 + d2));
                   break;
                 }
                 case 1:  // -revenue
                 {
                   double r = pSVRPDSP.r[c];
-                  cList.push_back(make_pair(make_pair(c, i), -r));
+                  cList.push_back(std::make_pair(std::make_pair(c, i), -r));
                   break;
                 }
                 case 2:  // distance - revenue
@@ -148,19 +148,19 @@ class ConstructiveGRandTSPOptimalGLO
                   double d1 = pSVRPDSP.c(rep_i, c);
                   double d2 = pSVRPDSP.c(c, rep_ii);
                   double r = pSVRPDSP.r[c];
-                  cList.push_back(make_pair(make_pair(c, i), d1 + d2 - r));
+                  cList.push_back(std::make_pair(std::make_pair(c, i), d1 + d2 - r));
                   break;
                 }
                 case 3:  // pickup (best are smaller)
                 {
                   double p = pSVRPDSP.p[c];
-                  cList.push_back(make_pair(make_pair(c, i), p));
+                  cList.push_back(std::make_pair(std::make_pair(c, i), p));
                   break;
                 }
                 case 4:  // -pickup (best are bigger)
                 {
                   double p = pSVRPDSP.p[c];
-                  cList.push_back(make_pair(make_pair(c, i), -p));
+                  cList.push_back(std::make_pair(std::make_pair(c, i), -p));
                   break;
                 }
                 case 5:  // balance dist and pickup | (DIST - REV) / ( (cap - A)
@@ -171,7 +171,7 @@ class ConstructiveGRandTSPOptimalGLO
                   double r = pSVRPDSP.r[c];
                   double p = pSVRPDSP.p[c];
 
-                  cList.push_back(make_pair(
+                  cList.push_back(std::make_pair(
                       make_pair(c, i), (d1 + d2 - r) / ((pSVRPDSP.Q - q) - p)));
                   break;
                 }
@@ -184,11 +184,11 @@ class ConstructiveGRandTSPOptimalGLO
                   double p = pSVRPDSP.p[c];
 
                   cList.push_back(
-                      make_pair(make_pair(c, i), (d1 + d2 - r) / p));
+                      make_pair(std::make_pair(c, i), (d1 + d2 - r) / p));
                   break;
                 }
                 default:
-                  cout << "no option " << option << "!" << endl;
+                  std::cout << "no option " << option << "!" << std::endl;
                   exit(1);
               }
           }
@@ -216,8 +216,8 @@ class ConstructiveGRandTSPOptimalGLO
     MySolution* s = new MySolution(rep);
 
     if (!s->syncADS(pSVRPDSP)) {
-      cout << "error syncronizing ADS (Const. GLO)" << endl;
-      cout << "rep: " << rep << endl;
+      std::cout << "error syncronizing ADS (Const. GLO)" << std::endl;
+      std::cout << "rep: " << rep << std::endl;
       exit(1);
     }
 

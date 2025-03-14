@@ -26,7 +26,7 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
   DeltaMoveSwap(const super& s, ProblemInstance* _svrpdsp)
       : super(s.get_p1(), s.get_p2(), _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -35,7 +35,7 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
   DeltaMoveSwap(int p1, int p2, ProblemInstance* _svrpdsp)
       : super(p1, p2, _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -100,76 +100,76 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
 
     if (p1 == p2) {
       f = 0;
-      cout << "SWAP SHOULDN'T BE APPLIED! p1==p2" << endl;
+      std::cout << "SWAP SHOULDN'T BE APPLIED! p1==p2" << std::endl;
       getchar();
     }
 
     if ((p1 > ads.zero) && (p2 > ads.zero))  // all zero!
     {
       f = 0;
-      cout << "SWAP SHOULDN'T BE APPLIED! both after zero." << endl;
+      std::cout << "SWAP SHOULDN'T BE APPLIED! both after zero." << std::endl;
       getchar();
     }
 
     if ((p2 < ads.zero) &&
         ((p2 - p1) >= 2))  // inside zeros (p1 < p2) (distance of 2)
     {
-      // cout << "CASE 1" << endl;
+      // std::cout << "CASE 1" << std::endl;
       f -= svrpdsp->dc(rep[bp1], rep[p1]);
-      // cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
+      // std::cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
       f -= svrpdsp->dc(rep[p1], rep[ap1]);
-      // cout << "-d(" << rep[p1] << "," << rep[ap1] << ") ";
+      // std::cout << "-d(" << rep[p1] << "," << rep[ap1] << ") ";
       f -= svrpdsp->dc(rep[bp2], rep[p2]);
-      // cout << "-d(" << rep[bp2] << "," << rep[p2] << ") ";
+      // std::cout << "-d(" << rep[bp2] << "," << rep[p2] << ") ";
       f -= svrpdsp->dc(rep[p2], rep[ap2]);
-      // cout << "-d(" << rep[p2] << "," << rep[ap2] << ") ";
+      // std::cout << "-d(" << rep[p2] << "," << rep[ap2] << ") ";
 
       f += svrpdsp->dc(rep[bp1], rep[p2]);
-      // cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
+      // std::cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
       f += svrpdsp->dc(rep[p2], rep[ap1]);
-      // cout << "+d(" << rep[p2] << "," << rep[ap1] << ") ";
+      // std::cout << "+d(" << rep[p2] << "," << rep[ap1] << ") ";
       f += svrpdsp->dc(rep[bp2], rep[p1]);
-      // cout << "+d(" << rep[bp2] << "," << rep[p1] << ") ";
+      // std::cout << "+d(" << rep[bp2] << "," << rep[p1] << ") ";
       f += svrpdsp->dc(rep[p1], rep[ap2]);
-      // cout << "+d(" << rep[p1] << "," << rep[ap2] << ") ";
+      // std::cout << "+d(" << rep[p1] << "," << rep[ap2] << ") ";
     } else if ((p2 < ads.zero) &&
                ((p2 - p1) == 1))  // inside zeros (p1 < p2) (distance of 1)
     {
-      // cout << "CASE 2" << endl;
+      // std::cout << "CASE 2" << std::endl;
       f -= svrpdsp->dc(rep[bp1], rep[p1]);
-      // cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
+      // std::cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
       f -= svrpdsp->dc(rep[p1], rep[p2]);
-      // cout << "-d(" << rep[p1] << "," << rep[p2] << ") ";
+      // std::cout << "-d(" << rep[p1] << "," << rep[p2] << ") ";
       f -= svrpdsp->dc(rep[p2], rep[ap2]);
-      // cout << "-d(" << rep[p2] << "," << rep[ap2] << ") ";
+      // std::cout << "-d(" << rep[p2] << "," << rep[ap2] << ") ";
 
       f += svrpdsp->dc(rep[bp1], rep[p2]);
-      // cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
+      // std::cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
       f += svrpdsp->dc(rep[p2], rep[p1]);
-      // cout << "+d(" << rep[p2] << "," << rep[p1] << ") ";
+      // std::cout << "+d(" << rep[p2] << "," << rep[p1] << ") ";
       f += svrpdsp->dc(rep[p1], rep[ap2]);
-      // cout << "+d(" << rep[p1] << "," << rep[ap2] << ") ";
+      // std::cout << "+d(" << rep[p1] << "," << rep[ap2] << ") ";
     } else if (p2 > ads.zero)  // after zero (swap pickup with pickup)
     {
       f -= svrpdsp->dc(rep[bp1], rep[p1]);
-      // cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
+      // std::cout << "-d(" << rep[bp1] << "," << rep[p1] << ") ";
       f -= svrpdsp->dc(rep[p1], rep[ap1]);
-      // cout << "-d(" << rep[p1] << "," << rep[ap1] << ") ";
+      // std::cout << "-d(" << rep[p1] << "," << rep[ap1] << ") ";
 
       f += svrpdsp->dc(rep[bp1], rep[p2]);
-      // cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
+      // std::cout << "+d(" << rep[bp1] << "," << rep[p2] << ") ";
       f += svrpdsp->dc(rep[p2], rep[ap1]);
-      // cout << "+d(" << rep[p2] << "," << rep[ap1] << ") ";
+      // std::cout << "+d(" << rep[p2] << "," << rep[ap1] << ") ";
 
       // updating revenue
       f += svrpdsp->dr[rep[p1]];
       f -= svrpdsp->dr[rep[p2]];
     } else {
-      cout << "DELTA SWAP DON'T KNOW!!" << endl;
+      std::cout << "DELTA SWAP DON'T KNOW!!" << std::endl;
       exit(1);
     }
 
-    // cout << endl;
+    // std::cout << std::endl;
 
     // ==========
     // Infeasible
@@ -177,12 +177,12 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
 
     int f_inv = 0;
 
-    if (verbose) cout << "INF: ";
+    if (verbose) std::cout << "INF: ";
 
     int nQ = ads.load[0];  // FULL Q
     for (int c = 0; c < ads.zero; c++) {
       if (verbose)
-        cout << "{" << nQ << "->" << f_inv << "}\t"
+        std::cout << "{" << nQ << "->" << f_inv << "}\t"
              << "c:" << c << " ";
 
       if (c == p1) nQ += svrpdsp->dp[rep[p2]] - svrpdsp->dd[rep[p2]];
@@ -193,17 +193,17 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
         nQ += svrpdsp->dp[rep[c]] - svrpdsp->dd[rep[c]];
 
       f_inv += infv(nQ, ads.load[0]);
-      if (verbose) cout << "add_" << rep[c] << " ";
+      if (verbose) std::cout << "add_" << rep[c] << " ";
     }
 
-    if (verbose) cout << endl;
+    if (verbose) std::cout << std::endl;
 
     long long f_inv2 = ((long long)f_inv) * 100000 - e.getInfMeasure();
 
     if (verbose) {
-      cout << "COST() inf was: " << e.getInfMeasure() << " => "
-           << (((long long)f_inv) * 100000) << endl;
-      cout << "COST() FINAL: " << f << " and " << f_inv2 << endl;
+      std::cout << "COST() inf was: " << e.getInfMeasure() << " => "
+           << (((long long)f_inv) * 100000) << std::endl;
+      std::cout << "COST() FINAL: " << f << " and " << f_inv2 << std::endl;
     }
 
     return new pair<double, double>(f, f_inv2);
@@ -212,7 +212,7 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
   // infeasible value
   int infv(int nv, int Q) { return max((nv - Q), 0); }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":SVRPDSPDeltaMoveSwap");
     return idComp;
@@ -225,7 +225,7 @@ class DeltaMoveSwap : public MoveTSPSwap<int, AdsSVRPDSP, MySolution> {
   }
 
   void print() const override {
-    cout << "SVRPDSPDeltaMoveSwap(" << p1 << ";" << p2 << ")" << endl;
+    std::cout << "SVRPDSPDeltaMoveSwap(" << p1 << ";" << p2 << ")" << std::endl;
   }
 };
 

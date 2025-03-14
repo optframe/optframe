@@ -71,7 +71,7 @@ class HFMMultiEvaluator : public MultiEvaluator<ESolutionHFM, EMSolutionHFM> {
   }
 
   void addEvaluator(Evaluator<SolutionHFM, Evaluation<>>& ev) {
-    cout << "I should not add anyone! HFM MEV" << endl;
+    std::cout << "I should not add anyone! HFM MEV" << std::endl;
     getchar();
   }
 
@@ -88,8 +88,8 @@ class HFMMultiEvaluator : public MultiEvaluator<ESolutionHFM, EMSolutionHFM> {
   }
 
  protected:
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << MultiEvaluator<ESolutionHFM, EMSolutionHFM>::idComponent()
        << ":HFMMultiEvaluator";
     return ss.str();

@@ -20,12 +20,12 @@ private:
 
 public:
 
-	treatForecasts(vector<vector<double> > _forecastings)
+	treatForecasts(std::vector<vector<double> > _forecastings)
 	{
 		forecastings = _forecastings;
 	}
 
-	treatForecasts(vector<string> explanatoryVariables)
+	treatForecasts(std::vector<string> explanatoryVariables)
 	{
 		vector<Scanner*> scannerFiles;
 		for (int v = 0; v < int(explanatoryVariables.size()); v++)
@@ -34,7 +34,7 @@ public:
 
          if(!fileP.isOpen())
 			{
-				cout << "File '" << explanatoryVariables[v] << "' not found" << endl;
+				cout << "File '" << explanatoryVariables[v] << "' not found" << std::endl;
 				exit(1);
 			}
 
@@ -45,7 +45,7 @@ public:
 		readFromScanner(scannerFiles);
 	}
 
-	void readFromScanner(vector<Scanner*>& scannerFiles)
+	void readFromScanner(std::vector<Scanner*>& scannerFiles)
 	{
 		int nExVar = scannerFiles.size();
 
@@ -61,13 +61,13 @@ public:
 			Scanner scanner = *scannerFiles[exVar];
 
 			nForecastings[exVar] = *scanner.nextInt();
-//			cout << "nForecastings[" << exVar << "]: " << nForecastings[exVar] << endl;
+//			cout << "nForecastings[" << exVar << "]: " << nForecastings[exVar] << std::endl;
 
 			for (int i = 0; i < nForecastings[exVar]; i++)
 			{
 				double input;
 				input = *scanner.nextDouble();
-				//cout << input << endl;
+				//cout << input << std::endl;
 
 				forecastings[exVar].push_back(input);
 			}
@@ -96,7 +96,7 @@ public:
 		return forecastings;
 	}
 
-	void setTSFile(vector<double> newTS, int file)
+	void setTSFile(std::vector<double> newTS, int file)
 	{
 		forecastings[file].clear();
 		forecastings[file] = newTS;
@@ -110,7 +110,7 @@ public:
 
       if(!fileP.isOpen())
       {
-			cout << "File '" << quantilFile << "' not found" << endl;
+			cout << "File '" << quantilFile << "' not found" << std::endl;
 			getchar();
 			return quantiles;
 		}
@@ -136,7 +136,7 @@ public:
 	{
 		if (file >= (int) forecastings.size())
 		{
-			cout << "Error on getPartsForecastsBeginToEnd!" << endl;
+			cout << "Error on getPartsForecastsBeginToEnd!" << std::endl;
 			exit(1);
 		}
 
@@ -145,7 +145,7 @@ public:
 		return partsOfForecasts;
 	}
 
-	vector<double> getPartsForecastsBeginToEnd(vector<double> forecasts, int b, int nPoints)
+	vector<double> getPartsForecastsBeginToEnd(std::vector<double> forecasts, int b, int nPoints)
 	{
 
 		vector<double> partsOfForecasts(forecasts.begin() + b, forecasts.begin() + b + nPoints);
@@ -157,17 +157,17 @@ public:
 	{
 		if (file >= (int)  forecastings.size())
 		{
-			cout << "Error on getPartsForecastsEndToBegin!" << endl;
+			cout << "Error on getPartsForecastsEndToBegin!" << std::endl;
 			exit(1);
 		}
 
 		int numberSamples = forecastings[file].size();
 		if ((numberSamples - nPoints - e) < 0)
 		{
-			cout << "TreatingForecasting ERROR! function getPartsForecastEndToBegin!" << endl;
-			cout << "sizeData:" << numberSamples << endl;
-			cout << "required Points:" << nPoints << endl;
-			cout << "e:" << e << endl;
+			cout << "TreatingForecasting ERROR! function getPartsForecastEndToBegin!" << std::endl;
+			cout << "sizeData:" << numberSamples << std::endl;
+			cout << "required Points:" << nPoints << std::endl;
+			cout << "e:" << e << std::endl;
 			getchar();
 		}
 
@@ -190,7 +190,7 @@ public:
 		return getPartsForecastsEndToBegin(file, e, nS);
 	}
 
-	vector<double> getPartsForecastsEndToBegin(vector<double> forecasts, int e, int nPoints)
+	vector<double> getPartsForecastsEndToBegin(std::vector<double> forecasts, int e, int nPoints)
 	{
 		vector<double> partsOfForecasts(forecasts.end() - nPoints - e, forecasts.end() - e);
 
@@ -200,7 +200,7 @@ public:
 	{
 		if (file >= (int) forecastings.size())
 		{
-			cout << "Error on getLastForecasts!" << endl;
+			cout << "Error on getLastForecasts!" << std::endl;
 			exit(1);
 		}
 
@@ -209,7 +209,7 @@ public:
 		return partsOfForecasts;
 	}
 
-	vector<double> getLastForecasts(vector<double> forecasts, int nPoints)
+	vector<double> getLastForecasts(std::vector<double> forecasts, int nPoints)
 	{
 		vector<double> partsOfForecasts = getPartsForecastsEndToBegin(forecasts, 0, nPoints);
 
@@ -219,7 +219,7 @@ public:
 	{
 		if (file >= (int)  forecastings.size())
 		{
-			cout << "Error on getFirstForecasts!" << endl;
+			cout << "Error on getFirstForecasts!" << std::endl;
 			exit(1);
 		}
 
@@ -229,7 +229,7 @@ public:
 		return partsOfForecasts;
 	}
 
-	vector<vector<double> > splitForecasts(vector<double> forecast, int pieces)
+	vector<vector<double> > splitForecasts(std::vector<double> forecast, int pieces)
 	{
 		int totalForecasts = forecast.size();
 		int sizePieces = totalForecasts / pieces;
@@ -251,7 +251,7 @@ public:
 		return vForecastPartbyPart;
 	}
 
-	vector<vector<vector<double> > > splitForecastsVectors(vector<vector<double> > vForecast, int pieces)
+	vector<vector<vector<double> > > splitForecastsVectors(std::vector<vector<double> > vForecast, int pieces)
 	{
 		vector < vector<vector<double> > > vForecastsPartbyPart;
 		int nForecastVectors = vForecast.size();
@@ -265,7 +265,7 @@ public:
 		return vForecastsPartbyPart;
 	}
 
-	vector<vector<double> > divideByWeekDays(vector<double> forecast)
+	vector<vector<double> > divideByWeekDays(std::vector<double> forecast)
 	{
 		int totalForecasts = forecast.size();
 
@@ -290,7 +290,7 @@ public:
 		return vForecastDayByDay;
 	}
 
-	double getMape(vector<double> forecasts, vector<double> realValue)
+	double getMape(std::vector<double> forecasts, vector<double> realValue)
 	{
 		double mape = 0;
 		for (int samples = 0; samples < (int) forecasts.size(); samples++)
@@ -303,7 +303,7 @@ public:
 
 	}
 
-	double getPinball(vector<vector<double> > quantisForecasts, vector<double> realValues)
+	double getPinball(std::vector<vector<double> > quantisForecasts, vector<double> realValues)
 	{
 		double pinball = 0;
 
@@ -324,12 +324,12 @@ public:
 			pinball += pinballFunctionQuantils;
 		}
 
-		//cout << quantisForecasts.size() << endl;
+		//cout << quantisForecasts.size() << std::endl;
 		pinball = pinball / quantisForecasts.size();
 		return pinball;
 
 	}
-	vector<double> mixWeekDays(vector<vector<double> > forecasts, int samplesToMix)
+	vector<double> mixWeekDays(std::vector<vector<double> > forecasts, int samplesToMix)
 	{
 
 		vector<double> finalResult;
@@ -349,7 +349,7 @@ public:
 		return finalResult;
 	}
 
-	void generateProbabilisticOnFile(vector<double> forecasts, string outFile)
+	void generateProbabilisticOnFile(std::vector<double> forecasts, string outFile)
 	{
 
 		for (double quantilError = 0; quantilError <= 1; quantilError = quantilError + 0.05)
@@ -391,7 +391,7 @@ public:
 
 	}
 
-	vector<vector<double> > generateQuantisProbabilisticVectorFixedQuantilError(vector<double> forecasts, double quantilError)
+	vector<vector<double> > generateQuantisProbabilisticVectorFixedQuantilError(std::vector<double> forecasts, double quantilError)
 	{
 		vector < vector<double> > vQuantisResults;
 
@@ -415,7 +415,7 @@ public:
 
 	}
 
-	vector<vector<vector<double> > > generateQuantisProbabilisticVector(vector<double> forecasts)
+	vector<vector<vector<double> > > generateQuantisProbabilisticVector(std::vector<double> forecasts)
 	{
 		vector < vector<vector<double> > > vQuantisResults;
 
@@ -445,7 +445,7 @@ public:
 
 	}
 
-	void exportQuantisVector(vector<vector<double> > quantis, string outFile)
+	void exportQuantisVector(std::vector<vector<double> > quantis, string outFile)
 	{
 
 		FILE* fResults = fopen(outFile.c_str(), "w");
@@ -462,7 +462,7 @@ public:
 
 	}
 
-	void exportVectorOfVector(vector<vector<double> > batchesVector, string outFile)
+	void exportVectorOfVector(std::vector<vector<double> > batchesVector, string outFile)
 	{
 
 		FILE* fResults = fopen(outFile.c_str(), "w");
@@ -479,7 +479,7 @@ public:
 
 	}
 
-	vector<double> generateQuantis(vector<double> forecasts, int firstQuantil, int lastQuantil)
+	vector<double> generateQuantis(std::vector<double> forecasts, int firstQuantil, int lastQuantil)
 	{
 		auto comparaTreatQuantiles = [&](double d1, double d2)-> bool
 		{
@@ -526,14 +526,14 @@ public:
 				quantilIndexMax++;
 
 			quantilValue = (forecasts[quantilIndexMin - 1] * quantilIndexMinWeight + forecasts[quantilIndexMax - 1] * quantilIndexMaxWeight);
-			/*cout << q << "\t" << nQuantis << "\t" << sizeForecasts << endl;
-			 cout << quantilIndex << endl;
-			 cout << fmod(quantilIndex, 1) << endl;
-			 cout << quantilIndexMin << endl;
-			 cout << quantilIndexMax << endl;
-			 cout << quantilIndexMinWeight << endl;
-			 cout << quantilIndexMaxWeight << endl;
-			 cout << quantilValue << endl;
+			/*cout << q << "\t" << nQuantis << "\t" << sizeForecasts << std::endl;
+			 std::cout << quantilIndex << std::endl;
+			 std::cout << fmod(quantilIndex, 1) << std::endl;
+			 std::cout << quantilIndexMin << std::endl;
+			 std::cout << quantilIndexMax << std::endl;
+			 std::cout << quantilIndexMinWeight << std::endl;
+			 std::cout << quantilIndexMaxWeight << std::endl;
+			 std::cout << quantilValue << std::endl;
 			 getchar();*/
 			quantis.push_back(quantilValue);
 		}

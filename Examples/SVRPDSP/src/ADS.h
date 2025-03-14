@@ -20,7 +20,7 @@ struct AdsSVRPDSP {
   virtual ~AdsSVRPDSP() {}
 
   AdsSVRPDSP(const AdsSVRPDSP& ads) {
-    // cout << "ADS::()" << endl;
+    // std::cout << "ADS::()" << std::endl;
     zero = ads.zero;
     load = ads.load;
   }
@@ -32,8 +32,8 @@ struct AdsSVRPDSP {
   small_type* gpuLoad;
 
   void print() const {
-    cout << "ADS gpuPtr(" << gpuSol << "," << gpuLoad << ") zero=" << zero
-         << " load: " << load << endl;
+    std::cout << "ADS gpuPtr(" << gpuSol << "," << gpuLoad << ") zero=" << zero
+         << " load: " << load << std::endl;
 
     if (gpuSol && gpuLoad) {
       int* s = new int[load.size()];
@@ -41,15 +41,15 @@ struct AdsSVRPDSP {
 
 #ifdef ENABLE_GPU
       get_gpu_solution(load.size(), gpuSol, gpuLoad, s, q);
-      cout << "gpuSol: ";
+      std::cout << "gpuSol: ";
       printv(s, load.size());
-      cout << "gpuLoad: ";
+      std::cout << "gpuLoad: ";
       printv2(q, load.size());
 
       for (unsigned i = 0; i <= zero; i++)
         if (load[i] != q[i]) {
-          cout << "ERROR IN GPU ADS AT POS " << i << " CPU is " << load[i]
-               << " and GPU is " << q[i] << endl;
+          std::cout << "ERROR IN GPU ADS AT POS " << i << " CPU is " << load[i]
+               << " and GPU is " << q[i] << std::endl;
           exit(1);
         }
 #endif
@@ -60,9 +60,9 @@ struct AdsSVRPDSP {
   }
 
   AdsSVRPDSP& operator=(const AdsSVRPDSP& ads) {
-    cout << "ADS::op=" << endl;
+    std::cout << "ADS::op=" << std::endl;
     exit(1);
-    // cout << "MyS: S=S" << endl;
+    // std::cout << "MyS: S=S" << std::endl;
     if (&ads == this)  // auto ref check
       return *this;
     /*

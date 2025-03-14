@@ -43,7 +43,7 @@ class VariableNeighborhoodDescent : public LocalSearch<XES> {
     // S& s = se.first;
     // XEv& e = se.second;
 
-    if (Component::information) cout << "VND::starts" << endl;
+    if (Component::information) std::cout << "VND::starts" << std::endl;
 
     Timer tNow;
 
@@ -82,7 +82,7 @@ class VariableNeighborhoodDescent : public LocalSearch<XES> {
       } else {
         k = k + 1;
 
-        if (Component::information) cout << "VND::k=" << k << endl;
+        if (Component::information) std::cout << "VND::k=" << k << std::endl;
       }
     }
     return SearchStatus::NO_REPORT;
@@ -92,8 +92,8 @@ class VariableNeighborhoodDescent : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":VND";
     return ss.str();
   }
@@ -101,7 +101,7 @@ class VariableNeighborhoodDescent : public LocalSearch<XES> {
   std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "VND: [ ";
     for (unsigned i = 0; i < lsList.size(); i++) {
       auto& x = const_cast<sref<LocalSearch<XES>>&>(lsList[i]);

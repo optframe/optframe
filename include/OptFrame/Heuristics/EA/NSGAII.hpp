@@ -91,19 +91,19 @@ struct IndividualNSGAII {
   }
 
   void print() const {
-    cout << "IndNSGAII: rank=" << rank << "\tdist=" << distance;
-    cout << "\t[ ";
+    std::cout << "IndNSGAII: rank=" << rank << "\tdist=" << distance;
+    std::cout << "\t[ ";
     // if (mev)
     if (!second.isOutdated()) {
       for (unsigned e = 0; e < second.size(); e++)
-        cout << second.at(e).evaluation() << " ; ";
+        std::cout << second.at(e).evaluation() << " ; ";
     }
-    cout << " ]";
+    std::cout << " ]";
 
     std::cout << "\tisChild=" << isChild << " Crs=" << isCross;
     std::cout << " Rdm=" << isRandom << " Mut=" << isMutation;
-    std::cout << "\t |x|=" << num_children << endl;
-    // cout << s.getR() << endl;
+    std::cout << "\t |x|=" << num_children << std::endl;
+    // std::cout << s.getR() << std::endl;
   }
 
   IndividualNSGAII<XMES>& clone() const {
@@ -123,16 +123,16 @@ struct IndividualNSGAII {
       if (v[i]->isCross) count_cross++;
       if (v[i]->isMutation) count_mutation++;
     }
-    cout << "|S|=" << v.size();
-    cout << "\tchild=" << count_child;
+    std::cout << "|S|=" << v.size();
+    std::cout << "\tchild=" << count_child;
     std::cout << "(" << (count_child * 100 / v.size()) << "%) |";
-    cout << "\trandom=" << count_random;
+    std::cout << "\trandom=" << count_random;
     std::cout << "(" << (count_random * 100 / v.size()) << "%)";
-    cout << "\tcross=" << count_cross;
+    std::cout << "\tcross=" << count_cross;
     std::cout << "(" << (count_cross * 100 / v.size()) << "%)";
-    cout << "\tmutation=" << count_mutation;
+    std::cout << "\tmutation=" << count_mutation;
     std::cout << "(" << (count_mutation * 100 / v.size()) << "%)";
-    cout << endl;
+    std::cout << std::endl;
   }
 };
 
@@ -190,7 +190,7 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
       std::optional<Pareto<XMES>> _best) override {
     Timer tnow;
 
-    cout << "exec: Non Sorting Genetic Algorithm Search " << endl;
+    std::cout << "exec: Non Sorting Genetic Algorithm Search " << std::endl;
 
     VEPopulation<XMES> p = init_epop->generateEPopulation(init_pop_size);
 
@@ -201,7 +201,7 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
 
     int g = 0;
     while ((g <= gMax) && (tnow.now() < stop.timelimit)) {
-      cout << "Generation = " << g << endl;
+      std::cout << "Generation = " << g << std::endl;
 
       VEPopulation<XMES> r = p;
 
@@ -226,9 +226,9 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
       vector<double> cDTemp;
       crowdingDistanceOrder(cDTemp, F[j]);
 
-      vector<pair<double, int>> cDOrdenated;
+      std::vector<std::pair<double, int>> cDOrdenated;
       for (int i = 0; i < (int)cDTemp.size(); i++)
-        cDOrdenated.push_back(make_pair(cDTemp[i], i));
+        cDOrdenated.push_back(std::make_pair(cDTemp[i], i));
 
       sort(cDOrdenated.begin(), cDOrdenated.end(), compare);
 
@@ -268,18 +268,18 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
     return sout;
   }
 
-  void crowdingDistanceOrder(vector<double>& CD, const vector<XMES>& Fj) {
+  void crowdingDistanceOrder(std::vector<double>& CD, const vector<XMES>& Fj) {
     int N = Fj.size();
     if (N > 0) {
       int CDOldSize = CD.size();
       for (int i = 0; i < N; i++) CD.push_back(0);
 
       for (int m = 0; m < (int)v_e.size(); m++) {
-        vector<pair<double, int>> fitness;
+        std::vector<std::pair<double, int>> fitness;
 
         for (int i = 0; i < N; i++) {
           XEv e = v_e[m]->evaluate(Fj.at(i).first);
-          fitness.push_back(make_pair(e.evaluation(), i));
+          fitness.push_back(std::make_pair(e.evaluation(), i));
           // delete &e;
         }
 

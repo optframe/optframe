@@ -22,14 +22,14 @@ class HFMVRPADSManager
   virtual void initializeADSNeighStructure(const RepHFMVRP& rep,
                                            AdsHFMVRP& ads) {
     /*
-     cout << "Entrou!" << endl;
+     std::cout << "Entrou!" << std::endl;
      getchar();
      for (map<string, vector<bool> >::iterator iter =
      newAds.neighborhoodStatus.begin(); iter != newAds.neighborhoodStatus.end();
      iter++)
      {
-     cout << "iter->first = " << iter->first << endl;
-     cout << "iter->second = " << iter->second << endl;
+     std::cout << "iter->first = " << iter->first << std::endl;
+     std::cout << "iter->second = " << iter->second << std::endl;
      }
 
      getchar();
@@ -55,10 +55,10 @@ class HFMVRPADSManager
      ads.neighborhoodStatus.begin(); iter != ads.neighborhoodStatus.end();
      iter++)
      {
-     cout << "iter->first = " << iter->first << endl;
-     cout << "iter->second = " << iter->second << endl;
+     std::cout << "iter->first = " << iter->first << std::endl;
+     std::cout << "iter->second = " << iter->second << std::endl;
      }
-     cout << "Finalizou!" << endl;
+     std::cout << "Finalizou!" << std::endl;
 
      getchar();
      */
@@ -67,7 +67,7 @@ class HFMVRPADSManager
   // update ADS as you wish
   virtual void setNeighLocalOptimum(const RepHFMVRP& rep, AdsHFMVRP& ads,
                                     string moveID) {
-    // cout << "moveID= " << moveID << endl;
+    // std::cout << "moveID= " << moveID << std::endl;
     // getchar();
     for (int r = 0; r < (int)rep.size(); r++)
       ads.neighborhoodStatus[moveID][r] = true;
@@ -133,11 +133,11 @@ class HFMVRPADSManager
         newAds.minPairDemand[r] = minPairDemand;
 
         // minDemand and maxDemand Calculus
-        vector<pair<int, double> > rankDemands;
+        std::vector<std::pair<int, double> > rankDemands;
         for (int i = 1; i < int(routeSize - 1); i++)
-          rankDemands.push_back(make_pair(i, routeDemands[i]));
+          rankDemands.push_back(std::make_pair(i, routeDemands[i]));
 
-        // cout << rankDemands << endl;
+        // std::cout << rankDemands << std::endl;
 
         sort(rankDemands.begin(), rankDemands.end(), compare);
 
@@ -147,13 +147,13 @@ class HFMVRPADSManager
     }
 
     /*
-     cout << "Initialized ADS" << endl;
-     cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << endl;
-     cout << "newAds.maxDemand" << newAds.maxDemand << endl;
-     cout << "newAds.minDemand" << newAds.minDemand << endl;
-     cout << "newAds.maxPairDemand" << newAds.maxPairDemand << endl;
-     cout << "newAds.minPairDemand" << newAds.minPairDemand << endl;
-     cout << "newAds.sumDemand" << newAds.sumDemand << endl;
+     std::cout << "Initialized ADS" << std::endl;
+     std::cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << std::endl;
+     std::cout << "newAds.maxDemand" << newAds.maxDemand << std::endl;
+     std::cout << "newAds.minDemand" << newAds.minDemand << std::endl;
+     std::cout << "newAds.maxPairDemand" << newAds.maxPairDemand << std::endl;
+     std::cout << "newAds.minPairDemand" << newAds.minPairDemand << std::endl;
+     std::cout << "newAds.sumDemand" << newAds.sumDemand << std::endl;
 
      getchar();
      */
@@ -162,14 +162,14 @@ class HFMVRPADSManager
   virtual bool compareADS(const AdsHFMVRP& _ads1, const AdsHFMVRP& _ads2) {
     bool compare = true;
     if (_ads1.maxDemand != _ads2.maxDemand) {
-      cout << "Error on maxDemand vector!" << endl;
-      cout << _ads1.maxDemand << endl;
-      cout << _ads2.maxDemand << endl;
+      std::cout << "Error on maxDemand vector!" << std::endl;
+      std::cout << _ads1.maxDemand << std::endl;
+      std::cout << _ads2.maxDemand << std::endl;
       for (int r = 0; r < (int)_ads1.maxDemand.size(); r++) {
         if (_ads1.maxDemand[r] != _ads2.maxDemand[r]) {
-          cout << "r = " << r << endl;
-          cout << _ads1.maxDemand[r] << endl;
-          cout << _ads2.maxDemand[r] << endl;
+          std::cout << "r = " << r << std::endl;
+          std::cout << _ads1.maxDemand[r] << std::endl;
+          std::cout << _ads2.maxDemand[r] << std::endl;
           getchar();
         }
       }
@@ -177,62 +177,62 @@ class HFMVRPADSManager
       return false;
     }
     if (_ads1.minDemand != _ads2.minDemand) {
-      cout << "Error on minDemand vector!" << endl;
-      cout << _ads1.minDemand << endl;
-      cout << _ads2.minDemand << endl;
+      std::cout << "Error on minDemand vector!" << std::endl;
+      std::cout << _ads1.minDemand << std::endl;
+      std::cout << _ads2.minDemand << std::endl;
       for (int r = 0; r < (int)_ads1.minDemand.size(); r++) {
         if (_ads1.minDemand[r] != _ads2.minDemand[r]) {
-          cout << "r = " << r << endl;
-          cout << _ads1.minDemand[r] << endl;
-          cout << _ads2.minDemand[r] << endl;
+          std::cout << "r = " << r << std::endl;
+          std::cout << _ads1.minDemand[r] << std::endl;
+          std::cout << _ads2.minDemand[r] << std::endl;
           getchar();
         }
       }
       return false;
     }
     if (_ads1.maxPairDemand != _ads2.maxPairDemand) {
-      cout << "Error on maxPairDemand vector!" << endl;
-      cout << _ads1.maxPairDemand << endl;
-      cout << _ads2.maxPairDemand << endl;
+      std::cout << "Error on maxPairDemand vector!" << std::endl;
+      std::cout << _ads1.maxPairDemand << std::endl;
+      std::cout << _ads2.maxPairDemand << std::endl;
       for (int r = 0; r < (int)_ads1.maxPairDemand.size(); r++) {
         if (_ads1.maxPairDemand[r] != _ads2.maxPairDemand[r]) {
-          cout << "r = " << r << endl;
-          cout << _ads1.maxPairDemand[r] << endl;
-          cout << _ads2.maxPairDemand[r] << endl;
+          std::cout << "r = " << r << std::endl;
+          std::cout << _ads1.maxPairDemand[r] << std::endl;
+          std::cout << _ads2.maxPairDemand[r] << std::endl;
           getchar();
         }
       }
       return false;
     }
     if (_ads1.minPairDemand != _ads2.minPairDemand) {
-      cout << "Error on minPairDemand vector!" << endl;
-      cout << _ads1.minPairDemand << endl;
-      cout << _ads2.minPairDemand << endl;
+      std::cout << "Error on minPairDemand vector!" << std::endl;
+      std::cout << _ads1.minPairDemand << std::endl;
+      std::cout << _ads2.minPairDemand << std::endl;
       for (int r = 0; r < (int)_ads1.minPairDemand.size(); r++) {
         if (_ads1.minPairDemand[r] != _ads2.minPairDemand[r]) {
-          cout << "r = " << r << endl;
-          cout << _ads1.minPairDemand[r] << endl;
-          cout << _ads2.minPairDemand[r] << endl;
+          std::cout << "r = " << r << std::endl;
+          std::cout << _ads1.minPairDemand[r] << std::endl;
+          std::cout << _ads2.minPairDemand[r] << std::endl;
           getchar();
         }
       }
       return false;
     }
     if (_ads1.sumDemand != _ads2.sumDemand) {
-      cout << "Error on sumDemand vector!" << endl;
+      std::cout << "Error on sumDemand vector!" << std::endl;
       return false;
     }
 
     if (_ads1.cumulativeDemand != _ads2.cumulativeDemand) {
-      cout << _ads1.cumulativeDemand << endl;
-      cout << _ads2.cumulativeDemand << endl;
-      cout << "Error on CumulativeDemand vector!" << endl;
+      std::cout << _ads1.cumulativeDemand << std::endl;
+      std::cout << _ads2.cumulativeDemand << std::endl;
+      std::cout << "Error on CumulativeDemand vector!" << std::endl;
       for (int r = 0; r < (int)_ads1.cumulativeDemand.size(); r++) {
         for (int c = 0; c < (int)_ads1.cumulativeDemand[r].size(); c++) {
           if (_ads1.cumulativeDemand[r][c] != _ads2.cumulativeDemand[r][c]) {
-            cout << "r = " << r << "\tc = " << c << endl;
-            cout << _ads1.cumulativeDemand[r][c] << endl;
-            cout << _ads2.cumulativeDemand[r][c] << endl;
+            std::cout << "r = " << r << "\tc = " << c << std::endl;
+            std::cout << _ads1.cumulativeDemand[r][c] << std::endl;
+            std::cout << _ads2.cumulativeDemand[r][c] << std::endl;
             getchar();
           }
         }
@@ -243,12 +243,12 @@ class HFMVRPADSManager
   }
 
   virtual void printADS(const AdsHFMVRP& ads) {
-    cout << "ads.cumulativeDemand" << ads.cumulativeDemand << endl;
-    cout << "ads.maxDemand" << ads.maxDemand << endl;
-    cout << "ads.minDemand" << ads.minDemand << endl;
-    cout << "ads.maxPairDemand" << ads.maxPairDemand << endl;
-    cout << "ads.minPairDemand" << ads.minPairDemand << endl;
-    cout << "ads.sumDemand" << ads.sumDemand << endl;
+    std::cout << "ads.cumulativeDemand" << ads.cumulativeDemand << std::endl;
+    std::cout << "ads.maxDemand" << ads.maxDemand << std::endl;
+    std::cout << "ads.minDemand" << ads.minDemand << std::endl;
+    std::cout << "ads.maxPairDemand" << ads.maxPairDemand << std::endl;
+    std::cout << "ads.minPairDemand" << ads.minPairDemand << std::endl;
+    std::cout << "ads.sumDemand" << ads.sumDemand << std::endl;
   }
 };
 }  // namespace HFMVRP

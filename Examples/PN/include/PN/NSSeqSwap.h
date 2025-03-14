@@ -29,7 +29,7 @@ class MoveSwap : public Move<ESolutionPN> {
   virtual ~MoveSwap() {}
 
   void print() const override {
-    cout << id() << " with params: '" << i << "," << j << endl;
+    std::cout << id() << " with params: '" << i << "," << j << std::endl;
   }
 
   std::string id() const override {
@@ -83,7 +83,7 @@ class NSSeqSwap : public NSSeq<ESolutionPN> {
 
   virtual ~NSSeqSwap() {}
 
-  void print() const override { cout << "NSSeqSwap" << endl; }
+  void print() const override { std::cout << "NSSeqSwap" << std::endl; }
 
   std::string id() const override {
     return NSSeq<ESolutionPN>::idComponent().append(":NSSeqSwap");

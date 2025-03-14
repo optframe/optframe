@@ -31,7 +31,7 @@ fmap(string st, string obj)
 };
 
 vector<string>*
-freduce(vector<string>* mapped, string obj)
+freduce(std::vector<string>* mapped, string obj)
 {
    vector<string>* reduced = new vector<string>;
    reduced->push_back(mapped->at(0) + "(reduzida) ");

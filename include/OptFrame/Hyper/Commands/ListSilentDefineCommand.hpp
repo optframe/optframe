@@ -44,7 +44,7 @@ public:
       return "list.silent_define name list";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map<string, vector<string>>& ldictionary, string rest)
+   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>& ldictionary, string rest)
    {
       Scanner scanner(rest);
 
@@ -60,18 +60,18 @@ public:
             list = vector<string>(*p_list);
             delete p_list;
          } else {
-            cout << "list.silent_define command: couldn't load list!" << endl;
+            std::cout << "list.silent_define command: couldn't load list!" << std::endl;
             return false;
          }
 
          return Command<R, ADS, DS>::defineList(list_name, list, ldictionary);
       } else {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 

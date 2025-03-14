@@ -65,7 +65,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -112,7 +112,7 @@ public:
 			list2.push_back(list1);
 		}
 
-		//cout << list2 << endl;
+		//cout << list2 << std::endl;
 
 		if(list2.size()==0)
 			return nullptr;
@@ -122,13 +122,13 @@ public:
 		for(unsigned i=1; i<list2.size(); i++)
 			if(list2.at(i).size() != sizes)
 			{
-				cout << "statistics.friedman_test error: different sizes!" << endl;
+				cout << "statistics.friedman_test error: different sizes!" << std::endl;
 				return nullptr;
 			}
 
 		if(listb.size() != sizes)
 		{
-			cout << "statistics.friedman_test error: block with different size!" << endl;
+			cout << "statistics.friedman_test error: block with different size!" << std::endl;
 			return nullptr;
 		}
 
@@ -165,12 +165,12 @@ public:
 
 		scommand << "friedman.test(v, g, b)\" | R --no-save | grep p-value";
 
-		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
+		//cout << "COMMAND: '" << scommand.str() << "'" << std::endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == nullptr)
 		{
-		    cout << "friedman_test command: PIPE NOT OPEN!" << endl;
+		    std::cout << "friedman_test command: PIPE NOT OPEN!" << std::endl;
 		    return nullptr;
 		}
 
@@ -186,7 +186,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "friedman_test function: OUTPUT '" << output << "'" << endl;
+		//cout << "friedman_test function: OUTPUT '" << output << "'" << std::endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return nullptr;
 
@@ -205,7 +205,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "friedman function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "friedman function warning: returning 'NA' result! p-value = 1.0" << std::endl;
 			pvalue = 1;
 		}
 		else

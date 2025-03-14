@@ -107,7 +107,7 @@ class MultiSolution : public Component {
   std::string toString() const override {
     std::stringstream ss;
     ss << "MultiSolution(" << p.size() << ")";
-    ss << endl;
+    ss << std::endl;
     for (unsigned i = 0; i < p.size(); i++) {
       ss << p.at(i);
     }

@@ -42,7 +42,7 @@ private:
    vector<Command<R, ADS, DS>*>* allCommands;
    vector<PreprocessFunction<R, ADS, DS>*>* allFunctions;
    HeuristicFactory<R, ADS, DS>* factory;
-   map<string, string>* dictionary;
+   map<std::string, std::string>* dictionary;
    map<string, vector<string>>* ldictionary;
 
    // AUXILIAR FUNCTION
@@ -85,12 +85,12 @@ public:
       return "system.run_parallel block_of_commands_0 [block_of_commands_1] [block_of_commands_2] ... ";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& _allCommands, vector<PreprocessFunction<R, ADS, DS>*>& _allFunctions, HeuristicFactory<R, ADS, DS>& _factory, map<string, string>& _dictionary, map<string, vector<string>>& _ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& _allCommands, vector<PreprocessFunction<R, ADS, DS>*>& _allFunctions, HeuristicFactory<R, ADS, DS>& _factory, map<std::string, std::string>& _dictionary, map<string, vector<string>>& _ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -151,7 +151,7 @@ public:
    }
 
    // leave preprocessing to each module
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return new string(input); // disable pre-processing
    }

@@ -32,7 +32,7 @@ class OptimalLinearRegression : public LocalSearch<RepHFM> {
   ~OptimalLinearRegression() {}
 
   void exec(Solution<RepHFM>& s, double timelimit, double target_f) {
-    cout << "Exec Optimal Linear Regression" << endl;
+    std::cout << "Exec Optimal Linear Regression" << std::endl;
 
     vector<vector<double> > methods;
     vector<double> realValues;
@@ -85,7 +85,7 @@ class OptimalLinearRegression : public LocalSearch<RepHFM> {
       // IloObjective objFunc = IloMinimize(env);
       IloExpr objFunc(env);
       for (int s = 0; s < samples; s++) {
-        stringstream ss;
+        std::stringstream ss;
         ss << "nErro" << s;
         string name = ss.str();
         nErro.add(IloNumVar(env, 0.0, IloInfinity, ILOFLOAT, name.c_str()));
@@ -93,7 +93,7 @@ class OptimalLinearRegression : public LocalSearch<RepHFM> {
         ss << "pErro" << s;
         name = ss.str();
         pErro.add(IloNumVar(env, 0.0, IloInfinity, ILOFLOAT, name.c_str()));
-        // cout << nErro[s] << "\t" << pErro[s] << endl;
+        // std::cout << nErro[s] << "\t" << pErro[s] << std::endl;
         objFunc += nErro[s] + pErro[s];
       }
 
@@ -101,7 +101,7 @@ class OptimalLinearRegression : public LocalSearch<RepHFM> {
       model.add(obj);
 
       for (int m = 0; m < method; m++) {
-        stringstream ss;
+        std::stringstream ss;
         ss << "alpha" << m;
         string name = ss.str();
         alpha.add(
@@ -122,30 +122,30 @@ class OptimalLinearRegression : public LocalSearch<RepHFM> {
       IloCplex cplex(model);
 
       //			cplex.exportModel("modelTeste.lp");
-      //			cout << "model exported sucessfully!!!" << endl;
+      //			cout << "model exported sucessfully!!!" << std::endl;
       //			getchar();
       IloRangeArray rng(env);
       // cplex.importModel(model, "", obj, var, rng);
       cplex.setParam(cplex.TiLim, 20);
 
       if (!cplex.solve()) {
-        env.error() << "Failed to optimize LP" << endl;
+        env.error() << "Failed to optimize LP" << std::endl;
         throw(-1);
       }
 
       IloNumArray vals(env);
 
       cplex.getValues(vals, alpha);
-      env.out() << "Solution status = " << cplex.getStatus() << endl;
-      env.out() << "Solution value  = " << cplex.getObjValue() << endl;
-      env.out() << "Solution vector = " << vals << endl;
+      env.out() << "Solution status = " << cplex.getStatus() << std::endl;
+      env.out() << "Solution value  = " << cplex.getObjValue() << std::endl;
+      env.out() << "Solution vector = " << vals << std::endl;
 
       getchar();
 
     } catch (IloException& e) {
-      cerr << "Concert exception caught: " << e << endl;
+      cerr << "Concert exception caught: " << e << std::endl;
     } catch (...) {
-      cerr << "Unknown exception caught" << endl;
+      cerr << "Unknown exception caught" << std::endl;
     }
   }
 

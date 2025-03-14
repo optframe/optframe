@@ -88,15 +88,15 @@ class MoveTSPOrOptk : public Move<XES> {
     return (m1.i == i) && (m1.j == j) && (m1.k == k);
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = Move<XES>::idComponent();
     idComp.append("MoveTSPOrOptk");
     return idComp;
   }
 
   void print() const override {
-    cout << "MoveTSPOrOpt{K=" << k << "}";
-    cout << "(" << i << ";" << j << ")" << endl;
+    std::cout << "MoveTSPOrOpt{K=" << k << "}";
+    std::cout << "(" << i << ";" << j << ")" << std::endl;
   }
 };
 

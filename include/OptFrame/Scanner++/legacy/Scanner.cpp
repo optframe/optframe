@@ -156,7 +156,7 @@ bool Scanner::hasNextChar() const
 
 	if(input->fail())
 	{
-		cout << "WARNING::SCANNER FAILED!" << endl;
+		cout << "WARNING::SCANNER FAILED!" << std::endl;
 	}
 
 	if (x > 0)
@@ -181,7 +181,7 @@ char Scanner::nextChar()
 
 bool Scanner::nextCharIs(char c) const
 {
-   stringstream ss;
+   std::stringstream ss;
    ss << c;
    string s = ss.str();
 
@@ -417,7 +417,7 @@ std::string Scanner::peekNext() const
 }
 
 
-pair<string, map<string, string> > Scanner::nextXMLTag()
+pair<string, map<std::string, std::string> > Scanner::nextXMLTag()
 {
 	string x = "";
 
@@ -441,21 +441,21 @@ pair<string, map<string, string> > Scanner::nextXMLTag()
 			break;
 	}
 
-	cout << "base: " << x << endl;
+	cout << "base: " << x << std::endl;
 
 	if (x.size() < 2 || x.at(0) != '<' || x.at(x.size() - 1) != '>')
-		return make_pair("", map<string, string> ());
+		return make_pair("", map<std::string, std::string> ());
 
 	Scanner scanner(x);
 	scanner.useSeparators("<>");
 
 	string tagname = "";
-	map<string, string> attr;
+	map<std::string, std::string> attr;
 
 	if (scanner.hasNext())
 	{
 		string tag = scanner.next();
-		//cout << "tag: " << tag << endl;
+		//cout << "tag: " << tag << std::endl;
 
 		Scanner sc_tag(tag);
 		sc_tag.useSeparators(" ");
@@ -463,7 +463,7 @@ pair<string, map<string, string> > Scanner::nextXMLTag()
 		if (sc_tag.hasNext())
 			tagname = sc_tag.next();
 
-		//cout << "tagname: " << tagname << endl;
+		//cout << "tagname: " << tagname << std::endl;
 
 		// TODO usar trim
 

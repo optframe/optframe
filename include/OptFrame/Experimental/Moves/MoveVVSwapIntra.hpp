@@ -62,8 +62,8 @@ class MoveVVSwapIntra : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )"
-         << endl;
+    std::cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )"
+         << std::endl;
   }
 };
 

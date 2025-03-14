@@ -47,7 +47,7 @@ class MOILSLevels
   virtual ~MOILSLevels() {}
 
   levelHistory& initializeHistory() override {
-    // cout << "initializeHistory()" << endl;
+    // std::cout << "initializeHistory()" << std::endl;
     pair<int, int> vars(0, 0);
 
     // IterMax e LevelMax
@@ -58,14 +58,14 @@ class MOILSLevels
 
   void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria,
                     levelHistory& history) override {
-    // cout << "perturbation(.)" << endl;
+    // std::cout << "perturbation(.)" << std::endl;
 
     int iter = history.first.first;
     int level = history.first.second;
     int iterMax = history.second.first;
     // int levelMax = history.second.second;
 
-    // cout << "level = " << level << " e iter = " << iter << endl;
+    // std::cout << "level = " << level << " e iter = " << iter << std::endl;
 
     // nivel atual: 'level'
     p->perturb(smev, stopCriteria, level);
@@ -73,13 +73,13 @@ class MOILSLevels
     // Incrementa a iteracao
     iter++;
 
-    if (Component::debug) cout << "MOILSL::iter " << iter << endl;
+    if (Component::debug) std::cout << "MOILSL::iter " << iter << std::endl;
 
     if (iter >= iterMax) {
       iter = 0;
       level++;
       if (Component::information)
-        cout << "MOILSL::level " << level << ".." << endl;
+        std::cout << "MOILSL::level " << level << ".." << std::endl;
     }
 
     // Atualiza o historico
@@ -90,9 +90,9 @@ class MOILSLevels
   void acceptanceCriterion(const Pareto<XMES>& pf,
                            levelHistory& history) override {
     if (pf.getNewNonDominatedSolutionsStatus()) {
-      cout << "New Pareto size: is " << pf.size();
-      cout << " on [iter " << history.first.first << " of level "
-           << history.first.second << "]" << endl;
+      std::cout << "New Pareto size: is " << pf.size();
+      std::cout << " on [iter " << history.first.first << " of level "
+           << history.first.second << "]" << std::endl;
       // =======================
       //  Atualiza o historico
       // =======================
@@ -116,8 +116,8 @@ class MOILSLevels
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << MultiObjILS<levelHistory, S, XMEv>::idComponent() << "MOILSLevels";
     return ss.str();
   }

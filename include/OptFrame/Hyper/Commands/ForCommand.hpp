@@ -35,7 +35,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class ForCommand : public Command<R, ADS, DS>
 {
 private:
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module)
    {
       for (unsigned int i = 0; i < modules.size(); i++)
          if (module == modules[i]->id())
@@ -43,7 +43,7 @@ private:
       return nullptr;
    }
 
-   bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string command)
+   bool exec_command(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string command)
    {
       Scanner scanner(command);
       string module = scanner.next();
@@ -57,7 +57,7 @@ private:
       if (!rest)
          return nullptr;
 
-      //cout << "FOR COMMAND: '" << module << "' input: '" << *rest << "'"<< endl;
+      //cout << "FOR COMMAND: '" << module << "' input: '" << *rest << "'"<< std::endl;
       bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
 
       delete rest;
@@ -80,46 +80,46 @@ public:
       return "for var [ = value1 to value2 | = value2 downto value1 ] block_of_commands";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
-      //cout << "for run: '" << input << "'" << endl;
+      //cout << "for run: '" << input << "'" << std::endl;
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string var = scanner.next();
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       scanner.next(); // '='
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       int value1 = *scanner.nextInt();
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string option = scanner.next(); // 'to' or 'downto'
 
       if ((option != "to") && (option != "downto")) {
-         cout << "for command: unknown option '" << option << "'! Should be 'to' or 'downto'." << endl;
+         std::cout << "for command: unknown option '" << option << "'! Should be 'to' or 'downto'." << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -139,26 +139,26 @@ public:
 
       if (option == "to")
          for (int v = value1; v <= value2; v++) {
-            stringstream ss;
+            std::stringstream ss;
             ss << var << " " << v;
             if (!Command<R, ADS, DS>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
                return false;
 
             if (!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands))) {
-               cout << "for command: (TO) error in command with value='" << v << "'!" << endl;
+               std::cout << "for command: (TO) error in command with value='" << v << "'!" << std::endl;
                return false;
             } else
                return true;
          }
       else // downto
          for (int v = value1; v >= value2; v--) {
-            stringstream ss;
+            std::stringstream ss;
             ss << var << " " << v;
             if (!Command<R, ADS, DS>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
                return false;
 
             if (!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands))) {
-               cout << "for command: (DOWNTO) error in command with value='" << v << "'!" << endl;
+               std::cout << "for command: (DOWNTO) error in command with value='" << v << "'!" << std::endl;
                return false;
             } else
                return true;
@@ -168,7 +168,7 @@ public:
    }
 
    // should preprocess only until list of commands
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 

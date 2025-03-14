@@ -31,7 +31,7 @@ fmap(string input, string shared)
 }
 
 vector<string>*
-freduce(vector<string>* mapped, string shared)
+freduce(std::vector<string>* mapped, string shared)
 {
    vector<string>* reduced = new vector<string>;
    reduced->push_back(mapped->at(0) + " e reduzida");

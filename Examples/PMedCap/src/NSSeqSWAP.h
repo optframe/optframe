@@ -65,7 +65,7 @@ class MoveSWAP : public Move<ESolutionPCAP> {
   }
 
   void print() const override {
-    cout << "MoveSwapMediana: (" << x << "," << med << ")" << endl;
+    std::cout << "MoveSwapMediana: (" << x << "," << med << ")" << std::endl;
   }
 };
 

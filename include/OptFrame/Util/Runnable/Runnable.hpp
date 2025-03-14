@@ -50,7 +50,7 @@ public:
       int e = pthread_attr_destroy(&attr);
 
       if (e != 0)
-         cout << "Error " << e << " destroying attr from thread." << endl;
+         std::cout << "Error " << e << " destroying attr from thread." << std::endl;
       /*
 		rc = pthread_join(thread, &status);
 		if (rc)
@@ -75,7 +75,7 @@ public:
    {
       int e = pthread_cancel(thread);
       if (e != 0)
-         cout << "Error " << e << " stopping thread!" << endl;
+         std::cout << "Error " << e << " stopping thread!" << std::endl;
       else
          finished_last_job = true;
    };

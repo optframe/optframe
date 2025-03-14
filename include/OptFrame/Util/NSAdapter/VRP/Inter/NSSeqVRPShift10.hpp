@@ -93,11 +93,11 @@ class MoveVRPShift10Adapter : public Move<XES> {
   }
 
   void print() const override {
-    cout << "MoveVRPShift10Adapter( ";
-    cout << r1 << " , ";
-    cout << r2 << " , ";
-    cout << cli << " , ";
-    cout << pos << " )";
+    std::cout << "MoveVRPShift10Adapter( ";
+    std::cout << r1 << " , ";
+    std::cout << r2 << " , ";
+    std::cout << cli << " , ";
+    std::cout << pos << " )";
   }
 
   std::string id() const override { return idComponent(); }
@@ -176,8 +176,8 @@ class NSIteratorVRPShift10Adapter : public NSIterator<XES> {
 
   uptr<Move<XES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqVRPShift10. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqVRPShift10. Aborting." << std::endl;
       exit(1);
     }
 
@@ -278,13 +278,13 @@ class NSSeqVRPShift10 : public NSSeq<XES> {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqVRPShift10(ADAPTER=" << ADAPTER
        << ") with move: " << MOVE::idComponent();
     return ss.str();
   }
 
-  // void print() const override { cout << toString() << endl; }
+  // void print() const override { std::cout << toString() << std::endl; }
 };
 
 }  // namespace optframe

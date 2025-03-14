@@ -220,14 +220,14 @@ class Matrix {
 
   friend ostream& operator<<(ostream& os, const Matrix<T>& obj) {
     // const Matrix<T> &obj = *this;
-    // os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
+    // os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << std::endl;
 
-    os << endl;
+    os << std::endl;
 
     for (unsigned int i = 0; i < obj.getNumRows(); i++) {
       for (unsigned int j = 0; j < obj.getNumCols(); j++)
         os << obj(i, j) << "\t";
-      os << endl;
+      os << std::endl;
     }
     return os;
   }
@@ -241,15 +241,15 @@ class Matrix {
 template<class T>
 ostream& operator<<(ostream &os, const Matrix<T> &obj)
 {
-   //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
+   //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << std::endl;
 
-   os << endl;
+   os << std::endl;
 
    for (unsigned int i = 0; i < obj.getNumRows(); i++)
    {
       for (unsigned int j = 0; j < obj.getNumCols(); j++)
          os << obj(i, j) << " ";
-      os << endl;
+      os << std::endl;
    }
    return os;
 }
@@ -263,7 +263,7 @@ endl;
    {
       for (unsigned int j = 0; j < obj.getNumCols(); j++)
          os << "\"" << obj(i, j) << "\"" << "\t";
-      os << endl;
+      os << std::endl;
    }
    return os;
 }

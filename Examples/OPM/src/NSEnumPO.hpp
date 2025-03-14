@@ -61,11 +61,11 @@ class MovePO : public Move<RepOPM> {
   }
 
   void print() const override {
-    cout << "MovePO(" << f << ") ";
+    std::cout << "MovePO(" << f << ") ";
     if (mem == NULL)
-      cout << "no memory." << endl;
+      std::cout << "no memory." << std::endl;
     else
-      cout << "memory: " << (*mem) << endl;
+      std::cout << "memory: " << (*mem) << std::endl;
   }
 };
 class NSEnumPO : public NSEnum<RepOPM> {
@@ -82,7 +82,7 @@ class NSEnumPO : public NSEnum<RepOPM> {
     if (m > size()) {
       cerr << "Neighborhood PO Error! Move " << m
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
     }
 
@@ -91,7 +91,7 @@ class NSEnumPO : public NSEnum<RepOPM> {
 
   unsigned int size() const override { return opm.getNumFrentes(); }
 
-  void print() { cout << "NSEnum PO (" << size() << ")\n"; }
+  void print() { std::cout << "NSEnum PO (" << size() << ")\n"; }
 };
 
 }  // namespace POLAD

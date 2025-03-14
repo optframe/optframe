@@ -34,9 +34,9 @@ class MyMapper : public SeqMR_StrMapper
 public:
    MyMapper(SeqMR_StrMapReduce* mr)
      : SeqMR_StrMapper(mr){};
-   virtual vector<pair<string, string>> map(pair<string, string> a)
+   virtual std::vector<std::pair<std::string, std::string>> map(pair<std::string, std::string> a)
    {
-      vector<pair<string, string>> mapped;
+      std::vector<std::pair<std::string, std::string>> mapped;
       mapped.push_back(a);
       return mapped;
    };
@@ -47,31 +47,31 @@ class MyReducer : public SeqMR_StrReducer
 public:
    MyReducer(SeqMR_StrMapReduce* mr)
      : SeqMR_StrReducer(mr){};
-   virtual pair<string, string> reduce(pair<string, vector<string>> bs)
+   virtual pair<std::string, std::string> reduce(pair<string, vector<string>> bs)
    {
       string reduced;
-      for (vector<string>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
+      for (std::vector<string>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
          reduced += *it;
-      return pair<string, string>(bs.first, reduced);
+      return pair<std::string, std::string>(bs.first, reduced);
    };
 };
 
 int
 main()
 {
-   cout << "StrSeqMR test" << endl;
+   std::cout << "StrSeqMR test" << std::endl;
 
-   vector<pair<string, string>> input;
-   input.push_back(pair<string, string>("1", "Map"));
-   input.push_back(pair<string, string>("1", "Reduce"));
-   input.push_back(pair<string, string>("2", "Interface"));
+   std::vector<std::pair<std::string, std::string>> input;
+   input.push_back(pair<std::string, std::string>("1", "Map"));
+   input.push_back(pair<std::string, std::string>("1", "Reduce"));
+   input.push_back(pair<std::string, std::string>("2", "Interface"));
 
    SeqMR_StrMapReduce mapReduce;
    MyMapper mapper(&mapReduce);
    MyReducer reducer(&mapReduce);
 
-   vector<pair<string, string>> output = mapReduce.run(mapper, reducer, input);
-   cout << output << endl;
+   std::vector<std::pair<std::string, std::string>> output = mapReduce.run(mapper, reducer, input);
+   std::cout << output << std::endl;
 
    return 0;
 }

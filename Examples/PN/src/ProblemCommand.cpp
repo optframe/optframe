@@ -6,14 +6,14 @@
 using namespace PN;
 
 bool PNProblemCommand::load(string filename, HeuristicFactory<ESolutionPN>& hf,
-                            map<string, string>& dictionary,
+                            map<std::string, std::string>& dictionary,
                             map<string, vector<string>>& ldictionary) {
   // File* file = new File(filename);
   /*
   try {
      file = new File(filename);
   } catch (FileNotFound& f) {
-     cout << "File '" << filename << "' not found" << endl;
+     std::cout << "File '" << filename << "' not found" << std::endl;
      return false;
   }
   */
@@ -71,20 +71,20 @@ bool PNProblemCommand::load(string filename, HeuristicFactory<ESolutionPN>& hf,
   // STRUCTURES (REMEMBER TO ADD THE .cpp IN THE makefile)
   // ...
 
-  cout << "problem '" << filename << "' loaded successfully" << endl;
+  std::cout << "problem '" << filename << "' loaded successfully" << std::endl;
 
   return true;
 }
 
 bool PNProblemCommand::unload(HeuristicFactory<ESolutionPN>& factory,
-                              map<string, string>& dictionary,
+                              map<std::string, std::string>& dictionary,
                               map<string, vector<string>>& ldictionary) {
   if (p) delete p;
   p = NULL;
 
-  cout << "problem instance for PN unloaded successfully (use 'drop_all' if "
+  std::cout << "problem instance for PN unloaded successfully (use 'drop_all' if "
           "you want to remove all components)"
-       << endl;
+       << std::endl;
 
   return true;
 }

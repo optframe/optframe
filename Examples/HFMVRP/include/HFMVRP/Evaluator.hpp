@@ -90,21 +90,21 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
 
         // Inviabilidade e Empytness
         if (vehicleCap < routeCap[v]) {
-          cout << "BUG! " << v << "\t vehicleCap = " << vehicleCap
-               << "\t routeCap[v] = " << routeCap[v] << endl;
+          std::cout << "BUG! " << v << "\t vehicleCap = " << vehicleCap
+               << "\t routeCap[v] = " << routeCap[v] << std::endl;
           getchar();
           fo_cap_inv += routeCap[v] - vehicleCap;
         }
 
         fo_dist_q += routeDist[v];
       }
-      // cout<<"routeDist["<<v<<"] = "<<routeDist[v]<<endl;
+      // std::cout<<"routeDist["<<v<<"] = "<<routeDist[v]<<endl;
 
       /*
-                      cout << "Vehicle[" << v << "] = " <<
+                      std::cout << "Vehicle[" << v << "] = " <<
          pHFMVRP.getVehicleTypeFixedCost( vehicleType) << "\t" <<
          pHFMVRP.getVehicleTypeDistCost( vehicleType) * routeDist[v] << "\t" <<
-         routeDist[v] << endl;
+         routeDist[v] << std::endl;
                       */
     }
 
@@ -113,7 +113,7 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
     // ============================================
 
     if (fo_comp_inv > 0) {
-      cout << "BUG fo_comp = " << fo_comp_inv << endl;
+      std::cout << "BUG fo_comp = " << fo_comp_inv << std::endl;
       getchar();
     }
 
@@ -121,12 +121,12 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
     // fo_q = fo_fixed_cost_q + fo_dist_cost_q + fo_cap_q + fo_dist_q;
 
     /*
-               cout << "fo_fixed_cost_q = " << fo_fixed_cost_q << "\t
+               std::cout << "fo_fixed_cost_q = " << fo_fixed_cost_q << "\t
        fo_dist_cost_q = " << fo_dist_cost_q
                << "\tfo_stores*8 = " << 8 * fo_stores << "\n fo_dist_q(X) = " <<
        fo_dist_q
                << "\t fo_cap_q(X) = " << fo_cap_q << "\tfo_cap_inv(XXXX) = " <<
-       fo_cap_inv << endl;
+       fo_cap_inv << std::endl;
                */
     // ============================================
     //          fo de inviabilidade
@@ -186,21 +186,21 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
 
         // Inviabilidade e Empytness
         if (vehicleCap < routeCap[v]) {
-          cout << "BUG! " << v << "\t vehicleCap = " << vehicleCap
-               << "\t routeCap[v] = " << routeCap[v] << endl;
+          std::cout << "BUG! " << v << "\t vehicleCap = " << vehicleCap
+               << "\t routeCap[v] = " << routeCap[v] << std::endl;
           getchar();
           fo_cap_inv += routeCap[v] - vehicleCap;
         }
 
         fo_dist_q += routeDist[v];
       }
-      // cout<<"routeDist["<<v<<"] = "<<routeDist[v]<<endl;
+      // std::cout<<"routeDist["<<v<<"] = "<<routeDist[v]<<endl;
 
       /*
-                      cout << "Vehicle[" << v << "] = " <<
+                      std::cout << "Vehicle[" << v << "] = " <<
          pHFMVRP.getVehicleTypeFixedCost( vehicleType) << "\t" <<
          pHFMVRP.getVehicleTypeDistCost( vehicleType) * routeDist[v] << "\t" <<
-         routeDist[v] << endl;
+         routeDist[v] << std::endl;
                       */
     }
 
@@ -209,7 +209,7 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
     // ============================================
 
     if (fo_comp_inv > 0) {
-      cout << "BUG fo_comp = " << fo_comp_inv << endl;
+      std::cout << "BUG fo_comp = " << fo_comp_inv << std::endl;
       getchar();
     }
 
@@ -217,12 +217,12 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
     // fo_q = fo_fixed_cost_q + fo_dist_cost_q + fo_cap_q + fo_dist_q;
 
     /*
-               cout << "fo_fixed_cost_q = " << fo_fixed_cost_q << "\t
+               std::cout << "fo_fixed_cost_q = " << fo_fixed_cost_q << "\t
        fo_dist_cost_q = " << fo_dist_cost_q
                << "\tfo_stores*8 = " << 8 * fo_stores << "\n fo_dist_q(X) = " <<
        fo_dist_q
                << "\t fo_cap_q(X) = " << fo_cap_q << "\tfo_cap_inv(XXXX) = " <<
-       fo_cap_inv << endl;
+       fo_cap_inv << std::endl;
                */
     // ============================================
     //          fo de inviabilidade
@@ -250,21 +250,21 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
         // nStores++;
         double sumDemands = 0;
 
-        cout << v << "\t" << v << "\t" << pHFMVRP.getStoreID(route[1]) << "\t"
-             << pHFMVRP.demands[route[1]] << endl;
+        std::cout << v << "\t" << v << "\t" << pHFMVRP.getStoreID(route[1]) << "\t"
+             << pHFMVRP.demands[route[1]] << std::endl;
         sumDemands += pHFMVRP.demands[route[1]];
         nStores++;
         for (int i = 2; i < (((int)route.size()) - 1); i++) {
           nStores++;
-          cout << "\t\t" << pHFMVRP.getStoreID(route[i]) << "\t"
-               << pHFMVRP.demands[route[i]] << endl;
+          std::cout << "\t\t" << pHFMVRP.getStoreID(route[i]) << "\t"
+               << pHFMVRP.demands[route[i]] << std::endl;
           sumDemands += pHFMVRP.demands[route[i]];
         }
-        cout << "\t\t\t" << sumDemands << endl;
+        std::cout << "\t\t\t" << sumDemands << std::endl;
       }
     }
 
-    cout << "nDrives = " << nDrives << "nStores = " << nStores << endl;
+    std::cout << "nDrives = " << nDrives << "nStores = " << nStores << std::endl;
 
     FILE* f = fopen(outFile.c_str(), "w");
     for (int v = 0; v < ((int)rep.size()); v++) {
@@ -292,9 +292,9 @@ class HFMVRPEvaluator : public Evaluator<SolutionHFMVRP, EvaluationHFMVRP> {
 
   virtual bool isMinimization() const { return true; }
 
-  static string idComponent() { return "OptFrame:Evaluator:HFMVRPEvaluator"; }
+  static std::string idComponent() { return "OptFrame:Evaluator:HFMVRPEvaluator"; }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 
 }  // namespace HFMVRP

@@ -56,7 +56,7 @@ class ConstructiveNearestNeighbor : public Constructive<RepTSP> {
   virtual ~ConstructiveNearestNeighbor() {}
 
   Solution<RepTSP>& generateSolution() {
-    // cout << "Generating solution" << endl;
+    // std::cout << "Generating solution" << std::endl;
     RepTSP newRep;
     vector<bool> used(pTSP.n, false);
 
@@ -64,23 +64,23 @@ class ConstructiveNearestNeighbor : public Constructive<RepTSP> {
 
     newRep.push_back(first);
     used[first] = true;
-    // cout << "first is " << first << endl;
+    // std::cout << "first is " << first << std::endl;
 
     while (((int)newRep.size()) < pTSP.n - 1) {
-      vector<pair<double, int>> candidates;
+      std::vector<std::pair<double, int>> candidates;
 
       for (unsigned i = 0; i < used.size(); i++)
         if (!used[i])
           candidates.push_back(
               make_pair((pTSP.dist)(i, newRep.at(newRep.size() - 1)), i));
 
-      // cout << "before sort: " << newRep << endl;
+      // std::cout << "before sort: " << newRep << std::endl;
       sort(candidates.begin(), candidates.end(), compare);
 
       newRep.push_back(candidates[0].second);
       used[candidates[0].second] = true;
 
-      // cout << "after sort: " << newRep << endl;
+      // std::cout << "after sort: " << newRep << std::endl;
     }
 
     // add last
@@ -95,7 +95,7 @@ class ConstructiveNearestNeighbor : public Constructive<RepTSP> {
   }
 
   void print() const override {
-    cout << "Constructive heuristic nearest neighbor" << endl;
+    std::cout << "Constructive heuristic nearest neighbor" << std::endl;
   }
 };
 

@@ -60,8 +60,8 @@ class BasicInitialEPopulationRK
            (InitialEPopulationRK<XES, KeyType, X2ES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialEPopulationRK<XES, KeyType, X2ES>::idComponent()
        << ":BasicInitialEPopulationRK";
     return ss.str();
@@ -69,7 +69,7 @@ class BasicInitialEPopulationRK
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
@@ -97,8 +97,8 @@ class BasicInitialEPopulationRKBuilder : public ComponentBuilder<XES> {
     return new BasicInitialEPopulationRK<RealXES, double>(crk);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(ConstructiveRK<KeyType>::idComponent(), "constructive_rk"));
 
@@ -110,8 +110,8 @@ class BasicInitialEPopulationRKBuilder : public ComponentBuilder<XES> {
            BasicInitialEPopulationRK<RealXES, double>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << EA::family() << ":"
        << RK::family() << "BasicInitialEPopulationRKBuilder";
     return ss.str();

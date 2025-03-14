@@ -109,8 +109,8 @@ class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
 
           if (ifo >= int(solutions.size()))
           {
-              cout << "ERROR!!!! FO IS BIGGER THAN SOLUTION LIMIT!" << ifo <<
-      endl; exit(1);
+              std::cout << "ERROR!!!! FO IS BIGGER THAN SOLUTION LIMIT!" << ifo <<
+      std::endl; exit(1);
           }
           solutions[ifo]++;
 
@@ -126,8 +126,8 @@ class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
           exploreNeighborhood(r, total, impSols);
           if (total == 0)
           {
-              cout << "ERRO! no neighbors!!" << endl;
-              cout << r << endl;
+              std::cout << "ERRO! no neighbors!!" << std::endl;
+              std::cout << r << std::endl;
               exit(1);
           }
 
@@ -150,11 +150,11 @@ class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
     uptr<NSIterator<ESolutionTSP>> it = tspswap.getIterator(se);
     it->first();
 
-    // cout << "got iterator: " << it.toString() << endl;
+    // std::cout << "got iterator: " << it.toString() << std::endl;
 
     CopySolution<RepTSP> base(r, nullptr);
     while (!it->isDone()) {
-      // cout << "will get move" << endl;
+      // std::cout << "will get move" << std::endl;
       totalNeigh++;
       uptr<Move<ESolutionTSP>> m = it->current();
       // m.print();
@@ -178,7 +178,7 @@ class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
       // delete &m;
       it->next();
     }
-    // cout << "finished explore" << endl;
+    // std::cout << "finished explore" << std::endl;
   }
 
   /*
@@ -195,7 +195,7 @@ class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
   // override from Direction
   virtual inline bool betterThan(const Evaluation<double>& e1,
                                  const Evaluation<double>& e2) override {
-    // cout << "betterThan!" << endl;
+    // std::cout << "betterThan!" << std::endl;
     // e1.print();
     // e2.print();
     //
@@ -271,7 +271,7 @@ class TSPRepEvaluator : public Evaluator<RepTSP, EvaluationTSP> {
   // override from Direction
   virtual inline bool betterThan(const Evaluation<double>& e1,
                                  const Evaluation<double>& e2) override {
-    // cout << "betterThan!" << endl;
+    // std::cout << "betterThan!" << std::endl;
     // e1.print();
     // e2.print();
     //

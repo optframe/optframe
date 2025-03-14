@@ -47,7 +47,7 @@ public:
       return "component.create_list list type list_name";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
@@ -57,7 +57,7 @@ public:
          list = vector<string>(*plist);
          delete plist;
       } else {
-         cout << "module " << id() << " failed to read list!" << endl;
+         std::cout << "module " << id() << " failed to read list!" << std::endl;
          return false;
       }
 
@@ -70,16 +70,16 @@ public:
          Component* comp = factory.getNextComponent(scan);
          string rest = Scanner::trim(scan.rest());
          if (rest != "") {
-            cout << "command " << id() << " error: extra text after component name '" << rest << "'!" << endl;
-            cout << "PROBABLY MISSING A COLON ',' IN THE LIST!" << endl;
+            std::cout << "command " << id() << " error: extra text after component name '" << rest << "'!" << std::endl;
+            std::cout << "PROBABLY MISSING A COLON ',' IN THE LIST!" << std::endl;
             return false;
          }
 
          if (!comp) {
-            cout << "create_list_of_components: error, component #" << i << " is nullptr! " << endl;
+            std::cout << "create_list_of_components: error, component #" << i << " is nullptr! " << std::endl;
             return false;
          } else if (!comp->compatible(ComponentHelper::typeOfList(type))) {
-            cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() << "') in list incompatible with type '" << ComponentHelper::typeOfList(type) << "'" << endl;
+            std::cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() << "') in list incompatible with type '" << ComponentHelper::typeOfList(type) << "'" << std::endl;
             return false;
          } else
             componentList.push_back(comp);
@@ -87,16 +87,16 @@ public:
 
       int idx = factory.addComponentList(componentList, type);
 
-      stringstream ss;
+      std::stringstream ss;
 
       ss << name << " " << ComponentHelper::typeOfList(type) << "[] " << idx;
 
-      cout << "'" << ComponentHelper::typeOfList(type) << "[] " << idx << "' added." << endl;
+      std::cout << "'" << ComponentHelper::typeOfList(type) << "[] " << idx << "' added." << std::endl;
 
       return Command<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

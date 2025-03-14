@@ -49,13 +49,13 @@ class EmptyLocalSearch : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":Empty";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

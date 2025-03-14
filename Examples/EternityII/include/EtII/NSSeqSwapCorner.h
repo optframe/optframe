@@ -137,8 +137,8 @@ class MoveSwapCorner : public Move<ESolutionEtII> {
   }
 
   void print() const override {
-    cout << "MoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
-         << y2 << ")" << endl;
+    std::cout << "MoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
+         << y2 << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveSwapCorner"; }
@@ -234,7 +234,7 @@ class NSSeqSwapCorner : public NSSeq<ESolutionEtII> {
         new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols()));
   }
 
-  void print() const override { cout << "NSSeqSwapCorner" << endl; }
+  void print() const override { std::cout << "NSSeqSwapCorner" << std::endl; }
 
   std::string id() const override { return "OptFrame:NS:NSSeqSwapCorner"; }
 };

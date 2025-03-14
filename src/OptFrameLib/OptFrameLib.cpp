@@ -183,7 +183,7 @@ class FMoveLib : public optframe::Move<XES> {
 
   bool operator!=(const Move<XES>& m) const { return !(*this == m); }
 
-  static string idComponent() {
+  static std::string idComponent() {
     std::stringstream ss;
     ss << optframe::Component::idComponent() << ":FMoveLib";
     return ss.str();

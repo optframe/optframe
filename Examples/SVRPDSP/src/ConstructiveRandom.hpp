@@ -81,15 +81,15 @@ class ConstructiveRandom
     MySolution* s = new MySolution(repAux2);
 
     if (!s->syncADS(pSVRPDSP)) {
-      cout << "error syncronizing ADS (Const. Random)" << endl;
-      cout << "rep: " << s->getR() << endl;
+      std::cout << "error syncronizing ADS (Const. Random)" << std::endl;
+      std::cout << "rep: " << s->getR() << std::endl;
       exit(1);
     }
 
     return s;
   }
 
-  void print() const override { cout << "ConstructiveRandom" << endl; }
+  void print() const override { std::cout << "ConstructiveRandom" << std::endl; }
 };
 }  // namespace SVRPDSP
 

@@ -63,7 +63,7 @@ public:
       scanner.nextLine();
       scanner.nextLine();
 
-      cout << n << endl;
+      std::cout << n << std::endl;
 
       // Initializing values
       xvalues = vector<double>(n);
@@ -79,7 +79,7 @@ public:
          xvalues[i] = *scanner.nextDouble(); // x
          //cout << (*xvalues)[i] << "\t";
          yvalues[i] = *scanner.nextDouble(); // y
-                                             //cout << (*yvalues)[i] << endl;
+                                             //cout << (*yvalues)[i] << std::endl;
       }
 
       // Calculating the distances
@@ -87,7 +87,7 @@ public:
          for (int j = 0; j < n; j++)
             dist(i, j) = distance(xvalues.at(i), yvalues.at(i), xvalues.at(j), yvalues.at(j));
 
-      cout << "All data read ok!" << endl;
+      std::cout << "All data read ok!" << std::endl;
    }
 
    virtual ~ProblemInstance()

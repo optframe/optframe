@@ -37,7 +37,7 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
                       ProblemInstance* _hfmvrp)
       : r1{_r1}, r2{_r2}, c1{_c1}, c2{_c2}, hfmvrp{_hfmvrp} {
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -71,9 +71,9 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
       bool is_Comp = hfmvrp->getComp(vType2, rep[r1][c1]) &&
                      hfmvrp->getComp(vType1, rep[r2][c2]);
 
-      // cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2 <<
-      // "] client " << c2 << ")" << endl; cout << rep[r1] << endl; cout <<
-      // rep[r2] << endl;
+      // std::cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2 <<
+      // "] client " << c2 << ")" << std::endl; std::cout << rep[r1] << std::endl; std::cout <<
+      // rep[r2] << std::endl;
 
       bool capR1 =
           ((hfmvrp->demands[rep[r2][c2]] - hfmvrp->demands[rep[r1][c1]] +
@@ -89,28 +89,28 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
       // !((ads.neighborhoodStatus.find(idComponent())->second)[r1] &&
       // (ads.neighborhoodStatus.find(idComponent())->second)[r2]);
 
-      // cout << "hfmvrp->demands[rep[r2][c2]] = " <<
+      // std::cout << "hfmvrp->demands[rep[r2][c2]] = " <<
       // hfmvrp->demands[rep[r2][c2]] << " hfmvrp->demands[rep[r1][c1]]= " <<
-      // hfmvrp->demands[rep[r1][c1]] << endl; cout << "ads.sumDemand[r1] = " <<
+      // hfmvrp->demands[rep[r1][c1]] << std::endl; std::cout << "ads.sumDemand[r1] = " <<
       // ads.sumDemand[r1] << " ads.sumDemand[r2] = " << ads.sumDemand[r2] <<
-      // endl;
+      // std::endl;
       /*
        if (!is_Comp)
        {
-       cout << "Invalid Move - Incompatibility" << endl;
-       cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2 <<
-       "] client " << c2 << ")"<<endl; cout<<rep[r1]<<endl; cout<<rep[r2]<<endl;
-       cout << "vType1 = " << vType1 << "\t rep[r1][c1] = " << rep[r1][c1];
-       cout << "\t hfmvrp->getComp(vType1, rep[r1][c1]) = " <<
-       hfmvrp->getComp(vType1, rep[r1][c1]) << endl; cout << "\t
+       std::cout << "Invalid Move - Incompatibility" << std::endl;
+       std::cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2 <<
+       "] client " << c2 << ")"<<endl; std::cout<<rep[r1]<<endl; std::cout<<rep[r2]<<endl;
+       std::cout << "vType1 = " << vType1 << "\t rep[r1][c1] = " << rep[r1][c1];
+       std::cout << "\t hfmvrp->getComp(vType1, rep[r1][c1]) = " <<
+       hfmvrp->getComp(vType1, rep[r1][c1]) << std::endl; std::cout << "\t
        hfmvrp->getComp(vType2, rep[r1][c1]) = " <<
-       hfmvrp->getComp(vType2,rep[r1][c1]) << endl; cout << "vType2 = " <<
+       hfmvrp->getComp(vType2,rep[r1][c1]) << std::endl; std::cout << "vType2 = " <<
        vType2 << "\t rep[r2][c2] = " << rep[r2][c2];
 
-       cout << "\t hfmvrp->getComp(vType2, rep[r2][c2]) = " <<
-       hfmvrp->getComp(vType2, rep[r2][c2]) << endl; cout << "\t
+       std::cout << "\t hfmvrp->getComp(vType2, rep[r2][c2]) = " <<
+       hfmvrp->getComp(vType2, rep[r2][c2]) << std::endl; std::cout << "\t
        hfmvrp->getComp(vType1, rep[r2][c2]) = " << hfmvrp->getComp(vType1,
-       rep[r2][c2]) << endl; getchar();
+       rep[r2][c2]) << std::endl; getchar();
        }*/
 
       return all_positive && is_Comp && capR1 && capR2 &&
@@ -137,8 +137,8 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
     ads.sumDemand[r2] += diffV2;
 
     // Cumulative Demand Calculus
-    // cout << ads.cumulativeDemand[r1] << endl;
-    // cout << ads.cumulativeDemand[r2] << endl;
+    // std::cout << ads.cumulativeDemand[r1] << std::endl;
+    // std::cout << ads.cumulativeDemand[r2] << std::endl;
 
     for (int s = c1; s < (int(rep[r1].size()) - 1); s++)
       if ((s - 1) >= 0) ads.cumulativeDemand[r1][s] += diffV1;
@@ -146,8 +146,8 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
     for (int s = c2; s < (int(rep[r2].size()) - 1); s++)
       if ((s - 1) >= 0) ads.cumulativeDemand[r2][s] += diffV2;
 
-    // cout << ads.cumulativeDemand[r1] << endl;
-    // cout << ads.cumulativeDemand[r2] << endl;
+    // std::cout << ads.cumulativeDemand[r1] << std::endl;
+    // std::cout << ads.cumulativeDemand[r2] << std::endl;
     // getchar();
     // minDemand and MaxDemand Calculus
     vector<int> modRoutes;  // modified routes
@@ -188,12 +188,12 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
         ads.minPairDemand[r] = minPairDemand;
 
         // minDemand and maxDemand Calculus
-        vector<pair<int, double>> rankDemands;
+        std::vector<std::pair<int, double>> rankDemands;
         for (int i = 1; i < int(routeSize - 1); i++)
-          rankDemands.push_back(make_pair(i, routeDemands[i]));
+          rankDemands.push_back(std::make_pair(i, routeDemands[i]));
 
         sort(rankDemands.begin(), rankDemands.end(), compare);
-        // cout << rankDemands << endl;
+        // std::cout << rankDemands << std::endl;
 
         ads.maxDemand[r] = rankDemands[0].second;
         ads.minDemand[r] = rankDemands[rankDemands.size() - 1].second;
@@ -205,7 +205,7 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
     SolutionHFMVRP& s = se.first;
     RepHFMVRP& rep = s.getR();
     AdsHFMVRP& ads = s.getADS();
-    // cout << "Aplicando Delta Move: route[" << r1 << "] client " << c1 << "
+    // std::cout << "Aplicando Delta Move: route[" << r1 << "] client " << c1 << "
     // <=>  route[" << r2 << "] client " << c2 << ")";
 
     int c;
@@ -217,12 +217,12 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
     /*
      for (int i = 0; i < rep.size(); i++)
      {
-     cout << "V[" << i << "]";
+     std::cout << "V[" << i << "]";
      for (int j = 0; j < rep[i].size(); j++)
-     cout << rep[i][j] << ";";
+     std::cout << rep[i][j] << ";";
      }
 
-     cout << "\n r1 = " << r1 << "\tr2 = " << r2 << endl;
+     std::cout << "\n r1 = " << r1 << "\tr2 = " << r2 << std::endl;
      */
 
     updateNeighStatus(ads);
@@ -234,8 +234,8 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
      ads.neighborhoodStatus.begin(); iter != ads.neighborhoodStatus.end();
      iter++)
      {
-     cout << "iter->first = " << iter->first << endl;
-     cout << "iter->second = " << iter->second << endl;
+     std::cout << "iter->first = " << iter->first << std::endl;
+     std::cout << "iter->second = " << iter->second << std::endl;
      }
      getchar();
      */
@@ -273,30 +273,30 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
     double f = 0;
 
     f -= hfmvrp->getDist(route1[bk1], route1[k1]) * vTDC1;
-    // cout << "-d(" << route[bk1] << "," << route[k1] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "-d(" << route[bk1] << "," << route[k1] << ") \t f= " << f <<
+    // std::endl;
     f -= hfmvrp->getDist(route1[k1], route1[ak1]) * vTDC1;
-    // cout << "-d(" << route[k1] << "," << route[ak1] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "-d(" << route[k1] << "," << route[ak1] << ") \t f= " << f <<
+    // std::endl;
     f -= hfmvrp->getDist(route2[bk2], route2[k2]) * vTDC2;
-    // cout << "-d(" << route[bk2] << "," << route[k2] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "-d(" << route[bk2] << "," << route[k2] << ") \t f= " << f <<
+    // std::endl;
     f -= hfmvrp->getDist(route2[k2], route2[ak2]) * vTDC2;
-    // cout << "-d(" << route[k2] << "," << route[ak2] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "-d(" << route[k2] << "," << route[ak2] << ") \t f= " << f <<
+    // std::endl;
 
     f += hfmvrp->getDist(route1[bk1], route2[k2]) * vTDC1;
-    // cout << "+d(" << route[bk1] << "," << route[k2] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "+d(" << route[bk1] << "," << route[k2] << ") \t f= " << f <<
+    // std::endl;
     f += hfmvrp->getDist(route2[k2], route1[ak1]) * vTDC1;
-    // cout << "+d(" << route[k2] << "," << route[ak1] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "+d(" << route[k2] << "," << route[ak1] << ") \t f= " << f <<
+    // std::endl;
     f += hfmvrp->getDist(route2[bk2], route1[k1]) * vTDC2;
-    // cout << "+d(" << route[bk2] << "," << route[k1] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "+d(" << route[bk2] << "," << route[k1] << ") \t f= " << f <<
+    // std::endl;
     f += hfmvrp->getDist(route1[k1], route2[ak2]) * vTDC2;
-    // cout << "+d(" << route[k1] << "," << route[ak2] << ") \t f= " << f <<
-    // endl;
+    // std::cout << "+d(" << route[k1] << "," << route[ak2] << ") \t f= " << f <<
+    // std::endl;
 
     double fo_v1_inv = (hfmvrp->demands[rep[r2][c2]] -
                         hfmvrp->demands[rep[r1][c1]] + ads.sumDemand[r1]) -
@@ -312,7 +312,7 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = Move<ESolutionHFMVRP>::idComponent();
     idComp.append(":DeltaMoveVRPSwap1_1");
     return idComp;
@@ -324,10 +324,10 @@ class DeltaMoveVRPSwap1_1 : public Move<ESolutionHFMVRP> {
   }
 
   void print() const override {
-    cout << "DeltaMoveVRPSwap1_1( ";
-    cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2
+    std::cout << "DeltaMoveVRPSwap1_1( ";
+    std::cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2
          << "] client " << c2 << ")";
-    cout << endl;
+    std::cout << std::endl;
   }
 };
 

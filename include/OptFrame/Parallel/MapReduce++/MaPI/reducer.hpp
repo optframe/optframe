@@ -37,21 +37,21 @@ public:
    };
       ///Iterator reducing execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, C>> run(vector<pair<KeyB, B>>& _mapped)
+   virtual std::vector<std::pair<KeyB, C>> run(std::vector<pair<KeyB, B>>& _mapped)
    {
       multimap<KeyB, B> mapped;
       for (int i = 0; i < _mapped.size(); i++)
          mapped.insert(_mapped[i]);
 #else
-   virtual vector<pair<KeyB, C>> run(multimap<KeyB, B>& mapped)
+   virtual std::vector<std::pair<KeyB, C>> run(multimap<KeyB, B>& mapped)
    {
 #endif
 
-      vector<pair<KeyB, C>> reduced;
+      std::vector<std::pair<KeyB, C>> reduced;
 
       typename std::multimap<KeyB, B>::iterator it = mapped.begin();
       KeyB lastKey = (*it).first;
-      vector<pair<KeyB, vector<B>>> toReduce(1, pair<KeyB, vector<B>>(lastKey, vector<B>()));
+      std::vector<std::pair<KeyB, vector<B>>> toReduce(1, pair<KeyB, vector<B>>(lastKey, vector<B>()));
       for (; it != mapped.end(); ++it) {
          if ((*it).first != lastKey) {
             toReduce.push_back(pair<KeyB, vector<B>>((*it).first, vector<B>()));
@@ -65,7 +65,7 @@ public:
       vector<string> outputs;
 
       vector<string> inputs;
-      typename vector<pair<KeyB, vector<B>>>::iterator itr;
+      typename std::vector<std::pair<KeyB, vector<B>>>::iterator itr;
       for (itr = toReduce.begin(); itr != toReduce.end(); ++itr) {
          stringstream s;
          s << (*itr).first << "\1";
@@ -83,7 +83,7 @@ public:
       if (numInputs <= numMapProcs) {
          // Mensagem
          // enviar para os processos
-         for (int i = 0; i < numInputs; i++) { //cout << "Enviando" << i << endl;
+         for (int i = 0; i < numInputs; i++) { //cout << "Enviando" << i << std::endl;
             // enviar
 
             int stsize = inputs.at(i).size() + 1;
@@ -97,7 +97,7 @@ public:
          }
 
          // enviar _ para os demais processos
-         for (int i = numInputs; i < numMapProcs; i++) { //cout << "Enviando_" << i << endl;
+         for (int i = numInputs; i < numMapProcs; i++) { //cout << "Enviando_" << i << std::endl;
             // enviar
             int stsize = 1;
             char st[] = "_";
@@ -116,7 +116,7 @@ public:
             MPI_Recv(&st, stsize, MPI_CHAR, i, 1, MPI_COMM_WORLD, mapReduce->getMPIStatus());
             if (st[0] != '_')
                outputs.push_back(string(st));
-            //cout << "st: " << st << endl;
+            //cout << "st: " << st << std::endl;
          }
       }
 
@@ -128,7 +128,7 @@ public:
          // enviar para os processos
          for (int i = 0; i < numInputs; i++) {
             int dest = i % numMapProcs + 1;
-            //cout << "EnviandoDest " << dest << endl;
+            //cout << "EnviandoDest " << dest << std::endl;
             // enviar
             int stsize = inputs.at(i).size();
             char st[stsize];

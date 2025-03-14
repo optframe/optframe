@@ -175,18 +175,18 @@ class MultiImprovement : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << "MI";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "MI: " << nsSeq->toString();
     return ss.str();
   }
@@ -222,8 +222,8 @@ class MultiImprovementBuilder : public LocalSearchBuilder<XES> {
     return new MultiImprovement<XES>(eval, nsseq);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
@@ -236,13 +236,13 @@ class MultiImprovementBuilder : public LocalSearchBuilder<XES> {
     return component == MultiImprovement<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":MI";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

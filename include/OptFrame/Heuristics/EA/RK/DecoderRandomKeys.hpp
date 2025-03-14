@@ -136,7 +136,7 @@ class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   virtual pair<XEv, op<std::vector<int>>> decode(const RSK& rk,
                                                  bool needsSolution) override {
     int sz = b - a + 1;
-    vector<pair<double, int>> v(sz);
+    std::vector<std::pair<double, int>> v(sz);
     int k = 0;
     for (int i = a; i <= b; i++, k++) v[k] = pair<double, int>(rk[i], k);
 
@@ -164,7 +164,7 @@ class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   bool isMinimization() const override { return ev.isMinimization(); }
 };
 
-// implementation of decoder for subset function (vector<bool>)
+// implementation of decoder for subset function (std::vector<bool>)
 // template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
 //
 template <XEvaluation XEv, ConceptsComparability KeyType,

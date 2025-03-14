@@ -15,19 +15,19 @@ using namespace optframe;
 using namespace HFM;
 
 int loadCompetitionBlind(int argc, char** argv) {
-  cout << "Welcome to Price Competition Mode..." << endl;
+  std::cout << "Welcome to Price Competition Mode..." << std::endl;
   RandGenMersenneTwister rg;
   // long seed = time(nullptr);
   long seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 10) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
             "parameters options precision"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -45,14 +45,14 @@ int loadCompetitionBlind(int argc, char** argv) {
   string parametersFile = caminhoParameters;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "nomeValidationSet=" << nomeValidationSet << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "nomeParameters=" << parametersFile << endl;
-  cout << "instN=" << instN << endl;
-  cout << "stepsAhead=" << stepsAhead << endl;
-  cout << "mu=" << mu << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "nomeValidationSet=" << nomeValidationSet << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "nomeParameters=" << parametersFile << std::endl;
+  std::cout << "instN=" << instN << std::endl;
+  std::cout << "stepsAhead=" << stepsAhead << std::endl;
+  std::cout << "mu=" << mu << std::endl;
   //===========================================
 
   // parametersFile = "./MyProjects/configParametersDay";
@@ -94,10 +94,10 @@ int loadCompetitionBlind(int argc, char** argv) {
    //TESTE VERIFICAR FUNCAO PINBALL
    vector<vector<double> > benchmarkTask2 =
    rF.readQuantilesFromFile("./MyProjects/benchmarkTask2",720);
-   cout<<benchmarkTask2[719]<<endl;
+   std::cout<<benchmarkTask2[719]<<endl;
    vector<double> realValueBenchmarkTask2= rF.getPartsForecastsEndToBegin(0, 0,
-   720); cout<<realValueBenchmarkTask2<<endl;
-   cout<<rF.getPinball(benchmarkTask2,realValueBenchmarkTask2)<<endl;
+   720); std::cout<<realValueBenchmarkTask2<<endl;
+   std::cout<<rF.getPinball(benchmarkTask2,realValueBenchmarkTask2)<<endl;
    getchar();
    */
 
@@ -206,7 +206,7 @@ int loadCompetitionBlind(int argc, char** argv) {
     batchOfBlindResults.push_back(blindResults);
   }
 
-  // cout << batchOfBlindResults << endl;
+  // std::cout << batchOfBlindResults << std::endl;
   // getchar();
 
   double quantilError = 0.5;
@@ -248,20 +248,20 @@ int loadCompetitionBlind(int argc, char** argv) {
    if (foPinballQuantil < foPVectors)
    {
    foPVectors = foPinballQuantil;
-   cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n << "\t" <<
-   foPinballQuantil << endl;
+   std::cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n << "\t" <<
+   foPinballQuantil << std::endl;
    }
    vQ++;
    }
    }
 
-   cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) << endl;
-   cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues) <<
-   endl;
+   std::cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) << std::endl;
+   std::cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues) <<
+   std::endl;
 
-   cout << finalResultQuantis[0] << endl;
+   std::cout << finalResultQuantis[0] << std::endl;
 
-   //cout << finalResultQuantis << endl;
+   //cout << finalResultQuantis << std::endl;
    rF.exportQuantisVector(finalResultQuantis,
    "./ProbResultsLoad/quantilB20_ES4_VND10_TS10");
    */
@@ -270,18 +270,18 @@ int loadCompetitionBlind(int argc, char** argv) {
 }
 
 int loadCompetitionCalibrationMode(int argc, char** argv) {
-  cout << "Welcome to Load Competition Calibration Mode..." << endl;
+  std::cout << "Welcome to Load Competition Calibration Mode..." << std::endl;
   RandGenMersenneTwister rg;
   long seed = time(nullptr);
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 10) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
             "parameters options precision"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -299,14 +299,14 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
   string parametersFile = caminhoParameters;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "nomeValidationSet=" << nomeValidationSet << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "nomeParameters=" << parametersFile << endl;
-  cout << "instN=" << instN << endl;
-  cout << "stepsAhead=" << stepsAhead << endl;
-  cout << "mu=" << mu << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "nomeValidationSet=" << nomeValidationSet << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "nomeParameters=" << parametersFile << std::endl;
+  std::cout << "instN=" << instN << std::endl;
+  std::cout << "stepsAhead=" << stepsAhead << std::endl;
+  std::cout << "mu=" << mu << std::endl;
   //==========================================
 
   vector<string> vParametersFiles;
@@ -470,7 +470,7 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
     batchOfBlindResults.push_back(blindResults);
   }
 
-  // cout << batchOfBlindResults << endl;
+  // std::cout << batchOfBlindResults << std::endl;
   // getchar();
   vector<vector<double>> finalResultQuantis;
 
@@ -498,19 +498,19 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
       double foPinballQuantil = rF.getPinball(vQuantisResults[vQ], realValues);
       if (foPinballQuantil < foPVectors) {
         foPVectors = foPinballQuantil;
-        cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n
-             << "\t" << foPinballQuantil << endl;
+        std::cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n
+             << "\t" << foPinballQuantil << std::endl;
       }
       vQ++;
     }
   }
 
-  cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) << endl;
-  cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues) << endl;
+  std::cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) << std::endl;
+  std::cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues) << std::endl;
 
-  cout << finalResultQuantis[0] << endl;
+  std::cout << finalResultQuantis[0] << std::endl;
 
-  // cout << finalResultQuantis << endl;
+  // std::cout << finalResultQuantis << std::endl;
   rF.exportQuantisVector(finalResultQuantis,
                          "./ProbResultsLoad/quantilB20_ES4_VND10_TS10");
 

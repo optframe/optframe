@@ -1424,7 +1424,7 @@ namespace Catch {
 
 namespace Catch {
 
-    std::ostream& cout();
+    std::ostream& std::cout();
     std::ostream& cerr();
     std::ostream& clog();
 
@@ -12307,7 +12307,7 @@ namespace Catch {
         mutable RunTests::InWhatOrder m_currentSortOrder = RunTests::InDeclarationOrder;
         mutable std::vector<TestCase> m_sortedFunctions;
         std::size_t m_unnamedCount = 0;
-        std::ios_base::Init m_ostreamInit; // Forces cout/ cerr to be initialised
+        std::ios_base::Init m_ostreamInit; // Forces std::cout/ cerr to be initialised
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -13706,12 +13706,12 @@ namespace Catch {
 
         ///////////////////////////////////////////////////////////////////////////
 
-        class CoutStream : public IStream {
+        class std::coutStream : public IStream {
             mutable std::ostream m_os;
         public:
-            // Store the streambuf from cout up-front because
-            // cout may get redirected when running tests
-            CoutStream() : m_os( Catch::cout().rdbuf() ) {}
+            // Store the streambuf from std::cout up-front because
+            // std::cout may get redirected when running tests
+            std::coutStream() : m_os( Catch::cout().rdbuf() ) {}
             ~CoutStream() override = default;
 
         public: // IStream
@@ -13794,7 +13794,7 @@ namespace Catch {
     ///////////////////////////////////////////////////////////////////////////
 
 #ifndef CATCH_CONFIG_NOSTDOUT // If you #define this you must implement these functions
-    std::ostream& cout() { return std::cout; }
+    std::ostream& std::cout() { return std::cout; }
     std::ostream& cerr() { return std::cerr; }
     std::ostream& clog() { return std::clog; }
 #endif

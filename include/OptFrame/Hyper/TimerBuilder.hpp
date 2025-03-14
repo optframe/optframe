@@ -20,8 +20,8 @@ class TimerBuilder : public ComponentBuilder<XES> {
     return new Timer;
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     return params;
   }
 
@@ -29,8 +29,8 @@ class TimerBuilder : public ComponentBuilder<XES> {
     return component == Timer::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "Timer";
     return ss.str();
   }

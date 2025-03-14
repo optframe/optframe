@@ -116,14 +116,14 @@ class MoveRouteShift : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "MoveRouteShift( ";
-    cout << "route " << r1 << " [ ";
-    for (int e = 0; e < n1; e++) cout << (e1 + e) << " ";
-    cout << "] to pos " << i2 << " <=> ";
-    cout << "route " << r2 << " [ ";
-    for (int e = 0; e < n2; e++) cout << (e2 + e) << " ";
-    cout << "] to pos " << i1 << " )";
-    cout << endl;
+    std::cout << "MoveRouteShift( ";
+    std::cout << "route " << r1 << " [ ";
+    for (int e = 0; e < n1; e++) std::cout << (e1 + e) << " ";
+    std::cout << "] to pos " << i2 << " <=> ";
+    std::cout << "route " << r2 << " [ ";
+    for (int e = 0; e < n2; e++) std::cout << (e2 + e) << " ";
+    std::cout << "] to pos " << i1 << " )";
+    std::cout << std::endl;
   }
 };
 
@@ -196,8 +196,8 @@ class NSIteratorRoutesShift : public NSIterator<vector<vector<T>>, DS> {
 
   Move<Routes, DS>& current() {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqRouteShift. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqRouteShift. Aborting." << std::endl;
       exit(1);
     }
 
@@ -225,14 +225,14 @@ class NSSeqRouteShift : public NSSeq<vector<vector<T>>, DS> {
 
     if (n1 <= 0) {
       n1 = 1;
-      cout << "Warning: invalid NSSeqShift(" << _n1 << "," << _n2 << ")!"
-           << endl;
+      std::cout << "Warning: invalid NSSeqShift(" << _n1 << "," << _n2 << ")!"
+           << std::endl;
     }
 
     if (n2 < 0) {
       n2 = 0;
-      cout << "Warning: invalid NSSeqShift(" << _n1 << "," << _n2 << ")!"
-           << endl;
+      std::cout << "Warning: invalid NSSeqShift(" << _n1 << "," << _n2 << ")!"
+           << std::endl;
     }
   }
 
@@ -275,7 +275,7 @@ class NSSeqRouteShift : public NSSeq<vector<vector<T>>, DS> {
     return *new NSIteratorRoutesShift<T, DS, MOVE>(r, n1, n2);
   }
 
-  virtual void print() { cout << "NSSeqRouteShift" << endl; }
+  virtual void print() { std::cout << "NSSeqRouteShift" << std::endl; }
 };
 
 #endif /*OPTFRAME_NSSEQROUTESHIFT_HPP_*/

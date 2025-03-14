@@ -96,8 +96,8 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":VNDUpdateADS";
     return ss.str();
   }
@@ -105,7 +105,7 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
   std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "VND: [ ";
     for (unsigned i = 0; i < lsList.size(); i++) {
       ss << lsList[i]->toString();

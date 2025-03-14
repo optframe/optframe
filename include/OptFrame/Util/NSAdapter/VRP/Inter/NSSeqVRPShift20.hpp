@@ -68,11 +68,11 @@ class MoveVRPShift20 : public Move<vector<vector<T>>, ADS, DS> {
   }
 
   void print() const override {
-    cout << "MoveVRPShift20( ";
-    cout << r1 << " , ";
-    cout << r2 << " , ";
-    cout << cli << " , ";
-    cout << pos << " )";
+    std::cout << "MoveVRPShift20( ";
+    std::cout << r1 << " , ";
+    std::cout << r2 << " , ";
+    std::cout << cli << " , ";
+    std::cout << pos << " )";
   }
 };
 
@@ -125,8 +125,8 @@ class NSIteratorVRPShift20 : public NSIterator<vector<vector<T>>, ADS, DS> {
 
   Move<Routes, ADS, DS>* current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqVRPShift20. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqVRPShift20. Aborting." << std::endl;
       exit(1);
     }
 
@@ -174,7 +174,7 @@ class NSSeqVRPShift20 : public NSSeq<vector<vector<T>>, ADS, DS> {
   }
 
   virtual void print() {
-    cout << "NSSeqVRPShift20 with move: " << MOVE::idComponent();
+    std::cout << "NSSeqVRPShift20 with move: " << MOVE::idComponent();
   }
 };
 

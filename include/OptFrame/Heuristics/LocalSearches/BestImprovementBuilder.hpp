@@ -32,8 +32,8 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
     return new BestImprovement<XES>(eval, nsseq);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
@@ -46,8 +46,8 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
     return component == BestImprovement<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":BI";
     return ss.str();
   }

@@ -35,25 +35,25 @@ class ProblemInstance {
 
  public:
   explicit ProblemInstance(scannerpp::Scanner& scanner) {
-    for (int i = 0; i < 4; i++) cout << scanner.nextLine() << endl;
+    for (int i = 0; i < 4; i++) std::cout << scanner.nextLine() << std::endl;
     // Problem data
-    cout << scanner.next() << " ";
+    std::cout << scanner.next() << " ";
     nodes = *scanner.nextDouble();
-    cout << nodes << endl;
+    std::cout << nodes << std::endl;
 
-    cout << scanner.next() << " ";
+    std::cout << scanner.next() << " ";
     nVehicles = *scanner.nextDouble();
-    cout << nVehicles << endl;
+    std::cout << nVehicles << std::endl;
 
-    cout << scanner.next() << " ";
+    std::cout << scanner.next() << " ";
     typesVehicles = *scanner.nextDouble();
-    cout << typesVehicles << endl;
+    std::cout << typesVehicles << std::endl;
 
     // Veihicles types
-    for (int i = 0; i < 3; i++) cout << scanner.nextLine() << endl;
+    for (int i = 0; i < 3; i++) std::cout << scanner.nextLine() << std::endl;
     double sumCap = 0;
     for (int i = 0; i < typesVehicles; i++) {
-      cout << scanner.next() << " ";  // id
+      std::cout << scanner.next() << " ";  // id
       vehiclesTypeNumber.push_back((int)*scanner.nextDouble());
       vehiclesTypeCap.push_back((int)*scanner.nextDouble());
       vehiclesTypeDistCost.push_back(*scanner.nextDouble());
@@ -63,14 +63,14 @@ class ProblemInstance {
       vehiclesTypeFixedCost.push_back(vehiclesTypeFixedCost1[i] +
                                       (vehiclesTypeCap[i] - theoricalCap) *
                                           vehiclesTypeFixedBoxCost2[i]);
-      cout << vehiclesTypeNumber[i] << " " << vehiclesTypeCap[i] << " "
+      std::cout << vehiclesTypeNumber[i] << " " << vehiclesTypeCap[i] << " "
            << vehiclesTypeFixedCost[i] << " " << vehiclesTypeDistCost[i]
-           << endl;
+           << std::endl;
       sumCap += vehiclesTypeCap[i] * vehiclesTypeNumber[i];
     }
 
     // Stores IDS
-    for (int i = 0; i < 3; i++) cout << scanner.nextLine() << endl;
+    for (int i = 0; i < 3; i++) std::cout << scanner.nextLine() << std::endl;
 
     for (int i = 0; i < nodes; i++) {
       int storeID = *scanner.nextDouble();
@@ -78,16 +78,16 @@ class ProblemInstance {
     }
 
     // Matrix of Distances
-    for (int i = 0; i < 3; i++) cout << scanner.nextLine() << endl;
+    for (int i = 0; i < 3; i++) std::cout << scanner.nextLine() << std::endl;
 
     dist = new optframe::Matrix<double>(nodes);
 
     int nullDist = 0;
     for (int i = 0; i < nodes; i++) {
       for (int j = 0; j < nodes; j++) {
-        // cout<<"i= "<<i<<"j= "<<j<<endl;
+        // std::cout<<"i= "<<i<<"j= "<<j<<endl;
         double nodeDist = *scanner.nextDouble();
-        // cout<<"nodeDist = "<<nodeDist<<endl;
+        // std::cout<<"nodeDist = "<<nodeDist<<endl;
         // getchar();
         if (nodeDist == 999) {
           nodeDist = 1000000;
@@ -97,14 +97,14 @@ class ProblemInstance {
       }
     }
 
-    // cout<<"nullDist = "<<nullDist<<endl;
+    // std::cout<<"nullDist = "<<nullDist<<endl;
     // getchar();
 
     //		cout << "dist: " << (*dist);
 
     // Demands
     double sumDemand = 0;
-    for (int i = 0; i < 3; i++) cout << scanner.nextLine() << endl;
+    for (int i = 0; i < 3; i++) std::cout << scanner.nextLine() << std::endl;
 
     int nullDemands = 0;
     for (int c = 0; c < nodes; c++) {
@@ -114,22 +114,22 @@ class ProblemInstance {
       sumDemand += demand;
     }
 
-    // cout << demands << endl;
+    // std::cout << demands << std::endl;
     printv(demands);
 
-    cout << "active demands =" << demands.size() - nullDemands << endl;
+    std::cout << "active demands =" << demands.size() - nullDemands << std::endl;
 
     // Comp
-    for (int i = 0; i < 3; i++) cout << scanner.nextLine() << endl;
+    for (int i = 0; i < 3; i++) std::cout << scanner.nextLine() << std::endl;
 
     comp = new Matrix<double>(typesVehicles, nodes);
 
     for (int c = 0; c < nodes; c++) {
       int nComp = 0;
       for (int t = 0; t < typesVehicles; t++) {
-        // cout<<"i= "<<i<<"j= "<<j<<endl;
+        // std::cout<<"i= "<<i<<"j= "<<j<<endl;
         double compTruck = *scanner.nextDouble();
-        // cout<<"nodeDist = "<<nodeDist<<endl;
+        // std::cout<<"nodeDist = "<<nodeDist<<endl;
         // getchar();
         (*comp)(t, c) = compTruck;
         if (compTruck == true) nComp++;
@@ -137,7 +137,7 @@ class ProblemInstance {
       nStoreComp.push_back(nComp);
     }
 
-    cout << "comp: " << (*comp);
+    std::cout << "comp: " << (*comp);
 
     // creat list of vehicles cap and costs
     for (int v = 0; v < nVehicles; v++) {
@@ -150,16 +150,16 @@ class ProblemInstance {
     /*
      for (int v = 0; v < nVehicles; v++)
      {
-     cout << v << "\t" << vehiclesCap[v] << "\t" << vehiclesFixedCost[v] <<
+     std::cout << v << "\t" << vehiclesCap[v] << "\t" << vehiclesFixedCost[v] <<
      "\t"
-     << vehiclesDistCost[v] << endl;
+     << vehiclesDistCost[v] << std::endl;
      }*/
 
-    cout << "Sum Cap = " << sumCap << "\tSum Demand = " << sumDemand << endl;
-    if (sumCap < sumDemand) cout << "MULTI-TRIP INSTANCE" << endl;
-    cout << "#########################################################" << endl;
-    cout << "############## Problem Instance Read ####################" << endl;
-    cout << "#########################################################" << endl;
+    std::cout << "Sum Cap = " << sumCap << "\tSum Demand = " << sumDemand << std::endl;
+    if (sumCap < sumDemand) std::cout << "MULTI-TRIP INSTANCE" << std::endl;
+    std::cout << "#########################################################" << std::endl;
+    std::cout << "############## Problem Instance Read ####################" << std::endl;
+    std::cout << "#########################################################" << std::endl;
   }
 
   virtual ~ProblemInstance() {}

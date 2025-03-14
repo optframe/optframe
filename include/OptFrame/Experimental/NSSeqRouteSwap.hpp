@@ -45,11 +45,11 @@ class MoveVVSwapIntra : public Move<vector<vector<T>>, DS> {
     this->k = k;
   }
 
-  bool canBeApplied(vector<vector<T>>* rep) {
+  bool canBeApplied(std::vector<vector<T>>* rep) {
     return (rep->size() > 0) && (j != k);
   }
 
-  Move<vector<vector<T>>, DS>* apply(vector<vector<T>>* rep) {
+  Move<vector<vector<T>>, DS>* apply(std::vector<vector<T>>* rep) {
     T aux = (*rep)[i][j];
     (*rep)[i][j] = (*rep)[i][k];
     (*rep)[i][k] = aux;
@@ -65,8 +65,8 @@ class MoveVVSwapIntra : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )"
-         << endl;
+    std::cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )"
+         << std::endl;
   }
 };
 
@@ -78,7 +78,7 @@ class NSSeqVVSwapIntra : public NSSeq<vector<vector<T>>, DS> {
  public:
   NSSeqVVSwapIntra() {}
 
-  Move<vector<vector<T>>, DS>* move(vector<vector<T>>* rep) {
+  Move<vector<vector<T>>, DS>* move(std::vector<vector<T>>* rep) {
     if (rep->size() == 0) return new MoveVVSwapIntra<T, DS>(0, 0, 0);
 
     int i = rand() % rep->size();
@@ -96,16 +96,16 @@ class NSSeqVVSwapIntra : public NSSeq<vector<vector<T>>, DS> {
     return new MoveVVSwapIntra<T, DS>(i, j, k);
   }
 
-  void init(vector<vector<T>>* rep)  // Initialize neighborhood structure
+  void init(std::vector<vector<T>>* rep)  // Initialize neighborhood structure
   {
     m_i = 0;
     m_j = 0;
     m_k = 0;
   }
 
-  Move<vector<vector<T>>, DS>* next(vector<vector<T>>* rep) {
+  Move<vector<vector<T>>, DS>* next(std::vector<vector<T>>* rep) {
     if (m_i >= rep->size()) {
-      cout << "Erro!!" << endl;
+      std::cout << "Erro!!" << std::endl;
       exit(1);
     }
 
@@ -124,7 +124,7 @@ class NSSeqVVSwapIntra : public NSSeq<vector<vector<T>>, DS> {
     return new MoveVVSwapIntra<T, DS>(m_i, m_j, m_k);
   }
 
-  bool hasNext(vector<vector<T>>* rep) {
+  bool hasNext(std::vector<vector<T>>* rep) {
     int n1 = rep->size();
     int n2 = rep->at(m_i).size();
 
@@ -134,7 +134,7 @@ class NSSeqVVSwapIntra : public NSSeq<vector<vector<T>>, DS> {
       return true;
   }
 
-  virtual void print() { cout << "NSSeqVVSwapIntra" << endl; }
+  virtual void print() { std::cout << "NSSeqVVSwapIntra" << std::endl; }
 };
 
 #endif /*OPTFRAME_NSSEQROUTESWAP_HPP_*/

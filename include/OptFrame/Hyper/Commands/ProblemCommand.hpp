@@ -47,11 +47,11 @@ public:
       return usage;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
       if (!scanner.hasNext()) {
-         cout << "USAGE: " << usage() << endl;
+         std::cout << "USAGE: " << usage() << std::endl;
          return false;
       }
 
@@ -62,32 +62,32 @@ public:
       if (mode == "unload")
          return unload(factory, dictionary, ldictionary);
 
-      cout << "problem command: unknown mode '" << mode << "'! (should be 'load instance_path' or 'unload')";
+      std::cout << "problem command: unknown mode '" << mode << "'! (should be 'load instance_path' or 'unload')";
 
       return false;
    }
 
-   bool registerComponent(Component& component, string name, string type, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary)
+   bool registerComponent(Component& component, string name, string type, HeuristicFactory<R, ADS, DS>& hf, map<std::string, std::string>& dictionary)
    {
       int idx = hf.addComponent(component, type);
       if (idx < 0)
          return false;
-      stringstream ss;
+      std::stringstream ss;
       ss << type << " " << idx;
       return Command<R, ADS, DS>::defineText(name, ss.str(), dictionary);
    }
 
-   bool registerComponent(Component& component, string name, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary)
+   bool registerComponent(Component& component, string name, HeuristicFactory<R, ADS, DS>& hf, map<std::string, std::string>& dictionary)
    {
       string type = component.id();
       return registerComponent(component, name, type, hf, dictionary);
    }
 
-   virtual bool load(string filename, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
+   virtual bool load(string filename, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
 
-   virtual bool unload(HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
+   virtual bool unload(HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

@@ -33,16 +33,16 @@ public:
      : mapReduce(_mapReduce){};
    ///Iterator reducing execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, C>> run(vector<pair<KeyB, B>>& _mapped)
+   virtual std::vector<std::pair<KeyB, C>> run(std::vector<pair<KeyB, B>>& _mapped)
    {
       multimap<KeyB, B> mapped;
       for (int i = 0; i < _mapped.size(); i++)
          mapped.insert(_mapped[i]);
 #else
-   virtual vector<pair<KeyB, C>> run(multimap<KeyB, B>& mapped)
+   virtual std::vector<std::pair<KeyB, C>> run(multimap<KeyB, B>& mapped)
    {
 #endif
-      vector<pair<KeyB, C>> reduced;
+      std::vector<std::pair<KeyB, C>> reduced;
 
       typename std::multimap<KeyB, B>::iterator it = mapped.begin();
       KeyB lastKey = (*it).first;

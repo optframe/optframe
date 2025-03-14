@@ -129,9 +129,9 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
       fv[i] = (fv[i] / avgEvalsPop);
       // if is nan
       if (fv[i] != fv[i]) {
-        cout << "Selection::setFitness()::NAN VALUE!" << endl;
-        cout << "average=" << avgEvalsPop << endl;
-        cout << fv << endl;
+        std::cout << "Selection::setFitness()::NAN VALUE!" << std::endl;
+        std::cout << "average=" << avgEvalsPop << std::endl;
+        std::cout << fv << std::endl;
         exit(1);
       }
     }
@@ -157,27 +157,27 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
       double timelimit = 100000000, double target_f = 0,
       const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr) {
     Timer t;
-    cout << id() << "(timelimit=" << timelimit << "; target_f=" << target_f
-         << ")" << endl;
-    cout << "Population Size: " << popSize
-         << " Total of Generations: " << numGenerations << endl;
-    cout << "Crossover Rate: " << pCross << " Mutation Rate: " << pMut
-         << " Local Search Rate: " << pLS << endl;
+    std::cout << id() << "(timelimit=" << timelimit << "; target_f=" << target_f
+         << ")" << std::endl;
+    std::cout << "Population Size: " << popSize
+         << " Total of Generations: " << numGenerations << std::endl;
+    std::cout << "Crossover Rate: " << pCross << " Mutation Rate: " << pMut
+         << " Local Search Rate: " << pLS << std::endl;
 
-    cout << "Generating the Initial Population" << endl;
+    std::cout << "Generating the Initial Population" << std::endl;
 
     MultiSolution<S>* p = &initPop.generatePopulation(popSize);
     MultiEvaluation<>* mev = new MultiEvaluation;
     evaluate(*p, *mev);
     vector<double> fv;
     setFitness(*p, *mev, fv);
-    // cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
+    // std::cout << fv << " = " << Selection<R, ADS>::getSum(fv) << std::endl;
 
     int best = getBest(*mev);
 
     Chromossome* sStar = new Chromossome(p->at(best));
     Evaluation<>* eStar = new Evaluation(mev->at(best));
-    cout << "GA iter=0 ";
+    std::cout << "GA iter=0 ";
     eStar->print();
 
     unsigned g = 0;
@@ -186,9 +186,9 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
            (evaluator.betterThan(target_f, eStar->evaluation()) &&
             (t.now() < timelimit))) {
       if (lowDiversity(*p, *mev)) {
-        // cout << "WARNING: Genetic Algorithm leaving with low diversity at
-        // iteration g=" << g << endl; cout << "Try different solution
-        // generators or better mutation and crossover operators!" << endl;
+        // std::cout << "WARNING: Genetic Algorithm leaving with low diversity at
+        // iteration g=" << g << std::endl; std::cout << "Try different solution
+        // generators or better mutation and crossover operators!" << std::endl;
         break;
       }
 
@@ -204,7 +204,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
         delete sStar;
         eStar = &mev->at(best).clone();
         sStar = &p->at(best).clone();
-        cout << "GA iter=" << g << " ";
+        std::cout << "GA iter=" << g << " ";
         eStar->print();
         g = 0;
       }
@@ -212,7 +212,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
       while (p2->size() < popSize) {
         pair<unsigned, unsigned> idx = selection.select(*p, *mev, fv);
         if (idx.first == idx.second) {
-          cout << "ERROR IN GENETIC SELECTION! SAME ELEMENTS!" << endl;
+          std::cout << "ERROR IN GENETIC SELECTION! SAME ELEMENTS!" << std::endl;
           exit(1);
         }
 
@@ -229,7 +229,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
         pair<Chromossome*, Chromossome*> rCross =
             cross.cross(p->at(idx.first), p->at(idx.second));
         if (!rCross.first && !rCross.second) {
-          cout << "ERROR IN GENETIC CROSS! NO RESULT!" << endl;
+          std::cout << "ERROR IN GENETIC CROSS! NO RESULT!" << std::endl;
           exit(1);
         }
 
@@ -276,8 +276,8 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
     return new pair<Solution<R, ADS>&, Evaluation<>&>(*sStar, *eStar);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << EA::family()
        << ":BasicGeneticAlgorithm";
     return ss.str();
@@ -341,21 +341,21 @@ class BasicGeneticAlgorithmBuilder : public EA,
                                              *mut, *h, hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<S>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(InitialMultiSolution<S>::idComponent(),
+    params.push_back(std::make_pair(InitialMultiSolution<S>::idComponent(),
                                "generator for initial population"));
-    params.push_back(make_pair("OptFrame:int", "population size"));
-    params.push_back(make_pair("OptFrame:float", "cross probability"));
-    params.push_back(make_pair("OptFrame:float", "mutation probability"));
-    params.push_back(make_pair("OptFrame:float", "local search probability"));
+    params.push_back(std::make_pair("OptFrame:int", "population size"));
+    params.push_back(std::make_pair("OptFrame:float", "cross probability"));
+    params.push_back(std::make_pair("OptFrame:float", "mutation probability"));
+    params.push_back(std::make_pair("OptFrame:float", "local search probability"));
     params.push_back(
         make_pair("OptFrame:int", "number of generations without improvement"));
-    params.push_back(make_pair(Selection<R, ADS>::idComponent(), "selection"));
-    params.push_back(make_pair(Crossover<R, ADS>::idComponent(), "crossover"));
-    params.push_back(make_pair(Mutation<R, ADS>::idComponent(), "mutation"));
+    params.push_back(std::make_pair(Selection<R, ADS>::idComponent(), "selection"));
+    params.push_back(std::make_pair(Crossover<R, ADS>::idComponent(), "crossover"));
+    params.push_back(std::make_pair(Mutation<R, ADS>::idComponent(), "mutation"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
 
@@ -366,8 +366,8 @@ class BasicGeneticAlgorithmBuilder : public EA,
     return component == BasicGeneticAlgorithmBuilder<R, ADS>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << EA::family()
        << ":BasicGeneticAlgorithm";
     return ss.str();

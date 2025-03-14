@@ -86,7 +86,7 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
       uptr<Move<XES, XSH>> move = lns[ns_k]->validRandomMove(seBest);
 
       if (!move) {
-        cout << "Warning in LAHC: cannot find an appliable move for "
+        std::cout << "Warning in LAHC: cannot find an appliable move for "
                 "neighborhood ";
         lns[ns_k]->print();
         // TODO: return FAIL here
@@ -119,7 +119,7 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
             sStar = s;  // copy
             eStar = e;  // copy
 
-            cout << "LAHC: best solution in iter=" << iter << " => ";
+            std::cout << "LAHC: best solution in iter=" << iter << " => ";
             e.print();
 
             iter = 0;
@@ -152,16 +152,16 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":LAHC";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "LAHC: [ ";
     for (unsigned i = 0; i < lns.size(); i++) {
       ss << lns[i]->toString();
@@ -209,14 +209,14 @@ class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
     return new LateAcceptanceHillClimbing<XES>(eval, nslist, L, iterMax);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
                                "evaluation function"));
-    stringstream ss;
+    std::stringstream ss;
     ss << NS<XES>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
-    params.push_back(make_pair("OptFrame:int", "list size L"));
+    params.push_back(std::make_pair(ss.str(), "list of NS"));
+    params.push_back(std::make_pair("OptFrame:int", "list size L"));
     params.push_back(
         make_pair("OptFrame:int", "iterMax iterations without improvement"));
 
@@ -227,15 +227,15 @@ class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
     return component == LateAcceptanceHillClimbing<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":LAHC";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

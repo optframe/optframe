@@ -33,18 +33,18 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class SystemRunCommand : public Command<R, ADS, DS>
 {
 public:
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module, string rest)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
    {
       for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
          if (modules[i]->canHandle(module, rest))
             return modules[i];
       }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
       return nullptr;
    }
 
-   bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string command)
+   bool exec_command(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string command)
    {
       Scanner scanner(command);
       scanner.useSeparators(" \t\r\n=");
@@ -54,7 +54,7 @@ public:
       Command<R, ADS, DS>* m = getCommand(all_modules, module, tail);
 
       if (m == nullptr) {
-         cout << "system.run module: command '" << module << "' not found!" << endl;
+         std::cout << "system.run module: command '" << module << "' not found!" << std::endl;
          return false;
       }
 
@@ -65,7 +65,7 @@ public:
          return false;
       }
 
-      //cout << "RUN LIST COMMAND: '" << module << "' with '" << *rest << "'" << endl;
+      //cout << "RUN LIST COMMAND: '" << module << "' with '" << *rest << "'" << std::endl;
       bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest, module);
 
       delete rest;
@@ -87,21 +87,21 @@ public:
       return "system.run block_of_commands | module_name [dictionary_entry]";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input1)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input1)
    {
       string input = Scanner::trim(input1);
 
-      //cout << "system.run command: '" << input << "'" << endl;
+      //cout << "system.run command: '" << input << "'" << std::endl;
 
       if (input.length() == 0) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -113,7 +113,7 @@ public:
             lcommands = vector<string>(*p_lcommands);
             delete p_lcommands;
          } else {
-            cout << "system.run command: error reading block of commands!" << endl;
+            std::cout << "system.run command: error reading block of commands!" << std::endl;
             return false;
          }
 
@@ -123,9 +123,9 @@ public:
             if (command != "")
                if (!exec_command(allCommands, allFunctions, factory, dictionary, ldictionary, command)) {
                   if (lcommands.at(c) == "")
-                     cout << "system.run command: empty command! (perhaps an extra semicolon in block?)" << endl;
+                     std::cout << "system.run command: empty command! (perhaps an extra semicolon in block?)" << std::endl;
                   else
-                     cout << "system.run command: error in command '" << lcommands.at(c) << "'" << endl;
+                     std::cout << "system.run command: error in command '" << lcommands.at(c) << "'" << std::endl;
 
                   return false;
                }
@@ -139,7 +139,7 @@ public:
       {
          string module_name = scanner.next();
 
-         stringstream ss;
+         std::stringstream ss;
 
          if (scanner.hasNext()) {
             string new_word = scanner.next();
@@ -147,7 +147,7 @@ public:
             {
                string* r = Command<R, ADS, DS>::solveVars(dictionary, ldictionary, new_word);
                if (!r) {
-                  cout << "module " << id() << " error: failed to solve variable '" << new_word << "'" << endl;
+                  std::cout << "module " << id() << " error: failed to solve variable '" << new_word << "'" << std::endl;
                   return false;
                }
 
@@ -160,7 +160,7 @@ public:
          ss << scanner.rest();
 
          if (!Command<R, ADS, DS>::run_module(module_name, allCommands, allFunctions, factory, dictionary, ldictionary, ss.str())) {
-            cout << "system.run command: error in command!" << endl;
+            std::cout << "system.run command: error in command!" << std::endl;
             return false;
          } else {
             if (!Command<R, ADS, DS>::testUnused(id(), scanner))
@@ -172,7 +172,7 @@ public:
    }
 
    // runs raw module without preprocessing
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return new string(input); // disable pre-processing
    }

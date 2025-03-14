@@ -48,7 +48,7 @@ private:
    int i;
 
 public:
-   IteratorNSSeqMultiRoute(vector<NSIterator<Route, DS>*>& it)
+   IteratorNSSeqMultiRoute(std::vector<NSIterator<Route, DS>*>& it)
      : iterators(it)
    {
       i = 0;

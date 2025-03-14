@@ -42,18 +42,18 @@ public:
 
    ProblemInstance(Scanner& scanner)
    {
-      cout << "Reading problem instance" << endl;
+      std::cout << "Reading problem instance" << std::endl;
       width = *scanner.nextInt();
       height = *scanner.nextInt();
 
-      cout << "width = " << width << "; height = " << height << ";" << endl;
-      cout << "pieces" << endl;
+      std::cout << "width = " << width << "; height = " << height << ";" << std::endl;
+      std::cout << "pieces" << std::endl;
 
       pieces.clear();
       int numPieces = width * height;
 
       for (int i = 0; i < numPieces; i++) {
-         cout << i << ": ";
+         std::cout << i << ": ";
 
          int down = *scanner.nextInt();
          int left = *scanner.nextInt();
@@ -62,7 +62,7 @@ public:
 
          Piece& p = *new Piece(down, left, up, right, i, 0);
 
-         cout << p << endl;
+         std::cout << p << std::endl;
 
          pieces.push_back(p);
       }

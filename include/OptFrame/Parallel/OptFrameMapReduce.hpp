@@ -81,11 +81,11 @@ class MyMaPIMapper
 
   void setHeuristic(HTrajectory<R, ADS, DS>* h) { hmap = h; }
 
-  virtual vector<pair<int, pair<R, double>>> map(
+  virtual std::vector<std::pair<int, pair<R, double>>> map(
       pair<R, RankAndStop> a)  // TODO
   {
-    cout << "[MyMaPIMapper::map] begin " << a.second.first << endl;  // exit(1);
-    vector<pair<int, pair<R, double>>> m;
+    std::cout << "[MyMaPIMapper::map] begin " << a.second.first << std::endl;  // exit(1);
+    std::vector<std::pair<int, pair<R, double>>> m;
 
     Solution<R, ADS> s(a.first);
 
@@ -95,8 +95,8 @@ class MyMaPIMapper
 
     R mapped = R(s.getR());
 
-    m.push_back(make_pair(-1, make_pair(mapped, e.evaluation())));
-    cout << "[MyMaPIMapper::map] end " << a.second << " " << m << endl;
+    m.push_back(std::make_pair(-1, make_pair(mapped, e.evaluation())));
+    std::cout << "[MyMaPIMapper::map] end " << a.second << " " << m << std::endl;
 
     return m;
   }
@@ -120,8 +120,8 @@ class MyMaPIReducer
 
   void setHeuristic(HTrajectory<R, ADS, DS>* h) { hreduce = h; }
 
-  virtual pair<int, R> reduce(pair<int, vector<pair<R, double>>> bs) {
-    // cout << "[MyMaPIReducer::reduce] begin " << bs.first << endl;
+  virtual pair<int, R> reduce(pair<int, std::vector<std::pair<R, double>>> bs) {
+    // std::cout << "[MyMaPIReducer::reduce] begin " << bs.first << std::endl;
 
     //
 
@@ -175,7 +175,7 @@ class MyMaPIReducer
       // &popReduced.at(i);
     }
 
-    // cout << "[MyMaPIReducer::reduce] end " << bs.first << endl;
+    // std::cout << "[MyMaPIReducer::reduce] end " << bs.first << std::endl;
 
     return pair<int, R>(bs.first, reduced);
   }
@@ -214,12 +214,12 @@ class OptFrameMapReduce : public HTrajectory<R, ADS, DS> {
 
   virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
                     double target_f) {
-    vector<pair<R, RankAndStop>> input;
+    std::vector<std::pair<R, RankAndStop>> input;
     for (int i = 0; i < mapReduce.getMPISize() - 1; i++)
       input.push_back(
           make_pair(s.getR(), make_pair(i, make_pair(timelimit, target_f))));
 
-    vector<pair<int, R>> output = mapReduce.run(mapper, reducer, input);
+    std::vector<std::pair<int, R>> output = mapReduce.run(mapper, reducer, input);
 
     Solution<R, ADS>& s1 = s.clone();
     if (output.size() > 0) s1.setR(output[0].second);

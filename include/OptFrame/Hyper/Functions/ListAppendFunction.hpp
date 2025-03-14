@@ -57,7 +57,7 @@ public:
 		return "list.append( list1 list2 ) : return append list1 with list2";
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, const map< string, string >&, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, const map< string, string >&, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 

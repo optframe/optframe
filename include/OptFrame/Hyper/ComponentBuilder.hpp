@@ -67,12 +67,12 @@ class ComponentBuilder : public Component {
   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                                     string family = "") = 0;
 
-  virtual vector<pair<std::string, std::string>> parameters() = 0;
+  virtual std::vector<std::pair<std::string, std::string>> parameters() = 0;
 
   virtual bool canBuild(std::string) = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":ComponentBuilder:";
     return ss.str();
   }

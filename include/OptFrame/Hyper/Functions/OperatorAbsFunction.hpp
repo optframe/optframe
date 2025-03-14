@@ -62,9 +62,9 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
-		//cout << "abs: '" << body << "'" << endl;
+		//cout << "abs: '" << body << "'" << std::endl;
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
@@ -79,7 +79,7 @@ public:
 		}
 		catch(ConversionError& e)
 		{
-			cout << "abs function error: not a number! ('" << a << "')" << endl;
+			cout << "abs function error: not a number! ('" << a << "')" << std::endl;
 			return nullptr;
 		}
 

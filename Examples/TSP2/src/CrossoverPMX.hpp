@@ -74,8 +74,8 @@ class CrossoverPMX : public GeneralCrossover<vector<int>, ADS> {
     vector<int> middle(A.begin() + i, A.begin() + j);
     vector<int> middleB(B.begin() + i, B.begin() + j);
 
-    //cout << "MIDDLE=" << middle << endl;
-    //cout << "MIDDLEB=" << middleB << endl;
+    //cout << "MIDDLE=" << middle << std::endl;
+    //cout << "MIDDLEB=" << middleB << std::endl;
 
     // mark repeated elements with -1
     for (unsigned k = 0; k < middle.size(); k++)
@@ -103,7 +103,7 @@ class CrossoverPMX : public GeneralCrossover<vector<int>, ADS> {
     for (unsigned k = i; k < j; k++)
       child[k] = A[k];
 
-    //cout << "Bug child (B+middle)=" << child << endl;
+    //cout << "Bug child (B+middle)=" << child << std::endl;
 
     // fix using the map
     for (int k = ((int)child.size()) - 1; k >= 0; k--) {
@@ -118,7 +118,7 @@ class CrossoverPMX : public GeneralCrossover<vector<int>, ADS> {
   }
 
   void classicTest() {
-    cout << "========== PMX test begins ==========" << endl;
+    std::cout << "========== PMX test begins ==========" << std::endl;
     vector<int> v1;
     v1.push_back(9);
     v1.push_back(8);
@@ -144,14 +144,14 @@ class CrossoverPMX : public GeneralCrossover<vector<int>, ADS> {
 
     vector<int> r = doCross(v1, v2, 3, 8);
 
-    cout << "v1=" << v1 << endl;
-    cout << "v2=" << v2 << endl;
-    cout << "r=" << r << endl;
+    std::cout << "v1=" << v1 << std::endl;
+    std::cout << "v2=" << v2 << std::endl;
+    std::cout << "r=" << r << std::endl;
 
     vector<int> r2 = doCross(v2, v1, 3, 8);
-    cout << "r2=" << r2 << endl;
+    std::cout << "r2=" << r2 << std::endl;
 
-    cout << "========= PMX test finished =========" << endl;
+    std::cout << "========= PMX test finished =========" << std::endl;
   }
 };
 

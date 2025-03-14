@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
   // optframe.execute("to_string $best-solution bs_str");
   // optframe.execute("echo $bs_str");
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
 
   return 0;
 }

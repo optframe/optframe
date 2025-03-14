@@ -390,7 +390,7 @@ class RSolution : public Component {
   // begin Object part
   // =================
 
-  static string idComponent() {
+  static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":RSolution";
     return ss.str();

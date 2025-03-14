@@ -84,12 +84,12 @@ class MOBestImprovement : public MOLocalSearch<XES, XMES> {
     while (!it.isDone()) {
       Move<XMES>* move = &it.current();
       if (move->canBeApplied(s)) {
-        //				cout << "before anything" << endl;
+        //				cout << "before anything" << std::endl;
         //				sMev.print();
         Move<XMES>* mov_rev = move->apply(sMev, s);
         v_e.evaluate(sMev, s);
 
-        //				cout << "after move" << endl;
+        //				cout << "after move" << std::endl;
         //				sMev.print();
 
         pManager.addSolution(&s, &sMev);
@@ -100,7 +100,7 @@ class MOBestImprovement : public MOLocalSearch<XES, XMES> {
 
         //				v_e.evaluate(sMev, s);
 
-        //				cout << "reverse move" << endl;
+        //				cout << "reverse move" << std::endl;
         //				sMev.print();
         //				getchar();
         //				for (int eI = 0; eI < sMev.size(); eI++)
@@ -119,24 +119,24 @@ class MOBestImprovement : public MOLocalSearch<XES, XMES> {
     return (s == idComponent()) || (MOLocalSearch<S, XMEv>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << MOLocalSearch<XES, XMES>::idComponent() << ":MO-BI";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "MOBI: " << nsSeq.toString();
     return ss.str();
   }
 
   virtual string log() const {
-    stringstream ss;
+    std::stringstream ss;
     ss << sum_time;
     return ss.str();
   }

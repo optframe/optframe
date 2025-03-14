@@ -72,18 +72,18 @@ class SingleObjSearchToLocalSearch : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "SingleObjSearchToLocalSearch";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   void print() const override {
-    cout << "SingleObjSearchToLocalSearch with sios: ";
+    std::cout << "SingleObjSearchToLocalSearch with sios: ";
     sios->print();
   }
 };
@@ -120,9 +120,9 @@ class SingleObjSearchToLocalSearchBuilder : public LocalSearchBuilder<XES> {
     return new SingleObjSearchToLocalSearch<XES>(eval, h);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
                                "evaluation function"));
     params.push_back(
         make_pair(SingleObjSearch<XES>::idComponent(), "single obj search"));
@@ -134,8 +134,8 @@ class SingleObjSearchToLocalSearchBuilder : public LocalSearchBuilder<XES> {
     return component == SingleObjSearchToLocalSearch<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent()
        << "SingleObjSearchToLocalSearch";
     return ss.str();
@@ -143,7 +143,7 @@ class SingleObjSearchToLocalSearchBuilder : public LocalSearchBuilder<XES> {
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

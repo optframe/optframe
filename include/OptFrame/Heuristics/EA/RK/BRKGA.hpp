@@ -156,17 +156,17 @@ class BRKGABuilder : public GlobalSearchBuilder<XES> {
     return sos;
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(DecoderRandomKeys<XES, KeyType>::idComponent(), "decoder"));
-    params.push_back(make_pair(InitialEPopulation<XES2>::idComponent(),
+    params.push_back(std::make_pair(InitialEPopulation<XES2>::idComponent(),
                                "initial epopulation"));
-    params.push_back(make_pair("OptFrame:unsigned", "popSize"));
-    params.push_back(make_pair("OptFrame:unsigned", "numGen"));
-    params.push_back(make_pair("OptFrame:double", "fracTOP"));
-    params.push_back(make_pair("OptFrame:double", "fracBOT"));
-    params.push_back(make_pair("OptFrame:double", "probElitism"));
+    params.push_back(std::make_pair("OptFrame:unsigned", "popSize"));
+    params.push_back(std::make_pair("OptFrame:unsigned", "numGen"));
+    params.push_back(std::make_pair("OptFrame:double", "fracTOP"));
+    params.push_back(std::make_pair("OptFrame:double", "fracBOT"));
+    params.push_back(std::make_pair("OptFrame:double", "probElitism"));
 
     return params;
   }
@@ -175,8 +175,8 @@ class BRKGABuilder : public GlobalSearchBuilder<XES> {
     return component == BRKGA<XES, double>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << GlobalSearchBuilder<XES>::idComponent() << EA::family() << ":"
        << RK::family() << "BRKGA";
     return ss.str();

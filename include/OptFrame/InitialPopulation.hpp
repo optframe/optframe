@@ -54,8 +54,8 @@ class InitialEPopulation : public Component {
   virtual X2ES generateEPopulation(unsigned populationSize,
                                    double timelimit) = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":InitialEPopulation"
        << Domain::getAlternativeDomain<X2ES>("<X2ESf64>");
     return ss.str();
@@ -89,8 +89,8 @@ class InitialPopulation : public Component {
 
   virtual X2S generatePopulation(unsigned populationSize, double timelimit) = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":InitialPopulation"
        << Domain::getAlternativeDomain<X2S>("<X2S>");
     return ss.str();
@@ -125,8 +125,8 @@ class BasicInitialPopulation : public InitialPopulation<S, X2S> {
     // return *p;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialPopulation<S, X2S>::idComponent() << ":BasicInitialPopulation";
     return ss.str();
   }
@@ -173,8 +173,8 @@ class GRInitialPopulation : public InitialPopulation<S, X2S> {
     return pop;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialPopulation<S, X2S>::idComponent() << ":GRInitialPopulation";
     return ss.str();
   }
@@ -193,7 +193,7 @@ class SimpleInitialPopulation {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using Population = vector<pair<Individual, Fitness>>;
+  using Population = std::vector<std::pair<Individual, Fitness>>;
 
  public:
   unsigned int initialPopSize;
@@ -222,7 +222,7 @@ class RandomInitialPopulation : public SimpleInitialPopulation<XES> {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using Population = vector<pair<Individual, Fitness>>;
+  using Population = std::vector<std::pair<Individual, Fitness>>;
 
  public:
   RandomInitialPopulation() = delete;

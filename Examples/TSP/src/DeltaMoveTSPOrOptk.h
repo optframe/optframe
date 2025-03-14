@@ -45,7 +45,7 @@ class DeltaMoveTSPOrOptk : public MoveTSPOrOptk<int> {
     /*
               if(!tsp)
               {
-                      cout << "Error: tsp problem is NULL!" << endl;
+                      std::cout << "Error: tsp problem is NULL!" << std::endl;
                       print();
                       exit(1);
               }
@@ -110,43 +110,43 @@ class DeltaMoveTSPOrOptk : public MoveTSPOrOptk<int> {
     } else {
       if (i < j) {
         f -= (*tsp->dist)(rep[bi], rep[i]);
-        // cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
+        // std::cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
         f -= (*tsp->dist)(rep[lik], rep[aik]);
-        // cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
+        // std::cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
         f -= (*tsp->dist)(rep[j], rep[aj]);
-        // cout << "-d(" << rep[j] << "," << rep[aj] << ") ";
+        // std::cout << "-d(" << rep[j] << "," << rep[aj] << ") ";
 
         f += (*tsp->dist)(rep[bi], rep[aik]);
-        // cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
+        // std::cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
         f += (*tsp->dist)(rep[j], rep[i]);
-        // cout << "+d(" << rep[j] << "," << rep[i] << ") ";
+        // std::cout << "+d(" << rep[j] << "," << rep[i] << ") ";
         f += (*tsp->dist)(rep[lik], rep[aj]);
-        // cout << "+d(" << rep[lik] << "," << rep[aj] << ") ";
+        // std::cout << "+d(" << rep[lik] << "," << rep[aj] << ") ";
       } else  // i > j
       {
         f -= (*tsp->dist)(rep[bi], rep[i]);
-        // cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
+        // std::cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
         f -= (*tsp->dist)(rep[lik], rep[aik]);
-        // cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
+        // std::cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
         f -= (*tsp->dist)(rep[bj], rep[j]);
-        // cout << "-d(" << rep[bj] << "," << rep[j] << ") ";
+        // std::cout << "-d(" << rep[bj] << "," << rep[j] << ") ";
 
         f += (*tsp->dist)(rep[bi], rep[aik]);
-        // cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
+        // std::cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
         f += (*tsp->dist)(rep[bj], rep[i]);
-        // cout << "+d(" << rep[bj] << "," << rep[i] << ") ";
+        // std::cout << "+d(" << rep[bj] << "," << rep[i] << ") ";
         f += (*tsp->dist)(rep[lik], rep[j]);
-        // cout << "+d(" << rep[lik] << "," << rep[j] << ") ";
+        // std::cout << "+d(" << rep[lik] << "," << rep[j] << ") ";
       }
     }
 
-    // cout << endl;
+    // std::cout << std::endl;
 
     // return new MoveCost<>(f, 0);
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMoveTSPOrOptk");
     return idComp;
@@ -158,8 +158,8 @@ class DeltaMoveTSPOrOptk : public MoveTSPOrOptk<int> {
   }
 
   void print() const override {
-    cout << "DeltaMoveTSPOrOpt{K=" << k << "}";
-    cout << "(" << i << ";" << j << ")" << endl;
+    std::cout << "DeltaMoveTSPOrOpt{K=" << k << "}";
+    std::cout << "(" << i << ";" << j << ")" << std::endl;
   }
 };
 

@@ -50,8 +50,8 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
     // op<XES>& star = this->best;
     //
     op<XES> star;  // TODO: get best from 'searchBy'
-    // cout << "SimpleLocalSearch search(" << target_f << "," << timelimit <<
-    // ")" << endl;
+    // std::cout << "SimpleLocalSearch search(" << target_f << "," << timelimit <<
+    // ")" << std::endl;
 
     Timer tnow;
 
@@ -64,8 +64,8 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
 
     // delete &s;
 
-    // return make_optional(make_pair(*s, e));
-    // star = make_optional(make_pair(*s, e));
+    // return make_optional(std::make_pair(*s, e));
+    // star = make_optional(std::make_pair(*s, e));
     star = make_optional(*pse);
     // this->best = star;
     return {SearchStatus::NO_REPORT, star};
@@ -75,8 +75,8 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
     return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "SimpleLocalSearch";
     return ss.str();
   }
@@ -84,10 +84,10 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
   std::string id() const override { return idComponent(); }
 
   void print() const override {
-    cout << "SimpleLocalSearch with:" << endl;
-    cout << "constructive: ";
+    std::cout << "SimpleLocalSearch with:" << std::endl;
+    std::cout << "constructive: ";
     constructive->print();
-    cout << "local search: ";
+    std::cout << "local search: ";
     localSearch->print();
   }
 };
@@ -129,11 +129,11 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
     return new SimpleLocalSearch<XES>(eval, constructive, h);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
                                "evaluation function"));
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));

@@ -43,23 +43,23 @@ class TSPProblemCommand {
   bool registerComponent(
       Component& component, string type, string name,
       HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf,
-      map<string, string>& dictionary) {
+      map<std::string, std::string>& dictionary) {
     int idx = hf.addComponent(component, type);
-    stringstream ss;
+    std::stringstream ss;
     ss << type << " " << idx;
     return true;  // defineText(name, ss.str(), dictionary);
   }
 
   bool load(string filename,
             HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf,
-            map<string, string>& dictionary,
+            map<std::string, std::string>& dictionary,
             map<string, vector<string>>& ldictionary) {
     File* file;
 
     try {
       file = new File(filename);
     } catch (FileNotFound& f) {
-      cout << "File '" << filename << "' not found" << endl;
+      std::cout << "File '" << filename << "' not found" << std::endl;
       return false;
     }
 
@@ -116,20 +116,20 @@ class TSPProblemCommand {
 
     hf.addComponent(*ilsl_pert);
 
-    cout << "problem '" << filename << "' loaded successfully" << endl;
+    std::cout << "problem '" << filename << "' loaded successfully" << std::endl;
 
     return true;
   }
 
   bool unload(HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& factory,
-              map<string, string>& dictionary,
+              map<std::string, std::string>& dictionary,
               map<string, vector<string>>& ldictionary) {
     if (p) delete p;
     p = NULL;
 
-    cout << "problem instance for TSP unloaded successfully (use 'drop_all' if "
+    std::cout << "problem instance for TSP unloaded successfully (use 'drop_all' if "
             "you want to remove all components)"
-         << endl;
+         << std::endl;
 
     return true;
   }

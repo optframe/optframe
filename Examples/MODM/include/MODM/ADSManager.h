@@ -73,39 +73,39 @@ class MODMADSManager : public ADSManager<RepMODM, AdsMODM, SolutionMODM> {
     newAds.totalRevenue = _totalRevenue;
 
     if (Component::verbose) {
-      cout << "Prints Initialize ADS" << endl;
-      cout << "newAds.clientOffers:";
-      cout << newAds.clientOffers << endl;
-      cout << "newAds.productOffers:";
-      cout << newAds.productOffers << endl;
-      cout << "newAds.totalCost:";
-      cout << newAds.totalCost << endl;
-      cout << "newAds.totalRevenue:";
-      cout << newAds.totalRevenue << endl << endl;
+      std::cout << "Prints Initialize ADS" << std::endl;
+      std::cout << "newAds.clientOffers:";
+      std::cout << newAds.clientOffers << std::endl;
+      std::cout << "newAds.productOffers:";
+      std::cout << newAds.productOffers << std::endl;
+      std::cout << "newAds.totalCost:";
+      std::cout << newAds.totalCost << std::endl;
+      std::cout << "newAds.totalRevenue:";
+      std::cout << newAds.totalRevenue << std::endl << std::endl;
     }
   }
 
   virtual bool compareADS(const AdsMODM& _ads1, const AdsMODM& _ads2) {
     if (_ads1.clientOffers != _ads1.clientOffers) {
-      cout << "Error on Client Offers Vector!" << endl;
+      std::cout << "Error on Client Offers Vector!" << std::endl;
       // getchar();
       return false;
     }
 
     if (_ads1.productOffers != _ads1.productOffers) {
-      cout << "Error on productOffers Vector!" << endl;
+      std::cout << "Error on productOffers Vector!" << std::endl;
       // getchar();
       return false;
     }
 
     if (_ads1.totalCost != _ads1.totalCost) {
-      cout << "Error on totalCost Vector!" << endl;
+      std::cout << "Error on totalCost Vector!" << std::endl;
       // getchar();
       return false;
     }
 
     if (_ads1.totalRevenue != _ads1.totalRevenue) {
-      cout << "Error on totalRevenue Vector!" << endl;
+      std::cout << "Error on totalRevenue Vector!" << std::endl;
       // getchar();
       return false;
     }
@@ -113,14 +113,14 @@ class MODMADSManager : public ADSManager<RepMODM, AdsMODM, SolutionMODM> {
   }
 
   virtual void printADS(const AdsMODM& ads) {
-    cout << "---------------------------------" << endl;
-    cout << "ADS print:" << endl;
-    cout << ads.clientOffers << endl;
-    cout << ads.productOffers << endl;
-    cout << ads.totalCost << endl;
-    cout << ads.totalRevenue << endl;
-    cout << "FINISH ADS print" << endl;
-    cout << "---------------------------------" << endl;
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "ADS print:" << std::endl;
+    std::cout << ads.clientOffers << std::endl;
+    std::cout << ads.productOffers << std::endl;
+    std::cout << ads.totalCost << std::endl;
+    std::cout << ads.totalRevenue << std::endl;
+    std::cout << "FINISH ADS print" << std::endl;
+    std::cout << "---------------------------------" << std::endl;
   }
 };
 

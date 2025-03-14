@@ -62,12 +62,12 @@ public:
       return u;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -101,7 +101,7 @@ public:
 
       FILE* file = fopen(filename.c_str(), "a");
       if (!file) {
-         cout << "Error creating file '" << filename << "'" << endl;
+         std::cout << "Error creating file '" << filename << "'" << std::endl;
          return false;
       }
 
@@ -126,13 +126,13 @@ public:
       vector<long double> s_fo_tests(n);
 
       for (int i = 0; i < n; i++) {
-         cout << "Test " << i << "... Running";
+         std::cout << "Test " << i << "... Running";
          Timer t(false);
 
          pair<Solution<R, ADS>&, Evaluation<DS>&>* result = h->search(timelimit, tf);
 
          if (!result) {
-            cout << "ERROR IN TEST MODULE, NO RESULT!" << endl;
+            std::cout << "ERROR IN TEST MODULE, NO RESULT!" << std::endl;
             exit(1);
          }
 
@@ -157,7 +157,7 @@ public:
          if (t_now > max_t)
             max_t = t_now;
 
-         cout << "... Finished! (" << t.now() << "secs.)" << endl;
+         std::cout << "... Finished! (" << t.now() << "secs.)" << std::endl;
 
          if (!s_star)
             s_star = &s2->clone();
@@ -203,7 +203,7 @@ public:
       str << "OptFrame:Solution " << new_id;
       string s_new_id = str.str();
 
-      cout << "'" << s_new_id << "' added." << endl;
+      std::cout << "'" << s_new_id << "' added." << std::endl;
 
       if (scan_rest.hasNext()) {
          string new_name = scan_rest.next();
@@ -213,7 +213,7 @@ public:
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

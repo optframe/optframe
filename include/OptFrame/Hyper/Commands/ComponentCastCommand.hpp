@@ -48,29 +48,29 @@ public:
       return u;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "component.cast: " << input << endl;
+      //cout << "component.cast: " << input << std::endl;
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string comp = scanner.next();
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       int number = *scanner.nextInt();
 
       if (!scanner.hasNext()) {
-         cout << "module " << id() << " error: missing type name!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "module " << id() << " error: missing type name!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -80,18 +80,18 @@ public:
       if (scanner.hasNext())
          variable = scanner.next();
 
-      //cout << "will look for action: '" << type << "'" << endl;
+      //cout << "will look for action: '" << type << "'" << std::endl;
 
       for (unsigned a = 0; a < factory.actions.size(); a++)
          if (factory.actions[a]->handleComponent(type)) {
             return factory.actions[a]->doCast(comp, number, type, variable, factory, dictionary);
          }
 
-      cout << "component.cast error: action with cast handle for type '" << type << "' not found!" << endl;
+      std::cout << "component.cast error: action with cast handle for type '" << type << "' not found!" << std::endl;
       return false;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

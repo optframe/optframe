@@ -64,7 +64,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -132,14 +132,14 @@ public:
 
 		scommand << " )\" | R --no-save | grep p-value";
 
-		//cout << scommand.str() << endl;
+		//cout << scommand.str() << std::endl;
 		//if(jitter)
-		//	cout << "NEEDED JITTER!" << endl;
+		//	cout << "NEEDED JITTER!" << std::endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == nullptr)
 		{
-		    cout << "mann_u_test function: PIPE NOT OPEN!" << endl;
+		    std::cout << "mann_u_test function: PIPE NOT OPEN!" << std::endl;
 		    return nullptr;
 		}
 
@@ -155,7 +155,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "mann_u_test function: OUTPUT '" << output << "'" << endl;
+		//cout << "mann_u_test function: OUTPUT '" << output << "'" << std::endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return nullptr;
 
@@ -170,7 +170,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "mann_u_test function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "mann_u_test function warning: returning 'NA' result! p-value = 1.0" << std::endl;
 			pvalue = 1;
 		}
 		else

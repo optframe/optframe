@@ -69,7 +69,7 @@ class NSSeqTSPOrOptk : public NSSeq<XES> {
 
     if (n - k <= 0) {
       // THROW EXCEPTION!
-      cerr << "CANNOT GENERATE MOVE OPTK FOR SOLUTION " << rep << endl;
+      cerr << "CANNOT GENERATE MOVE OPTK FOR SOLUTION " << rep << std::endl;
       exit(1);
       // return *new MOVE(0, 0, k, p);
     }
@@ -83,7 +83,7 @@ class NSSeqTSPOrOptk : public NSSeq<XES> {
     // S sol(rep); // TODO: think
     // if (!m->canBeApplied(sol)) {
     if (!m->canBeApplied(se)) {
-      cout << "ERROR IN GENERATION!" << endl;
+      std::cout << "ERROR IN GENERATION!" << std::endl;
       m->print();
       exit(1);
     }
@@ -106,20 +106,20 @@ class NSSeqTSPOrOptk : public NSSeq<XES> {
     return uptr<NSIterator<XES>>(new NSITERATOR(r.size(), k, p));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NSSeq<XES>::idComponent() << ":NSSeqTSPOrOptk";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NSSeq<XES>::compatible(s));
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqTSPOrOpt{K=" << k << "} with move: " << MOVE::idComponent();
     return ss.str();
   }

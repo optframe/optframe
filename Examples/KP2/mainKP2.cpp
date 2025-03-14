@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
         std::cerr << "nullptr";
       std::cerr << std::endl;
     }
-    std::cerr << endl;
+    std::cerr << std::endl;
   }
 
   std::cout << "Best solution: " << best.first.getR() << std::endl;

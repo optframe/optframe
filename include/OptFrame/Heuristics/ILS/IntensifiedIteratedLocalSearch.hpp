@@ -67,7 +67,7 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
   pair<Solution<R, ADS>&, Evaluation<>&>* search(
       double timelimit = 100000000, double target_f = 0,
       const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr) {
-    cout << "IILS search(" << target_f << "," << timelimit << ")" << endl;
+    std::cout << "IILS search(" << target_f << "," << timelimit << ")" << std::endl;
 
     Timer tnow;
 
@@ -84,7 +84,7 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
     Solution<R, ADS>* sStar = &s.clone();
     Evaluation<>* eStar = &e.clone();
 
-    cout << "IILS starts: ";
+    std::cout << "IILS starts: ";
     e.print();
 
     do {
@@ -126,8 +126,8 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "IILS:";
     return ss.str();
   }

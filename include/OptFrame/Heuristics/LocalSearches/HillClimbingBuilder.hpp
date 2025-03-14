@@ -35,9 +35,9 @@ class HillClimbingBuilder : public LocalSearchBuilder<XES> {
     return new HillClimbing<XES>(eval, h);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
                                "evaluation function"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
@@ -50,14 +50,14 @@ class HillClimbingBuilder : public LocalSearchBuilder<XES> {
   }
 
   static std::string idComponent() {
-    stringstream ss;
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":HC";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

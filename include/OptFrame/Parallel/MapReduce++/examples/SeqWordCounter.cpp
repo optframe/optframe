@@ -35,9 +35,9 @@ class MyMapper : public SeqMR_Mapper<string, string, string, int, int>
 public:
    MyMapper(MapReduce<string, string, string, int, int>* mr)
      : SeqMR_Mapper<string, string, string, int, int>(mr){};
-   virtual vector<pair<string, int>> map(pair<string, string> a) // Map function implementation
+   virtual std::vector<std::pair<string, int>> map(pair<std::string, std::string> a) // Map function implementation
    {
-      vector<pair<string, int>> mapped;
+      std::vector<std::pair<string, int>> mapped;
       Scanner scan(a.second);
       scan.useSeparators(string(" \n\r\t\\\'\"!@#^&*()+={[}]|:;,<>./?"));
       while (scan.hasNext())
@@ -54,7 +54,7 @@ public:
    virtual pair<string, int> reduce(pair<string, vector<int>> bs) // Reduce function implementation
    {
       int reduced = 0;
-      for (vector<int>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
+      for (std::vector<int>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
          reduced += *it;
       return pair<string, int>(bs.first, reduced);
    };
@@ -63,17 +63,17 @@ public:
 int
 main()
 {
-   cout << "SeqMR_WorldCounter test" << endl;
+   std::cout << "SeqMR_WorldCounter test" << std::endl;
 
-   vector<pair<string, string>> input;
-   input.push_back(pair<string, string>("doc", "content : this is the content of the text ."));
+   std::vector<std::pair<std::string, std::string>> input;
+   input.push_back(pair<std::string, std::string>("doc", "content : this is the content of the text ."));
 
    SeqMR_MapReduce<string, string, string, int, int> mapReduce;
    MyMapper mapper(&mapReduce);
    MyReducer reducer(&mapReduce);
 
-   vector<pair<string, int>> output = mapReduce.run(mapper, reducer, input);
-   cout << output << endl;
+   std::vector<std::pair<string, int>> output = mapReduce.run(mapper, reducer, input);
+   std::cout << output << std::endl;
 
    return 0;
 }

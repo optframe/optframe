@@ -92,15 +92,15 @@ class ComponentToStringCommand : public Command<R, ADS, DS> {
       \endportuguese
   */
 
-  bool run(vector<Command<R, ADS, DS>*>& all_modules,
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
            vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
            HeuristicFactory<R, ADS, DS>& factory,
-           map<string, string>& dictionary,
+           map<std::string, std::string>& dictionary,
            map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);
 
     if (!scanner.hasNext()) {
-      cout << "Usage: " << usage() << endl;
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
     }
 
@@ -111,12 +111,12 @@ class ComponentToStringCommand : public Command<R, ADS, DS> {
       text = comp->toString();
     else {
       // text = "nullptr Component!";
-      cout << "component.to_string command: nullptr Component!" << endl;
+      std::cout << "component.to_string command: nullptr Component!" << std::endl;
       return false;
     }
 
     if (!scanner.hasNext()) {
-      cout << text << endl;
+      std::cout << text << std::endl;
       return true;
     } else {
       string name = scanner.next();
@@ -132,7 +132,7 @@ class ComponentToStringCommand : public Command<R, ADS, DS> {
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary,
+      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
       const map<string, vector<string>>& ldictionary, string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);

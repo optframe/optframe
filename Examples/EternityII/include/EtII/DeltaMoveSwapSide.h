@@ -48,7 +48,7 @@ class DeltaMoveSwapSide : public MoveSwapSide {
        }
        */
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = MoveSwapSide::idComponent();
     idComp.append(":DeltaMoveSwapSide");
     return idComp;
@@ -60,8 +60,8 @@ class DeltaMoveSwapSide : public MoveSwapSide {
   }
 
   void print() const override {
-    cout << "DeltaMoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
-         << y2 << ")" << endl;
+    std::cout << "DeltaMoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
+         << y2 << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:DeltaMoveSwapSide"; }

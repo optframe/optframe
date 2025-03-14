@@ -68,7 +68,7 @@ std::cout << "spent time: " << t.now() << "s" << std::endl;
 ESolutionKP melhor = *searchOut.best;  //*sa.getBestSolution();
 std::cout << "======== Imprime melhor solução do SA ========" << std::endl;
 // imprime representação da melhor solução
-cout << melhor.first << endl;
+cout << melhor.first << std::endl;
 // imprime avaliação da melhor solução
 melhor.second.print();
 

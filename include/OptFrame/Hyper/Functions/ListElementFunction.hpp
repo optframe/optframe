@@ -57,13 +57,13 @@ public:
 	}
 
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scan(body);
 
 		if (!scan.hasNext())
 		{
-			cout << "Usage: " << usage() << endl;
+			cout << "Usage: " << usage() << std::endl;
 			return nullptr;
 		}
 
@@ -71,14 +71,14 @@ public:
 
 		if (n < 0)
 		{
-			cout << "N must be a positive value!" << endl;
+			cout << "N must be a positive value!" << std::endl;
 			return nullptr;
 		}
 
 		if (n == 0)
 		{
-			cout << "sorry, this is not C language :)" << endl;
-			cout << "0 not included, try a number from 1 to the size of the list" << endl;
+			cout << "sorry, this is not C language :)" << std::endl;
+			cout << "0 not included, try a number from 1 to the size of the list" << std::endl;
 			return nullptr;
 		}
 
@@ -86,7 +86,7 @@ public:
 
 		if (!scan.hasNext())
 		{
-			cout << "Usage: " << usage() << endl;
+			cout << "Usage: " << usage() << std::endl;
 			return nullptr;
 		}
 
@@ -102,7 +102,7 @@ public:
 
 		if (n >= ((int) list.size()))
 		{
-			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
+			cout << "N is too big! " << (n + 1) << " > " << list.size() << std::endl;
 			return nullptr;
 		}
 

@@ -51,7 +51,7 @@ public:
       double fo_cams_inv = 0;
       double fo_carregs_inv = 0;
 
-      //cout << "Avaliando.." << endl;
+      //cout << "Avaliando.." << std::endl;
 
       const Matrix<int>* viagens = &(rep.second);
       const vector<int>* alocacoes = &(rep.first);
@@ -63,7 +63,7 @@ public:
 		 if(alocacoes->at(i)>=0)
 		 if(vcarregs[alocacoes->at(i)])
 		 {
-		 cout << "Erro de carregadeiras repetidas!" << endl;
+		 std::cout << "Erro de carregadeiras repetidas!" << std::endl;
 		 exit(1);
 		 }
 		 else
@@ -76,16 +76,16 @@ public:
 		 {
 		 if((*viagens)(i,j) < 0 )
 		 {
-		 cout << (*rep) << endl;
-		 cout << "Problemas detectados (1)!"<<"["<<i<<","<<j<<"]"<<" abortando..." << endl;
+		 std::cout << (*rep) << std::endl;
+		 std::cout << "Problemas detectados (1)!"<<"["<<i<<","<<j<<"]"<<" abortando..." << std::endl;
 		 int jkl;
 		 cin >> jkl;
 		 exit(1);
 		 }
 		 if(((*alocacoes)[i] == -1) && ((*viagens)(i,j) > 0)  )
 		 {
-		 cout << (*rep) << endl;
-		 cout << "Problemas detectados (2)!"<<"["<<i<<","<<j<<"]"<<" abortando..." << endl;
+		 std::cout << (*rep) << std::endl;
+		 std::cout << "Problemas detectados (2)!"<<"["<<i<<","<<j<<"]"<<" abortando..." << std::endl;
 		 int jkl;
 		 cin >> jkl;
 		 exit(1);
@@ -93,7 +93,7 @@ public:
 
 		 if((*alocacoes)[i] > 0 && ((*viagens)(i,j) > 0) && !polad->isCompatible(j,(*alocacoes)[i]))
 		 {
-		 cout << "Erro de compatibilidade!"<<endl;
+		 std::cout << "Erro de compatibilidade!"<<endl;
 		 exit(1);
 		 }
 
@@ -130,9 +130,9 @@ public:
                   est_prod += (*viagens)(f, c) * polad.getL(c);
             }
 
-      //cout << "min_prod="<<min_prod << " de " << polad->getPrMin() << endl;
-      //cout << "est_prod="<<est_prod << " de " << polad->getPrEst() << endl;
-      //cout << "x: " << x << endl;
+      //cout << "min_prod="<<min_prod << " de " << polad->getPrMin() << std::endl;
+      //cout << "est_prod="<<est_prod << " de " << polad->getPrEst() << std::endl;
+      //cout << "x: " << x << std::endl;
       //cout << "espec: " <<espec<<endl;
 
       // ============================================
@@ -142,23 +142,23 @@ public:
       double dp_min = min_prod - polad.getPrMin();
       double dp_est = est_prod - polad.getPrEst();
 
-      //cout << "dp_min="<< dp_min << endl;
-      //cout << "dp_est="<< dp_est << endl;
+      //cout << "dp_min="<< dp_min << std::endl;
+      //cout << "dp_est="<< dp_est << std::endl;
 
       double dnp_min = std::max(0.0, -dp_min);
       double dpp_min = std::max(0.0, dp_min);
       double dnp_est = std::max(0.0, -dp_est);
       double dpp_est = std::max(0.0, dp_est);
 
-      //cout << "dnp_min="<< dnp_min << endl;
-      //cout << "dpp_min="<< dpp_min << endl;
-      //cout << "dnp_est="<< dnp_est << endl;
-      //cout << "dpp_est="<< dpp_est << endl;
+      //cout << "dnp_min="<< dnp_min << std::endl;
+      //cout << "dpp_min="<< dpp_min << std::endl;
+      //cout << "dnp_est="<< dnp_est << std::endl;
+      //cout << "dpp_est="<< dpp_est << std::endl;
 
       fo_prod_min_q = polad.getWnpMin() * dnp_min + polad.getWppMin() * dpp_min;
       fo_prod_est_q = polad.getWnpEst() * dnp_est + polad.getWppEst() * dpp_est;
 
-      //cout << "fo_prod_q=" << fo_prod_q << endl;
+      //cout << "fo_prod_q=" << fo_prod_q << std::endl;
 
       // ============================================
       //          Desvios de especificacao
@@ -191,7 +191,7 @@ public:
             if (polad.isCompatible(c, alocacoes->at(f)))
                usou[c] = usou[c] || ((*viagens)(f, c) > 0);
 
-      //cout << "usou: " << usou << endl;
+      //cout << "usou: " << usou << std::endl;
 
       fo_usou_q = 0;
       for (int c = 0; c < numCaminhoes; c++)
@@ -207,7 +207,7 @@ public:
 
       fo_q = fo_prod_min_q + fo_prod_est_q + fo_espec_q + fo_usou_q;
 
-      //cout << "fo_q=" << fo_q << endl;
+      //cout << "fo_q=" << fo_q << std::endl;
 
       // ============================================
       //          inviabilidade da producao
@@ -219,11 +219,11 @@ public:
       double theta_e_plus = 1000;
 
       /*
-		 cout << "Inv Prod: " << endl;
-		 cout << polad.getPlMin() << " - " << min_prod << "=" << polad.getPlMin() - min_prod << endl;
-		 cout << min_prod << " - " << polad.getPuMin() << "=" << min_prod - polad.getPuMin() << endl;
-		 cout << polad.getPlEst() << " - " << est_prod << "=" << polad.getPlEst() - est_prod << endl;
-		 cout << est_prod << " - " << polad.getPuEst() << "=" << est_prod - polad.getPuEst() << endl;
+		 std::cout << "Inv Prod: " << std::endl;
+		 std::cout << polad.getPlMin() << " - " << min_prod << "=" << polad.getPlMin() - min_prod << std::endl;
+		 std::cout << min_prod << " - " << polad.getPuMin() << "=" << min_prod - polad.getPuMin() << std::endl;
+		 std::cout << polad.getPlEst() << " - " << est_prod << "=" << polad.getPlEst() - est_prod << std::endl;
+		 std::cout << est_prod << " - " << polad.getPuEst() << "=" << est_prod - polad.getPuEst() << std::endl;
 		 */
 
       fo_prod_inv = 0;
@@ -273,7 +273,7 @@ public:
 
       fo_cams_inv = 0;
       for (int c = 0; c < numCaminhoes; c++) {
-         //cout << "Cam "<<c <<" worked for "<<tUso[c]<<" ("<<(tUso[c]/60.0)<<")" << ((tUso[c]/60.0)<=polad.getTxUtilCam()?" <= ":" > ")  << polad.getTxUtilCam() << endl;
+         //cout << "Cam "<<c <<" worked for "<<tUso[c]<<" ("<<(tUso[c]/60.0)<<")" << ((tUso[c]/60.0)<=polad.getTxUtilCam()?" <= ":" > ")  << polad.getTxUtilCam() << std::endl;
          fo_cams_inv += omega * polad.getL(c) * std::max(0.0, ((tUso[c] / 60.0) - polad.getTxUtilCam()));
       }
       //cout << "fo_cams_inv="<<fo_cams_inv<<endl;

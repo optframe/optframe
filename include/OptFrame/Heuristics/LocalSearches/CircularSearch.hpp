@@ -69,8 +69,8 @@ class CircularSearch : public LocalSearch<XES> {
           m->applyUpdate(se);
           eval->reevaluate(se);  // updates 'e'
 
-          // cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << "
-          // (antiga fo="<< old_f << ")" << endl << endl;
+          // std::cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << "
+          // (antiga fo="<< old_f << ")" << std::endl << std::endl;
 
           initial_w = w + 1;
 
@@ -87,13 +87,13 @@ class CircularSearch : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":CS";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

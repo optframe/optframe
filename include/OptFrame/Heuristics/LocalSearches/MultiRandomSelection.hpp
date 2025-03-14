@@ -192,8 +192,8 @@ class MultiRandomSelection : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":MIRS";
     return ss.str();
   }
@@ -201,7 +201,7 @@ class MultiRandomSelection : public LocalSearch<XES> {
   std::string id() const override { return idComponent(); }
 
   string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "MIRS: " << ns->toString();
     return ss.str();
   }
@@ -237,8 +237,8 @@ class MultiRandomSelectionBuilder : public LocalSearchBuilder<XES> {
     return new MultiRandomSelection<XES, XEv, XSH>(eval, nsseq);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
@@ -251,8 +251,8 @@ class MultiRandomSelectionBuilder : public LocalSearchBuilder<XES> {
     return component == MultiRandomSelection<XES, XEv>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":MI";
     return ss.str();
   }

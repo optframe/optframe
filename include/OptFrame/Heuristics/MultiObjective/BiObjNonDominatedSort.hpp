@@ -62,7 +62,7 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
     }
   */
 
-  // void assignFitnessGroup(vector<MOSIndividual<XMES2>>& g,
+  // void assignFitnessGroup(std::vector<MOSIndividual<XMES2>>& g,
   void assignFitnessGroup(const vector<int>& g,
                           vector<MOSIndividual<XMES2>>& Pop) override {
     // ASSUMES UNIQUE ELEMENTS IN 'Pop'
@@ -160,12 +160,12 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
         if (P[j].fitness == INF) break;
       P[j].fitness = rank;
       if (Component::verbose)
-        cout << "set rank " << rank << " to " << P[j] << std::endl;
+        std::cout << "set rank " << rank << " to " << P[j] << std::endl;
       int max_obj2 = P[j].mev.at(1).evaluation();
       int min_obj2 = max_obj2;
       if (Component::verbose) {
-        cout << "max_obj_second: " << max_obj2 << " ";
-        cout << "min_obj_second: " << min_obj2 << endl;
+        std::cout << "max_obj_second: " << max_obj2 << " ";
+        std::cout << "min_obj_second: " << min_obj2 << std::endl;
       }
       if ((!vDir[0]->isMinimization()) || (!vDir[1]->isMinimization())) {
         std::cout << "ERROR! Only supports MIN MIN bi-objectives!" << std::endl;
@@ -187,13 +187,13 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
 
           // add element (if improves the best known second obj)
           if (P[r].mev.at(1).evaluation() < min_obj2) {
-            // cout << "r:" << r << " ";
+            // std::cout << "r:" << r << " ";
             P[r].fitness = rank;
-            // cout << "rank: " << rank << " to ";
+            // std::cout << "rank: " << rank << " to ";
             // P[r]->print();
-            // cout << "min_obj2: " << min_obj2 << " => ";
+            // std::cout << "min_obj2: " << min_obj2 << " => ";
             min_obj2 = P[r].mev.at(1).evaluation();
-            // cout << min_obj2 << endl;
+            // std::cout << min_obj2 << std::endl;
             //
             // add another one to non-dominated front
             count_x++;
@@ -207,9 +207,9 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
             // <= is enough, because distance is better (and values are unique)
             if (P[m[z]].mev.at(1).evaluation() <= P[r].mev.at(1).evaluation()) {
               if (Component::verbose) {
-                cout << "r: " << r << " dominated by ";
-                // cout << m[z] << " m=" << m << endl;
-                cout << m[z] << " m=(TODO PRINT VECTOR)" << endl;
+                std::cout << "r: " << r << " dominated by ";
+                // std::cout << m[z] << " m=" << m << std::endl;
+                std::cout << m[z] << " m=(TODO PRINT VECTOR)" << std::endl;
               }
               nonDom = false;
               break;
@@ -220,30 +220,30 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
             P[r].fitness = rank;
             //
             if (Component::verbose) {
-              cout << "*r:" << r << " ";
-              cout << "rank: " << rank << " to ";
-              cout << "P[" << r << "]:" << P[r] << endl;
-              // cout << "m=" << m << endl;
-              cout << "m=(TODO PRINT VECTOR)" << endl;
+              std::cout << "*r:" << r << " ";
+              std::cout << "rank: " << rank << " to ";
+              std::cout << "P[" << r << "]:" << P[r] << std::endl;
+              // std::cout << "m=" << m << std::endl;
+              std::cout << "m=(TODO PRINT VECTOR)" << std::endl;
             }
             count_x++;
             m.push_back(r);
           } else {
             if (Component::verbose) {
-              cout << "r: " << r << " not selected! [";
-              cout << P[r].mev.at(0).evaluation() << ";";
-              cout << P[r].mev.at(1).evaluation() << "]" << endl;
+              std::cout << "r: " << r << " not selected! [";
+              std::cout << P[r].mev.at(0).evaluation() << ";";
+              std::cout << P[r].mev.at(1).evaluation() << "]" << std::endl;
             }
           }
         }
 
       if (Component::verbose) {
-        // cout << "FINISHED RANK " << rank << " WITH m=" << m << " ";
-        cout << "FINISHED RANK " << rank << " WITH m=(TODO PRINT VECTOR)" << " ";
-        cout << "ID_LIST on m: [";
-        for (unsigned i = 0; i < m.size(); i++) cout << P[m[i]].idx << " ";
-        cout << "]" << endl;
-        cout << endl;
+        // std::cout << "FINISHED RANK " << rank << " WITH m=" << m << " ";
+        std::cout << "FINISHED RANK " << rank << " WITH m=(TODO PRINT VECTOR)" << " ";
+        std::cout << "ID_LIST on m: [";
+        for (unsigned i = 0; i < m.size(); i++) std::cout << P[m[i]].idx << " ";
+        std::cout << "]" << std::endl;
+        std::cout << std::endl;
       }
       m.clear();
 

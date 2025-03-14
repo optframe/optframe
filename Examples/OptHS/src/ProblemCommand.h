@@ -54,15 +54,15 @@ class OptHSProblemCommand {
 
   bool registerComponent(sref<Component> component, string type, string name,
                          HeuristicFactory<ESolutionOptHS>& hf,
-                         map<string, string>& dictionary) {
+                         map<std::string, std::string>& dictionary) {
     int idx = hf.addComponent(component, type);
-    stringstream ss;
+    std::stringstream ss;
     ss << type << " " << idx;
     return true;  // defineText(name, ss.str(), dictionary);
   }
 
   bool load(string members, HeuristicFactory<ESolutionOptHS>& hf,
-            map<string, string>& dictionary,
+            map<std::string, std::string>& dictionary,
             map<string, vector<string>>& ldictionary) {
     Scanner scanner(members);
 
@@ -81,20 +81,20 @@ class OptHSProblemCommand {
     sref<NSSwap> ns = new NSSwap(*p, hf.getRandGen());
     hf.addComponent(ns, "OptFrame:NS");
 
-    cout << "problem '" << members << "' loaded successfully" << endl;
+    std::cout << "problem '" << members << "' loaded successfully" << std::endl;
 
     return true;
   }
 
   bool unload(HeuristicFactory<ESolutionOptHS>& factory,
-              map<string, string>& dictionary,
+              map<std::string, std::string>& dictionary,
               map<string, vector<string>>& ldictionary) {
     if (p) delete p;
     p = NULL;
 
-    cout << "problem instance for OptHS unloaded successfully (use 'drop_all' "
+    std::cout << "problem instance for OptHS unloaded successfully (use 'drop_all' "
             "if you want to remove all components)"
-         << endl;
+         << std::endl;
 
     return true;
   }

@@ -41,7 +41,7 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     // NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(s);
     NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(se);
 
-    cout << "TODO: BestImprovementLOS UNIMPLEMENTED!" << endl;
+    std::cout << "TODO: BestImprovementLOS UNIMPLEMENTED!" << std::endl;
 
     return;
 
@@ -122,7 +122,7 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     }
 
     if (eval.isImprovement(*bestCost)) {
-      // cout << "MOVE IS IMPROVEMENT! cost=";
+      // std::cout << "MOVE IS IMPROVEMENT! cost=";
       // bestCost->print();
 
       if (bestCost->isEstimated()) {
@@ -139,7 +139,7 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
       // e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local
       // Optimum
     }
-    // cout << "#" << num_calls << " out_bi:";
+    // std::cout << "#" << num_calls << " out_bi:";
     // bestMove->print();
     // nsSeq.print();
     // e.print();
@@ -153,18 +153,18 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << "BI_LOS";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "BI_LOS: " << nsSeq.toString();
     return ss.str();
   }
@@ -198,9 +198,9 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
     return new BestImprovementLOS<S, XEv>(*eval, *nsseq);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
                                "evaluation function"));
     params.push_back(
         make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
@@ -212,13 +212,13 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
     return component == BestImprovementLOS<S, XEv>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":BI_LOS";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

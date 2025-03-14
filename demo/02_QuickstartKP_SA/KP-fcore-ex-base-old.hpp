@@ -47,23 +47,23 @@ class ProblemContext {
     p = vector<int>(n);      // realoca espaço
     w = vector<int>(n);      // realoca espaço
     //
-    cout << "n=" << n << " Q=" << Q << endl;
+    std::cout << "n=" << n << " Q=" << Q << std::endl;
     //
     // leitura do lucro do item i
     for (int i = 0; i < n; i++) {
       p[i] =
           *scanner.nextInt();  // '*' é usado pq saída do 'nextInt' é 'optional'
-      cout << "p[" << i << "]=" << p[i] << " ";
+      std::cout << "p[" << i << "]=" << p[i] << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
     //
     // leitura do peso do item i
     for (int i = 0; i < n; i++) {
       w[i] =
           *scanner.nextInt();  // '*' é usado pq saída do 'nextInt' é 'optional'
-      cout << "w[" << i << "]=" << w[i] << " ";
+      std::cout << "w[" << i << "]=" << w[i] << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
   }
 };
 // Instanciar um problema da mochila pKP

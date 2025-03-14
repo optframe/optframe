@@ -49,14 +49,14 @@ public:
    //Pareto<XMES>* search(MOSC& mosc, Pareto<XMES>* _pf = nullptr) override
    SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) override
    {
-      cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
+      std::cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << std::endl;
       //return nullptr;
       return SearchStatus::NO_REPORT;
    }
 
    static string idComponent()
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << MultiObjSearch<XMES>::idComponent() << "empty";
       return ss.str();
    }

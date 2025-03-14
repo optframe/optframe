@@ -40,32 +40,32 @@ class MoveHFMModifyRule : public Move<hfmXES> {
           new MoveHFMModifyRule<hfmXES, hfmXEv>(-1, -1, -1, -1, -1));
 
     if (r == PERTINENCEFUNC) {
-      if (vectorType == Single_Input)
+      if (std::vectorType == Single_Input)
         rep.singleFuzzyRS[o][r] = !rep.singleFuzzyRS[o][r];
-      if (vectorType == Average_Inputs)
+      if (std::vectorType == Average_Inputs)
         rep.averageFuzzyRS[o][r] = !rep.averageFuzzyRS[o][r];
-      if (vectorType == Derivative_Inputs)
+      if (std::vectorType == Derivative_Inputs)
         rep.derivativeFuzzyRS[o][r] = !rep.derivativeFuzzyRS[o][r];
 
       return uptr<Move<hfmXES>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(
           r, o, applyValue, !sign, vectorType));
     }
 
-    if (vectorType == Single_Input) {
+    if (std::vectorType == Single_Input) {
       if (!sign)
         rep.singleFuzzyRS[o][r] += applyValue;
       else
         rep.singleFuzzyRS[o][r] -= applyValue;
     }
 
-    if (vectorType == Average_Inputs) {
+    if (std::vectorType == Average_Inputs) {
       if (!sign)
         rep.averageFuzzyRS[o][r] += applyValue;
       else
         rep.averageFuzzyRS[o][r] -= applyValue;
     }
 
-    if (vectorType == Derivative_Inputs) {
+    if (std::vectorType == Derivative_Inputs) {
       if (!sign)
         rep.derivativeFuzzyRS.at(o).at(r) += applyValue;
       else
@@ -82,10 +82,10 @@ class MoveHFMModifyRule : public Move<hfmXES> {
   }
 
   void print() const override {
-    cout << "MoveNEIGHModifyRule( vector: " << r << " : ";
-    cout << " option " << o << " <=>  sign " << sign << "vectorType "
+    std::cout << "MoveNEIGHModifyRule( vector: " << r << " : ";
+    std::cout << " option " << o << " <=>  sign " << sign << "vectorType "
          << vectorType << " )";
-    cout << endl;
+    std::cout << std::endl;
   }
 };
 
@@ -171,8 +171,8 @@ class NSIteratorHFMModifyRules : public NSIterator<hfmXES> {
 
   virtual uptr<Move<hfmXES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSIteratorNEIGHModifyRules. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSIteratorNEIGHModifyRules. Aborting." << std::endl;
       exit(1);
     }
 
@@ -202,7 +202,7 @@ class NSSeqHFMModifyRules : public NSSeq<hfmXES> {
     double mean = pEFP.getMean(0);
 
     if (_vUpdateValues) {
-      cout << "Modify values given as input:" << *_vUpdateValues << endl;
+      std::cout << "Modify values given as input:" << *_vUpdateValues << std::endl;
       assert(_vUpdateValues->size() > 0);
       vUpdateValues = *_vUpdateValues;
     } else {
@@ -235,21 +235,21 @@ class NSSeqHFMModifyRules : public NSSeq<hfmXES> {
     while ((r == -1) && (tries < maxTries)) {
       vectorType = rg.rand(N_Inputs_Types);
 
-      if (vectorType == Single_Input) {
+      if (std::vectorType == Single_Input) {
         if (rep.singleFuzzyRS.size() > 0) {
           o = rg.rand(rep.singleFuzzyRS.size());  // rep.size() options
           r = rg.rand(NCOLUMNATRIBUTES);
         }
       }
 
-      if (vectorType == Average_Inputs) {
+      if (std::vectorType == Average_Inputs) {
         if (rep.averageFuzzyRS.size() > 0) {
           o = rg.rand(rep.averageFuzzyRS.size());  // rep.size() options
           r = rg.rand(NCOLUMNATRIBUTES);
         }
       }
 
-      if (vectorType == Derivative_Inputs) {
+      if (std::vectorType == Derivative_Inputs) {
         if (rep.derivativeFuzzyRS.size() > 0) {
           o = rg.rand(rep.derivativeFuzzyRS.size());  // rep.size() options
           r = rg.rand(NCOLUMNATRIBUTES);
@@ -278,7 +278,7 @@ class NSSeqHFMModifyRules : public NSSeq<hfmXES> {
   }
 
   virtual string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqHFMModifyRules with move: ";
     return ss.str();
   }

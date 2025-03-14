@@ -61,8 +61,8 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type,
   void acceptanceCriterion(const Pareto<XMES>& pf,
                            BasicHistory& history) override {
     if (pf.getNewNonDominatedSolutionsStatus()) {
-      cout << "New Pareto size: is " << pf.size();
-      cout << " on [iter without improvement " << history << "]" << endl;
+      std::cout << "New Pareto size: is " << pf.size();
+      std::cout << " on [iter without improvement " << history << "]" << std::endl;
 
       // =======================
       //  Atualiza o historico
@@ -84,7 +84,7 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type,
   std::string id() const override { return idComponent(); }
 
   static std::string idComponent() {
-    stringstream ss;
+    std::stringstream ss;
     ss << MultiObjILS<BasicHistory, S, XMEv>::idComponent() << "BasicMOILS";
     return ss.str();
   }

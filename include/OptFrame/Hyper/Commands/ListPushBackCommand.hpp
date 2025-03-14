@@ -47,26 +47,26 @@ public:
       return "list.push_back list_name value";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "list.push_back command: '" << input << "'" << endl;
+      //cout << "list.push_back command: '" << input << "'" << std::endl;
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string list_name = scanner.next();
 
       if (list_name.at(0) == '[') {
-         cout << "module " << id() << " error: cannot be used with explicit list! use list.add instead." << endl;
+         std::cout << "module " << id() << " error: cannot be used with explicit list! use list.add instead." << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -80,7 +80,7 @@ public:
          list = vector<string>(*p_list);
          delete p_list;
       } else {
-         cout << "list.push_back error reading list '" << list_name << "'" << endl;
+         std::cout << "list.push_back error reading list '" << list_name << "'" << std::endl;
          return false;
       }
 
@@ -89,7 +89,7 @@ public:
       return Command<R, ADS, DS>::defineList(list_name, list, ldictionary);
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

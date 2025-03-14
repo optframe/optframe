@@ -69,7 +69,7 @@ main(int argc, char** argv)
    s.print();
    EvaluationTSP* e = &eval.evaluate(s);
    e->print();
-   cout << endl;
+   std::cout << std::endl;
 
    Interpreter<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
    optframe.factory.add_initsol(&is);
@@ -82,7 +82,7 @@ main(int argc, char** argv)
 
    optframe.execute("read example.opt");
 
-   cout << "Program ended successfully" << endl;
+   std::cout << "Program ended successfully" << std::endl;
 
    return 0;
 }

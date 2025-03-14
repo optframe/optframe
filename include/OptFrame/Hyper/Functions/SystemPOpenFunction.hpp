@@ -57,9 +57,9 @@ public:
 		return "system.popen( \"command\" ) : return output";
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
-		//cout << "popen function  POPEN: '" << Scanner::trim(body) << "'" << endl;
+		//cout << "popen function  POPEN: '" << Scanner::trim(body) << "'" << std::endl;
 		Scanner scanner(Scanner::trim(body));
 		scanner.useSeparators("\"");
 
@@ -68,12 +68,12 @@ public:
 		scanner.next(); // drop '"'
 		scanner.next(); // drop ')'
 
-		//cout << "popen function COMMAND: '" << command << "'" << endl;
+		//cout << "popen function COMMAND: '" << command << "'" << std::endl;
 
 		FILE* pPipe = popen(command.c_str(), "r"); //popen("echo -e \"x <- c(1,2,3,4,5,6) \n shapiro.test(x)\" | R --no-save", "rt");
 		if (pPipe == nullptr)
 		{
-			cout << "popen function: PIPE NOT OPEN!" << endl;
+			cout << "popen function: PIPE NOT OPEN!" << std::endl;
 			return nullptr;
 		}
 

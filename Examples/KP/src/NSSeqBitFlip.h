@@ -23,8 +23,8 @@ class MoveBitFlip : public Move<ESolutionKP> {
   virtual ~MoveBitFlip() {}
 
   void print() const override {
-    cout << id() << " with params: '"
-         << "item=" << item << "'" << endl;
+    std::cout << id() << " with params: '"
+         << "item=" << item << "'" << std::endl;
   }
 
   std::string id() const override {
@@ -75,7 +75,7 @@ class NSSeqBitFlip : public NSSeq<ESolutionKP> {
 
   virtual ~NSSeqBitFlip() {}
 
-  void print() const override { cout << "NSSeqBitFlip" << endl; }
+  void print() const override { std::cout << "NSSeqBitFlip" << std::endl; }
 
   std::string id() const override {
     return NSSeq<ESolutionKP>::idComponent().append(":NSSeqBitFlip");

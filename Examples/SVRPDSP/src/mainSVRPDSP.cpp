@@ -38,20 +38,20 @@ int main(int argc, char** argv) {
   int seed = 0;
   RandGen rg(seed);
 
-  cout << "Single Vehicle Routing Problem with Deliveries and Selective "
+  std::cout << "Single Vehicle Routing Problem with Deliveries and Selective "
           "Pickups (SVRPDSP)"
-       << endl;
-  cout << "By Coelho et al. (2011)" << endl;
-  cout << endl;
+       << std::endl;
+  std::cout << "By Coelho et al. (2011)" << std::endl;
+  std::cout << std::endl;
 
   string problem = "016_B_half";
 
   if (argc < 2) {
-    cout << "missing filename parameter! using '" << problem << "'" << endl;
+    std::cout << "missing filename parameter! using '" << problem << "'" << std::endl;
   } else
     problem = argv[1];
 
-  cout << "problem: '" << problem << "'" << endl << endl;
+  std::cout << "problem: '" << problem << "'" << std::endl << std::endl;
 
   ProblemInstance* p = NULL;
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
   try {
     file = new File(path_p);
   } catch (FileNotFound& f) {
-    cout << "File '" << path_p << "' not found" << endl;
+    std::cout << "File '" << path_p << "' not found" << std::endl;
     return false;
   }
 
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
   S_KNPEvaluator* evlr_knp = new S_KNPEvaluator(*p);
 
   MySolution& s_lb = *is_tspopt->generateSolution(1000);  // time 1000
-  cout << "Possible optimal solution" << endl;
+  std::cout << "Possible optimal solution" << std::endl;
   // s_lb.print();
   // s_lb.getADS().print();
   Evaluation<> etmp = evlr->evaluate(s_lb);
@@ -119,19 +119,19 @@ int main(int argc, char** argv) {
   double knp_value = eknp1.evaluation();
 
   double lower_bound = tsp_value - knp_value;
-  cout << "lower bound: " << lower_bound << " (" << tsp_value << " - "
-       << knp_value << ")" << endl;
+  std::cout << "lower bound: " << lower_bound << " (" << tsp_value << " - "
+       << knp_value << ")" << std::endl;
   FILE* ftsp = fopen("lower_tsp.out", "a");
   fprintf(ftsp, "%.2f\n", tsp_value);
   fclose(ftsp);
-  cout << "tsp: ";
+  std::cout << "tsp: ";
   Evaluation<> etsp = evlr_tsp->evaluate(s_lb);
   etsp.print();
 
   FILE* fknp = fopen("lower_knp.out", "a");
   fprintf(fknp, "%.2f\n", knp_value);
   fclose(fknp);
-  cout << "knapsack: ";
+  std::cout << "knapsack: ";
   Evaluation<> eknp = evlr_knp->evaluate(s_lb);
   eknp.print();
 
@@ -139,11 +139,11 @@ int main(int argc, char** argv) {
   Evaluation<> e = evlr->evaluate(s_lb);
   e.print();
 
-  cout << endl;
+  std::cout << std::endl;
   delete &s_lb;
 
   /*
-        stringstream ss;
+        std::stringstream ss;
         ss << lower_bound;
         OptFrameModule<RepSVRPDSP, AdsSVRPDSP>::defineText("lower_bound",
      ss.str(), dictionary);
@@ -277,13 +277,13 @@ int main(int argc, char** argv) {
         */
 
   /*
-        cout << "TESTES COM OR1" << endl;
+        std::cout << "TESTES COM OR1" << std::endl;
         Solution<RepSVRPDSP>& s = is_random->generateSolution();
         NSIterator<RepSVRPDSP>& it = ns_or1->getIterator(s.getR());
         for(it.first(); !it.isDone(); it.next())
         {
         Move<RepSVRPDSP>& m = it.current();
-        cout << endl;
+        std::cout << std::endl;
         m.print();
         s.print(); // print 's'
         Move<RepSVRPDSP>& rev = m.apply(s);
@@ -299,9 +299,9 @@ int main(int argc, char** argv) {
                                                                *delta_swap);
 
   // cudaInitialize();
-  cout << "problem.SVRPDSP '" << path_p << "' loaded successfully" << endl;
+  std::cout << "problem.SVRPDSP '" << path_p << "' loaded successfully" << std::endl;
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
 
   return 0;
 }

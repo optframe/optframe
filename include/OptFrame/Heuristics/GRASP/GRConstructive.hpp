@@ -47,8 +47,8 @@ class GRConstructive : public Constructive<S>, public GRASP {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << GRASP::family()
        << ":GRConstructive";
     return ss.str();
@@ -76,8 +76,8 @@ class BasicGRConstructive : public GRConstructive<S> {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << GRASP::family()
        << ":GRConstructive";
     return ss.str();

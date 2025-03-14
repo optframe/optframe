@@ -36,7 +36,7 @@ public:
     
     void print() const override
     {
-        cout << id() << " with params: '" << "ADD MY PARAMETERS" << "'" << endl;
+        std::cout << id() << " with params: '" << "ADD MY PARAMETERS" << "'" << std::endl;
     }
     
     string id() const override
@@ -107,7 +107,7 @@ public:
     
     void print() const override
     {
-        cout << "NSSeq$neighborhood" << endl;
+        std::cout << "NSSeq$neighborhood" << std::endl;
     }
     
     string id() const override

@@ -42,8 +42,8 @@ class InitialEPopulationRK : public InitialEPopulation<XES, X2ES> {
            (InitialEPopulation<XES, X2ES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialEPopulation<XES, X2ES>::idComponent() << ":" << EA::family()
        << ":" << RK::family() << "InitialEPopulationRK";
     return ss.str();

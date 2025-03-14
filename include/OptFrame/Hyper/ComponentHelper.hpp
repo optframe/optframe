@@ -48,7 +48,7 @@ class ComponentHelper {
   // EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
   static bool compareBase(string _base, string _component) {
     if ((_base.length() < 3) || (_component.length() < 3)) {
-      cout << "ComponentHelper::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
+      std::cout << "ComponentHelper::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << std::endl;
       return false;
     }
 

@@ -311,7 +311,7 @@ on sorting the keys, related to a predefined indexing of each key.
     pair<Evaluation<double>, vector<int>>
     fDecode(const vector<double>& rk)
     {
-        vector<pair<double, int>> v(rk.size());
+        std::vector<std::pair<double, int>> v(rk.size());
         int k = 0;
         for (unsigned i = 0; i < v.size(); i++)
             v[k] = pair<double, int>(rk[i], i);

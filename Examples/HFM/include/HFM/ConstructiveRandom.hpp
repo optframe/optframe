@@ -49,7 +49,7 @@ class ConstructiveRandom : public InitialSearch<XXES> {
         rg(_rg),
         precision(_precision) {
     if (precision == 0) {
-      cerr << "Precision should be greater than 0 :" << precision << endl;
+      cerr << "Precision should be greater than 0 :" << precision << std::endl;
       getchar();
     }
 
@@ -69,19 +69,19 @@ class ConstructiveRandom : public InitialSearch<XXES> {
       const StopCriteria<XXEv>& sosc) override {
     std::optional<SolutionHFM> s = generateSolutionAlpha(0.0, sosc.timelimit);
     // return make_pair(*s, EvaluationHFM(0)); // TODO: fix
-    return make_pair(make_pair(*s, XXEv()), SearchStatus::NO_REPORT);
+    return make_pair(std::make_pair(*s, XXEv()), SearchStatus::NO_REPORT);
   }
 
   std::optional<SolutionHFM> generateSolutionAlpha(float notUsed,
                                                    double timelimit) {
-    // cout << "ACF generating solution.." << endl;
+    // std::cout << "ACF generating solution.." << std::endl;
 
     vector<vector<double> > data = pEFP.getForecastingsVector();
 
     int numberExplanatoryVariables = data.size();
 
     int earliestInput = 0;
-    vector<pair<int, int> > singleIndex;
+    std::vector<std::pair<int, int> > singleIndex;
     vector<vector<double> > singleFuzzyRS;
     vector<vector<pair<int, int> > > averageIndex;
     vector<vector<double> > averageFuzzyRS;
@@ -109,7 +109,7 @@ class ConstructiveRandom : public InitialSearch<XXES> {
         } else
           K = rg.rand(maxLag) + 1;
 
-        singleIndex.push_back(make_pair(nEXV, K));
+        singleIndex.push_back(std::make_pair(nEXV, K));
 
         if (K > earliestInput) earliestInput = K;
 
@@ -135,7 +135,7 @@ class ConstructiveRandom : public InitialSearch<XXES> {
       int pMP = rg.rand(precisionMP);
       for (int p = 0; p < pMP; p++) {
         int nAveragePoints = rg.rand(5) + 2;
-        vector<pair<int, int> > aInputs;
+        std::vector<std::pair<int, int> > aInputs;
         for (int aI = 0; aI < nAveragePoints; aI++) {
           int K;
           if (maxUpperLag > 0) {
@@ -147,7 +147,7 @@ class ConstructiveRandom : public InitialSearch<XXES> {
           } else
             K = rg.rand(maxLag) + 1;
 
-          aInputs.push_back(make_pair(nEXV, K));
+          aInputs.push_back(std::make_pair(nEXV, K));
           if (K > earliestInput) earliestInput = K;
         }
         averageIndex.push_back(aInputs);
@@ -171,15 +171,15 @@ class ConstructiveRandom : public InitialSearch<XXES> {
         averageFuzzyRS.push_back(fuzzyRules);
       }
 
-      // cout << pMP << endl;
-      // cout << averageFuzzyRS << endl;
-      // cout << averageIndex << endl;
+      // std::cout << pMP << std::endl;
+      // std::cout << averageFuzzyRS << std::endl;
+      // std::cout << averageIndex << std::endl;
       // getchar();
 
       int pDP = rg.rand(precisionDP);
       for (int p = 0; p < pDP; p++) {
         int nDerivativePoints = 2;
-        vector<pair<int, int> > aInputs;
+        std::vector<std::pair<int, int> > aInputs;
         for (int aI = 0; aI < nDerivativePoints; aI++) {
           int K;
           if (maxUpperLag > 0) {
@@ -191,7 +191,7 @@ class ConstructiveRandom : public InitialSearch<XXES> {
           } else
             K = rg.rand(maxLag) + 1;
 
-          aInputs.push_back(make_pair(nEXV, K));
+          aInputs.push_back(std::make_pair(nEXV, K));
           if (K > earliestInput) earliestInput = K;
         }
         derivativeIndex.push_back(aInputs);
@@ -215,9 +215,9 @@ class ConstructiveRandom : public InitialSearch<XXES> {
         derivativeFuzzyRS.push_back(fuzzyRules);
       }
 
-      // cout << pDP << endl;
-      // cout << derivativeFuzzyRS << endl;
-      // cout << derivativeIndex << endl;
+      // std::cout << pDP << std::endl;
+      // std::cout << derivativeFuzzyRS << std::endl;
+      // std::cout << derivativeIndex << std::endl;
       // getchar();
     }
 
@@ -250,17 +250,17 @@ class ConstructiveRandom : public InitialSearch<XXES> {
     newRep.vIndex = vIndex;
     newRep.vIndexAlphas = vIndexAlphas;
 
-    /*		cout << newRep.earliestInput << endl;
-     cout << newRep.singleIndex << endl;
-     cout << newRep.singleFuzzyRS << endl;
-     cout << newRep.averageIndex << endl;
-     cout << newRep.averageFuzzyRS << endl;
-     cout << newRep.derivativeIndex << endl;
-     cout << newRep.derivativeFuzzyRS << endl;
+    /*		cout << newRep.earliestInput << std::endl;
+     std::cout << newRep.singleIndex << std::endl;
+     std::cout << newRep.singleFuzzyRS << std::endl;
+     std::cout << newRep.averageIndex << std::endl;
+     std::cout << newRep.averageFuzzyRS << std::endl;
+     std::cout << newRep.derivativeIndex << std::endl;
+     std::cout << newRep.derivativeFuzzyRS << std::endl;
      getchar();*/
 
     //		cout << "End of Random Hybrid Fuzzy Model Sol generation!" <<
-    // endl; 		getchar();
+    // std::endl; 		getchar();
     return make_optional(SolutionHFM(newRep));
   }
 };

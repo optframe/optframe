@@ -53,7 +53,7 @@ public:
 
    string doubleToString(double d)
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << d;
       return ss.str();
    }
@@ -68,15 +68,15 @@ public:
       return a.first > b.first;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "list_sort module input: '" << input << "'" << endl;
+      //cout << "list_sort module input: '" << input << "'" << std::endl;
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "list_sort command: no such list!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "list_sort command: no such list!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -89,8 +89,8 @@ public:
          return false;
 
       if (!scanner.hasNext()) {
-         cout << "list_sort command: no new list name!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "list_sort command: no new list name!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -102,18 +102,18 @@ public:
          try {
             index = *scanner.nextInt();
          } catch (ConversionError& e) {
-            cout << "list_sort command: not an index number!" << endl;
+            std::cout << "list_sort command: not an index number!" << std::endl;
             return false;
          }
       }
 
       if ((new_name != "") && (new_name.at(0) == '[')) {
-         cout << "list_sort command: invalid list new name '" << new_name << "'" << endl;
+         std::cout << "list_sort command: invalid list new name '" << new_name << "'" << std::endl;
          return false;
       }
 
       if ((index - 1) >= ((int)list.size())) {
-         cout << "list_sort command: invalid index '" << index << "'!" << endl;
+         std::cout << "list_sort command: invalid index '" << index << "'!" << std::endl;
          return false;
       }
 
@@ -121,7 +121,7 @@ public:
 
       if (index > 0) // sort list of lists by index
       {
-         vector<pair<double, vector<string>>> v;
+         std::vector<std::pair<double, vector<string>>> v;
 
          for (unsigned i = 0; i < list.size(); i++) {
             Scanner scan(list[i]);
@@ -132,7 +132,7 @@ public:
                list1 = vector<string>(*p_list1);
                delete p_list1;
             } else {
-               cout << "list_sort command: error processing internal list id=" << i << endl;
+               std::cout << "list_sort command: error processing internal list id=" << i << std::endl;
                return false;
             }
 
@@ -146,12 +146,12 @@ public:
                   try {
                      d = Scanner::parseDouble(list1[j]);
                   } catch (ConversionError& e) {
-                     cout << "list_sort command: problem in conversion of index value in sublist!" << endl;
+                     std::cout << "list_sort command: problem in conversion of index value in sublist!" << std::endl;
                      return false;
                   }
                }
 
-            v.push_back(make_pair(d, otherValues));
+            v.push_back(std::make_pair(d, otherValues));
          }
 
          std::sort(v.begin(), v.end(), compareLess); // only '<' for now!
@@ -178,7 +178,7 @@ public:
             for (unsigned i = 0; i < list.size(); i++)
                v.push_back(Scanner::parseDouble(list[i]));
          } catch (ConversionError& e) {
-            cout << "list_sort command: not a list of numbers!" << endl;
+            std::cout << "list_sort command: not a list of numbers!" << std::endl;
             return false;
          }
 
@@ -188,7 +188,7 @@ public:
             new_list.push_back(doubleToString(v[i]));
       }
 
-      stringstream ss;
+      std::stringstream ss;
       ss << new_name << " " << OptFrameList::listToString(new_list);
 
       //TODO: acessar dicionario de listas diretamente!! Bem mais eficiente!
@@ -196,7 +196,7 @@ public:
       return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

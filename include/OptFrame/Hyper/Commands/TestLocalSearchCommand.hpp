@@ -56,12 +56,12 @@ public:
       return u;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       int n;
@@ -69,12 +69,12 @@ public:
       try {
          n = Scanner::parseInt(sn);
       } catch (ConversionError& e) {
-         cout << "testls error: reading 'N'" << endl;
+         std::cout << "testls error: reading 'N'" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       int t;
@@ -82,12 +82,12 @@ public:
       try {
          t = Scanner::parseInt(st);
       } catch (ConversionError& e) {
-         cout << "testls error: reading 't'" << endl;
+         std::cout << "testls error: reading 't'" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       double tf;
@@ -95,12 +95,12 @@ public:
       try {
          tf = Scanner::parseDouble(stf);
       } catch (ConversionError& e) {
-         cout << "testls error: reading 'tf'" << endl;
+         std::cout << "testls error: reading 'tf'" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       double bf;
@@ -108,25 +108,25 @@ public:
       try {
          bf = Scanner::parseDouble(sbf);
       } catch (ConversionError& e) {
-         cout << "testls error: reading 'bf'" << endl;
+         std::cout << "testls error: reading 'bf'" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       Evaluator<R, ADS, DS>* eval;
       factory.assign(eval, *scanner.nextInt(), scanner.next());
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       string sc = scanner.next();
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       int id = *scanner.nextInt();
@@ -139,12 +139,12 @@ public:
       else if (sc == Constructive<S>::idComponent())
          factory.assign(constructive, id, sc);
       else {
-         cout << "testls command: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE! ('" << sc << " " << id << "')" << endl;
+         std::cout << "testls command: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE! ('" << sc << " " << id << "')" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
       pair<LocalSearch<R, ADS, DS>*, string> method = factory.createLocalSearch(scanner.rest());
@@ -167,7 +167,7 @@ public:
 
       FILE* file = fopen(filename.c_str(), "a");
       if (!file) {
-         cout << "Error creating file '" << filename << "'" << endl;
+         std::cout << "Error creating file '" << filename << "'" << std::endl;
          return false;
       }
 
@@ -192,7 +192,7 @@ public:
       vector<long double> s_fo_tests(n);
 
       for (int i = 0; i < n; i++) {
-         cout << "Test " << i << "... Running";
+         std::cout << "Test " << i << "... Running";
          Timer t(false);
 
          Solution<R, ADS>& s = ((s1 != nullptr) ? s1->clone() : constructive->generateSolution());
@@ -225,7 +225,7 @@ public:
          if (t_now > max_t)
             max_t = t_now;
 
-         cout << "... Finished! (" << t.now() << "secs.)" << endl;
+         std::cout << "... Finished! (" << t.now() << "secs.)" << std::endl;
 
          if (!s_star)
             s_star = &s2->clone();
@@ -271,7 +271,7 @@ public:
       str << Solution<R, ADS>::idComponent() << " " << new_id;
       string s_new_id = str.str();
 
-      //cout << "'" << s_new_id << "' added." << endl;
+      //cout << "'" << s_new_id << "' added." << std::endl;
 
       if (scan_rest.hasNext()) {
          string new_name = scan_rest.next();
@@ -281,7 +281,7 @@ public:
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

@@ -14,7 +14,7 @@
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "BasicILSPerturbation.hpp"
-#include "ILS.h"
+#include "ILS.hpp"
 #include "IteratedLocalSearch.hpp"
 
 namespace optframe {
@@ -73,8 +73,8 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
       // =======================
       //   Melhor solucao: 's2'
       // =======================
-      cout << "Best fo: " << e1.evaluation();
-      cout << " on [iter " << history << "]" << endl;
+      std::cout << "Best fo: " << e1.evaluation();
+      std::cout << " on [iter " << history << "]" << std::endl;
 
       // =======================
       //  Atualiza o historico
@@ -103,8 +103,8 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << IteratedLocalSearch<BasicHistory, XES, XEv>::idComponent()
        << "BasicILS";
     return ss.str();
@@ -154,17 +154,17 @@ class BasicIteratedLocalSearchBuilder : public ILS,
                                              iterMax);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
-    params.push_back(make_pair(BasicILSPerturbation<XES>::idComponent(),
+    params.push_back(std::make_pair(BasicILSPerturbation<XES>::idComponent(),
                                "ils perturbation"));
-    params.push_back(make_pair("OptFrame:int",
+    params.push_back(std::make_pair("OptFrame:int",
                                "max number of iterations without improvement"));
 
     return params;
@@ -174,8 +174,8 @@ class BasicIteratedLocalSearchBuilder : public ILS,
     return component == BasicIteratedLocalSearch<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << ILS::family()
        << "BasicILS";
     return ss.str();

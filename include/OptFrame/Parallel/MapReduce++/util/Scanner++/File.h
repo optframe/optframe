@@ -73,7 +73,7 @@ public:
       if (foo.is_open())
          foo.close();
       else {
-         cerr << "File Doesn't Exist: " << filename << endl;
+         cerr << "File Doesn't Exist: " << filename << std::endl;
          throw FileNotFound(filename);
       }
 

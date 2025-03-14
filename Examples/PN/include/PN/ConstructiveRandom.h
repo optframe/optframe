@@ -39,7 +39,7 @@ class ConstructiveRandom
   // Solution<ESolutionPN>* generateSolution(double timelimit);
   std::optional<SolutionPN> generateSolution(double timelimit) override;
 
-  void print() const override { cout << "ConstructiveRandom" << endl; }
+  void print() const override { std::cout << "ConstructiveRandom" << std::endl; }
 };
 
 }  // namespace PN

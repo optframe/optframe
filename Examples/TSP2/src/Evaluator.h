@@ -82,7 +82,7 @@ class MyEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
     return "OptFrame:Evaluator:MyEvaluator";
   }
 
-  void print() const override { cout << "TSP evaluation function" << endl; }
+  void print() const override { std::cout << "TSP evaluation function" << std::endl; }
 };
 
 }  // namespace TSP2

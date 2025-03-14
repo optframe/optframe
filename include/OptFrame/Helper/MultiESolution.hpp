@@ -129,8 +129,8 @@ class MultiESolution : public Component {
     return *new MultiESolution<XES>(*this);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":MultiESolution";
     return ss.str();
   }
@@ -140,11 +140,11 @@ class MultiESolution : public Component {
   virtual std::string toString() const override { return id(); }
 
   void print() const override {
-    cout << "MultiESolution(" << p.size() << ")";
-    cout << endl;
+    std::cout << "MultiESolution(" << p.size() << ")";
+    std::cout << std::endl;
 
     for (unsigned i = 0; i < p.size(); i++) {
-      cout << *p.at(i) << endl;
+      std::cout << *p.at(i) << std::endl;
     }
   }
 };

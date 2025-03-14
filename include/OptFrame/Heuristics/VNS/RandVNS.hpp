@@ -42,8 +42,8 @@ class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << VariableNeighborhoodSearch<R, ADS, DS>::idComponent() << "RandVNS";
     return ss.str();
   }
@@ -85,22 +85,22 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
                                    hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
-    stringstream ss;
+    std::stringstream ss;
     ss << NS<R, ADS, DS>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
+    params.push_back(std::make_pair(ss.str(), "list of NS"));
 
     stringstream ss2;
     ss2 << NSSeq<R, ADS, DS>::idComponent() << "[]";
-    params.push_back(make_pair(ss2.str(), "list of NSSeq"));
+    params.push_back(std::make_pair(ss2.str(), "list of NSSeq"));
 
     return params;
   }
@@ -109,8 +109,8 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
     return component == RandVNS<R, ADS, DS>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << VNS::family()
        << "RandVNS";
     return ss.str();

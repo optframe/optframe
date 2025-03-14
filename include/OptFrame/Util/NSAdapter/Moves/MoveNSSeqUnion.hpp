@@ -88,7 +88,7 @@ class MoveNSSeqUnion : public Move<XES> {
   }
 
   void print() const override {
-    cout << "MoveNSSeqUnion: id=" << id << "; move = ";
+    std::cout << "MoveNSSeqUnion: id=" << id << "; move = ";
     m->print();
   }
 };

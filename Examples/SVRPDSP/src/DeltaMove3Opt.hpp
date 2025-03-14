@@ -26,7 +26,7 @@ class DeltaMove3Opt : public MoveTSP3Opt<int, AdsSVRPDSP, DeltaSVRPDSP> {
   DeltaMove3Opt(const super& s, ProblemInstance* _svrpdsp)
       : super(s.i, s.j, s.k, s.mode, _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -35,7 +35,7 @@ class DeltaMove3Opt : public MoveTSP3Opt<int, AdsSVRPDSP, DeltaSVRPDSP> {
   DeltaMove3Opt(int i, int j, int k, Mode3Opt mode, ProblemInstance* _svrpdsp)
       : super(i, j, k, mode, _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -80,7 +80,7 @@ class DeltaMove3Opt : public MoveTSP3Opt<int, AdsSVRPDSP, DeltaSVRPDSP> {
     return NULL;
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMove3Opt");
     return idComp;
@@ -93,7 +93,7 @@ class DeltaMove3Opt : public MoveTSP3Opt<int, AdsSVRPDSP, DeltaSVRPDSP> {
   }
 
   void print() const override {
-    cout << "DeltaMove3Opt: ";
+    std::cout << "DeltaMove3Opt: ";
     super::print();
   }
 };

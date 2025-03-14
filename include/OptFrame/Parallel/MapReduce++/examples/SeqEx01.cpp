@@ -34,9 +34,9 @@ class MyMapper : public SeqMR_Mapper<int, char, int, char, string>
 public:
    MyMapper(MapReduce<int, char, int, char, string>* mr)
      : SeqMR_Mapper<int, char, int, char, string>(mr){};
-   virtual vector<pair<int, char>> map(pair<int, char> a)
+   virtual std::vector<std::pair<int, char>> map(pair<int, char> a)
    {
-      vector<pair<int, char>> m;
+      std::vector<std::pair<int, char>> m;
       m.push_back(a);
       return m;
    };
@@ -50,7 +50,7 @@ public:
    virtual pair<int, string> reduce(pair<int, vector<char>> bs)
    {
       string reduced;
-      for (vector<char>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
+      for (std::vector<char>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
          reduced += *it;
       return pair<int, string>(bs.first, reduced);
    };
@@ -59,9 +59,9 @@ public:
 int
 main()
 {
-   cout << "SeqMR test" << endl;
+   std::cout << "SeqMR test" << std::endl;
 
-   vector<pair<int, char>> input;
+   std::vector<std::pair<int, char>> input;
    input.push_back(pair<int, char>(1, 'a'));
    input.push_back(pair<int, char>(2, 'b'));
    input.push_back(pair<int, char>(1, 'c'));
@@ -70,8 +70,8 @@ main()
    MyMapper mapper(&mapReduce);
    MyReducer reducer(&mapReduce);
 
-   vector<pair<int, string>> output = mapReduce.run(mapper, reducer, input);
-   cout << output << endl;
+   std::vector<std::pair<int, string>> output = mapReduce.run(mapper, reducer, input);
+   std::cout << output << std::endl;
 
    return 0;
 }

@@ -32,6 +32,6 @@
 using namespace std;
 
 // Solution Representation
-typedef vector<pair<char, char>> RepOptHS;
+typedef std::vector<std::pair<char, char>> RepOptHS;
 
 #endif /*OptHS_REPRESENTATION_H_*/

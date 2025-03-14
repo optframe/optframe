@@ -128,8 +128,8 @@ class NSSeqTSPSwap : public NSSeq<XES, XSH> {
     return uptr<NSIterator<XES>>(new NSITERATOR(r.size(), p));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NSSeq<XES, XSH>::idComponent() << ":NSSeqTSPSwap";
     return ss.str();
   }
@@ -141,7 +141,7 @@ class NSSeqTSPSwap : public NSSeq<XES, XSH> {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqTSPSwap";
     return ss.str();
   }

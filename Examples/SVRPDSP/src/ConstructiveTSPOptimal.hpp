@@ -48,7 +48,7 @@ class ConstructiveTSPOptimal
     int dep = tsp.nextInt();  // drop depot
 
     if (dep != 0) {
-      cout << "ConstructiveTSPOptimal: NOT A DEPOT!!!" << endl;
+      std::cout << "ConstructiveTSPOptimal: NOT A DEPOT!!!" << std::endl;
       exit(1);
     }
 
@@ -69,26 +69,26 @@ class ConstructiveTSPOptimal
       if (!knp[i]) rep.push_back(i + pSVRPDSP.n);
 
     /*
-    cout << "ANALYSIS:" << endl;
-    cout << "NUM_TSP: " << n_d << endl;
-    cout << "NUM_KNP: " << (n_k-1) << endl;
-    cout << "SIZE: " << rep.size() << endl;
+    std::cout << "ANALYSIS:" << std::endl;
+    std::cout << "NUM_TSP: " << n_d << std::endl;
+    std::cout << "NUM_KNP: " << (n_k-1) << std::endl;
+    std::cout << "SIZE: " << rep.size() << std::endl;
 
     vector<bool> d(n_d, false);
     for(unsigned i=0; i<rep.size(); i++)
             if(rep[i]>0 && rep[i]<=pSVRPDSP.n)
                     d[rep[i]-1] = true;
 
-    cout << "pSVRPDSP.n: " << pSVRPDSP.n << endl;
-    cout << "d: " << d << endl;
-    cout << "count: " << count << endl;
+    std::cout << "pSVRPDSP.n: " << pSVRPDSP.n << std::endl;
+    std::cout << "d: " << d << std::endl;
+    std::cout << "count: " << count << std::endl;
     */
 
     MySolution* s = new MySolution(rep);
 
     if (!s->syncADS(pSVRPDSP)) {
-      cout << "error syncronizing ADS (Const. TSPOpt)" << endl;
-      cout << "rep: " << rep << endl;
+      std::cout << "error syncronizing ADS (Const. TSPOpt)" << std::endl;
+      std::cout << "rep: " << rep << std::endl;
       exit(1);
     }
 

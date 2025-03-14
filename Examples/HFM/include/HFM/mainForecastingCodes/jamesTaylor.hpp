@@ -15,20 +15,20 @@ using namespace optframe;
 using namespace HFM;
 
 int jamesTaylorEuropeanDataset(int argc, char** argv) {
-  cout << "Welcome to James Taylor European Dataset Analysis" << endl;
+  std::cout << "Welcome to James Taylor European Dataset Analysis" << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 5) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nomeOutput targetTS "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nomeOutput targetTS "
             "construtiveNRulesACF timeES"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -51,15 +51,15 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
   string nomeOutput = caminhoOutput;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-  cout << "argvNumberOfRules=" << argvNumberOfRules << endl;
-  // cout << "argvAlphaACF=" << argvAlphaACF << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << std::endl;
+  std::cout << "argvNumberOfRules=" << argvNumberOfRules << std::endl;
+  // std::cout << "argvAlphaACF=" << argvAlphaACF << std::endl;
   //	getchar();
-  //	cout << "instN=" << instN << endl;
-  //	cout << "stepsAhead=" << stepsAhead << endl;
-  //	cout << "mu=" << mu << endl;
+  //	cout << "instN=" << instN << std::endl;
+  //	cout << "stepsAhead=" << stepsAhead << std::endl;
+  //	cout << "mu=" << mu << std::endl;
   //===================================
 
   // CONFIG FILES FOR CONSTRUTIVE 0 AND 1
@@ -105,8 +105,8 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -181,9 +181,9 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
 
     int nTrainningRounds = 100;
     int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds * stepsAhead;
-    cout << "nTrainningRounds: " << nTrainningRounds << endl;
-    cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << endl;
+    std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+         << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = 0;
@@ -223,8 +223,8 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
 
     vector<double>* vForecasts =
         forecastObject.returnForecasts(*sol, validationSet);
-    cout << *vForecasts << endl;
-    cout << vForecasts->size() << endl;
+    std::cout << *vForecasts << std::endl;
+    std::cout << vForecasts->size() << std::endl;
 
     vector<double> foIndicatorCalibration;
     foIndicatorCalibration =
@@ -248,17 +248,17 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
     foIndicatorCalibration.push_back(optMethod);
     foIndicatorCalibration.push_back(seed);
     // getchar();
-    // cout << foIndicatorCalibration << endl;
+    // std::cout << foIndicatorCalibration << std::endl;
     vfoIndicatorCalibration.push_back(foIndicatorCalibration);
     vSolutionsBatches.push_back(sol->first);
   }
 
-  cout << vfoIndicatorCalibration << endl;
+  std::cout << vfoIndicatorCalibration << std::endl;
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
 
   string calibrationFile = "./JamesTaylorSpainCalibration";

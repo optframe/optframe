@@ -29,8 +29,8 @@ class FirstImprovementBuilder : public LocalSearchBuilder<XES> {
     return new FirstImprovement<XES>(eval, nsseq);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
@@ -43,15 +43,15 @@ class FirstImprovementBuilder : public LocalSearchBuilder<XES> {
     return component == FirstImprovement<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":FI";
     return ss.str();
   }
 
   std::string toString() const override { return id(); }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

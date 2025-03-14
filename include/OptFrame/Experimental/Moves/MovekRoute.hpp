@@ -61,7 +61,7 @@ class MovekRoute : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "MovekRoute: k=" << k << "; move = ";
+    std::cout << "MovekRoute: k=" << k << "; move = ";
     m.print();
   }
 };

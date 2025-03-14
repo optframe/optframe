@@ -70,9 +70,9 @@ class MoveHFMRemoveSingleInput : public Move<hfmXES> {
   }
 
   void print() const override {
-    cout << "MoveNEIGHRemoveSingleInput( vector:  rule " << rule
+    std::cout << "MoveNEIGHRemoveSingleInput( vector:  rule " << rule
          << " <=>  reverse " << reverse << " )";
-    cout << endl;
+    std::cout << std::endl;
   }
 };
 
@@ -131,8 +131,8 @@ class NSIteratorHFMRemoveSingleInput : public NSIterator<hfmXES> {
 
   virtual uptr<Move<hfmXES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSIteratorNEIGHRemoveSingleInput. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSIteratorNEIGHRemoveSingleInput. Aborting." << std::endl;
       exit(1);
     }
 
@@ -174,7 +174,7 @@ class NSSeqHFMRemoveSingleInput : public NSSeq<hfmXES> {
   }
 
   virtual string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqNEIGHRemoveSingleInput";
     return ss.str();
   }

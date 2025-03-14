@@ -81,16 +81,16 @@ class MoveTSP2Opt : public Move<XES> {
     return ((m1.p1 == p1) && (m1.p2 == p2));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = Move<XES>::idComponent();
     idComp.append("MoveTSP2Opt");
     return idComp;
   }
 
   void print() const override {
-    cout << "MoveTSP2Opt( ";
-    cout << " edge " << p1 << " <=>  edge " << p2 << " )";
-    cout << endl;
+    std::cout << "MoveTSP2Opt( ";
+    std::cout << " edge " << p1 << " <=>  edge " << p2 << " )";
+    std::cout << std::endl;
   }
 };
 

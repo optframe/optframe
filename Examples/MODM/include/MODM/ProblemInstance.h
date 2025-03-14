@@ -26,85 +26,85 @@ public:
       // You can read the input data from the 'scanner' object
 
       //Problem data
-      cout << "========= THAYS Start Reading Problem Instance =========" << endl;
+      std::cout << "========= THAYS Start Reading Problem Instance =========" << std::endl;
       //number of clients
       c = *scanner.nextInt();
-      cout << "number of clients: ";
-      cout << c << endl;
+      std::cout << "number of clients: ";
+      std::cout << c << std::endl;
 
       //number of products
       n = *scanner.nextInt();
-      cout << "number of products: ";
-      cout << n << endl;
+      std::cout << "number of products: ";
+      std::cout << n << std::endl;
 
       //Hurdle rate
-      cout << "hurdle rate: ";
+      std::cout << "hurdle rate: ";
       R = *scanner.nextDouble();
-      cout << R << endl;
+      std::cout << R << std::endl;
 
       cost = new Matrix<int>(c, n);
       revenue = new Matrix<int>(c, n);
       //reading cost, revenue and maxOffers
-      cout << "cost(" << n << "), revenue(" << n << ") and maxOffers(1)" << endl;
+      std::cout << "cost(" << n << "), revenue(" << n << ") and maxOffers(1)" << std::endl;
       for (int client = 0; client < c; client++) {
-         cout << "[";
+         std::cout << "[";
          //cost
          for (int product = 0; product < n; product++) {
             int costProduct = *scanner.nextInt();
-            cout << costProduct << ",";
+            std::cout << costProduct << ",";
             (*cost)(client, product) = costProduct;
          }
 
          //cost
          for (int product = 0; product < n; product++) {
             int revenueProduct = *scanner.nextInt();
-            cout << revenueProduct << ",";
+            std::cout << revenueProduct << ",";
             (*revenue)(client, product) = revenueProduct;
          }
 
          int maxOffer = *scanner.nextInt();
-         cout << maxOffer << "]" << endl;
+         std::cout << maxOffer << "]" << std::endl;
          maxOffers.push_back(maxOffer);
       }
 
       //reading minClients to offer each product of the campain
-      cout << "minClients of clients to offer each product during the campain" << endl;
+      std::cout << "minClients of clients to offer each product during the campain" << std::endl;
       for (int products = 0; products < n; products++) {
          int nMinClients = *scanner.nextInt();
-         cout << nMinClients << ",";
+         std::cout << nMinClients << ",";
          minClients.push_back(nMinClients);
       }
-      cout << endl;
+      std::cout << std::endl;
 
       //reading budget to offer each product of the campain
-      cout << "avaiable budge for each product" << endl;
+      std::cout << "avaiable budge for each product" << std::endl;
       for (int products = 0; products < n; products++) {
          int vBudget = *scanner.nextInt();
-         cout << vBudget << ",";
+         std::cout << vBudget << ",";
          budget.push_back(vBudget);
       }
-      cout << endl;
+      std::cout << std::endl;
 
       //reading fixedCost to offer each product of the campain
-      cout << "fixedCost of each product" << endl;
+      std::cout << "fixedCost of each product" << std::endl;
       for (int products = 0; products < n; products++) {
          int vFixedCost = *scanner.nextInt();
-         cout << vFixedCost << ",";
+         std::cout << vFixedCost << ",";
          fixedCost.push_back(vFixedCost);
       }
-      cout << endl;
-      cout << "========= Finish Reading Problem Instance =========" << endl;
+      std::cout << std::endl;
+      std::cout << "========= Finish Reading Problem Instance =========" << std::endl;
 
       /*
-		 cout<< R<<endl;
-		 cout<< c<<endl;
-		 cout<< n<<endl;
-		 cout<< *cost<<endl;
-		 cout<< *revenue<<endl;
-		 cout<< maxOffers<<endl;
-		 cout<< fixedCost<<endl;
-		 cout<< budget<<endl;
-		 cout<< minClients<<endl;
+		 std::cout<< R<<endl;
+		 std::cout<< c<<endl;
+		 std::cout<< n<<endl;
+		 std::cout<< *cost<<endl;
+		 std::cout<< *revenue<<endl;
+		 std::cout<< maxOffers<<endl;
+		 std::cout<< fixedCost<<endl;
+		 std::cout<< budget<<endl;
+		 std::cout<< minClients<<endl;
 		 getchar();
 		 */
    }

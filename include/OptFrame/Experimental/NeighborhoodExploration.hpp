@@ -112,8 +112,8 @@ class NeighborhoodExploration : public LocalSearch<XES, XSH> {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":NEx";
     return ss.str();
   }
@@ -142,12 +142,12 @@ class NeighborhoodExplorationBuilder : public ComponentBuilder<XES> {
     return build(scanner, hf, family);
   }
 
-  vector<pair<string, string>> parameters() override = 0;
+  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
 
   bool canBuild(string) override = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "NEx";
     return ss.str();
   }

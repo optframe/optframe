@@ -171,26 +171,26 @@ public:
 	{
 		if(directed)
 		{
-			cout << id() << ": |V|=" << nNodes << " |A|=" << nArcs << ":" << endl;
+			cout << id() << ": |V|=" << nNodes << " |A|=" << nArcs << ":" << std::endl;
 			cout << "*\t";
 			for(unsigned i = 0; i < nNodes; i++)
 				cout << "(" << i << ")\t";
-			cout << endl;
+			cout << std::endl;
 			for(unsigned i = 0; i < nNodes; i++)
 			{
 				cout << "(" << i << ")\t";
 				for(unsigned j = 0; j < nNodes; j++)
 					cout << (*m)(i, j) << "\t";
-				cout << endl;
+				cout << std::endl;
 			}
 		}
 		else
 		{
-			cout << id() << ": |V|=" << nNodes << " |E|=" << nEdges << " (symmetric matrix; '.'=null; '-'=unused)" << endl;
+			cout << id() << ": |V|=" << nNodes << " |E|=" << nEdges << " (symmetric matrix; '.'=null; '-'=unused)" << std::endl;
 			cout << "*\t";
 			for(unsigned i = 0; i < nNodes; i++)
 				cout << "(" << i << ")\t";
-			cout << endl;
+			cout << std::endl;
 			for(unsigned i = 0; i < nNodes; i++)
 			{
 				cout << "(" << i << ")\t";
@@ -204,7 +204,7 @@ public:
 						else
 							cout << ".\t";
 					}
-				cout << endl;
+				cout << std::endl;
 			}
 		}
 

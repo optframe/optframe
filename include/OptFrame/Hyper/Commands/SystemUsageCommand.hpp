@@ -47,7 +47,7 @@ public:
       return "system.usage module_or_function";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& all_functions, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& all_functions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
    {
       Scanner scanner(rest);
 
@@ -57,7 +57,7 @@ public:
 
       for (unsigned int i = 0; i < all_modules.size(); i++)
          if (all_modules[i]->canHandle(command, "")) {
-            cout << "Usage: " << all_modules[i]->usage() << endl;
+            std::cout << "Usage: " << all_modules[i]->usage() << std::endl;
             notfound = false;
             break;
          }
@@ -65,20 +65,20 @@ public:
       if (notfound)
          for (unsigned int i = 0; i < all_functions.size(); i++)
             if (command == all_functions[i]->id()) {
-               cout << "Usage: " << all_functions[i]->usage() << endl;
+               std::cout << "Usage: " << all_functions[i]->usage() << std::endl;
                notfound = false;
                break;
             }
 
       if (notfound) {
-         cout << "Command or function '" << command << "' not found!" << endl;
+         std::cout << "Command or function '" << command << "' not found!" << std::endl;
          return false;
       }
 
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

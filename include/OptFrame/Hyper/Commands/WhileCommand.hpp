@@ -62,9 +62,9 @@ public:
       return b == "true";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "INPUT: '" << input << "'" << endl;
+      //cout << "INPUT: '" << input << "'" << std::endl;
 
       stringstream boolean_expr;
       unsigned j = 0;
@@ -75,15 +75,15 @@ public:
          } else
             break;
 
-      //cout << "'" << input.at(j) << "'" << endl; // should be a '['
+      //cout << "'" << input.at(j) << "'" << std::endl; // should be a '['
 
-      //cout << "BOOLEAN EXPRESSION: '" << Scanner::trim(boolean_expr.str()) << "'" << endl;
+      //cout << "BOOLEAN EXPRESSION: '" << Scanner::trim(boolean_expr.str()) << "'" << std::endl;
 
       stringstream sscommands;
       for (unsigned k = j; k < input.size(); k++)
          sscommands << input.at(k);
 
-      //cout << "COMMANDS: '" << sscommands.str() << "'" << endl;
+      //cout << "COMMANDS: '" << sscommands.str() << "'" << std::endl;
 
       Scanner scanner(sscommands.str());
 
@@ -110,7 +110,7 @@ public:
 
       while (parseBool(scondition)) {
          if (!Command<R, ADS, DS>::run_module("system.run", allCommands, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands))) {
-            cout << "while command: error in command!" << endl;
+            std::cout << "while command: error in command!" << std::endl;
             return false;
          }
 
@@ -127,7 +127,7 @@ public:
    }
 
    // should preprocess only until list of commands
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // disable preprocess!!
       return new string(input);

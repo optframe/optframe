@@ -55,7 +55,7 @@ class MovePairSecond : public Move<pair<T1, T2>, DS> {
   }
 
   void print() const override {
-    cout << "MovePairSecond: move = ";
+    std::cout << "MovePairSecond: move = ";
     m.print();
   }
 };

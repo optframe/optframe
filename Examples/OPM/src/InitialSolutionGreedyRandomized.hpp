@@ -68,9 +68,9 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
     return new SolutionOPM(*new pair<vector<int>, Matrix<int> >(vs, trips));
   }
 
-  void generateWasteRockSolution(vector<int>* vs, Matrix<int>* trips,
+  void generateWasteRockSolution(std::vector<int>* vs, Matrix<int>* trips,
                                  double alpha_w, double alpha_s) {
-    // cout << "generateWasteRockSolution(...)" << endl;
+    // std::cout << "generateWasteRockSolution(...)" << std::endl;
 
     // =====================
     // Mark the used shovels
@@ -85,15 +85,15 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
     // Get max productivity of non-used shovels
     // ========================================
 
-    vector<pair<int, double> > shovelCap;
+    std::vector<std::pair<int, double> > shovelCap;
 
     for (int s = 0; s < opm.numCarregs; s++)
-      if (!usedShovel[s]) shovelCap.push_back(make_pair(s, opm.cMax[s]));
+      if (!usedShovel[s]) shovelCap.push_back(std::make_pair(s, opm.cMax[s]));
 
     // sort the shovels by productivity
     sort(shovelCap.rbegin(), shovelCap.rend(), sort_pred);
 
-    // cout << "shovelCap: "<<shovelCap<<endl;
+    // std::cout << "shovelCap: "<<shovelCap<<endl;
 
     // =================
     // Trucks timelimit
@@ -107,28 +107,28 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
     // Order trucks by maximum capacity
     // ==================================
 
-    vector<pair<int, double> > truckCap;  // capacity of each truck
+    std::vector<std::pair<int, double> > truckCap;  // capacity of each truck
 
     for (int c = 0; c < opm.numCaminhoes; c++)
-      truckCap.push_back(make_pair(c, opm.l[c]));
+      truckCap.push_back(std::make_pair(c, opm.l[c]));
 
     sort(truckCap.rbegin(), truckCap.rend(), sort_pred);
 
-    // cout << "truckCap: "<<truckCap<<endl;
+    // std::cout << "truckCap: "<<truckCap<<endl;
 
     // ========================================
     // Get qu of waste rock pits
     // ========================================
 
-    vector<pair<int, double> > wasteRockPitQu;
+    std::vector<std::pair<int, double> > wasteRockPitQu;
 
     for (int i = 0; i < opm.numFrentes; i++)
-      if (!opm.isMin[i]) wasteRockPitQu.push_back(make_pair(i, opm.qu[i]));
+      if (!opm.isMin[i]) wasteRockPitQu.push_back(std::make_pair(i, opm.qu[i]));
 
     // sort the waste rock pits by qu
     sort(wasteRockPitQu.rbegin(), wasteRockPitQu.rend(), sort_pred);
 
-    // cout << "wasteRockPitQu: "<<wasteRockPitQu<<endl;
+    // std::cout << "wasteRockPitQu: "<<wasteRockPitQu<<endl;
 
     // ====================================
     //   Meet waste rock production goal
@@ -141,24 +141,24 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
       int dx = 0;
       for (int c = 0; c < opm.numCaminhoes; c++)
         if ((*trips)(i, c) > 0) {
-          if ((*vs)[i] < 0) cout << "ERROR! No Shovel and Many Trips!" << endl;
+          if ((*vs)[i] < 0) std::cout << "ERROR! No Shovel and Many Trips!" << std::endl;
           dx += (*trips)(i, c) * opm.l[c];
           truckTime[c] += opm.tempo[i];
-          cout << "Update!" << endl;
+          std::cout << "Update!" << std::endl;
         }
       x[i] += dx;
     }
 
     double wasteRockProd = 0;  // waste rock production
 
-    // cout << "waste rock production goal = "<<opm.pr_est<<endl;
+    // std::cout << "waste rock production goal = "<<opm.pr_est<<endl;
 
     while (wasteRockProd < opm.pr_est) {
       // get one of the better waste rock pits
 
       int numGoodPits = ceil(alpha_w * wasteRockPitQu.size());
 
-      // cout << "there are "<<numGoodPits<<" good waste rock pits"<<endl;
+      // std::cout << "there are "<<numGoodPits<<" good waste rock pits"<<endl;
 
       if (numGoodPits > 0) {
         int w_r = rg.rand(numGoodPits);
@@ -169,7 +169,7 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
           // get one of the better shovels
 
           int numGoodShovels = ceil(alpha_s * shovelCap.size());
-          // cout << "there are "<<numGoodShovels<<" good shovels"<<endl;
+          // std::cout << "there are "<<numGoodShovels<<" good shovels"<<endl;
 
           if (numGoodShovels > 0) {
             int s_r = rg.rand(numGoodShovels);
@@ -213,18 +213,18 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
 
         if (erasePit) wasteRockPitQu.erase(wasteRockPitQu.begin() + w_r);
       } else {
-        // cout << "Cant generate a feasible solution!"<<endl;
+        // std::cout << "Cant generate a feasible solution!"<<endl;
         break;
       }
     }
 
-    // cout << "waste rock production = " << wasteRockProd << endl;
-    // cout << "end generateWasteRockSolution" << endl;
+    // std::cout << "waste rock production = " << wasteRockProd << std::endl;
+    // std::cout << "end generateWasteRockSolution" << std::endl;
   }
 
-  void generateOreSolution(vector<int>* vs, Matrix<int>* trips, double alpha_o,
+  void generateOreSolution(std::vector<int>* vs, Matrix<int>* trips, double alpha_o,
                            double alpha_s) {
-    // cout << "generateOreSolution(...)" << endl;
+    // std::cout << "generateOreSolution(...)" << std::endl;
 
     // =====================
     // Mark the used shovels
@@ -239,15 +239,15 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
     // Get max productivity of non-used shovels
     // ========================================
 
-    vector<pair<int, double> > shovelCap;
+    std::vector<std::pair<int, double> > shovelCap;
 
     for (int s = 0; s < opm.numCarregs; s++)
-      if (!usedShovel[s]) shovelCap.push_back(make_pair(s, opm.cMax[s]));
+      if (!usedShovel[s]) shovelCap.push_back(std::make_pair(s, opm.cMax[s]));
 
     // sort the shovels by productivity
     sort(shovelCap.rbegin(), shovelCap.rend(), sort_pred);
 
-    // cout << "shovelCap: "<<shovelCap<<endl;
+    // std::cout << "shovelCap: "<<shovelCap<<endl;
 
     // =================
     // Trucks timelimit
@@ -263,17 +263,17 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
 
     double truckMinCap = 10000000;  // INF
 
-    vector<pair<int, double> > truckCap;  // capacity of each truck
+    std::vector<std::pair<int, double> > truckCap;  // capacity of each truck
 
     for (int c = 0; c < opm.numCaminhoes; c++) {
       if (opm.l[c] < truckMinCap) truckMinCap = opm.l[c];
-      truckCap.push_back(make_pair(c, opm.l[c]));
+      truckCap.push_back(std::make_pair(c, opm.l[c]));
     }
 
     sort(truckCap.begin(), truckCap.end(), sort_pred);
 
-    // cout << "truckCap: "<<truckCap<<endl;
-    // cout << "truckMinCap = "<<truckMinCap<<endl;
+    // std::cout << "truckCap: "<<truckCap<<endl;
+    // std::cout << "truckMinCap = "<<truckMinCap<<endl;
 
     // ====================================
     //   Control parameters
@@ -296,7 +296,7 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
       int dx = 0;
       for (int c = 0; c < opm.numCaminhoes; c++)
         if ((*trips)(i, c) > 0) {
-          if ((*vs)[i] < 0) cout << "ERROR! No Shovel and Many Trips!" << endl;
+          if ((*vs)[i] < 0) std::cout << "ERROR! No Shovel and Many Trips!" << std::endl;
           dx += (*trips)(i, c) * opm.l[c];
           truckTime[c] += opm.tempo[i] * (*trips)(i, c);
 
@@ -311,44 +311,44 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
     //   Create ore pits
     // ========================================
 
-    vector<pair<int, double> > orePits;
+    std::vector<std::pair<int, double> > orePits;
 
     for (int i = 0; i < opm.numFrentes; i++)
-      if (opm.isMin[i]) orePits.push_back(make_pair(i, 0));
+      if (opm.isMin[i]) orePits.push_back(std::make_pair(i, 0));
 
     // =========================================
 
     double oreProd = 0;  // waste rock production
 
-    // cout << "ore production goal = "<<opm.pr_min<<endl;
+    // std::cout << "ore production goal = "<<opm.pr_min<<endl;
 
-    // cout << "orePits: "<<orePits<<endl;
+    // std::cout << "orePits: "<<orePits<<endl;
 
     while (oreProd < opm.pr_min) {
       for (unsigned o = 0; o < orePits.size(); o++) {
         int i = orePits[o].first;
 
-        // cout << "orePit "<<i<<endl;
-        // cout << "teores: ";
+        // std::cout << "orePit "<<i<<endl;
+        // std::cout << "teores: ";
         for (int p = 0; p < opm.numParams; p++)
           if (oreProd > 0) {
-            // cout <<(*opm.teor)(i,p) << " ";
+            // std::cout <<(*opm.teor)(i,p) << " ";
             controlParamPerc[p] =
                 (controlParamTons[p] + (*opm.teor)(i, p) * truckMinCap) /
                 oreProd;
           } else
             controlParamPerc[p] = 0;
-        // cout << endl;
+        // std::cout << std::endl;
 
-        // cout << "controlParamPerc: "<<controlParamPerc<<endl;
+        // std::cout << "controlParamPerc: "<<controlParamPerc<<endl;
 
         double dif = 0;
 
         for (int p = 0; p < opm.numParams; p++) {
-          // cout << absval(controlParamPerc[p]-opm.tr[p]) << " ";
+          // std::cout << absval(controlParamPerc[p]-opm.tr[p]) << " ";
           dif += absval(controlParamPerc[p] - opm.tr[p]);
         }
-        // cout << endl;
+        // std::cout << std::endl;
 
         orePits[o].second = dif;
       }
@@ -359,7 +359,7 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
 
       int numGoodPits = ceil(alpha_o * orePits.size());
 
-      // cout << "there are "<<numGoodPits<<" good ore pits"<<endl;
+      // std::cout << "there are "<<numGoodPits<<" good ore pits"<<endl;
 
       if (numGoodPits > 0) {
         double sumBias = 0;
@@ -380,8 +380,8 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
           }
         }
 
-        // cout << "orePits: "<<orePits<<endl;
-        // cout << "Chosen Cand: "<<cand<<" value: "<<
+        // std::cout << "orePits: "<<orePits<<endl;
+        // std::cout << "Chosen Cand: "<<cand<<" value: "<<
         // orePits[cand].second<<endl;
 
         int o_id = orePits[cand].first;
@@ -391,7 +391,7 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
           // get one of the better shovels
 
           int numGoodShovels = ceil(alpha_s * shovelCap.size());
-          // cout << "there are "<<numGoodShovels<<" good shovels"<<endl;
+          // std::cout << "there are "<<numGoodShovels<<" good shovels"<<endl;
 
           if (numGoodShovels > 0) {
             int s_r = rg.rand(numGoodShovels);
@@ -403,7 +403,7 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
           } else  // no shovels! cant use this ore pit
           {
             orePits.erase(orePits.begin() + cand);
-            // cout << "Delete ore pit "<<o_id<<"
+            // std::cout << "Delete ore pit "<<o_id<<"
             // |orePits|="<<orePits.size()<<endl;
             continue;
           }
@@ -443,17 +443,17 @@ class OPMInitialSolutionGreedyRandomized : public Constructive<RepOPM> {
 
         if (erasePit) {
           orePits.erase(orePits.begin() + cand);
-          // cout << "Delete ore pit "<<o_id<<"
+          // std::cout << "Delete ore pit "<<o_id<<"
           // |orePits|="<<orePits.size()<<endl;
         }
       } else {
-        // cout << "Cant generate a feasible solution!"<<endl;
+        // std::cout << "Cant generate a feasible solution!"<<endl;
         break;
       }
     }
 
-    // cout << "ore production = " << oreProd << endl;
-    // cout << "end generateOreSolution" << endl;
+    // std::cout << "ore production = " << oreProd << std::endl;
+    // std::cout << "end generateOreSolution" << std::endl;
   }
 };
 }  // namespace POLAD

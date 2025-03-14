@@ -86,8 +86,8 @@ class MoveRotate : public Move<ESolutionEtII> {
   }
 
   void print() const override {
-    cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")"
-         << endl;
+    std::cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")"
+         << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveRotate"; }
@@ -163,7 +163,7 @@ class NSSeqRotate : public NSSeq<ESolutionEtII> {
         new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2));
   }
 
-  void print() const override { cout << "NSSeqRotate" << endl; }
+  void print() const override { std::cout << "NSSeqRotate" << std::endl; }
 
   std::string id() const override { return "OptFrame:NS:NSSeqRotate"; }
 };

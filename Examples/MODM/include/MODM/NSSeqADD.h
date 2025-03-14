@@ -40,8 +40,8 @@ class MoveADD : public Move<ESolutionMODM> {
     SolutionMODM& s = se.first;
     RepMODM& rep = s.getR();
     AdsMODM& ads = s.getADS();
-    // cout<<"aplying..."<<endl;
-    // cout<<reverse<<endl;
+    // std::cout<<"aplying..."<<endl;
+    // std::cout<<reverse<<endl;
     vector<int> revProducts;
     vector<int> revClients;
     bool revReverse;
@@ -66,8 +66,8 @@ class MoveADD : public Move<ESolutionMODM> {
 
           double rev = dmproblem->getRevenue(c, p);
           double cost = dmproblem->getCost(c, p);
-          // cout << "(" << newRep[client] << "," <<
-          // pMODM.getClientMaxOffers(client) << ")" << endl;
+          // std::cout << "(" << newRep[client] << "," <<
+          // pMODM.getClientMaxOffers(client) << ")" << std::endl;
           if ((ads.productOffers[p] > 0) && (rep[c][p] == false))
             if (ads.clientOffers[c] <
                 dmproblem->getClientMaxOffers(
@@ -100,7 +100,7 @@ class MoveADD : public Move<ESolutionMODM> {
       }
     }
 
-    // cout<<"applied..."<<endl;
+    // std::cout<<"applied..."<<endl;
     // getchar();
     return uptr<Move<ESolutionMODM>>(
         new MoveADD(revReverse, revProducts, revClients, dmproblem, rg));
@@ -112,12 +112,12 @@ class MoveADD : public Move<ESolutionMODM> {
   }
 
   void print() const override {
-    cout << "MoveADD( ";
-    cout << reverse << " )";
-    cout << endl;
+    std::cout << "MoveADD( ";
+    std::cout << reverse << " )";
+    std::cout << std::endl;
   }
 
-  void toString() { cout << "MoveADD" << endl; }
+  void toString() { std::cout << "MoveADD" << std::endl; }
 };
 
 class NSIteratorADD : public NSIterator<ESolutionMODM> {
@@ -136,15 +136,15 @@ class NSIteratorADD : public NSIterator<ESolutionMODM> {
 
   void next() override {
     i++;
-    // cout << i << endl;
+    // std::cout << i << std::endl;
   }
 
   bool isDone() override { return (i == 2); }
 
   uptr<Move<ESolutionMODM>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqADD. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqADD. Aborting." << std::endl;
       exit(1);
     }
     vector<int> vazioP;
@@ -186,13 +186,13 @@ class NSSeqADD : public NSSeq<ESolutionMODM> {
         false, vazioP, vazioC, dmproblem, rg));  // return a random move
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NS<ESolutionMODM>::idComponent() << ":NSSeqADD";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 }  // namespace MODM
 

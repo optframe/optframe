@@ -124,11 +124,11 @@ class MoveSWAP : public Move<ESolutionMODM> {
     SolutionMODM& s = se.first;
     RepMODM& rep = s.getR();
     AdsMODM& ads = s.getADS();
-    // cout<<rep<<endl;
-    // cout<<ads.clientOffers<<endl;
-    // cout<<ads.productOffers<<endl;
-    // cout<<ads.totalCost<<endl;
-    // cout<<ads.totalRevenue<<endl;
+    // std::cout<<rep<<endl;
+    // std::cout<<ads.clientOffers<<endl;
+    // std::cout<<ads.productOffers<<endl;
+    // std::cout<<ads.totalCost<<endl;
+    // std::cout<<ads.totalRevenue<<endl;
     // getchar();
 
     int oldC1 = rep[c1][y];
@@ -154,9 +154,9 @@ class MoveSWAP : public Move<ESolutionMODM> {
   }
 
   void print() const override {
-    cout << "MoveSWAP( ";
-    cout << y << ", " << c1 << ", " << c2 << " )";
-    cout << endl;
+    std::cout << "MoveSWAP( ";
+    std::cout << y << ", " << c1 << ", " << c2 << " )";
+    std::cout << std::endl;
   }
 };
 
@@ -189,22 +189,22 @@ class NSIteratorSWAP : public NSIterator<ESolutionMODM> {
       c2 = c1 + 1;
       if (c1 >= (nClients - 1)) {
         y++;
-        // cout << "y = " << y << endl;
+        // std::cout << "y = " << y << std::endl;
         c1 = 0;
         c2 = c1 + 1;
       }
     }
 
-    // cout<<"c1 = "<<c1<<endl;
-    // cout<<"c2 = "<<c2<<endl;
+    // std::cout<<"c1 = "<<c1<<endl;
+    // std::cout<<"c2 = "<<c2<<endl;
   }
 
   bool isDone() override { return (y == nProducts); }
 
   uptr<Move<ESolutionMODM>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqSWAP. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqSWAP. Aborting." << std::endl;
       exit(1);
     }
 
@@ -256,13 +256,13 @@ class NSSeqSWAP : public NSSeq<ESolutionMODM> {
         dmproblem));  // return an iterator to the neighbors of 'rep'
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NS<ESolutionMODM>::idComponent() << ":NSSeqSWAP";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 }  // namespace MODM
 

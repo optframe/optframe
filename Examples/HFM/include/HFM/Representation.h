@@ -35,7 +35,7 @@ enum ActivationFunction { Heaviside, Trapezoid, N_Activation_Functions };
 struct RepHFM {
   // single index [ (file,K - x) ,...] ex:  [ (file = 0,K - 10),(file = 0,K -
   // 2), ...]
-  vector<pair<int, int>> singleIndex;
+  std::vector<std::pair<int, int>> singleIndex;
   vector<vector<double>> singleFuzzyRS;  // single inputs relationships
 
   vector<vector<pair<int, int>>> averageIndex;
@@ -73,23 +73,23 @@ struct RepHFM {
 ostream& operator<<(ostream& s, const RepHFM rep) {
   assert(rep.singleIndex.size() == rep.singleFuzzyRS.size());
   s << "NRules:" << rep.singleIndex.size() << "/" << rep.averageIndex.size()
-    << "/" << rep.derivativeIndex.size() << endl;
+    << "/" << rep.derivativeIndex.size() << std::endl;
 
   /*
-       s << " ======================== \n Solution printing \n" << endl;
-       s << "Single Inputs" << endl;
+       s << " ======================== \n Solution printing \n" << std::endl;
+       s << "Single Inputs" << std::endl;
        vector<int> nFuzzyFunction(N_Activation_Functions, 0);
        double counter = 0;
 
        for (int i = 0; i < (int) rep.singleIndex.size(); i++)
        {
                s << "(" << rep.singleIndex[i].first << "," <<
-     rep.singleIndex[i].second << ")" << endl; s << "\t (" <<
+     rep.singleIndex[i].second << ")" << std::endl; s << "\t (" <<
      rep.singleFuzzyRS[i][GREATER] << "->" <<
      rep.singleFuzzyRS[i][GREATER_WEIGHT] << ")"; s << "\t (" <<
      rep.singleFuzzyRS[i][LOWER] << "->" << rep.singleFuzzyRS[i][LOWER_WEIGHT]
      << ")"; s << "\t Epsilon:" << rep.singleFuzzyRS[i][EPSILON]; s << "\t
-     FuzzyFunction:" << rep.singleFuzzyRS[i][PERTINENCEFUNC] << endl;
+     FuzzyFunction:" << rep.singleFuzzyRS[i][PERTINENCEFUNC] << std::endl;
 
                if (rep.singleFuzzyRS[i][PERTINENCEFUNC] == Heaviside)
                        nFuzzyFunction[Heaviside]++;
@@ -98,7 +98,7 @@ ostream& operator<<(ostream& s, const RepHFM rep) {
                counter++;
        }
 
-       s << "Averaged Inputs" << endl;
+       s << "Averaged Inputs" << std::endl;
        for (int i = 0; i < (int) rep.averageIndex.size(); i++)
        {
                s << "([" << rep.averageIndex[i][0].first << "," <<
@@ -108,12 +108,12 @@ ostream& operator<<(ostream& s, const RepHFM rep) {
                        s << "\t [" << rep.averageIndex[i][j].first << "," <<
      rep.averageIndex[i][j].second << "]";
                }
-               s << ")" << endl;
+               s << ")" << std::endl;
                s << "\t (" << rep.averageFuzzyRS[i][GREATER] << "->" <<
      rep.averageFuzzyRS[i][GREATER_WEIGHT] << ")"; s << "\t (" <<
      rep.averageFuzzyRS[i][LOWER] << "->" << rep.averageFuzzyRS[i][LOWER_WEIGHT]
      << ")"; s << "\t Epsilon:" << rep.averageFuzzyRS[i][EPSILON]; s << "\t
-     FuzzyFunction:" << rep.averageFuzzyRS[i][PERTINENCEFUNC] << endl;
+     FuzzyFunction:" << rep.averageFuzzyRS[i][PERTINENCEFUNC] << std::endl;
 
                if (rep.averageFuzzyRS[i][PERTINENCEFUNC] == Heaviside)
                        nFuzzyFunction[Heaviside]++;
@@ -122,7 +122,7 @@ ostream& operator<<(ostream& s, const RepHFM rep) {
                counter++;
        }
 
-       s << "Derivative Inputs" << endl;
+       s << "Derivative Inputs" << std::endl;
        for (int i = 0; i < (int) rep.derivativeIndex.size(); i++)
        {
                s << "([" << rep.derivativeIndex[i][0].first << "," <<
@@ -132,13 +132,13 @@ ostream& operator<<(ostream& s, const RepHFM rep) {
                        s << "\t [" << rep.derivativeIndex[i][j].first << "," <<
      rep.derivativeIndex[i][j].second << "]";
                }
-               s << ")" << endl;
+               s << ")" << std::endl;
                s << "\t (" << rep.derivativeFuzzyRS[i][GREATER] << "->" <<
      rep.derivativeFuzzyRS[i][GREATER_WEIGHT] << ")"; s << "\t (" <<
      rep.derivativeFuzzyRS[i][LOWER] << "->" <<
      rep.derivativeFuzzyRS[i][LOWER_WEIGHT] << ")"; s << "\t Epsilon:" <<
      rep.derivativeFuzzyRS[i][EPSILON]; s << "\t FuzzyFunction:" <<
-     rep.derivativeFuzzyRS[i][PERTINENCEFUNC] << endl;
+     rep.derivativeFuzzyRS[i][PERTINENCEFUNC] << std::endl;
 
                if (rep.derivativeFuzzyRS[i][PERTINENCEFUNC] == Heaviside)
                        nFuzzyFunction[Heaviside]++;
@@ -147,15 +147,15 @@ ostream& operator<<(ostream& s, const RepHFM rep) {
                counter++;
        }
 
-       //s << "earliestInput: " << rep.earliestInput << endl;
-       s << "counter: " << counter << endl;
+       //s << "earliestInput: " << rep.earliestInput << std::endl;
+       s << "counter: " << counter << std::endl;
        s << "Heaviside functions on rules: " << nFuzzyFunction[Heaviside] /
-     counter * 100 << endl; s << "Trapezoid functions on rules: " <<
-     nFuzzyFunction[Trapezoid] / counter * 100 << endl;
+     counter * 100 << std::endl; s << "Trapezoid functions on rules: " <<
+     nFuzzyFunction[Trapezoid] / counter * 100 << std::endl;
 
        if ((nFuzzyFunction[Heaviside] + nFuzzyFunction[Trapezoid]) != counter)
        {
-               s << "BUGOU!" << endl;
+               s << "BUGOU!" << std::endl;
        }
 
        s << " Solution printed \n ======================== \n";
@@ -166,51 +166,51 @@ ostream& operator<<(ostream& s, const RepHFM rep) {
 /*
  ostream & operator<<(ostream & s, RepEFP rep)
  {
- cout << " ======================== \n Solution printing \n" << endl;
- cout << "Single Inputs" << endl;
+ std::cout << " ======================== \n Solution printing \n" << std::endl;
+ std::cout << "Single Inputs" << std::endl;
  for (int i = 0; i < rep.singleIndex.size(); i++)
  {
- cout << "(" << rep.singleIndex[i].first << "," << rep.singleIndex[i].second <<
- ")" << endl; cout << "\t (" << rep.singleFuzzyRS[GREATER][i] << "->" <<
- rep.singleFuzzyRS[GREATER_WEIGHT][i] << ")"; cout << "\t (" <<
+ std::cout << "(" << rep.singleIndex[i].first << "," << rep.singleIndex[i].second <<
+ ")" << std::endl; std::cout << "\t (" << rep.singleFuzzyRS[GREATER][i] << "->" <<
+ rep.singleFuzzyRS[GREATER_WEIGHT][i] << ")"; std::cout << "\t (" <<
  rep.singleFuzzyRS[LOWER][i] << "->" << rep.singleFuzzyRS[LOWER_WEIGHT][i] <<
- ")" << endl;
+ ")" << std::endl;
  }
 
- cout << "Averaged Inputs" << endl;
+ std::cout << "Averaged Inputs" << std::endl;
  for (int i = 0; i < rep.averageIndex.size(); i++)
  {
- cout << "([" << rep.averageIndex[i][0].first << "," <<
+ std::cout << "([" << rep.averageIndex[i][0].first << "," <<
  rep.averageIndex[i][0].second << "]"; for (int j = 1; j <
  rep.averageIndex[i].size(); j++)
  {
- cout << "\t [" << rep.averageIndex[i][j].first << "," <<
+ std::cout << "\t [" << rep.averageIndex[i][j].first << "," <<
  rep.averageIndex[i][j].second << "]";
  }
- cout << ")" << endl;
- cout << "\t (" << rep.averageFuzzyRS[GREATER][i] << "->" <<
- rep.averageFuzzyRS[GREATER_WEIGHT][i] << ")"; cout << "\t (" <<
+ std::cout << ")" << std::endl;
+ std::cout << "\t (" << rep.averageFuzzyRS[GREATER][i] << "->" <<
+ rep.averageFuzzyRS[GREATER_WEIGHT][i] << ")"; std::cout << "\t (" <<
  rep.averageFuzzyRS[LOWER][i] << "->" << rep.averageFuzzyRS[LOWER_WEIGHT][i] <<
- ")" << endl;
+ ")" << std::endl;
  }
 
- cout << "Derivative Inputs" << endl;
+ std::cout << "Derivative Inputs" << std::endl;
  for (int i = 0; i < rep.derivativeIndex.size(); i++)
  {
- cout << "([" << rep.derivativeIndex[i][0].first << "," <<
+ std::cout << "([" << rep.derivativeIndex[i][0].first << "," <<
  rep.derivativeIndex[i][0].second << "]"; for (int j = 1; j <
  rep.derivativeIndex[i].size(); j++)
  {
- cout << "\t [" << rep.derivativeIndex[i][j].first << "," <<
+ std::cout << "\t [" << rep.derivativeIndex[i][j].first << "," <<
  rep.derivativeIndex[i][j].second << "]";
  }
- cout << ")" << endl;
- cout << "\t (" << rep.derivativeFuzzyRS[GREATER][i] << "->" <<
- rep.derivativeFuzzyRS[GREATER_WEIGHT][i] << ")"; cout << "\t (" <<
+ std::cout << ")" << std::endl;
+ std::cout << "\t (" << rep.derivativeFuzzyRS[GREATER][i] << "->" <<
+ rep.derivativeFuzzyRS[GREATER_WEIGHT][i] << ")"; std::cout << "\t (" <<
  rep.derivativeFuzzyRS[LOWER][i] << "->" <<
- rep.derivativeFuzzyRS[LOWER_WEIGHT][i] << ")" << endl;
+ rep.derivativeFuzzyRS[LOWER_WEIGHT][i] << ")" << std::endl;
  }
- cout << " Solution printed \n ======================== \n";
+ std::cout << " Solution printed \n ======================== \n";
 
  }
  */

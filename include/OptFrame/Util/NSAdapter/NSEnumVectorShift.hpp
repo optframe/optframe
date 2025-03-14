@@ -32,7 +32,7 @@ class NSEnumVectorShift : public NSEnum<XES, XES> {
     if (k > size()) {
       cerr << "Neighborhood Shift Error! Move " << k
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
 
       return nullptr;
@@ -45,7 +45,7 @@ class NSEnumVectorShift : public NSEnum<XES, XES> {
   int size() const override { return n * n; }
 
   void print() const override {
-    cout << "NSEnum Vector Shift (" << size() << ")" << endl;
+    std::cout << "NSEnum Vector Shift (" << size() << ")" << std::endl;
   }
 };
 

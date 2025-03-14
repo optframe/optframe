@@ -154,7 +154,7 @@ class BestImprovement : public LocalSearch<XES> {
     }
 
     if (eval->isStrictImprovement(*bestCost)) {
-      // cout << "MOVE IS IMPROVEMENT! cost=";
+      // std::cout << "MOVE IS IMPROVEMENT! cost=";
       // bestCost->print();
 
       if (bestCost->isEstimated()) {
@@ -175,7 +175,7 @@ class BestImprovement : public LocalSearch<XES> {
       sum_time += t.inMilliSecs();
       return SearchStatus::LOCAL_OPT;
     }
-    // cout << "#" << num_calls << " out_bi:";
+    // std::cout << "#" << num_calls << " out_bi:";
     // bestMove->print();
     // nsSeq.print();
     // e.print();

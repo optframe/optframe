@@ -15,12 +15,12 @@ using namespace optframe;
 using namespace HFM;
 
 int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
-  cout << "Welcome to Mokoko's place" << endl;
+  std::cout << "Welcome to Mokoko's place" << std::endl;
   RandGenMersenneTwister rg;
 
   long seed = time(nullptr);
   seed = 1;  // Fix the seed
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
@@ -28,9 +28,9 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   // This comment part can be used for automatic generation of results
   //	if (argc != 10)
   //	{
-  //		cout << "Parametros incorretos!" << endl;
+  //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: nome nomeValidationSet
-  //saida parameters options precision" << endl; 		exit(1);
+  //saida parameters options precision" << std::endl; 		exit(1);
   //	}
 
   //	const char* caminho = argv[1];
@@ -47,14 +47,14 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   //	string parametersFile = caminhoParameters;
 
   //===================================
-  //	cout << "Parametros:" << endl;
-  //	cout << "nome=" << nome << endl;
-  //	cout << "nomeValidationSet=" << nomeValidationSet << endl;
-  //	cout << "nomeOutput=" << nomeOutput << endl;
-  //	cout << "nomeParameters=" << parametersFile << endl;
-  //	cout << "instN=" << instN << endl;
-  //	cout << "stepsAhead=" << stepsAhead << endl;
-  //	cout << "mu=" << mu << endl;
+  //	cout << "Parametros:" << std::endl;
+  //	cout << "nome=" << nome << std::endl;
+  //	cout << "nomeValidationSet=" << nomeValidationSet << std::endl;
+  //	cout << "nomeOutput=" << nomeOutput << std::endl;
+  //	cout << "nomeParameters=" << parametersFile << std::endl;
+  //	cout << "instN=" << instN << std::endl;
+  //	cout << "stepsAhead=" << stepsAhead << std::endl;
+  //	cout << "mu=" << mu << std::endl;
   //======================================
   //=================================================
 
@@ -75,8 +75,8 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -154,11 +154,11 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
 
     int maxNotUsedForTest = problemParam.getMaxLag(0);
 
-    cout << "maxNotUsedForTest: " << maxNotUsedForTest << endl;
+    std::cout << "maxNotUsedForTest: " << maxNotUsedForTest << std::endl;
 
     // getchar();
     // int randomObjFunc = rg.rand(2);
-    // cout<<"randomObjFunc = "<<randomObjFunc<<endl;
+    // std::cout<<"randomObjFunc = "<<randomObjFunc<<endl;
     // problemParam.setFunction(randomObjFunc);
 
     // validationBlindForecastings.clear();
@@ -167,9 +167,9 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
     nTrainningRounds = 1;
     int nTotalForecastingsTrainningSet =
         maxNotUsedForTest + nTrainningRounds * stepsAhead;
-    cout << "nTrainningRounds: " << nTrainningRounds << endl;
-    cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << endl;
+    std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+         << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = stepsAhead;
@@ -205,12 +205,12 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
     foIndicatorCalibration.push_back(alphaACF);
     foIndicatorCalibration.push_back(seed);
     // getchar();
-    // cout << foIndicatorCalibration << endl;
+    // std::cout << foIndicatorCalibration << std::endl;
     vfoIndicatorCalibration.push_back(foIndicatorCalibration);
     vSolutionsBatches.push_back(sol->first);
   }
 
-  cout << "Models has been trained with success!" << endl;
+  std::cout << "Models has been trained with success!" << std::endl;
 
   vector<vector<double>> finalResultQuantis;
 
@@ -226,16 +226,16 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
 
   rF.exportQuantisVector(finalResultQuantis, "./ExportQuantileMokoko");
   rF.exportVectorOfVector(batchOfResults, "./MatrixOfBatchesAndForecasts");
-  cout << "Pinball Function of Probabilistic Forecasting: \t"
+  std::cout << "Pinball Function of Probabilistic Forecasting: \t"
        << rF.getPinball(finalResultQuantis, rF.getLastForecasts(0, stepsAheadR))
-       << endl;
+       << std::endl;
 
-  cout << vfoIndicatorCalibration << endl;
+  std::cout << vfoIndicatorCalibration << std::endl;
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
 
   string calibrationFile = "./mokokosPlaceAggregatedResults";

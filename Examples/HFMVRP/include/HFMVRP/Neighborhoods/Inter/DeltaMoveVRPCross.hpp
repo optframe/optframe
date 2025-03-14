@@ -24,7 +24,7 @@ class DeltaMoveVRPCross
                     ProblemInstance* _hfmvrp)
       : super(_r1, _r2, _p1, _p2), hfmvrp(_hfmvrp) {
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -63,7 +63,7 @@ class DeltaMoveVRPCross
     return new pair<double, double>(f, 0);
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMoveVRP2Opt");
     return idComp;
@@ -75,9 +75,9 @@ class DeltaMoveVRPCross
   }
 
   void print() const override {
-    cout << "DeltaMoveVRPCross( ";
-    cout << r1 << ", " << r2 << ", " << p1 << ", " << p2 << " )";
-    cout << endl;
+    std::cout << "DeltaMoveVRPCross( ";
+    std::cout << r1 << ", " << r2 << ", " << p1 << ", " << p2 << " )";
+    std::cout << std::endl;
   }
 };
 

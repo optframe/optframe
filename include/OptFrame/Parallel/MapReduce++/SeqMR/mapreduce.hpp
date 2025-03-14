@@ -29,17 +29,17 @@ class SeqMR_MapReduce : public MapReduce<KeyA, A, KeyB, B, C>
 {
 public:
    ///MapReduce execution (implemented by library).
-   virtual vector<pair<KeyB, C>> run(Mapper<KeyA, A, KeyB, B, C>& mapper, Reducer<KeyA, A, KeyB, B, C>& reducer, vector<pair<KeyA, A>>& as)
+   virtual std::vector<std::pair<KeyB, C>> run(Mapper<KeyA, A, KeyB, B, C>& mapper, Reducer<KeyA, A, KeyB, B, C>& reducer, std::vector<std::pair<KeyA, A>>& as)
    {
-      //cout << "Input  :\t" << as << endl;
+      //cout << "Input  :\t" << as << std::endl;
 #ifndef MRI_USE_MULTIMAP
-      vector<pair<KeyB, B>> bs = mapper.run(as);
+      std::vector<std::pair<KeyB, B>> bs = mapper.run(as);
 #else
       multimap<KeyB, B> bs = mapper.run(as);
 #endif
-      //cout << "Mapped :\t" << bs << endl;
-      vector<pair<KeyB, C>> cs = reducer.run(bs);
-      //cout << "Reduced:\t" << cs << endl;
+      //cout << "Mapped :\t" << bs << std::endl;
+      std::vector<std::pair<KeyB, C>> cs = reducer.run(bs);
+      //cout << "Reduced:\t" << cs << std::endl;
       return cs;
    };
 };

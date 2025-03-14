@@ -242,10 +242,10 @@ private:
          for (int i = ((int)back.length()) - 1; i >= 0; i--) {
             (*input)->putback(back[i]);
             if ((*input)->fail()) {
-               cout << "SCANNER ERROR PUTTING BACK CHAR '" << back[i] << "'" << endl;
-               cout << "eof bit: '" << (*input)->eof() << "'" << endl;
-               cout << "bad bit: '" << (*input)->bad() << "'" << endl;
-               cout << "fail bit: '" << (*input)->fail() << "'" << endl;
+               std::cout << "SCANNER ERROR PUTTING BACK CHAR '" << back[i] << "'" << std::endl;
+               std::cout << "eof bit: '" << (*input)->eof() << "'" << std::endl;
+               std::cout << "bad bit: '" << (*input)->bad() << "'" << std::endl;
+               std::cout << "fail bit: '" << (*input)->fail() << "'" << std::endl;
                exit(1);
             }
          }
@@ -313,7 +313,7 @@ public:
       int x = input->peek();
 
       if (input->fail()) {
-         //cout << "WARNING::SCANNER FAILED!" << endl;
+         //cout << "WARNING::SCANNER FAILED!" << std::endl;
          return false;
       }
 
@@ -339,7 +339,7 @@ public:
 
    bool nextCharIs(char c) const
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << c;
       string s = ss.str();
 
@@ -610,7 +610,7 @@ public:
 
 public:
    // XML method: it can segfault! beware!
-   pair<string, map<string, string>> nextXMLTag()
+   pair<string, map<std::string, std::string>> nextXMLTag()
    {
       string x = "";
 
@@ -631,20 +631,20 @@ public:
             break;
       }
 
-      cout << "base: " << x << endl;
+      std::cout << "base: " << x << std::endl;
 
       if (x.size() < 2 || x.at(0) != '<' || x.at(x.size() - 1) != '>')
-         return make_pair("", map<string, string>());
+         return make_pair("", map<std::string, std::string>());
 
       Scanner scanner(x);
       scanner.useSeparators("<>");
 
       string tagname = "";
-      map<string, string> attr;
+      map<std::string, std::string> attr;
 
       if (scanner.hasNext()) {
          string tag = scanner.next();
-         //cout << "tag: " << tag << endl;
+         //cout << "tag: " << tag << std::endl;
 
          Scanner sc_tag(tag);
          sc_tag.useSeparators(" ");
@@ -652,7 +652,7 @@ public:
          if (sc_tag.hasNext())
             tagname = sc_tag.next();
 
-         //cout << "tagname: " << tagname << endl;
+         //cout << "tagname: " << tagname << std::endl;
 
          // TODO usar trim
 

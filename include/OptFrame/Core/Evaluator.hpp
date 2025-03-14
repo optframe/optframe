@@ -167,7 +167,7 @@ class Evaluator : public GeneralEvaluator<XES, XES>,
     my_evtype inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
 
     /*
-      vector<pair<evtype, evtype>>
+      std::vector<std::pair<evtype, evtype>>
       alternatives(rev.second.getAlternativeCosts().size()); for (unsigned i =
       0; i < alternatives.size(); i++) { alternatives[i].first =
       rev.second.getAlternativeCosts()[i].first -

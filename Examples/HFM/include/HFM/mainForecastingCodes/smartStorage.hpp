@@ -19,19 +19,19 @@ using namespace optframe;
 using namespace HFM;
 
 int smartStorage(int argc, char** argv) {
-  cout << "Welcome to SmartStorage prob. forecast generation wind, solar, price"
-       << endl;
+  std::cout << "Welcome to SmartStorage prob. forecast generation wind, solar, price"
+       << std::endl;
   RandGenMersenneTwister rg;
   // long
   long seed = time(nullptr);  // CalibrationMode
   // seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 3) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: data output" << endl;
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: data output" << std::endl;
     exit(1);
   }
 
@@ -69,8 +69,8 @@ int smartStorage(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -165,11 +165,11 @@ int smartStorage(int argc, char** argv) {
 
     int maxNotUsedForTest = problemParam.getMaxLag(0);
 
-    cout << "maxNotUsedForTest: " << maxNotUsedForTest << endl;
+    std::cout << "maxNotUsedForTest: " << maxNotUsedForTest << std::endl;
 
     // getchar();
     // int randomObjFunc = rg.rand(2);
-    // cout<<"randomObjFunc = "<<randomObjFunc<<endl;
+    // std::cout<<"randomObjFunc = "<<randomObjFunc<<endl;
     // problemParam.setFunction(randomObjFunc);
 
     // validationBlindForecastings.clear();
@@ -178,9 +178,9 @@ int smartStorage(int argc, char** argv) {
     nTrainningRounds = 3;
     int nTotalForecastingsTrainningSet =
         maxNotUsedForTest + nTrainningRounds * stepsAhead;
-    cout << "nTrainningRounds: " << nTrainningRounds << endl;
-    cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << endl;
+    std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+         << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = 672;
@@ -221,13 +221,13 @@ int smartStorage(int argc, char** argv) {
     finalResultQuantis.push_back(quantis);
   }
 
-  stringstream ss;
+  std::stringstream ss;
   ss << "./MyProjects/EFP/Instance/SmartStorage/ResultsProb/" << nomeOutput;
 
   rF.exportQuantisVector(finalResultQuantis, ss.str());
 
   double pinball = rF.getPinball(finalResultQuantis, validationSet[0]);
-  cout << "Pinball error: " << pinball << endl;
+  std::cout << "Pinball error: " << pinball << std::endl;
 
   FILE* fResults = fopen(ss.str().c_str(), "a");
   fprintf(fResults, "\n\nPinball error:%f\n", pinball);

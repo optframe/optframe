@@ -53,11 +53,11 @@ class CompareLocalSearch : public LocalSearch<XES> {
     ls2->searchFrom(p2, sosc);
 
     if (!eval->equals(e, e2)) {
-      cout << "CompareLocalSearch error: difference between " << e.evaluation()
-           << " and " << e2.evaluation() << endl;
-      cout << "LocalSearch 1: ";
+      std::cout << "CompareLocalSearch error: difference between " << e.evaluation()
+           << " and " << e2.evaluation() << std::endl;
+      std::cout << "LocalSearch 1: ";
       ls1->print();
-      cout << "LocalSearch 2: ";
+      std::cout << "LocalSearch 2: ";
       ls2->print();
       exit(1);
     }
@@ -71,8 +71,8 @@ class CompareLocalSearch : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << "CompareLocalSearch";
     return ss.str();
   }
@@ -80,7 +80,7 @@ class CompareLocalSearch : public LocalSearch<XES> {
   std::string id() const override { return idComponent(); }
 
   string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "CLS: (" << ls1->toString() << "," << ls2->toString() << ")";
     return ss.str();
   }
@@ -127,9 +127,9 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
     return new CompareLocalSearch<XES>(eval, h, h2);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
                                "evaluation function"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search 1"));
@@ -143,8 +143,8 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
     return component == CompareLocalSearch<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << "CompareLocalSearch";
     return ss.str();
   }

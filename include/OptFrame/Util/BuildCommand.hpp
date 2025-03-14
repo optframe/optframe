@@ -94,22 +94,22 @@ class BuildCommand {
       \endportuguese
   */
 
-  string run(HeuristicFactory<XES>& factory, map<string, string>& dictionary,
+  string run(HeuristicFactory<XES>& factory, map<std::string, std::string>& dictionary,
              map<string, vector<string>>& ldictionary, string input) {
-    // cout << "build command: " << input << endl;
+    // std::cout << "build command: " << input << std::endl;
     Scanner scanner1(input);
 
     if (!scanner1.hasNext()) {
-      cout << "Usage: " << usage() << endl;
+      std::cout << "Usage: " << usage() << std::endl;
 
       listBuilders(factory, dictionary, ldictionary, "");
       return "";
     }
 
     string type = scanner1.next();
-    stringstream ss;
+    std::stringstream ss;
     ss << type << " " << scanner1.rest();
-    // cout << "rest: " << ss.str() << endl;
+    // std::cout << "rest: " << ss.str() << std::endl;
 
     Scanner scanner(ss.str());
 
@@ -163,13 +163,13 @@ class BuildCommand {
         new_id = factory.addComponent(*comp, base);
       }
     } else {
-      cout << "build_module: error '" << type << "' is not a known builder!"
-           << endl;
+      std::cout << "build_module: error '" << type << "' is not a known builder!"
+           << std::endl;
       return "";
     }
 
     if (new_id < 0) {
-      cout << "build command: couldn't build component!" << endl;
+      std::cout << "build command: couldn't build component!" << std::endl;
       return "";
     }
 
@@ -177,7 +177,7 @@ class BuildCommand {
     str << base << " " << new_id;
     string s_new_id = str.str();
 
-    // cout << "'" << s_new_id << "' added." << endl;
+    // std::cout << "'" << s_new_id << "' added." << std::endl;
 
     string new_name = scanner.next();
 
@@ -185,7 +185,7 @@ class BuildCommand {
   }
 
   string listBuilders(HeuristicFactory<XES>& factory,
-                      map<string, string>& dictionary,
+                      map<std::string, std::string>& dictionary,
                       map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);
 
@@ -196,23 +196,23 @@ class BuildCommand {
     else
       pattern = "OptFrame:";
 
-    vector<pair<string, vector<pair<string, string>>>> builders =
+    std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> builders =
         factory.listBuilders(pattern);
 
     if (!scanner.hasNext()) {
       for (int i = 0; i < (int)builders.size(); i++) {
-        cout << builders[i].first << "\t";
+        std::cout << builders[i].first << "\t";
         for (unsigned j = 0; j < builders[i].second.size(); j++)
-          cout << builders[i].second[j].first << "=>'"
+          std::cout << builders[i].second[j].first << "=>'"
                << builders[i].second[j].second << "' ";
-        cout << endl;
+        std::cout << std::endl;
       }
 
       return "";  // TODO: CHECK, IT WAS TRUE BEFORE, SO RETURN SHOULDN'T BE
                   // EMPTY: ""
     } else {
       string new_name = scanner.next();
-      stringstream ss;
+      std::stringstream ss;
 
       ss << new_name << " [";
       for (unsigned i = 0; i < builders.size(); i++) {

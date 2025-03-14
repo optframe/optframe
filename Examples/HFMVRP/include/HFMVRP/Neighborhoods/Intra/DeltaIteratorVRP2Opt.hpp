@@ -39,7 +39,7 @@ class DeltaNSIteratorVRP2Opt
       const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
       : super(_getRoutes, se, _hfmvrp), ads(se.first.getADS()) {
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       exit(1);
     }
   }
@@ -78,8 +78,8 @@ class DeltaNSIteratorVRP2Opt
 
   uptr<Move<ESolutionHFMVRP>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "DeltaNSSeqVRP2Opt. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "DeltaNSSeqVRP2Opt. Aborting." << std::endl;
       exit(1);
     }
 

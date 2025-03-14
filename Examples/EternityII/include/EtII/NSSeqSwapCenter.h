@@ -119,8 +119,8 @@ class MoveSwapCenter : public Move<ESolutionEtII> {
   }
 
   void print() const override {
-    cout << "MoveSwapCenter: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
-         << y2 << ")" << endl;
+    std::cout << "MoveSwapCenter: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
+         << y2 << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveSwapCenter"; }
@@ -223,7 +223,7 @@ class NSSeqSwapCenter : public NSSeq<ESolutionEtII> {
         new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2));
   }
 
-  void print() const override { cout << "NSSeqSwapCenter" << endl; }
+  void print() const override { std::cout << "NSSeqSwapCenter" << std::endl; }
 
   std::string id() const override { return "OptFrame:NS:NSSeqSwapCenter"; }
 };

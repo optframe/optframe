@@ -31,8 +31,8 @@ class LocalSearchBuilder : public ComponentBuilder<XES> {
 
   bool canBuild(string) override = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "LocalSearch";
     return ss.str();
   }

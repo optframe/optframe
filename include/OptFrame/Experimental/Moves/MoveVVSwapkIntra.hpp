@@ -50,7 +50,7 @@ class MoveVVSwapkIntra : public Move<vector<vector<T>>, DS> {
 
   virtual bool canBeApplied(const vector<vector<T>>&) { return true; }
 
-  virtual Move<vector<vector<T>>, DS>& apply(vector<vector<T>>& rep) {
+  virtual Move<vector<vector<T>>, DS>& apply(std::vector<vector<T>>& rep) {
     pair<pair<int, int>, pair<int, int>> m;
     m.first.first = k1;
     m.first.second = k2;
@@ -76,8 +76,8 @@ class MoveVVSwapkIntra : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "Move VRP SwapkIntra(" << k1 << " " << k2 << " " << v << " " << p1
-         << " " << p2 << ")" << endl;
+    std::cout << "Move VRP SwapkIntra(" << k1 << " " << k2 << " " << v << " " << p1
+         << " " << p2 << ")" << std::endl;
   }
 
   virtual bool operator==(const Move<vector<vector<T>>, DS>& m) const {

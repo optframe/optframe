@@ -79,7 +79,7 @@ pair<Evaluation<double>, vector<int>> fDecode(
                    typename ESolutionTSP::second_type, ESolutionTSP>>
         eval,
     const vector<double>& rk) {
-  vector<pair<double, int>> v(rk.size());
+  std::vector<std::pair<double, int>> v(rk.size());
   int k = 0;
   for (unsigned i = 0; i < v.size(); i++) v[k] = pair<double, int>(rk[i], i);
 

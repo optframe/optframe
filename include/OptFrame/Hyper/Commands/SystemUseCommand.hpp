@@ -71,13 +71,13 @@ public:
       return false;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       /*
 		// check dependency on 'command.rename' module
 		if(!Command<R, ADS, DS>::run_module("system.require", allCommands, allFunctions, factory, dictionary, ldictionary, "command.rename"))
 		{
-			cout << "error: system.use module depends on 'command.rename' module, which is not loaded!" << endl;
+			cout << "error: system.use module depends on 'command.rename' module, which is not loaded!" << std::endl;
 			return false;
 		}
 		*/
@@ -86,7 +86,7 @@ public:
 		// check dependency on 'function.rename' module
 		if(!Command<R, ADS, DS>::run_module("system.require", allCommands, allFunctions, factory, dictionary, ldictionary, "function.rename"))
 		{
-			cout << "error: system.use module depends on 'function.rename' module, which is not loaded!" << endl;
+			cout << "error: system.use module depends on 'function.rename' module, which is not loaded!" << std::endl;
 			return false;
 		}
 		*/
@@ -95,7 +95,7 @@ public:
 
       if (!scanner.hasNext()) // no module
       {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -125,7 +125,7 @@ public:
 
             if (moduleExists(smallName, allCommands)) {
                // WARNING!
-               cout << "system.use module warning: couldn't rename '" << allCommands[i]->id() << "' because module '" << smallName << "' is already registered!" << endl;
+               std::cout << "system.use module warning: couldn't rename '" << allCommands[i]->id() << "' because module '" << smallName << "' is already registered!" << std::endl;
                continue;
             }
 
@@ -136,7 +136,7 @@ public:
 
 				if(!Command<R, ADS, DS>::run_module("command.rename", allCommands, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				{
-					cout << "system.use module error: failed to do a command.rename with parameters '" << ss.str() << "'" << endl;
+					cout << "system.use module error: failed to do a command.rename with parameters '" << ss.str() << "'" << std::endl;
 					return false;
 				}
 				*/
@@ -157,7 +157,7 @@ public:
 
             if (functionExists(smallName, allFunctions)) {
                // WARNING!
-               cout << "system.use module warning: couldn't rename '" << allFunctions[i]->id() << "' because function '" << smallName << "' is already registered!" << endl;
+               std::cout << "system.use module warning: couldn't rename '" << allFunctions[i]->id() << "' because function '" << smallName << "' is already registered!" << std::endl;
                continue;
             }
 
@@ -167,7 +167,7 @@ public:
 
 				if(!Command<R, ADS, DS>::run_module("function.rename", allCommands, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				{
-					cout << "system.use module error: failed to do a function.rename with parameters '" << ss.str() << "'" << endl;
+					cout << "system.use module error: failed to do a function.rename with parameters '" << ss.str() << "'" << std::endl;
 					return false;
 				}
 				*/
@@ -180,7 +180,7 @@ public:
    }
 
    // disable preprocess, only need module prefix
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // disable preprocess!!
       return new string(input);

@@ -67,13 +67,13 @@ class RandomDescentMethod : public LocalSearch<XES> {
     return SearchStatus::NO_REPORT;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":RDM";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

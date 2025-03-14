@@ -38,7 +38,7 @@ class MoveNEIGHAddSingleInput : public Move<hfmXES> {
   uptr<Move<hfmXES>> apply(hfmXES& se) override {
     RepHFM& rep = se.first.getR();
     if (!reverse) {
-      rep.singleIndex.push_back(make_pair(file, K));
+      rep.singleIndex.push_back(std::make_pair(file, K));
       if (K > rep.earliestInput) rep.earliestInput = K;
 
       vector<double> fuzzyRules;
@@ -66,10 +66,10 @@ class MoveNEIGHAddSingleInput : public Move<hfmXES> {
   }
 
   void print() const override {
-    cout << "MoveNEIGHAddSingleInput( vector:  explatonary variable " << file
+    std::cout << "MoveNEIGHAddSingleInput( vector:  explatonary variable " << file
          << " <=>  k " << K;
-    cout << "rules and weights " << rulesAndWeights << " )";
-    cout << endl;
+    std::cout << "rules and weights " << rulesAndWeights << " )";
+    std::cout << std::endl;
   }
 };
 
@@ -108,9 +108,9 @@ class NSIteratorNEIGHAddSingleInput : public NSIterator<hfmXES> {
   }
 
   virtual void first() override {
-    cout << this->toString()
+    std::cout << this->toString()
          << " iterator is not working properly. Iterator should be improved"
-         << endl;
+         << std::endl;
     exit(1);
     int nEXV = 0;  // TODO
     int maxLag = vMaxLag[nEXV];
@@ -158,8 +158,8 @@ class NSIteratorNEIGHAddSingleInput : public NSIterator<hfmXES> {
 
   virtual uptr<Move<hfmXES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSIteratorNEIGHChangeSingleInput. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSIteratorNEIGHChangeSingleInput. Aborting." << std::endl;
       exit(1);
     }
 
@@ -226,7 +226,7 @@ class NSSeqNEIGHAddSingleInput : public NSSeq<hfmXES> {
   }
 
   virtual string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqNEIGHAddSingleInput";
     return ss.str();
   }

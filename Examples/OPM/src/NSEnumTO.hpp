@@ -43,7 +43,7 @@ class MoveTO : public Move<RepOPM> {
   }
 
   void print() const override {
-    cout << "MoveTO(" << f << "," << c << ")" << endl;
+    std::cout << "MoveTO(" << f << "," << c << ")" << std::endl;
   }
 };
 
@@ -61,7 +61,7 @@ class NSEnumTO : public NSEnum<RepOPM> {
     if (k > size()) {
       cerr << "Neighborhood TO Error! Move " << k
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
     }
 
@@ -77,7 +77,7 @@ class NSEnumTO : public NSEnum<RepOPM> {
     return opm.getNumFrentes() * opm.getNumCaminhoes();
   }
 
-  void print() { cout << "NSEnum TO (" << size() << ")\n"; }
+  void print() { std::cout << "NSEnum TO (" << size() << ")\n"; }
 };
 
 }  // namespace POLAD

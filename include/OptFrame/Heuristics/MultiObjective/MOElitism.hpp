@@ -47,7 +47,7 @@ class MOElitism : Component {
       vector<MOSIndividual<XMES2>>& archive) = 0;
 
   void print() const override {
-    cout << "MOElitism" << endl;
+    std::cout << "MOElitism" << std::endl;
   }
 };
 
@@ -68,7 +68,7 @@ class NoArchiving : public MOElitism<XMES2> {
   }
 
   void print() const override {
-    cout << "NoArchiving" << endl;
+    std::cout << "NoArchiving" << std::endl;
   }
 };
 
@@ -97,7 +97,7 @@ class BoundedArchiving : public MOElitism<XMES2> {
   }
 
   void print() const override {
-    cout << "BoundedArchiving(" << limit << ")" << endl;
+    std::cout << "BoundedArchiving(" << limit << ")" << std::endl;
   }
 };
 
@@ -125,7 +125,7 @@ class UnboundedArchiving : public MOElitism<XMES2> {
   }
 
   void print() const override {
-    cout << "UnboundedArchiving" << endl;
+    std::cout << "UnboundedArchiving" << std::endl;
   }
 };
 

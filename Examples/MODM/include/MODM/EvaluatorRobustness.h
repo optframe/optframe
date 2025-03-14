@@ -120,29 +120,29 @@ class MODMRobustnessEvaluator
         if (pMODM.getProductMinClients(product) > ads.productOffers[product]) {
           foInvMin +=
               pMODM.getProductMinClients(product) - ads.productOffers[product];
-          // cout << "BUG ON EVALUATOR - NUMERO MINIMO CLIENTE NAO FOI
-          // RESPEITADO!!!" << endl; cout << "ads.productOffers[product] = " <<
-          // ads.productOffers[product] << endl; cout <<
+          // std::cout << "BUG ON EVALUATOR - NUMERO MINIMO CLIENTE NAO FOI
+          // RESPEITADO!!!" << std::endl; std::cout << "ads.productOffers[product] = " <<
+          // ads.productOffers[product] << std::endl; std::cout <<
           // "pMODM.minClients[product] = " << pMODM.minClients[product] <<
-          // endl; getchar();
+          // std::endl; getchar();
         }
       }
 
       if (ads.totalCost[product] > pMODM.getProductBudget(product)) {
         foInvBud += ads.totalCost[product] - pMODM.getProductBudget(product);
-        // cout << "BUG ON EVALUATOR - BUDGET NAO FOI RESPEITADO!!!" << endl;
-        // cout << "ads.totalCost[product] = " << ads.totalCost[product] <<
-        // endl; cout << "pMODM.getProductBudget(product) = " <<
-        // pMODM.getProductBudget(product) << endl; getchar();
+        // std::cout << "BUG ON EVALUATOR - BUDGET NAO FOI RESPEITADO!!!" << std::endl;
+        // std::cout << "ads.totalCost[product] = " << ads.totalCost[product] <<
+        // std::endl; std::cout << "pMODM.getProductBudget(product) = " <<
+        // pMODM.getProductBudget(product) << std::endl; getchar();
       }
     }
 
     for (int c = 0; c < maxC; c++) {
       if (ads.clientOffers[c] > pMODM.getClientMaxOffers(c)) {
-        // cout << "BUG ON EVALUATOR - Cliente MAX NAO FOI RESPEITADO!!!" <<
-        // endl; cout << "ads.clientOffers[c] = " << ads.clientOffers[c] <<
-        // endl; cout << "pMODM.getClientMaxOffers(c) = " <<
-        // pMODM.getClientMaxOffers(c) << endl;
+        // std::cout << "BUG ON EVALUATOR - Cliente MAX NAO FOI RESPEITADO!!!" <<
+        // std::endl; std::cout << "ads.clientOffers[c] = " << ads.clientOffers[c] <<
+        // std::endl; std::cout << "pMODM.getClientMaxOffers(c) = " <<
+        // pMODM.getClientMaxOffers(c) << std::endl;
         foInvMaxOffersC += ads.clientOffers[c] - pMODM.getClientMaxOffers(c);
         // getchar();
       }
@@ -151,7 +151,7 @@ class MODMRobustnessEvaluator
     // Verificar inviabilidades
     if (foRevenue < ((1 + pMODM.getHurdleRate()) * (foBudget + foFixedCost))) {
       foInvHR = 1;
-      // cout << "BUG ON EVALUATOR - LUCRO MENOR QUE O ESPERADO!!!" << endl;
+      // std::cout << "BUG ON EVALUATOR - LUCRO MENOR QUE O ESPERADO!!!" << std::endl;
       // getchar();
     }
 
@@ -228,11 +228,11 @@ class MODMRobustnessEvaluator
 
     double sharpeRatio = (campaingProfit - riskFree) / meanVolabitility;
 
-    //		cout << "nAcceptedClients = " << nAcceptedClients << endl;
-    //		cout << "foRevenue = " << foRevenue << endl;
+    //		cout << "nAcceptedClients = " << nAcceptedClients << std::endl;
+    //		cout << "foRevenue = " << foRevenue << std::endl;
     //		cout << "foBudget + foFixedCost = " << foBudget + foFixedCost <<
-    // endl; 		cout << "campaingProfit = " << campaingProfit << endl;
-    // cout << "sharpeRatio = " << sharpeRatio << endl; getchar();
+    // std::endl; 		cout << "campaingProfit = " << campaingProfit << std::endl;
+    // std::cout << "sharpeRatio = " << sharpeRatio << std::endl; getchar();
     //
     //		variableProfit /= nMonteCarlo;
 

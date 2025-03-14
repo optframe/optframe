@@ -38,7 +38,7 @@ using scannerpp::Scanner;
 class OptFrameList {
  public:
   static string intToString(int i) {
-    stringstream ss;
+    std::stringstream ss;
     ss << i;
     return ss.str();
   }
@@ -75,7 +75,7 @@ class OptFrameList {
         auto obegin = Scanner::parseInt(word);
 
         if (!obegin) {
-          cout << "OptFrameList error: variable '" << word << "' not found in list dictionary!" << endl;
+          std::cout << "OptFrameList error: variable '" << word << "' not found in list dictionary!" << std::endl;
           return nullptr;
         }
 
@@ -177,7 +177,7 @@ class OptFrameList {
     if (character != '{')  // can't read block from dictionary
     {
       if (character == '[')
-        cout << "OptFrameList::readBlock() error: trying to read block from a possible list structure!" << endl;
+        std::cout << "OptFrameList::readBlock() error: trying to read block from a possible list structure!" << std::endl;
       return nullptr;
     }
 
@@ -224,7 +224,7 @@ class OptFrameList {
   }
 
   static string listToString(const vector<string>& list) {
-    stringstream ss;
+    std::stringstream ss;
 
     ss << "[";
     for (unsigned i = 0; i < list.size(); i++) {
@@ -238,7 +238,7 @@ class OptFrameList {
   }
 
   static string blockToString(const vector<string>& block) {
-    stringstream ss;
+    std::stringstream ss;
 
     ss << "{";
     for (unsigned i = 0; i < block.size(); i++) {

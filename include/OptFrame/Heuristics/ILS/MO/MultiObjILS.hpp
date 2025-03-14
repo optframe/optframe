@@ -60,25 +60,25 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
     //
     Timer tnow;
     Pareto<XMES> x_e;
-    cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
+    std::cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << std::endl;
 
     // if (_pf == nullptr) {
     if (p == nullopt) {
       if (Component::information)
-        cout << "Creating initial population using a initial pareto method:"
-             << init_pop_size << endl;
+        std::cout << "Creating initial population using a initial pareto method:"
+             << init_pop_size << std::endl;
 
       if (tnow.now() < stopCriteria.timelimit)
         x_e = init_pareto->generatePareto(init_pop_size,
                                           stopCriteria.timelimit - tnow.now());
 
       if (Component::information)
-        cout << "Population generated with " << x_e.size() << " individuals!"
-             << endl;
+        std::cout << "Population generated with " << x_e.size() << " individuals!"
+             << std::endl;
     } else {
       assert(p->size() > 0);
       if (Component::information)
-        cout << "Extracting Pareto Front given as parameter..." << endl;
+        std::cout << "Extracting Pareto Front given as parameter..." << std::endl;
 
       // x_e = std::move(*_pf); //check this move with AIIIGOR todo
       x_e = std::move(*p);  // Igor: VITORRRRR this is even worse now! hahaha
@@ -86,8 +86,8 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
       p = nullopt;          // disengage!
 
       if (Component::information)
-        cout << "Extracting PF contains " << x_e.size() << " individuals."
-             << endl;
+        std::cout << "Extracting PF contains " << x_e.size() << " individuals."
+             << std::endl;
     }
 
     //		vector<bool> visited;
@@ -154,10 +154,10 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
     // pMan.checkDominance(*pReturn);
     pMan.checkDominance(*p);
 
-    // cout << "MOILS finished with " << pReturn->size() << " non-dominated
-    // solutions." << endl;
-    cout << "MOILS finished with " << p->size() << " non-dominated solutions."
-         << endl;
+    // std::cout << "MOILS finished with " << pReturn->size() << " non-dominated
+    // solutions." << std::endl;
+    std::cout << "MOILS finished with " << p->size() << " non-dominated solutions."
+         << std::endl;
 
     delete history;
     // return pReturn;

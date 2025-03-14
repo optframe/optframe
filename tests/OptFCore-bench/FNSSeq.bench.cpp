@@ -326,7 +326,7 @@ TSP_hardcoded_CPP_apply_stack_Swap_iteration(benchmark::State& state)
       for (int i = 0; i < pTSP.n - 1; ++i)
          for (int j = i + 1; j < pTSP.n; ++j) {
             // stack alloc moves
-            MoveSwap mswap(make_pair(i, j));
+            MoveSwap mswap(std::make_pair(i, j));
             // apply
             mswap.apply(esol);
             //

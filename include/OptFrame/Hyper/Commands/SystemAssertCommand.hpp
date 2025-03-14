@@ -45,12 +45,12 @@ public:
       return "system.assert boolean";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map<string, vector<string>>&, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>&, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "module " << id() << " usage: " << usage() << endl;
+         std::cout << "module " << id() << " usage: " << usage() << std::endl;
          return false;
       }
 
@@ -61,12 +61,12 @@ public:
       else if (boolean == "false")
          return false;
       else {
-         cout << "module " << id() << " error: no such boolean value '" << boolean << "'" << endl;
+         std::cout << "module " << id() << " error: no such boolean value '" << boolean << "'" << std::endl;
          return false;
       }
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

@@ -98,7 +98,7 @@ class Evaluation final : public Component {
   // infeasibility measure value (default = double)
   ObjType infMeasure;
   // for lexicographic approaches, use these extra evaluation values
-  // vector<pair<ObjType, ObjType>> alternatives;
+  // std::vector<std::pair<ObjType, ObjType>> alternatives;
 
  protected:
   // boolean field to indicate if Evaluation needs an update

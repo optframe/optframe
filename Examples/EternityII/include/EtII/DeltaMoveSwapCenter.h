@@ -109,7 +109,7 @@ class DeltaMoveSwapCenter : public MoveSwapCenter {
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = MoveSwapCenter::idComponent();
     idComp.append(":DeltaMoveSwapCenter");
     return idComp;

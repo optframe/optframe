@@ -83,7 +83,7 @@ class NSSeqTSPOr1Opt : public NSSeq<vector<T>, DS> {
     return *new IteratorNSSeqTSPOr1Opt<T, DS>(r);
   }
 
-  virtual void print() { cout << "NSSeqTSPOr1Opt" << endl; }
+  virtual void print() { std::cout << "NSSeqTSPOr1Opt" << std::endl; }
 };
 
 #endif /*OPTFRAME_NSSEQTSP0R1OPT_HPP_*/

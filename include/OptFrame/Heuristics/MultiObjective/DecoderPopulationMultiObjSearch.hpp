@@ -96,18 +96,18 @@ class DecodedPopulationMultiObjSearch
     return *PX;
   }
 
-  virtual void assignFitness(vector<MOSIndividual<X>*>& g,
+  virtual void assignFitness(std::vector<MOSIndividual<X>*>& g,
                              const vector<const MOSIndividual<X>*>& PX) {
     fa.assignFitnessGroup(g, PX);
   }
 
-  inline void assignBestFitness(vector<MOSIndividual<R>*>& PS,
+  inline void assignBestFitness(std::vector<MOSIndividual<R>*>& PS,
                                 vector<MOSExtIndividual<R, X>*>& PX) {
     // set worst value in 'PS'
     // get best from 'PX'
   }
 
-  virtual void extendedAssignFitness(vector<MOSIndividual<R>*>& PS,
+  virtual void extendedAssignFitness(std::vector<MOSIndividual<R>*>& PS,
                                      vector<MOSExtIndividual<R, X>*>& PX) {
     // simple, use classic fitness assignment
 
@@ -122,13 +122,13 @@ class DecodedPopulationMultiObjSearch
     assignBestFitness(PS, PX);
   }
 
-  virtual void assignDiversity(vector<MOSIndividual<X>*>& g,
+  virtual void assignDiversity(std::vector<MOSIndividual<X>*>& g,
                                const vector<const MOSIndividual<X>*>& PX) {
     vector<const MOSIndividual<X>*> PXconst(PX.begin(), PX.end());
     dm.assignDiversityGroup(g, PXconst);
   }
 
-  virtual void extendedAssignDiversity(vector<MOSIndividual<R>*>& PS,
+  virtual void extendedAssignDiversity(std::vector<MOSIndividual<R>*>& PS,
                                        vector<MOSExtIndividual<R, X>*>& PX) {
     // tricky, separate individuals and then apply classic diversity techniques
     for (unsigned x = 0; x < PX.size(); x++) {
@@ -148,7 +148,7 @@ class DecodedPopulationMultiObjSearch
     assignBestDiversity(PS, PX);
   }
 
-  inline void assignBestDiversity(vector<MOSIndividual<R>*>& PS,
+  inline void assignBestDiversity(std::vector<MOSIndividual<R>*>& PS,
                                   vector<MOSExtIndividual<R, X>*>& PX) {
     // set worst value in 'PS'
     // get best from 'PX'
@@ -181,7 +181,7 @@ class DecodedPopulationMultiObjSearch
   }
 
   // free populations and update archives for the last time
-  virtual void freePopulations(vector<MOSIndividual<R>*>& PS,
+  virtual void freePopulations(std::vector<MOSIndividual<R>*>& PS,
                                vector<MOSExtIndividual<R, X>*>& PX,
                                vector<MOSIndividual<R>*>& archiveS,
                                vector<MOSExtIndividual<R, X>*>& archiveX) {
@@ -191,7 +191,7 @@ class DecodedPopulationMultiObjSearch
     for (unsigned i = 0; i < PX.size(); i++) delete PX[i];
   }
 
-  vector<MOSIndividual<X>*> getBase(vector<MOSExtIndividual<R, X>*> v) {
+  vector<MOSIndividual<X>*> getBase(std::vector<MOSExtIndividual<R, X>*> v) {
     vector<MOSIndividual<X>*> vbase(v.size());
     for (unsigned i = 0; i < v.size(); i++) vbase[i] = v[i];
     return vbase;
@@ -210,7 +210,7 @@ class DecodedPopulationMultiObjSearch
       ExtendedPareto<R, X, ADS, DS>* _pf = nullptr) {
     Timer timer;
 
-    cout << "Population Based Multi Objective Search search()" << endl;
+    std::cout << "Population Based Multi Objective Search search()" << std::endl;
 
     vector<double> best = this->initializeBounds();
 
@@ -263,7 +263,7 @@ class DecodedPopulationMultiObjSearch
 
       if (improved) {
         tImp = -1;
-        cout << "t=" << t << " improved bounds: " << best << endl;
+        std::cout << "t=" << t << " improved bounds: " << best << std::endl;
       }
 
       t++;
@@ -295,7 +295,7 @@ class DecodedPopulationMultiObjSearch
  PopulationBasedMultiObjSearch<R, ADS, DS>
  {
  public:
- DecoderClassicNSGAII(vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>&
+ DecoderClassicNSGAII(std::vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>&
  muev, InitialPopulation<XES>& initPop, vector<NS<RepCARP>*> mutations, double
  mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate,
  RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :

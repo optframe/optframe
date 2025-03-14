@@ -17,12 +17,12 @@ using namespace optframe;
 using namespace HFM;
 
 int hosseinBlindForecasts(int argc, char** argv) {
-  cout << "Welcome to Hossein evaluation model " << endl;
+  std::cout << "Welcome to Hossein evaluation model " << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
@@ -30,10 +30,10 @@ int hosseinBlindForecasts(int argc, char** argv) {
   int argvTimeES = 10;
   int argvFH = 24;
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
-  cout << "argvTimeES=" << argvTimeES << endl;
-  cout << "argvFH=" << argvFH << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "argvMaxLagRate=" << argvMaxLagRate << std::endl;
+  std::cout << "argvTimeES=" << argvTimeES << std::endl;
+  std::cout << "argvFH=" << argvFH << std::endl;
 
   //	File* fileWCCIInstances;
   string hosseinInstance =
@@ -93,7 +93,7 @@ int hosseinBlindForecasts(int argc, char** argv) {
     int nTotalForecastingsTrainningSet = rF.getForecastsSize(0);
 
     //========SET PROBLEM MAXIMUM LAG ===============
-    cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+    std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
     int iterationMaxLag =
         ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) /
@@ -120,17 +120,17 @@ int hosseinBlindForecasts(int argc, char** argv) {
     // int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds *
     // stepsAhead;
 
-    cout << std::setprecision(9);
-    cout << std::fixed;
+    std::cout << std::setprecision(9);
+    std::cout << std::fixed;
     double NTRaprox =
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
-    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-    cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
-    cout << "#~NTR: " << NTRaprox << endl;
-    cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-    cout << "#maxNotUsed: " << maxLag << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+    std::cout << "#nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#~NTR: " << NTRaprox << std::endl;
+    std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
+    std::cout << "#maxNotUsed: " << maxLag << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     trainningSet.push_back(
@@ -149,7 +149,7 @@ int hosseinBlindForecasts(int argc, char** argv) {
     vector<double>* blindForecasts =
         forecastObject.returnBlind(sol->first.getR(), dataForBlindForecasts);
 
-    cout << blindForecasts << endl;
+    std::cout << blindForecasts << std::endl;
 
     string resultsWCCIComp = "./HosseinBlindResults";
 

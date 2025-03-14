@@ -49,12 +49,12 @@ public:
       return "if boolean block_of_if_commands [else block_of_else_commands]";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -66,7 +66,7 @@ public:
       else if (sbool == "false")
          condition = false;
       else {
-         cout << "if command: no such boolean '" << sbool << "'" << endl;
+         std::cout << "if command: no such boolean '" << sbool << "'" << std::endl;
          return false;
       }
 
@@ -83,7 +83,7 @@ public:
          string text_else = scanner.next(); // drop 'else'
 
          if (text_else != "else") {
-            cout << "if command: expected else and found '" << text_else << "'" << endl;
+            std::cout << "if command: expected else and found '" << text_else << "'" << std::endl;
             return false;
          }
 
@@ -101,13 +101,13 @@ public:
 
       if (condition) {
          if (!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif))) {
-            cout << "if command: error in IF command!" << endl;
+            std::cout << "if command: error in IF command!" << std::endl;
             return false;
          } else
             return true;
       } else {
          if (!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lelse))) {
-            cout << "if command: error in ELSE command!" << endl;
+            std::cout << "if command: error in ELSE command!" << std::endl;
             return false;
          } else
             return true;
@@ -115,7 +115,7 @@ public:
    }
 
    // should preprocess only until list of commands
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       string ibegin = "";
       string iend = "";

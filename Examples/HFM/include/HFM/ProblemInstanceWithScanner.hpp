@@ -25,7 +25,7 @@ private:
 	vector<vector<double> > forecastings;
 
 public:
-	ProblemInstance(vector<Scanner*>& scannerFiles, ProblemParameters& _problemParam) :
+	ProblemInstance(std::vector<Scanner*>& scannerFiles, ProblemParameters& _problemParam) :
 			problemParam(_problemParam)
 	{
 		//precision = problemParam.getPrecision();
@@ -53,13 +53,13 @@ public:
 			Scanner scanner = *scannerFiles[exVar];
 
 			nForecastings[exVar] = *scanner.nextInt();
-			cout << "nForecastings[" << exVar << "]: " << nForecastings[exVar] << endl;
+			cout << "nForecastings[" << exVar << "]: " << nForecastings[exVar] << std::endl;
 
 			for (int i = 0; i < nForecastings[exVar]; i++)
 			{
 				double input;
 				input = *scanner.nextDouble();
-				cout << input << endl;
+				cout << input << std::endl;
 				forecastings[exVar].push_back(input);
 			}
 
@@ -78,7 +78,7 @@ public:
 
 			means[exVar] = means[exVar] / nForecastings[exVar];
 
-			//cout << "Media = " << mean << endl;
+			//cout << "Media = " << mean << std::endl;
 
 			for (int i = 0; i < nForecastings[exVar]; i++)
 			{
@@ -89,15 +89,15 @@ public:
 			stdDesvs[exVar] = stdDesvs[exVar] / nForecastings[exVar];
 			stdDesvs[exVar] = sqrt(stdDesvs[exVar]);
 		}
-		cout << means << endl;
-		cout << stdDesvs << endl;
+		cout << means << std::endl;
+		cout << stdDesvs << std::endl;
 		//getchar();
 
 		// ==================== Check if #stepsAhead are possible to be done
 		int notUsedForTest = problemParam.getNotUsedForTest();
 
 		/*
-		 stringstream ss;
+		 std::stringstream ss;
 		 ss << problemParam.getValidationPath();
 		 File* file;
 
@@ -106,13 +106,13 @@ public:
 		 file = new File(ss.str());
 		 } catch (FileNotFound& f)
 		 {
-		 cout << "File '" << ss.str() << "' not found" << endl;
+		 std::cout << "File '" << ss.str() << "' not found" << std::endl;
 		 }
 
 		 Scanner scannerBlind(file);
 
 		 int nForecastingsBlind = scannerBlind.nextInt();
-		 cout << "nBlind: " << nForecastingsBlind << endl;
+		 std::cout << "nBlind: " << nForecastingsBlind << std::endl;
 		 */
 
 		//================================================

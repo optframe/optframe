@@ -73,7 +73,7 @@ class MoveVectorShift : public Move<vector<T>> {
   }
 
   void print() const override {
-    cout << "Move Vector Shift(" << t1 << " -> " << t2 << ")" << endl;
+    std::cout << "Move Vector Shift(" << t1 << " -> " << t2 << ")" << std::endl;
   }
 };
 

@@ -86,21 +86,21 @@ class Graph {
   }
 
   // get all arcs/edges
-  virtual vector<pair<pair<unsigned, unsigned>, X> > getAll() const {
-    vector<pair<pair<unsigned, unsigned>, X> > r;
+  virtual std::vector<std::pair<pair<unsigned, unsigned>, X> > getAll() const {
+    std::vector<std::pair<pair<unsigned, unsigned>, X> > r;
     if (directed)
       for (unsigned i = 0; i < numNodes(); i++)
         for (unsigned j = 0; j < numNodes(); j++) {
           X v = getValue(i, j);
           if (getValue(i, j) != nullVal)
-            r.push_back(make_pair(make_pair(i, j), v));
+            r.push_back(std::make_pair(std::make_pair(i, j), v));
         }
     else
       for (int i = 0; i < ((int)numNodes()) - 1; i++)
         for (int j = i + 1; j < ((int)numNodes()); j++) {
           X v = getValue(i, j);
           if (getValue(i, j) != nullVal)
-            r.push_back(make_pair(make_pair(i, j), v));
+            r.push_back(std::make_pair(std::make_pair(i, j), v));
         }
 
     return r;
@@ -121,9 +121,9 @@ class Graph {
 
  public:
   // get all arcs/edges sorted
-  virtual vector<pair<pair<unsigned, unsigned>, X> > getAllSorted(
+  virtual std::vector<std::pair<pair<unsigned, unsigned>, X> > getAllSorted(
       bool ascending = true) const {
-    vector<pair<pair<unsigned, unsigned>, X> > r = getAll();
+    std::vector<std::pair<pair<unsigned, unsigned>, X> > r = getAll();
 
     if (ascending)
       std::sort(r.begin(), r.end(), compAsc);
@@ -136,11 +136,11 @@ class Graph {
   // print graph
   virtual void print() const {
     if (directed)
-      cout << id() << ": |V|=" << nNodes << " |A|=" << nArcs << " => "
-           << getAll() << endl;
+      std::cout << id() << ": |V|=" << nNodes << " |A|=" << nArcs << " => "
+           << getAll() << std::endl;
     else
-      cout << id() << ": |V|=" << nNodes << " |E|=" << nEdges << " => "
-           << getAll() << endl;
+      std::cout << id() << ": |V|=" << nNodes << " |E|=" << nEdges << " => "
+           << getAll() << std::endl;
   }
 
   // class id (for printing)

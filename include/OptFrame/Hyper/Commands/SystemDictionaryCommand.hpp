@@ -44,38 +44,38 @@ public:
       return "system.dictionary";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string)
+   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string)
    {
-      cout << "Text dictionary: " << endl;
+      std::cout << "Text dictionary: " << std::endl;
 
-      map<string, string>::iterator iter;
+      map<std::string, std::string>::iterator iter;
       int size1 = 0;
       for (iter = dictionary.begin(); iter != dictionary.end(); iter++) {
          string d = iter->first;
          string v = iter->second;
-         cout << "'" << d << "' => '" << v << "'" << endl;
+         std::cout << "'" << d << "' => '" << v << "'" << std::endl;
          size1++;
       }
-      cout << size1 << " entries." << endl;
+      std::cout << size1 << " entries." << std::endl;
 
       // --------------------------------
 
-      cout << "List dictionary: " << endl;
+      std::cout << "List dictionary: " << std::endl;
 
       map<string, vector<string>>::iterator iter2;
       int size2 = 0;
       for (iter2 = ldictionary.begin(); iter2 != ldictionary.end(); iter2++) {
          string d = iter2->first;
          vector<string>& v = iter2->second;
-         cout << "'" << d << "' => '" << v << "'" << endl;
+         std::cout << "'" << d << "' => '" << v << "'" << std::endl;
          size2++;
       }
-      cout << size2 << " entries." << endl;
+      std::cout << size2 << " entries." << std::endl;
 
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

@@ -24,12 +24,12 @@ class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
     return build(scanner, hf, family);
   }
 
-  vector<pair<string, string>> parameters() override = 0;
+  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
 
   bool canBuild(string) override = 0;
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<_XES>::idComponent();
     ss << "SingleObjSearch";
     return ss.str();
@@ -73,25 +73,25 @@ class SingleObjSearchAction : public Action<XES> {
   virtual bool handleAction(string action) { return (action == "search"); }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<string, string>& d) {
+                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) {
     if (!handleComponent(type)) {
-      cout << "SingleObjSearchAction::doCast error: can't handle component "
+      std::cout << "SingleObjSearchAction::doCast error: can't handle component "
               "type '"
-           << type << " " << id << "'" << endl;
+           << type << " " << id << "'" << std::endl;
       return false;
     }
 
     Component* comp = hf.components[component].at(id);
 
     if (!comp) {
-      cout << "SingleObjSearchAction::doCast error: nullptr component '"
-           << component << " " << id << "'" << endl;
+      std::cout << "SingleObjSearchAction::doCast error: nullptr component '"
+           << component << " " << id << "'" << std::endl;
       return false;
     }
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
-      cout << "SingleObjSearchAction::doCast error: component '" << comp->id()
-           << " is not base of " << type << "'" << endl;
+      std::cout << "SingleObjSearchAction::doCast error: component '" << comp->id()
+           << " is not base of " << type << "'" << std::endl;
       return false;
     }
 
@@ -104,8 +104,8 @@ class SingleObjSearchAction : public Action<XES> {
     if (type == SingleObjSearch<XES>::idComponent()) {
       final = (SingleObjSearch<XES>*)comp;
     } else {
-      cout << "SingleObjSearchAction::doCast error: no cast for type '" << type
-           << "'" << endl;
+      std::cout << "SingleObjSearchAction::doCast error: no cast for type '" << type
+           << "'" << std::endl;
       return false;
     }
 
@@ -115,9 +115,9 @@ class SingleObjSearchAction : public Action<XES> {
   }
 
   virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<string, string>& dictionary,
+                        map<std::string, std::string>& dictionary,
                         map<string, vector<string>>& ldictionary) {
-    // cout << "LocalSearch::doAction '" << content << "'" << endl;
+    // std::cout << "LocalSearch::doAction '" << content << "'" << std::endl;
 
     Scanner scanner(content);
 

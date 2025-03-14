@@ -44,20 +44,20 @@ class NSVector
 public:
    /* safe insertion and remotion - 2010-03-10 */
 
-   static bool insert(vector<T>& v, unsigned int rank, T o)
+   static bool insert(std::vector<T>& v, unsigned int rank, T o)
    {
       if (rank < 0 || rank > v.size()) {
-         cerr << "Warning [NSVector]: out of range insertion" << endl;
+         cerr << "Warning [NSVector]: out of range insertion" << std::endl;
          return false;
       }
       v.insert(v.begin() + rank, o);
       return true;
    };
 
-   static bool remove(vector<T>& v, unsigned int rank)
+   static bool remove(std::vector<T>& v, unsigned int rank)
    {
       if (rank < 0 || rank >= v.size()) {
-         cerr << "Warning [NSVector]: out of range remotion" << endl;
+         cerr << "Warning [NSVector]: out of range remotion" << std::endl;
          return false;
       }
       v.erase(v.begin() + rank);
@@ -66,10 +66,10 @@ public:
 
    /* Shiftk - 2010-03-10 */
 
-   static bool shift1_apply(vector<T>& v, unsigned int rank1, unsigned int rank2)
+   static bool shift1_apply(std::vector<T>& v, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 >= v.size() || rank2 < 0 || rank2 >= v.size()) {
-         cerr << "Warning [NSVector]: out of range shift1" << endl;
+         cerr << "Warning [NSVector]: out of range shift1" << std::endl;
          return false;
       }
       /*
@@ -98,10 +98,10 @@ public:
       return true;
    };
 
-   static bool shiftk_apply(vector<T>& v, unsigned int k, unsigned int rank1, unsigned int rank2)
+   static bool shiftk_apply(std::vector<T>& v, unsigned int k, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 + k > v.size() || rank2 < 0 || rank2 + k > v.size()) {
-         cerr << "Warning [NSVector]: out of range shiftk" << endl;
+         cerr << "Warning [NSVector]: out of range shiftk" << std::endl;
          return false;
       }
       if (rank1 < rank2)
@@ -113,7 +113,7 @@ public:
       return true;
    };
 
-   static pair<int, pair<int, int>> shiftk_apply(vector<T>& v, pair<int, pair<int, int>>& m)
+   static pair<int, pair<int, int>> shiftk_apply(std::vector<T>& v, pair<int, pair<int, int>>& m)
    {
       int k = m.first, rank1 = m.second.first, rank2 = m.second.second;
       if (shiftk_apply(v, k, rank1, rank2))
@@ -133,9 +133,9 @@ public:
       return !(rank1 < 0 || rank1 + k > v.size() || rank2 < 0 || rank2 + k > v.size() || rank1 == rank2);
    };
 
-   static vector<pair<int, pair<int, int>>>* shiftk_appliableMoves(const vector<T>& v, int k)
+   static std::vector<std::pair<int, pair<int, int>>>* shiftk_appliableMoves(const vector<T>& v, int k)
    {
-      vector<pair<int, pair<int, int>>>* moves = new vector<pair<int, pair<int, int>>>;
+      std::vector<std::pair<int, pair<int, int>>>* moves = new std::vector<std::pair<int, pair<int, int>>>;
       for (int i = 0; i < NSVector<int>::shift1_size(v); i++) {
          pair<int, pair<int, int>> m = NSVector<int>::shiftk_move(v, k, i);
          if (NSVector<int>::shiftk_canBeApplied(v, m))
@@ -146,10 +146,10 @@ public:
 
    /* Shiftk with Two Vectors - 2010-03-10 */
 
-   static bool shift1_apply(vector<T>& v1, vector<T>& v2, unsigned int rank1, unsigned int rank2)
+   static bool shift1_apply(std::vector<T>& v1, vector<T>& v2, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 >= v1.size() || rank2 < 0 || rank2 > v2.size()) {
-         cerr << "Warning [NSVector]: out of range shift1 (v1,v2)" << endl;
+         cerr << "Warning [NSVector]: out of range shift1 (v1,v2)" << std::endl;
          return false;
       }
       insert(v2, rank2, v1[rank1]);
@@ -157,10 +157,10 @@ public:
       return true;
    };
 
-   static bool shiftk_apply(vector<T>& v1, vector<T>& v2, unsigned int k, unsigned int rank1, unsigned int rank2)
+   static bool shiftk_apply(std::vector<T>& v1, vector<T>& v2, unsigned int k, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 + k > v1.size() || rank2 < 0 || rank2 > v2.size()) {
-         cerr << "Warning [NSVector]: out of range shiftk (v1,v2)" << endl;
+         cerr << "Warning [NSVector]: out of range shiftk (v1,v2)" << std::endl;
          return false;
       }
       for (int i = k - 1; i + 1 > 0; i--)
@@ -168,7 +168,7 @@ public:
       return true;
    };
 
-   static pair<int, pair<int, int>> shiftk_apply(vector<T>& v1, vector<T>& v2, pair<int, pair<int, int>>& m)
+   static pair<int, pair<int, int>> shiftk_apply(std::vector<T>& v1, vector<T>& v2, pair<int, pair<int, int>>& m)
    {
       int k = m.first, rank1 = m.second.first, rank2 = m.second.second;
       if (shiftk_apply(v1, v2, k, rank1, rank2))
@@ -182,15 +182,15 @@ public:
       return pair<int, pair<int, int>>(k, pair<int, int>((i / (v2.size() + 1)), (i % (v2.size() + 1))));
    };
 
-   static bool shiftk_canBeApplied(vector<T>& v1, vector<T>& v2, pair<int, pair<int, int>>& m)
+   static bool shiftk_canBeApplied(std::vector<T>& v1, vector<T>& v2, pair<int, pair<int, int>>& m)
    {
       int k = m.first, rank1 = m.second.first, rank2 = m.second.second;
       return !(rank1 < 0 || rank1 + k > v1.size() || rank2 < 0 || rank2 > v2.size());
    };
 
-   static vector<pair<int, pair<int, int>>>* shiftk_appliableMoves(vector<T>& v1, vector<T>& v2, int k)
+   static std::vector<std::pair<int, pair<int, int>>>* shiftk_appliableMoves(std::vector<T>& v1, vector<T>& v2, int k)
    {
-      vector<pair<int, pair<int, int>>>* moves = new vector<pair<int, pair<int, int>>>;
+      std::vector<std::pair<int, pair<int, int>>>* moves = new std::vector<std::pair<int, pair<int, int>>>;
       for (int i = 0; i < NSVector<int>::shift1_size(v1, v2); i++) {
          pair<int, pair<int, int>> m = NSVector<int>::shiftk_move(v1, v2, k, i);
          if (NSVector<int>::shiftk_canBeApplied(v1, v2, m))
@@ -205,9 +205,9 @@ public:
       return !(rank1 < 0 || rank1 + k > v[a].size() || rank2 < 0 || rank2 > v[b].size() || a == b);
    };
 
-   static vector<pair<int, pair<pair<int, int>, pair<int, int>>>>* shiftk_appliableMoves(const vector<vector<T>>& v, int k)
+   static std::vector<std::pair<int, pair<pair<int, int>, pair<int, int>>>>* shiftk_appliableMoves(const vector<vector<T>>& v, int k)
    {
-      vector<pair<int, pair<pair<int, int>, pair<int, int>>>>* moves = new vector<pair<int, pair<pair<int, int>, pair<int, int>>>>;
+      std::vector<std::pair<int, pair<pair<int, int>, pair<int, int>>>>* moves = new std::vector<std::pair<int, pair<pair<int, int>, pair<int, int>>>>;
 
       for (int a = 0; a < v.size(); a++) {
          for (int b = 0; b < v.size(); b++) {
@@ -234,7 +234,7 @@ public:
    };
 
    static pair<int, pair<pair<int, int>, pair<int, int>>>
-   shiftk_apply(vector<vector<T>>& v, pair<int, pair<pair<int, int>, pair<int, int>>>& m)
+   shiftk_apply(std::vector<vector<T>>& v, pair<int, pair<pair<int, int>, pair<int, int>>>& m)
    {
       int k = m.first, a = m.second.first.first, rank1 = m.second.first.second, b = m.second.second.first, rank2 = m.second.second.second;
       if (shiftk_apply(v[a], v[b], k, rank1, rank2))
@@ -248,10 +248,10 @@ public:
 
    /* Swapk with Two Vectors - 2010-03-16 */
 
-   static bool swap1_apply(vector<T>& v1, vector<T>& v2, unsigned int rank1, unsigned int rank2)
+   static bool swap1_apply(std::vector<T>& v1, vector<T>& v2, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 >= v1.size() || rank2 < 0 || rank2 >= v2.size()) {
-         cerr << "Warning [NSVector]: out of range swap1 (v1,v2)" << endl;
+         cerr << "Warning [NSVector]: out of range swap1 (v1,v2)" << std::endl;
          return false;
       }
       T aux = v1[rank1];
@@ -260,10 +260,10 @@ public:
       return true;
    };
 
-   static bool swapk_apply(vector<T>& v1, vector<T>& v2, unsigned int k1, unsigned int k2, unsigned int rank1, unsigned int rank2)
+   static bool swapk_apply(std::vector<T>& v1, vector<T>& v2, unsigned int k1, unsigned int k2, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 + k1 > v1.size() || rank2 < 0 || rank2 + k2 > v2.size()) {
-         cerr << "Warning [NSVector]: out of range swapk (v1,v2)" << endl;
+         cerr << "Warning [NSVector]: out of range swapk (v1,v2)" << std::endl;
          return false;
       }
       if (k1 == k2)
@@ -281,7 +281,7 @@ public:
       return true;
    };
 
-   static pair<pair<int, int>, pair<int, int>> shiftk_apply(vector<T>& v1, vector<T>& v2, pair<pair<int, int>, pair<int, int>>& m)
+   static pair<pair<int, int>, pair<int, int>> shiftk_apply(std::vector<T>& v1, vector<T>& v2, pair<pair<int, int>, pair<int, int>>& m)
    {
       int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
       if (swapk_apply(v1, v2, k1, k2, rank1, rank2))
@@ -301,9 +301,9 @@ public:
       return !(rank1 < 0 || rank1 + k1 > v1.size() || rank2 < 0 || rank2 + k2 > v2.size());
    };
 
-   static vector<pair<pair<int, int>, pair<int, int>>>* swapk_appliableMoves(vector<T>& v1, vector<T>& v2, int k1, int k2)
+   static std::vector<std::pair<pair<int, int>, pair<int, int>>>* swapk_appliableMoves(std::vector<T>& v1, vector<T>& v2, int k1, int k2)
    {
-      vector<pair<pair<int, int>, pair<int, int>>>* moves = new vector<pair<pair<int, int>, pair<int, int>>>;
+      std::vector<std::pair<pair<int, int>, pair<int, int>>>* moves = new std::vector<std::pair<pair<int, int>, pair<int, int>>>;
       for (int i = 0; i < NSVector<int>::swap1_size(v1, v2); i++) {
          pair<pair<int, int>, pair<int, int>> m = NSVector<int>::swapk_move(v1, v2, k1, k2, i);
          if (NSVector<int>::swapk_canBeApplied(v1, v2, m))
@@ -319,10 +319,10 @@ public:
       return !(rank1 < 0 || rank1 + k1 > v[a].size() || rank2 < 0 || rank2 + k2 > v[b].size() || a == b);
    };
 
-   static vector<pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>* swapk_appliableMoves(const vector<vector<T>>& v, int k1, int k2)
+   static std::vector<std::pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>* swapk_appliableMoves(const vector<vector<T>>& v, int k1, int k2)
    {
-      vector<pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>* moves =
-        new vector<pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>;
+      std::vector<std::pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>* moves =
+        new std::vector<std::pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>>;
 
       for (int a = 0; a < v.size(); a++) {
          //for (int b = 0 ; b < v.size() ; b++)
@@ -349,7 +349,7 @@ public:
    };
 
    static pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>
-   swapk_apply(vector<vector<T>>& v, pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>& m)
+   swapk_apply(std::vector<vector<T>>& v, pair<pair<int, int>, pair<pair<int, int>, pair<int, int>>>& m)
    {
       int k1 = m.first.first, k2 = m.first.second,
           a = m.second.first.first, rank1 = m.second.first.second, b = m.second.second.first, rank2 = m.second.second.second;
@@ -360,10 +360,10 @@ public:
 
    /* Swapk - 2010-02-11 */
 
-   static bool swap1_apply(vector<T>& v, unsigned int rank1, unsigned int rank2)
+   static bool swap1_apply(std::vector<T>& v, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 >= v.size() || rank2 < 0 || rank2 >= v.size()) {
-         cerr << "Warning [NSVector]: out of range swap1" << endl;
+         cerr << "Warning [NSVector]: out of range swap1" << std::endl;
          return false;
       }
 
@@ -374,10 +374,10 @@ public:
       return true;
    };
 
-   static bool swapk_apply(vector<T>& v, unsigned int k1, unsigned int k2, unsigned int rank1, unsigned int rank2)
+   static bool swapk_apply(std::vector<T>& v, unsigned int k1, unsigned int k2, unsigned int rank1, unsigned int rank2)
    {
       if (rank1 < 0 || rank1 + k1 > v.size() || rank2 < 0 || rank2 + k2 > v.size()) {
-         cerr << "Warning [NSVector]: out of range swapk" << endl;
+         cerr << "Warning [NSVector]: out of range swapk" << std::endl;
          return false;
       }
       int k = min(k1, k2);
@@ -390,7 +390,7 @@ public:
       return true;
    };
 
-   static pair<pair<int, int>, pair<int, int>> swapk_apply(vector<T>& v, pair<pair<int, int>, pair<int, int>>& m)
+   static pair<pair<int, int>, pair<int, int>> swapk_apply(std::vector<T>& v, pair<pair<int, int>, pair<int, int>>& m)
    {
       int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
       if (swapk_apply(v, k1, k2, rank1, rank2))
@@ -411,9 +411,9 @@ public:
                !(rank2 + k2 <= rank1 && !rank1 + k1 <= rank2 || !rank2 + k2 <= rank1 && rank1 + k1 <= rank2));
    };
 
-   static vector<pair<pair<int, int>, pair<int, int>>>* swapk_appliableMoves(const vector<T>& v, int k1, int k2)
+   static std::vector<std::pair<pair<int, int>, pair<int, int>>>* swapk_appliableMoves(const vector<T>& v, int k1, int k2)
    {
-      vector<pair<pair<int, int>, pair<int, int>>>* moves = new vector<pair<pair<int, int>, pair<int, int>>>;
+      std::vector<std::pair<pair<int, int>, pair<int, int>>>* moves = new std::vector<std::pair<pair<int, int>, pair<int, int>>>;
       for (int i = 0; i < NSVector<int>::swap1_size(v); i++) {
          pair<pair<int, int>, pair<int, int>> m = NSVector<int>::swapk_move(v, k1, k2, i);
          if (NSVector<int>::swapk_canBeApplied(v, m))

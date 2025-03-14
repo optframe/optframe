@@ -94,9 +94,9 @@ class MoveVRPCrossAdapter : public Move<XES> {
   }
 
   void print() const override {
-    cout << "MoveVRPCross( ";
-    cout << r1 << ", " << r2 << ", " << p1 << ", " << p2 << " )";
-    cout << endl;
+    std::cout << "MoveVRPCross( ";
+    std::cout << r1 << ", " << r2 << ", " << p1 << ", " << p2 << " )";
+    std::cout << std::endl;
   }
 
   std::string id() const override { return idComponent(); }
@@ -166,8 +166,8 @@ class NSIteratorVRPCrossAdapter : public NSIterator<XES> {
 
   uptr<Move<XES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqVRPCross. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqVRPCross. Aborting." << std::endl;
       exit(1);
     }
 
@@ -254,13 +254,13 @@ class NSSeqVRPCross : public NSSeq<XES> {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqVRPCross(ADAPTER=" << ADAPTER
        << ") with move: " << MOVE::idComponent();
     return ss.str();
   }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 };
 
 }  // namespace optframe

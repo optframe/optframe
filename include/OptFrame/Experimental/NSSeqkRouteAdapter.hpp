@@ -56,9 +56,9 @@ class NSSeqkRouteAdapter : public NSSeq<vector<vector<T>>, DS> {
   }
 
   virtual void print() {
-    cout << "NSSeqkRouteAdapter {" << endl;
+    std::cout << "NSSeqkRouteAdapter {" << std::endl;
     ns.print();
-    cout << "}" << endl;
+    std::cout << "}" << std::endl;
   }
 };
 

@@ -42,15 +42,15 @@ static bool comparaVolunteersPoints2(pair<int, int> d1, pair<int, int> d2) {
 }
 
 vector<pair<int, int>> classificationRuleLessMax(
-    vector<pair<double, int>> betterAVG, vector<pair<double, int>> betterMin,
-    vector<pair<double, int>> betterMax, vector<pair<double, int>> betterGAP,
+    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
     vector<int> metricWeights, int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
   int maxWeight = 1;
   int gapWeight = 3;
-  vector<pair<int, int>> volunteersPoints(nVolunteers);
+  std::vector<std::pair<int, int>> volunteersPoints(nVolunteers);
   for (int v = 0; v < nVolunteers; v++) volunteersPoints[v] = make_pair(v, 0);
 
   for (int m = 0; m < nIQ; m++) {
@@ -67,20 +67,20 @@ vector<pair<int, int>> classificationRuleLessMax(
   sort(volunteersPoints.begin(), volunteersPoints.end(),
        comparaVolunteersPoints);  // ordena com QuickSort
 
-  //	cout << volunteersPoints << endl;
+  //	cout << volunteersPoints << std::endl;
   return volunteersPoints;
 }
 
 vector<pair<int, int>> classificationRulePlusMax(
-    vector<pair<double, int>> betterAVG, vector<pair<double, int>> betterMin,
-    vector<pair<double, int>> betterMax, vector<pair<double, int>> betterGAP,
+    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
     vector<int> metricWeights, int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
   int maxWeight = 1;
   int gapWeight = 3;
-  vector<pair<int, int>> volunteersPoints(nVolunteers);
+  std::vector<std::pair<int, int>> volunteersPoints(nVolunteers);
   for (int v = 0; v < nVolunteers; v++) volunteersPoints[v] = make_pair(v, 0);
 
   for (int m = 0; m < nIQ; m++) {
@@ -97,19 +97,19 @@ vector<pair<int, int>> classificationRulePlusMax(
   sort(volunteersPoints.begin(), volunteersPoints.end(),
        comparaVolunteersPoints);  // ordena com QuickSort
 
-  //	cout << volunteersPoints << endl;
+  //	cout << volunteersPoints << std::endl;
   return volunteersPoints;
 }
 
 vector<pair<int, int>> classificationRuleNoGapSumMax(
-    vector<pair<double, int>> betterAVG, vector<pair<double, int>> betterMin,
-    vector<pair<double, int>> betterMax, vector<pair<double, int>> betterGAP,
+    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
     vector<int> metricWeights, int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
   int maxWeight = 1;
-  vector<pair<int, int>> volunteersPoints(nVolunteers);
+  std::vector<std::pair<int, int>> volunteersPoints(nVolunteers);
   for (int v = 0; v < nVolunteers; v++) volunteersPoints[v] = make_pair(v, 0);
 
   for (int m = 0; m < nIQ; m++) {
@@ -124,19 +124,19 @@ vector<pair<int, int>> classificationRuleNoGapSumMax(
   sort(volunteersPoints.begin(), volunteersPoints.end(),
        comparaVolunteersPoints);  // ordena com QuickSort
 
-  //	cout << volunteersPoints << endl;
+  //	cout << volunteersPoints << std::endl;
   return volunteersPoints;
 }
 
 vector<pair<int, int>> classificationRuleNoGapLessMax(
-    vector<pair<double, int>> betterAVG, vector<pair<double, int>> betterMin,
-    vector<pair<double, int>> betterMax, vector<pair<double, int>> betterGAP,
+    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
     vector<int> metricWeights, int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
   int maxWeight = 1;
-  vector<pair<int, int>> volunteersPoints(nVolunteers);
+  std::vector<std::pair<int, int>> volunteersPoints(nVolunteers);
   for (int v = 0; v < nVolunteers; v++) volunteersPoints[v] = make_pair(v, 0);
 
   for (int m = 0; m < nIQ; m++) {
@@ -151,7 +151,7 @@ vector<pair<int, int>> classificationRuleNoGapLessMax(
   sort(volunteersPoints.begin(), volunteersPoints.end(),
        comparaVolunteersPoints);  // ordena com QuickSort
 
-  //	cout << volunteersPoints << endl;
+  //	cout << volunteersPoints << std::endl;
   return volunteersPoints;
 }
 vector<pair<int, int>> classificationRuleOrderLessMax(
@@ -165,14 +165,14 @@ vector<pair<int, int>> classificationRuleOrderLessMax(
   int maxWeight = 1;
   int gapWeight = 3;
 
-  vector<pair<int, int>> volunteersPoints(nVolunteers);
+  std::vector<std::pair<int, int>> volunteersPoints(nVolunteers);
   for (int v = 0; v < nVolunteers; v++) volunteersPoints[v] = make_pair(v, 0);
 
   for (int m = 0; m < nIQ; m++) {
-    vector<pair<int, double>> avgOrder(nVolunteers);
-    vector<pair<int, double>> minOrder(nVolunteers);
-    vector<pair<int, double>> maxOrder(nVolunteers);
-    vector<pair<int, double>> gapOrder(nVolunteers);
+    std::vector<std::pair<int, double>> avgOrder(nVolunteers);
+    std::vector<std::pair<int, double>> minOrder(nVolunteers);
+    std::vector<std::pair<int, double>> maxOrder(nVolunteers);
+    std::vector<std::pair<int, double>> gapOrder(nVolunteers);
     for (int v = 0; v < nVolunteers; v++) {
       avgOrder[v] = make_pair(v, resultsAVG(m, v));
       minOrder[v] = make_pair(v, resultsMIN(m, v));
@@ -188,11 +188,11 @@ vector<pair<int, int>> classificationRuleOrderLessMax(
     sort(gapOrder.begin(), gapOrder.end(),
          comparaVolunteersPoints);  // ordena com QuickSort
 
-    //		cout << "ordered values for different IQ:" << m << endl;
-    //		cout << avgOrder << endl;
-    //		cout << minOrder << endl;
-    //		cout << maxOrder << endl;
-    //		cout << gapOrder << endl << endl;
+    //		cout << "ordered values for different IQ:" << m << std::endl;
+    //		cout << avgOrder << std::endl;
+    //		cout << minOrder << std::endl;
+    //		cout << maxOrder << std::endl;
+    //		cout << gapOrder << std::endl << std::endl;
     //		getchar();
     for (int v = 0; v < nVolunteers; v++) {
       volunteersPoints[avgOrder[v].first].second +=
@@ -209,7 +209,7 @@ vector<pair<int, int>> classificationRuleOrderLessMax(
   sort(volunteersPoints.begin(), volunteersPoints.end(),
        comparaVolunteersPoints);  // ordena com QuickSort
 
-  //	cout << volunteersPoints << endl;
+  //	cout << volunteersPoints << std::endl;
 
   return volunteersPoints;
 }
@@ -225,14 +225,14 @@ vector<pair<int, int>> classificationRuleOrderPlusMax(
   int maxWeight = 1;
   int gapWeight = 3;
 
-  vector<pair<int, int>> volunteersPoints(nVolunteers);
+  std::vector<std::pair<int, int>> volunteersPoints(nVolunteers);
   for (int v = 0; v < nVolunteers; v++) volunteersPoints[v] = make_pair(v, 0);
 
   for (int m = 0; m < nIQ; m++) {
-    vector<pair<int, double>> avgOrder(nVolunteers);
-    vector<pair<int, double>> minOrder(nVolunteers);
-    vector<pair<int, double>> maxOrder(nVolunteers);
-    vector<pair<int, double>> gapOrder(nVolunteers);
+    std::vector<std::pair<int, double>> avgOrder(nVolunteers);
+    std::vector<std::pair<int, double>> minOrder(nVolunteers);
+    std::vector<std::pair<int, double>> maxOrder(nVolunteers);
+    std::vector<std::pair<int, double>> gapOrder(nVolunteers);
     for (int v = 0; v < nVolunteers; v++) {
       avgOrder[v] = make_pair(v, resultsAVG(m, v));
       minOrder[v] = make_pair(v, resultsMIN(m, v));
@@ -248,11 +248,11 @@ vector<pair<int, int>> classificationRuleOrderPlusMax(
     sort(gapOrder.begin(), gapOrder.end(),
          comparaVolunteersPoints);  // ordena com QuickSort
 
-    //		cout << "ordered values for different IQ:" << m << endl;
-    //		cout << avgOrder << endl;
-    //		cout << minOrder << endl;
-    //		cout << maxOrder << endl;
-    //		cout << gapOrder << endl << endl;
+    //		cout << "ordered values for different IQ:" << m << std::endl;
+    //		cout << avgOrder << std::endl;
+    //		cout << minOrder << std::endl;
+    //		cout << maxOrder << std::endl;
+    //		cout << gapOrder << std::endl << std::endl;
     //		getchar();
     for (int v = 0; v < nVolunteers; v++) {
       volunteersPoints[avgOrder[v].first].second +=
@@ -269,7 +269,7 @@ vector<pair<int, int>> classificationRuleOrderPlusMax(
   sort(volunteersPoints.begin(), volunteersPoints.end(),
        comparaVolunteersPoints);  // ordena com QuickSort
 
-  //	cout << volunteersPoints << endl;
+  //	cout << volunteersPoints << std::endl;
 
   return volunteersPoints;
 }
@@ -277,7 +277,7 @@ vector<pair<int, int>> classificationRuleOrderPlusMax(
 vector<pair<double, int>> findBestPairsValuesByMetric(Matrix<double> results,
                                                       bool minOrMax) {
   int nIQ = results.getNumRows();  // number of indicators of quality
-  vector<pair<double, int>> bestPairs(nIQ);
+  std::vector<std::pair<double, int>> bestPairs(nIQ);
 
   double bigM = 10000000000;
   for (int m = 0; m < nIQ; m++) {
@@ -355,10 +355,10 @@ pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
 
   int nTotalForecastingsTrainningSet = tFTraining.getForecastsSize(0);
 
-  cout << "ContructiveACF HFM maximum number of Rules: "
-       << contructiveNumberOfRules << endl;
+  std::cout << "ContructiveACF HFM maximum number of Rules: "
+       << contructiveNumberOfRules << std::endl;
   //========SET PROBLEM MAXIMUM LAG ===============
-  cout << "argvMaxLagRate: " << argvMaxLagRate << endl;
+  std::cout << "argvMaxLagRate: " << argvMaxLagRate << std::endl;
 
   int iterationMaxLag =
       ((nTotalForecastingsTrainningSet - fh) * argvMaxLagRate) / 100.0;
@@ -385,16 +385,16 @@ pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
   // int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds *
   // stepsAhead;
 
-  cout << std::setprecision(3);
-  cout << std::fixed;
+  std::cout << std::setprecision(3);
+  std::cout << std::fixed;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
-  cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-  cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << endl;
-  cout << "#~NTR: " << NTRaprox << endl;
-  cout << "#sizeTrainingSet: " << tFTraining.getForecastsSize(0) << endl;
-  cout << "#maxNotUsed: " << maxLag << endl;
-  cout << "#StepsAhead: " << fh << endl << endl;
+  std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+       << std::endl;
+  std::cout << "#~NTR: " << NTRaprox << std::endl;
+  std::cout << "#sizeTrainingSet: " << tFTraining.getForecastsSize(0) << std::endl;
+  std::cout << "#maxNotUsed: " << maxLag << std::endl;
+  std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
 
   vector<vector<double>> trainningSet = tFTraining.getTS();
   ;  // trainningSetVector
@@ -461,9 +461,9 @@ vector<double> checkLearningAbility(treatForecasts& tFValidation,
   int maxLag = problemParam.getMaxLag(0);
 
   if (nTotalForecastingsTrainningSet < (maxLag + fh)) {
-    cout << "ERROR on learnModel -- small TS size " << endl;
-    cout << "nTotalForecastingsTrainningSet:" << nTotalForecastingsTrainningSet
-         << "\tmaxLag + stepsAhead:" << maxLag + fh << endl;
+    std::cout << "ERROR on learnModel -- small TS size " << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet:" << nTotalForecastingsTrainningSet
+         << "\tmaxLag + stepsAhead:" << maxLag + fh << std::endl;
   }
 
   // If maxUpperLag is greater than 0 model uses predicted data
@@ -481,20 +481,20 @@ vector<double> checkLearningAbility(treatForecasts& tFValidation,
 }
 
 int EEGBiometricSystem(int argc, char** argv) {
-  cout << "Welcome to EEG-Based Biometric system!" << endl;
+  std::cout << "Welcome to EEG-Based Biometric system!" << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   //	seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   // 0 50 5 10 10
 
   if (argc != 6) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: exp fh nModels nTests timeES" << endl;
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: exp fh nModels nTests timeES" << std::endl;
     exit(1);
   }
 
@@ -510,8 +510,8 @@ int EEGBiometricSystem(int argc, char** argv) {
   maxNM = 10;
   argvTimeES = 10;
   nVolunters = 4;
-  cout << "Parameters [EXP,FH,maxNM,timeES,nVol]:" << argEXP << "\t" << argvFH
-       << "\t" << maxNM << "\t" << argvTimeES << "\t" << nVolunters << endl;
+  std::cout << "Parameters [EXP,FH,maxNM,timeES,nVol]:" << argEXP << "\t" << argvFH
+       << "\t" << maxNM << "\t" << argvTimeES << "\t" << nVolunters << std::endl;
   int argvMaxLagRate = 3;  // percentage of ts to be used
   bool randomFH = true;
   bool randomChannel = true;
@@ -534,25 +534,25 @@ int EEGBiometricSystem(int argc, char** argv) {
   //	int fixedChannelT = 30;
   //	int fixedChannelV = 30;
 
-  // cout << "expT: " << expT << " -- channel: " << fixedChannelT << " with " <<
-  // trainingSetPercentage * 100 << "%" << endl;
-  cout << "EEG-BASED BIOMETRIC SYSTEM GOING TO RUN" << endl;
-  cout << maxNM << " models from " << nVolunters << " volunteers" << " expT "
-       << expT << " with " << trainingSetPercentage * 100 << "%" << endl;
-  cout << "expV: " << expV << " with " << validationSetPercentage * 100 << "%"
-       << endl;
+  // std::cout << "expT: " << expT << " -- channel: " << fixedChannelT << " with " <<
+  // trainingSetPercentage * 100 << "%" << std::endl;
+  std::cout << "EEG-BASED BIOMETRIC SYSTEM GOING TO RUN" << std::endl;
+  std::cout << maxNM << " models from " << nVolunters << " volunteers" << " expT "
+       << expT << " with " << trainingSetPercentage * 100 << "%" << std::endl;
+  std::cout << "expV: " << expV << " with " << validationSetPercentage * 100 << "%"
+       << std::endl;
 
   //=============================================
 
   //===================================
-  cout << "===========================" << endl;
-  cout << "Input parameters:" << endl;
-  cout << "nVolunters:" << nVolunters << endl;
-  cout << "number of models per volunteer:" << maxNM << endl;
-  cout << "argvMaxLagRate:" << argvMaxLagRate << endl;
-  cout << "argvTimeES:" << argvTimeES << endl;
-  cout << "argvFH:" << argvFH << endl;
-  cout << "===========================" << endl << endl;
+  std::cout << "===========================" << std::endl;
+  std::cout << "Input parameters:" << std::endl;
+  std::cout << "nVolunters:" << nVolunters << std::endl;
+  std::cout << "number of models per volunteer:" << maxNM << std::endl;
+  std::cout << "argvMaxLagRate:" << argvMaxLagRate << std::endl;
+  std::cout << "argvTimeES:" << argvTimeES << std::endl;
+  std::cout << "argvFH:" << argvFH << std::endl;
+  std::cout << "===========================" << std::endl << std::endl;
 
   // vector that carries each model that were trained and its characteristics
   // and parameters
@@ -605,23 +605,23 @@ int EEGBiometricSystem(int argc, char** argv) {
       int trainingTime = argvTimeES;
 
       if (!randomFH) {
-        cout << "forcing FH in the learning phase!" << endl;
+        std::cout << "forcing FH in the learning phase!" << std::endl;
         fH = argvFH;
       }
 
       if (!randomChannel) {
-        cout << "forcing random channel in the learning phase!" << endl;
+        std::cout << "forcing random channel in the learning phase!" << std::endl;
         // int randomChannel = rg.rand(64) + 1;
         variableChannelT = 10;
       }
       if (!randomQI) {
-        cout << "forcing indicator of quality in the learning phase!" << endl;
+        std::cout << "forcing indicator of quality in the learning phase!" << std::endl;
         evalFO = SMAPE_INDEX;
       }
 
-      cout << "\nTraining model " << nM + 1 << "/" << maxNM << " of Volunteer "
+      std::cout << "\nTraining model " << nM + 1 << "/" << maxNM << " of Volunteer "
            << v + 1 << " -- EEG Channel " << variableChannelT << " -- exp"
-           << expT << endl;
+           << expT << std::endl;
 
       stringstream EEGTimeSeriesToBeLearned;
       stringstream sName;
@@ -656,7 +656,7 @@ int EEGBiometricSystem(int argc, char** argv) {
       pair<SolutionHFM, Evaluation<>> HFMmodel = learnModel(
           tFTraining, argvMaxLagRate, trainingTime, seed, rg, evalFO, fH);
       //			cout << "sol->first.getR().earliestInput: " <<
-      //HFMmodel->first.getR().earliestInput << endl;
+      //HFMmodel->first.getR().earliestInput << std::endl;
       //			cout<<HFMmodel->first.getR()<<endl;
       //			getchar();
 
@@ -666,8 +666,8 @@ int EEGBiometricSystem(int argc, char** argv) {
       for (int iq = 0; iq < (int)listOfIndicatorOfQuality.size(); iq++)
         biometricSystemMeasures.push_back(
             allErrors[listOfIndicatorOfQuality[iq]]);
-      //			cout << allErrors << endl;
-      //			cout << biometricSystemMeasures << endl;
+      //			cout << allErrors << std::endl;
+      //			cout << biometricSystemMeasures << std::endl;
       //			getchar();
 
       HFMModelAndParam* HFMCurrentModelAndParams = new HFMModelAndParam(
@@ -676,8 +676,8 @@ int EEGBiometricSystem(int argc, char** argv) {
     }
   }
 
-  cout << "The different time series has been learned with success!\n" << endl;
-  cout << "Time to check their performance...\n" << endl;
+  std::cout << "The different time series has been learned with success!\n" << std::endl;
+  std::cout << "Time to check their performance...\n" << std::endl;
 
   // Checking the performance of each HFM model in different EEG channels of
   // different inviduals
@@ -688,7 +688,7 @@ int EEGBiometricSystem(int argc, char** argv) {
   vector<int> truePositivesPerMetric(nClassificationRules, 0);
   for (int hiddenV = 0; hiddenV < nVolunters; hiddenV++)  // how is volunter v?
   {
-    cout << "===================================================\n" << endl;
+    std::cout << "===================================================\n" << std::endl;
 
     Matrix<double> resultsAVG(nIndicatorsOfQuality, nVolunters);
     Matrix<double> resultsMin(nIndicatorsOfQuality, nVolunters);
@@ -737,13 +737,13 @@ int EEGBiometricSystem(int argc, char** argv) {
       vector<string> validationExplanotoryVariables;
       validationExplanotoryVariables.push_back(validationTSFile.str());
       //				cout << "checking performance on " <<
-      //checkError.str() << endl;
+      //checkError.str() << std::endl;
 
       treatForecasts tFValidation(validationExplanotoryVariables);
       tFValidation.setTSFile(tFValidation.getPercentageFromEndToBegin(
                                  0, 0, validationSetPercentage),
                              0);
-      //			cout << HFMmodel->first.getR() << endl;
+      //			cout << HFMmodel->first.getR() << std::endl;
       //			getchar();
       vector<double> allErrors =
           checkLearningAbility(tFValidation, HFMmodel, rg, modelFH);
@@ -774,50 +774,50 @@ int EEGBiometricSystem(int argc, char** argv) {
       }
 
     //		cout << maxNM << " models from volunteer:" << v << "-->" <<
-    //hiddenV << endl;
+    //hiddenV << std::endl;
 
-    //			cout << "Average errors" << endl;
+    //			cout << "Average errors" << std::endl;
     //			//<< " applied over all  errors vollunter " << v2 + 1 <<
-    //" -- All channels from exp 2" << endl; 			cout << sumOfErrors << endl;
+    //" -- All channels from exp 2" << std::endl; 			cout << sumOfErrors << std::endl;
     //
-    //			cout << "Min errors" << endl;
+    //			cout << "Min errors" << std::endl;
     //			//<< " applied over all  errors vollunter " << v2 + 1 <<
-    //" -- All channels from exp 2" << endl; 			cout << minErrors << endl;
+    //" -- All channels from exp 2" << std::endl; 			cout << minErrors << std::endl;
     //
-    //			cout << "Max errors" << endl;
-    //			cout << maxErrors << endl;
+    //			cout << "Max errors" << std::endl;
+    //			cout << maxErrors << std::endl;
     //
-    //			cout << "GAPS against standard errors" << endl;
-    //			cout << sumOfGAP << endl << endl;
+    //			cout << "GAPS against standard errors" << std::endl;
+    //			cout << sumOfGAP << std::endl << std::endl;
     //			getchar();
 
-    vector<pair<double, int>> lowerPairAVG =
+    std::vector<std::pair<double, int>> lowerPairAVG =
         findBestPairsValuesByMetric(resultsAVG, true);
-    vector<pair<double, int>> lowerPairMIN =
+    std::vector<std::pair<double, int>> lowerPairMIN =
         findBestPairsValuesByMetric(resultsMin, true);
-    vector<pair<double, int>> highestPairMAX =
+    std::vector<std::pair<double, int>> highestPairMAX =
         findBestPairsValuesByMetric(resultsMax, false);
-    vector<pair<double, int>> lowestPairMAX =
+    std::vector<std::pair<double, int>> lowestPairMAX =
         findBestPairsValuesByMetric(resultsMax, true);
-    vector<pair<double, int>> lowerPairGAP =
+    std::vector<std::pair<double, int>> lowerPairGAP =
         findBestPairsValuesByMetric(resultsGAP, true);
 
     //		cout << "AVG\n";
-    //		cout << lowerPairAVG << endl;
-    //		cout << results << endl;
+    //		cout << lowerPairAVG << std::endl;
+    //		cout << results << std::endl;
     //
     //		cout << "MIN\n";
-    //		cout << lowerPairMIN << endl;
-    //		cout << resultsMin << endl;
+    //		cout << lowerPairMIN << std::endl;
+    //		cout << resultsMin << std::endl;
     //
     //		cout << "MAX\n";
-    //		cout << highestPairMAX << endl;
-    //		cout << lowestPairMAX << endl;
-    //		cout << resultsMax << endl;
+    //		cout << highestPairMAX << std::endl;
+    //		cout << lowestPairMAX << std::endl;
+    //		cout << resultsMax << std::endl;
     //
     //		cout << "GAP\n";
-    //		cout << lowerPairGAP << endl;
-    //		cout << resultsGAP << endl;
+    //		cout << lowerPairGAP << std::endl;
+    //		cout << resultsGAP << std::endl;
     //		getchar();
 
     vector<vector<pair<int, int>>> volunteerRankPerMetric;
@@ -841,36 +841,36 @@ int EEGBiometricSystem(int argc, char** argv) {
         listOfIndicatorOfQualityWeights, nVolunters));
 
     for (int vPM = 0; vPM < nClassificationRules; vPM++) {
-      cout << "\nM" << vPM << "-- Model from volunteer: "
+      std::cout << "\nM" << vPM << "-- Model from volunteer: "
            << volunteerRankPerMetric[vPM][0].first
-           << " is the most suitable for ts: " << hiddenV << endl;
-      cout << volunteerRankPerMetric[vPM] << endl;
+           << " is the most suitable for ts: " << hiddenV << std::endl;
+      std::cout << volunteerRankPerMetric[vPM] << std::endl;
 
       // Checking true positives
       if (volunteerRankPerMetric[vPM][0].first == hiddenV)
         truePositivesPerMetric[vPM]++;
     }
 
-    cout << "===================================================\n" << endl;
+    std::cout << "===================================================\n" << std::endl;
   }
-  cout << "===================================================\n" << endl;
-  cout << "True positives are:\n";
+  std::cout << "===================================================\n" << std::endl;
+  std::cout << "True positives are:\n";
   for (int vPM = 0; vPM < nClassificationRules; vPM++) {
-    cout << "M" << vPM << ":" << truePositivesPerMetric[vPM] << "\t";
+    std::cout << "M" << vPM << ":" << truePositivesPerMetric[vPM] << "\t";
   }
-  cout << "\n";
-  cout << "True percentage are:\n";
+  std::cout << "\n";
+  std::cout << "True percentage are:\n";
   for (int vPM = 0; vPM < nClassificationRules; vPM++) {
     double tempPercentage = 100.0 * truePositivesPerMetric[vPM] / nVolunters;
-    cout << "M" << vPM << ":" << tempPercentage << "\t";
+    std::cout << "M" << vPM << ":" << tempPercentage << "\t";
   }
-  cout << "\n";
-  cout << "===================================================\n" << endl;
+  std::cout << "\n";
+  std::cout << "===================================================\n" << std::endl;
 
-  cout << maxNM << " models from " << nVolunters << " volunteers" << " expT "
-       << expT << " with " << trainingSetPercentage * 100 << "%" << endl;
-  cout << "expV: " << expV << " with " << validationSetPercentage * 100 << "%"
-       << endl;
+  std::cout << maxNM << " models from " << nVolunters << " volunteers" << " expT "
+       << expT << " with " << trainingSetPercentage * 100 << "%" << std::endl;
+  std::cout << "expV: " << expV << " with " << validationSetPercentage * 100 << "%"
+       << std::endl;
 
   // =================== PRINTING RESULTS ON FILE ========================
   string calibrationFile = "./EEGLearningAccuracy";

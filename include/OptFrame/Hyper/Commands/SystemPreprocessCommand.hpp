@@ -47,30 +47,30 @@ public:
       return "system.preprocess return_value module_name input";
    }
 
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module, string rest)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
    {
       for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
          if (modules[i]->canHandle(module, rest))
             return modules[i];
       }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
       return nullptr;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string name = scanner.next();
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -81,7 +81,7 @@ public:
       Command<R, ADS, DS>* m = getCommand(all_modules, module, "");
 
       if (!m) {
-         cout << "preprocess command: nullptr module!" << endl;
+         std::cout << "preprocess command: nullptr module!" << std::endl;
          return false;
       }
 
@@ -90,7 +90,7 @@ public:
       if (!final)
          return false;
 
-      stringstream ss;
+      std::stringstream ss;
       ss << name << " " << (*final);
 
       delete final;
@@ -99,7 +99,7 @@ public:
    }
 
    // runs raw module without preprocessing
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return new string(input); // disable pre-processing
    }

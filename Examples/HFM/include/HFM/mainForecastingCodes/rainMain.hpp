@@ -15,20 +15,20 @@ using namespace optframe;
 using namespace HFM;
 
 int rainMain(int argc, char** argv) {
-  cout << "Welcome to rain forecast place" << endl;
+  std::cout << "Welcome to rain forecast place" << std::endl;
   RandGenMersenneTwister rg;
   // long
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 10) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
             "parameters options precision"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -46,14 +46,14 @@ int rainMain(int argc, char** argv) {
   string parametersFile = caminhoParameters;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "nomeValidationSet=" << nomeValidationSet << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "nomeParameters=" << parametersFile << endl;
-  cout << "instN=" << instN << endl;
-  cout << "stepsAhead=" << stepsAhead << endl;
-  cout << "mu=" << mu << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "nomeValidationSet=" << nomeValidationSet << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "nomeParameters=" << parametersFile << std::endl;
+  std::cout << "instN=" << instN << std::endl;
+  std::cout << "stepsAhead=" << stepsAhead << std::endl;
+  std::cout << "mu=" << mu << std::endl;
   //======================================
 
   vector<string> vParametersFiles;
@@ -84,8 +84,8 @@ int rainMain(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -148,10 +148,10 @@ int rainMain(int argc, char** argv) {
     evalAprox = 0;
     construtive = 2;
     alphaACF = -1;
-    cout << "mu = " << mu << endl;
-    cout << "initialDesv = " << initialDesv << endl;
-    cout << "mutationDesv = " << mutationDesv << endl;
-    cout << "randomPrecision = " << randomPrecision << endl;
+    std::cout << "mu = " << mu << std::endl;
+    std::cout << "initialDesv = " << initialDesv << std::endl;
+    std::cout << "mutationDesv = " << mutationDesv << std::endl;
+    std::cout << "randomPrecision = " << randomPrecision << std::endl;
     // ============ END FORCES ======================
 
     // ============= METHOD PARAMETERS=================
@@ -190,11 +190,11 @@ int rainMain(int argc, char** argv) {
 
     int maxNotUsedForTest = problemParam.getMaxLag(0);
 
-    cout << "maxNotUsedForTest: " << maxNotUsedForTest << endl;
+    std::cout << "maxNotUsedForTest: " << maxNotUsedForTest << std::endl;
 
     // getchar();
     // int randomObjFunc = rg.rand(2);
-    // cout<<"randomObjFunc = "<<randomObjFunc<<endl;
+    // std::cout<<"randomObjFunc = "<<randomObjFunc<<endl;
     // problemParam.setFunction(randomObjFunc);
 
     // validationBlindForecastings.clear();
@@ -203,16 +203,16 @@ int rainMain(int argc, char** argv) {
     // nTrainningRounds = 10;
     int nTotalForecastingsTrainningSet =
         maxNotUsedForTest + nTrainningRounds * stepsAhead;
-    cout << "nTrainningRounds: " << nTrainningRounds << endl;
-    cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << endl;
+    std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+         << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = stepsAhead;
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, beginTrainingSet, nTotalForecastingsTrainningSet));
-    // cout<<trainningSet<<endl;
-    // cout<< rF.getForecastsDataSize()<<endl;
+    // std::cout<<trainningSet<<endl;
+    // std::cout<< rF.getForecastsDataSize()<<endl;
     // getchar();
 
     ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
@@ -264,7 +264,7 @@ int rainMain(int argc, char** argv) {
     foIndicatorCalibration.push_back(optMethod);
     foIndicatorCalibration.push_back(seed);
     // getchar();
-    // cout << foIndicatorCalibration << endl;
+    // std::cout << foIndicatorCalibration << std::endl;
     vfoIndicatorCalibration.push_back(foIndicatorCalibration);
     vSolutionsBatches.push_back(sol->first);
   }
@@ -283,12 +283,12 @@ int rainMain(int argc, char** argv) {
 
   rF.exportQuantisVector(finalResultQuantis, "./Quantis12AFrente");
 
-  cout << vfoIndicatorCalibration << endl;
+  std::cout << vfoIndicatorCalibration << std::endl;
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
 
   string calibrationFile = "./rainLe";

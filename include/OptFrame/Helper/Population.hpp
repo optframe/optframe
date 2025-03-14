@@ -264,8 +264,8 @@ class Population final : public Component {
 
   virtual Population<XES>& clone() const { return *new Population<XES>(*this); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":Population";
     return ss.str();
   }
@@ -275,8 +275,8 @@ class Population final : public Component {
   std::string id() const override { return idComponent(); }
 
   void print() const override {
-    cout << "Population(" << p.size() << ")";
-    cout << endl;
+    std::cout << "Population(" << p.size() << ")";
+    std::cout << std::endl;
 
     for (unsigned i = 0; i < p.size(); i++) {
       // p.at(i)->print();
@@ -289,11 +289,11 @@ class Population final : public Component {
   /*
    chromossome& cloneBestChromossome(Evaluator<S, XEv, XES>& eval)
    {
-      vector<pair<S, double>> v;
+      std::vector<std::pair<S, double>> v;
 
       for (int i = 0; i < (int)p.size(); i++) {
          XEv& e = eval.evaluate(p[i]);
-         v.push_back(make_pair(*p[i], e.evaluation()));
+         v.push_back(std::make_pair(*p[i], e.evaluation()));
          delete &e;
       }
 

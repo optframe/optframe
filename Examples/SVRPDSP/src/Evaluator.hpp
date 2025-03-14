@@ -35,21 +35,21 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
 
   bool basicCheck(const RepSVRPDSP& rep, const AdsSVRPDSP& ads) {
     if (rep.size() == 0) {
-      cout << "Evaluator Error: rep.size() == 0!" << endl;
+      std::cout << "Evaluator Error: rep.size() == 0!" << std::endl;
       return false;
     }
 
     if (ads.zero >= rep.size()) {
-      cout << "Evaluator Error: zero is bigger than rep.size()! Incorrect ADS!"
-           << endl;
-      cout << "rep: " << rep << endl;
+      std::cout << "Evaluator Error: zero is bigger than rep.size()! Incorrect ADS!"
+           << std::endl;
+      std::cout << "rep: " << rep << std::endl;
       return false;
     }
 
     if (rep[ads.zero] != 0) {
-      cout << "Evaluator Error: problem with zero in rep[" << ads.zero
-           << "] = " << rep[ads.zero] << "! Incorrect ADS!" << endl;
-      cout << "rep: " << rep << endl;
+      std::cout << "Evaluator Error: problem with zero in rep[" << ads.zero
+           << "] = " << rep[ads.zero] << "! Incorrect ADS!" << std::endl;
+      std::cout << "rep: " << rep << std::endl;
       return false;
     }
 
@@ -57,9 +57,9 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
     for (unsigned i = 0; i < rep.size(); i++)
       if (rep[i] != 0) {
         if (idx.at(rep[i]) >= 0) {
-          cout << "repetition of element '" << rep[i] << "' at i=" << i
-               << " and " << idx[rep[i]] << endl;
-          cout << "REP: " << rep << endl;
+          std::cout << "repetition of element '" << rep[i] << "' at i=" << i
+               << " and " << idx[rep[i]] << std::endl;
+          std::cout << "REP: " << rep << std::endl;
           exit(1);
         }
         idx.at(rep[i]) = i;
@@ -74,8 +74,8 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
 
     if (count_d != pSVRPDSP.n)  // using penalization
     {
-      cout << "Evaluator Wrong number of delivery customers! It is " << count_d
-           << " but should be " << pSVRPDSP.n << "!" << endl;
+      std::cout << "Evaluator Wrong number of delivery customers! It is " << count_d
+           << " but should be " << pSVRPDSP.n << "!" << std::endl;
       exit(1);
     }
 
@@ -83,7 +83,7 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
   }
 
   Evaluation<> evaluate(const RepSVRPDSP& rep) {
-    cout << "DEPRECATED:DO NOT USE THIS METHOD!" << endl;
+    std::cout << "DEPRECATED:DO NOT USE THIS METHOD!" << std::endl;
     exit(1);
     const AdsSVRPDSP ads1;
     return evaluate(rep, &ads1);
@@ -95,8 +95,8 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
     AdsSVRPDSP ads = ads1;
     MySolution::syncADS(pSVRPDSP, rep, ads);
     if (verbose) {
-      cout << "evaluate(rep,ads)" << endl;
-      cout << "ZERO IS: " << ads.zero << " rep: " << rep << endl;
+      std::cout << "evaluate(rep,ads)" << std::endl;
+      std::cout << "ZERO IS: " << ads.zero << " rep: " << rep << std::endl;
       ads.print();
     }
 
@@ -134,19 +134,19 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
     int i_max = 0;
 
     for (unsigned i = 1; i <= ads.zero; i++) {
-      // cout << "i=" << i << endl;
+      // std::cout << "i=" << i << std::endl;
       q += pSVRPDSP.dp[rep[i]];
       q -= pSVRPDSP.dd[rep[i]];
 
       if ((q != ads.load[i]) && (rep[i] != 0))  // do not check depot
       {
-        cout << "Evaluator DIFFERENT Q VALUE IN i=" << i << " q=" << q
-             << " ads.load[i]=" << ads.load[i] << endl;
+        std::cout << "Evaluator DIFFERENT Q VALUE IN i=" << i << " q=" << q
+             << " ads.load[i]=" << ads.load[i] << std::endl;
         exit(1);
       }
 
       if (q < 0) {
-        cout << "Evaluator ERROR: negative capacity!" << endl;
+        std::cout << "Evaluator ERROR: negative capacity!" << std::endl;
         exit(1);
       }
 
@@ -158,7 +158,7 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
 
       fo_c += pSVRPDSP.dc(rep[i - 1], rep[i]);
       if (verbose)
-        cout << "+d(" << rep[i - 1] << "," << rep[i]
+        std::cout << "+d(" << rep[i - 1] << "," << rep[i]
              << ")=" << pSVRPDSP.dc(rep[i - 1], rep[i]) << " ";
 
       if (rep[i] != 0) {
@@ -169,7 +169,7 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
         {
           fo_r += pSVRPDSP.dr[rep[i]];
           if (verbose)
-            cout << "PICKUP(" << rep[i] << ")=" << pSVRPDSP.dr[rep[i]] << " ";
+            std::cout << "PICKUP(" << rep[i] << ")=" << pSVRPDSP.dr[rep[i]] << " ";
         }
       }
     }
@@ -178,16 +178,16 @@ class SVRPDSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
       fo_inf += (max - pSVRPDSP.Q) * INF_CAP_WEIGHT;  // INFEASIBLE!
       sum_inf += (max - pSVRPDSP.Q);
       if (verbose)
-        cout << "Evaluator inf: " << (max - pSVRPDSP.Q) << " in " << rep[i_max]
-             << " => " << fo_inf << endl;
+        std::cout << "Evaluator inf: " << (max - pSVRPDSP.Q) << " in " << rep[i_max]
+             << " => " << fo_inf << std::endl;
     }
 
     fo = fo_c - fo_r;
 
     if (verbose) {
-      cout << "TOTAL = " << fo_c << endl;
-      cout << "Evaluator TOTAL INF1+INF2: " << fo_inf << endl;
-      cout << "fo_c=" << fo_c << " fo_r=" << fo_r << endl;
+      std::cout << "TOTAL = " << fo_c << std::endl;
+      std::cout << "Evaluator TOTAL INF1+INF2: " << fo_inf << std::endl;
+      std::cout << "fo_c=" << fo_c << " fo_r=" << fo_r << std::endl;
     }
 
     return *new Evaluation(fo, fo_inf);

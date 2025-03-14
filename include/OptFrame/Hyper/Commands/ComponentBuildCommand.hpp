@@ -97,16 +97,16 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
       \endportuguese
   */
 
-  bool run(vector<Command<R, ADS, DS>*>& all_modules,
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
            vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
            HeuristicFactory<R, ADS, DS>& factory,
-           map<string, string>& dictionary,
+           map<std::string, std::string>& dictionary,
            map<string, vector<string>>& ldictionary, string input) {
-    // cout << "build command: " << input << endl;
+    // std::cout << "build command: " << input << std::endl;
     Scanner scanner1(input);
 
     if (!scanner1.hasNext()) {
-      cout << "Usage: " << usage() << endl;
+      std::cout << "Usage: " << usage() << std::endl;
 
       listBuilders(all_modules, allFunctions, factory, dictionary, ldictionary,
                    "");
@@ -114,9 +114,9 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
     }
 
     string type = scanner1.next();
-    stringstream ss;
+    std::stringstream ss;
     ss << type << " " << scanner1.rest();
-    // cout << "rest: " << ss.str() << endl;
+    // std::cout << "rest: " << ss.str() << std::endl;
 
     Scanner scanner(ss.str());
 
@@ -170,13 +170,13 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
         new_id = factory.addComponent(*comp, base);
       }
     } else {
-      cout << "build_module: error '" << type << "' is not a known builder!"
-           << endl;
+      std::cout << "build_module: error '" << type << "' is not a known builder!"
+           << std::endl;
       return false;
     }
 
     if (new_id < 0) {
-      cout << "build command: couldn't build component!" << endl;
+      std::cout << "build command: couldn't build component!" << std::endl;
       return false;
     }
 
@@ -184,7 +184,7 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
     str << base << " " << new_id;
     string s_new_id = str.str();
 
-    // cout << "'" << s_new_id << "' added." << endl;
+    // std::cout << "'" << s_new_id << "' added." << std::endl;
 
     if (scanner.hasNext()) {
       string new_name = scanner.next();
@@ -196,10 +196,10 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
     return true;
   }
 
-  bool listBuilders(vector<Command<R, ADS, DS>*>& all_modules,
+  bool listBuilders(std::vector<Command<R, ADS, DS>*>& all_modules,
                     vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
                     HeuristicFactory<R, ADS, DS>& factory,
-                    map<string, string>& dictionary,
+                    map<std::string, std::string>& dictionary,
                     map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);
 
@@ -210,22 +210,22 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
     else
       pattern = "OptFrame:";
 
-    vector<pair<string, vector<pair<string, string>>>> builders =
+    std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> builders =
         factory.listBuilders(pattern);
 
     if (!scanner.hasNext()) {
       for (int i = 0; i < (int)builders.size(); i++) {
-        cout << builders[i].first << "\t";
+        std::cout << builders[i].first << "\t";
         for (unsigned j = 0; j < builders[i].second.size(); j++)
-          cout << builders[i].second[j].first << "=>'"
+          std::cout << builders[i].second[j].first << "=>'"
                << builders[i].second[j].second << "' ";
-        cout << endl;
+        std::cout << std::endl;
       }
 
       return true;
     } else {
       string new_name = scanner.next();
-      stringstream ss;
+      std::stringstream ss;
 
       ss << new_name << " [";
       for (unsigned i = 0; i < builders.size(); i++) {
@@ -249,7 +249,7 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary,
+      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
       const map<string, vector<string>>& ldictionary, string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);

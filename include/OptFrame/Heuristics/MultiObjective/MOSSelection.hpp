@@ -50,11 +50,11 @@ class MOSSelection : public Component {
                       vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // free elements from population and lastly update archive
-  virtual void free(vector<MOSIndividual<XMES2>>& Pop,
+  virtual void free(std::vector<MOSIndividual<XMES2>>& Pop,
                     vector<MOSIndividual<XMES2>>& archive) = 0;
 
   void print() const override {
-    cout << "MOSSelection" << endl;
+    std::cout << "MOSSelection" << std::endl;
   }
 };
 
@@ -128,7 +128,7 @@ class NSGAIISelection : public MOSSelection<XMES2> {
     archive = Pop;  // no other archiving
   }
 
-  void free(vector<MOSIndividual<XMES2>>& Pop,
+  void free(std::vector<MOSIndividual<XMES2>>& Pop,
             vector<MOSIndividual<XMES2>>& archive) override {
     archive = Pop;
     Pop.clear();

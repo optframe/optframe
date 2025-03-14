@@ -129,7 +129,7 @@ public:
 		return evalAprox;
 	}
 
-	void setConstrutiveLimitAlphaACF(vector<double> _vAlphaACFlimits)
+	void setConstrutiveLimitAlphaACF(std::vector<double> _vAlphaACFlimits)
 	{
 		vAlphaACFlimits = _vAlphaACFlimits;
 	}

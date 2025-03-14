@@ -49,13 +49,13 @@ class BinarySelection : public Selection<R, ADS> {
 
   pair<unsigned, unsigned> select(const MultiSolution<S>& p, const MultiEvaluation<>& mev, const vector<double>& fv) {
     assert(p.size() > 1);
-    //cout << "SELECT: " << p.size() << endl;
-    //cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
+    //cout << "SELECT: " << p.size() << std::endl;
+    //cout << fv << " = " << Selection<R, ADS>::getSum(fv) << std::endl;
 
     unsigned s1 = 0;
 
     float x = rg.rand01();
-    //cout << "x=" << x << endl;
+    //cout << "x=" << x << std::endl;
     for (unsigned i = 0; i < fv.size(); i++) {
       x -= fv[i];
       if (x <= 0) {
@@ -65,17 +65,17 @@ class BinarySelection : public Selection<R, ADS> {
     }
 
     unsigned s2 = s1;
-    //cout << "s1 = " << s1 << endl;
+    //cout << "s1 = " << s1 << std::endl;
     int trye = 0;
     while (s2 == s1) {
       trye++;
       if (trye >= 100 * p.size()) {
-        cout << "LOOP IN BINARYSELECTION??" << endl;
-        cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
+        std::cout << "LOOP IN BINARYSELECTION??" << std::endl;
+        std::cout << fv << " = " << Selection<R, ADS>::getSum(fv) << std::endl;
         exit(1);
       }
       x = rg.rand01();
-      //cout << "x2=" << x << endl;
+      //cout << "x2=" << x << std::endl;
       for (unsigned i = 0; i < fv.size(); i++) {
         x -= fv[i];
         if (x <= 0) {
@@ -92,8 +92,8 @@ class BinarySelection : public Selection<R, ADS> {
     return (s == idComponent()) || (Selection<R, ADS>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Selection<R, ADS>::idComponent() << ":BinarySelection";
     return ss.str();
   }

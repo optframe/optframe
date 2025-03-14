@@ -58,7 +58,7 @@ main(int argc, char** argv)
    ESolutionKP melhor = *searchOut.best; //*sa.getBestSolution();
    std::cout << "======== Imprime melhor solução do SA ========" << std::endl;
    // imprime representação da melhor solução
-   cout << melhor.first << endl;
+   std::cout << melhor.first << std::endl;
    // imprime avaliação da melhor solução
    melhor.second.print();
 

@@ -49,15 +49,15 @@ public:
       return "plot.2axis 1.list with: title xtitle ytitle 2.list of lists with: title, list of xvalues, list of yvalues 3.output file";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "plot.2axis module input: '" << input << "'" << endl;
+      //cout << "plot.2axis module input: '" << input << "'" << std::endl;
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "plot.2aix command: no such list!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "plot.2aix command: no such list!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -70,7 +70,7 @@ public:
          return false;
 
       if (list1.size() != 3) {
-         cout << "plot.2axis command: expected 3 parameters (title, xtitle, ytitle) in first list and found " << list1.size() << endl;
+         std::cout << "plot.2axis command: expected 3 parameters (title, xtitle, ytitle) in first list and found " << list1.size() << std::endl;
          return false;
       }
 
@@ -79,8 +79,8 @@ public:
       string ytitle = list1.at(2);
 
       if (!scanner.hasNext()) {
-         cout << "plot.2aix command: no such list!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "plot.2aix command: no such list!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -95,7 +95,7 @@ public:
       string filename = scanner.rest();
 
       vector<string> lines;
-      vector<pair<string, vector<vector<double>>>> files;
+      std::vector<std::pair<string, vector<vector<double>>>> files;
 
       for (unsigned i = 0; i < list2.size(); i++) {
          Scanner scan(list2.at(i));
@@ -109,8 +109,8 @@ public:
             return false;
 
          if (list.size() != 3) {
-            cout << "plot.2aix command: internal list size different from 3! expected name, xvalues and yvalues." << endl;
-            cout << "Usage: " << usage() << endl;
+            std::cout << "plot.2aix command: internal list size different from 3! expected name, xvalues and yvalues." << std::endl;
+            std::cout << "Usage: " << usage() << std::endl;
             return false;
          }
 
@@ -133,22 +133,22 @@ public:
             return false;
 
          if (list_x.size() != list_y.size()) {
-            cout << "plot.2aix command: list_x size different from list_y size! (" << list_x.size() << " != " << list_y.size() << ")" << endl;
-            cout << "Usage: " << usage() << endl;
+            std::cout << "plot.2aix command: list_x size different from list_y size! (" << list_x.size() << " != " << list_y.size() << ")" << std::endl;
+            std::cout << "Usage: " << usage() << std::endl;
             return false;
          }
 
          lines.push_back(list.at(0));
-         stringstream ss;
+         std::stringstream ss;
          ss << "_gnuplot_dat_file_" << i << ".dat";
-         pair<string, vector<vector<double>>> p(make_pair(ss.str(), vector<vector<double>>(list_x.size())));
+         pair<string, vector<vector<double>>> p(std::make_pair(ss.str(), vector<vector<double>>(list_x.size())));
 
          for (unsigned l = 0; l < list_x.size(); l++) {
             try {
                p.second.at(l).push_back(Scanner::parseDouble(list_x.at(l)));
                p.second.at(l).push_back(Scanner::parseDouble(list_y.at(l)));
             } catch (ConversionError& e) {
-               cout << "plot.2axis command: error parsing x or y value!" << endl;
+               std::cout << "plot.2axis command: error parsing x or y value!" << std::endl;
                return false;
             }
          }
@@ -158,7 +158,7 @@ public:
             for (unsigned j = 0; j < p.second.size(); j++)
                fprintf(f, "%.2f\t%.2f\n", p.second.at(j).at(0), p.second.at(j).at(1));
          } else {
-            cout << "plot.2axis command: couldn't open file: '" << p.first << "'" << endl;
+            std::cout << "plot.2axis command: couldn't open file: '" << p.first << "'" << std::endl;
             return false;
          }
 
@@ -193,17 +193,17 @@ public:
       stringstream sexec;
       sexec << "gnuplot _gnuplot_script.pg > " << filename;
 
-      //cout << "sexec: '" << sexec.str() << "'" << endl;
+      //cout << "sexec: '" << sexec.str() << "'" << std::endl;
 
       int c = system(sexec.str().c_str());
 
       if (c < 0) {
-         cout << "plot.2axis error: return is less than zero '" << c << "'" << endl;
+         std::cout << "plot.2axis error: return is less than zero '" << c << "'" << std::endl;
          return false;
       }
 
       for (unsigned i = 0; i < files.size(); i++) {
-         stringstream ss;
+         std::stringstream ss;
          ss << "_gnuplot_dat_file_" << i << ".dat";
          remove(ss.str().c_str());
       }
@@ -213,7 +213,7 @@ public:
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

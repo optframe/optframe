@@ -74,8 +74,8 @@ class NSIteratorTSPOrOptk : public NSIterator<XES> {
 
   uptr<Move<XES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "OrOpt{K=" << k << "}. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "OrOpt{K=" << k << "}. Aborting." << std::endl;
       exit(1);
     }
 

@@ -116,10 +116,10 @@ private:
 				(*input)->putback(back[i]);
 				if((*input)->fail())
 				{
-					cout << "SCANNER ERROR PUTTING BACK CHAR '" << back[i] << "'" << endl;
-					cout << "eof bit: '" << (*input)->eof() << "'" << endl;
-					cout << "bad bit: '" << (*input)->bad() << "'" << endl;
-					cout << "fail bit: '" << (*input)->fail() << "'" << endl;
+					cout << "SCANNER ERROR PUTTING BACK CHAR '" << back[i] << "'" << std::endl;
+					cout << "eof bit: '" << (*input)->eof() << "'" << std::endl;
+					cout << "bad bit: '" << (*input)->bad() << "'" << std::endl;
+					cout << "fail bit: '" << (*input)->fail() << "'" << std::endl;
 					exit(1);
 				}
 			}
@@ -240,7 +240,7 @@ public:
 		return aux_word;
 	}
 
-	pair<string, map<string, string> > nextXMLTag();
+	pair<string, map<std::string, std::string> > nextXMLTag();
 
 	bool hasNext() const;
 

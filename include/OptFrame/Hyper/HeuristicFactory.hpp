@@ -118,7 +118,7 @@ class HeuristicFactory {
   sref<RandGen> rg;
 
  public:
-  // output stream (defaults to cout)
+  // output stream (defaults to std::cout)
   std::ostream* logdata{&std::cout};
 
  public:
@@ -278,7 +278,7 @@ class HeuristicFactory {
   }
 
   template <class T>
-  void assignList(vector<std::shared_ptr<T>>& cList, unsigned number,
+  void assignList(std::vector<std::shared_ptr<T>>& cList, unsigned number,
                   string _listId) {
     // type checking for safety!
     string noList = ComponentHelper::typeOfList(_listId);
@@ -406,8 +406,8 @@ class HeuristicFactory {
 
     int idx = components[id].size() - 1;
 
-    // cout << "HeuristicFactory: added component '" << id << " " << idx << "'"
-    // << endl;
+    // std::cout << "HeuristicFactory: added component '" << id << " " << idx << "'"
+    // << std::endl;
 
     return idx;
   }
@@ -444,7 +444,7 @@ class HeuristicFactory {
     return addComponentList(sptrList, _listId);
   }
 
-  int addComponentList(vector<sptr<Component>>& cList, std::string _listId) {
+  int addComponentList(std::vector<sptr<Component>>& cList, std::string _listId) {
     // type checking for safety!
     string noList = ComponentHelper::typeOfList(_listId);
     string listId = noList;
@@ -471,7 +471,7 @@ class HeuristicFactory {
     return idx;
   }
 
-  int addComponentList(vector<Component*>& cList) {
+  int addComponentList(std::vector<Component*>& cList) {
     if ((cList.size() > 0) && (cList[0] != nullptr)) {
       string listId = cList[0]->id();
       listId += "[]";
@@ -500,7 +500,7 @@ class HeuristicFactory {
 
       for (unsigned int i = 0; i < v.size(); i++)
         if (ComponentHelper::compareBase(pattern, v[i]->id())) {
-          stringstream ss;
+          std::stringstream ss;
           ss << iter->first << " " << i;
           list.push_back(ss.str());
         }
@@ -537,7 +537,7 @@ class HeuristicFactory {
 
       for (unsigned int i = 0; i < vl.size(); i++)
         if (ComponentHelper::compareBase(pattern, iter->first)) {
-          stringstream ss;
+          std::stringstream ss;
           ss << iter->first << " " << i;
           list.push_back(ss.str());
         }
@@ -554,13 +554,13 @@ class HeuristicFactory {
                  \sa listComponents(string)
          */
 
-  vector<pair<string, vector<pair<string, string>>>> listBuilders(
+  std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> listBuilders(
       string pattern) {
-    vector<pair<string, vector<pair<string, string>>>> list;
+    std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> list;
 
     for (unsigned i = 0; i < builders.size(); i++)
       if (ComponentHelper::compareBase(pattern, builders[i]->id()))
-        list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
+        list.push_back(std::make_pair(builders[i]->id(), builders[i]->parameters()));
 
     return list;
   }

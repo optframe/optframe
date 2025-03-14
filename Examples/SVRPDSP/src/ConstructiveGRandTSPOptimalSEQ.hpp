@@ -78,26 +78,26 @@ class ConstructiveGRandTSPOptimalSEQ
 
       // greedy randomized step
 
-      vector<pair<int, double> > cList;
+      std::vector<std::pair<int, double> > cList;
 
       for (int c = 1; c < knp.size(); c++)
         if (knp[c])                               // available candidate
           if ((q + pSVRPDSP.p[c]) <= pSVRPDSP.Q)  // pickup ok
             switch (option) {
               case 0:  // distance
-                cList.push_back(make_pair(c, pSVRPDSP.c(d, c)));
+                cList.push_back(std::make_pair(c, pSVRPDSP.c(d, c)));
                 break;
               case 1:  // -revenue
-                cList.push_back(make_pair(c, -pSVRPDSP.r[c]));
+                cList.push_back(std::make_pair(c, -pSVRPDSP.r[c]));
                 break;
               case 2:  // distance - revenue
-                cList.push_back(make_pair(c, pSVRPDSP.c(d, c) - pSVRPDSP.r[c]));
+                cList.push_back(std::make_pair(c, pSVRPDSP.c(d, c) - pSVRPDSP.r[c]));
                 break;
               case 3:  // pickup (best are smaller)
-                cList.push_back(make_pair(c, pSVRPDSP.p[c]));
+                cList.push_back(std::make_pair(c, pSVRPDSP.p[c]));
                 break;
               case 4:  // -pickup (best are bigger)
-                cList.push_back(make_pair(c, pSVRPDSP.p[c]));
+                cList.push_back(std::make_pair(c, pSVRPDSP.p[c]));
                 break;
               case 5:  // balance dist and pickup | (DIST - REV) / ( (cap - A) -
                        // PICKUP) | best are smaller pickups
@@ -107,11 +107,11 @@ class ConstructiveGRandTSPOptimalSEQ
                 break;
               case 6:  // balance dist and pickup | (DIST - REV) / (PICKUP) |
                        // best are bigger pickups
-                cList.push_back(make_pair(
+                cList.push_back(std::make_pair(
                     c, (pSVRPDSP.c(d, c) - pSVRPDSP.r[c]) / pSVRPDSP.p[c]));
                 break;
               default:
-                cout << "no option " << option << "!" << endl;
+                std::cout << "no option " << option << "!" << std::endl;
                 exit(1);
             }
 
@@ -137,8 +137,8 @@ class ConstructiveGRandTSPOptimalSEQ
     MySolution* s = new MySolution(rep);
 
     if (!s->syncADS(pSVRPDSP)) {
-      cout << "error syncronizing ADS (Const. SEQ)" << endl;
-      cout << "rep: " << rep << endl;
+      std::cout << "error syncronizing ADS (Const. SEQ)" << std::endl;
+      std::cout << "rep: " << rep << std::endl;
       exit(1);
     }
 

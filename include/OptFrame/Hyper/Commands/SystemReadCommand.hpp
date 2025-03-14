@@ -60,12 +60,12 @@ public:
       return ss;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner trim(input);
       if (!trim.hasNext()) // no file
       {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -75,8 +75,8 @@ public:
       try {
          scanner = new Scanner(new File(input));
       } catch (FileNotFound& e) {
-         cout << "File '" << e.getFile() << "' not found!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "File '" << e.getFile() << "' not found!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -94,7 +94,7 @@ public:
       delete scanner;
       scanner = new Scanner(newFile);
 
-      vector<pair<int, string>> commands;
+      std::vector<std::pair<int, string>> commands;
 
       // add all lines
 
@@ -102,10 +102,10 @@ public:
       while (scanner->hasNext()) {
          string line = Scanner::trim(removeComments(scanner->nextLine()));
          numLine++;
-         //cout << "FILE: '" << input << "' line " << numLine << " is '" << line << "'" << endl;
+         //cout << "FILE: '" << input << "' line " << numLine << " is '" << line << "'" << std::endl;
          if (line.length() == 0)
             continue;
-         commands.push_back(make_pair(numLine, line));
+         commands.push_back(std::make_pair(numLine, line));
       }
 
       // merge lines with multiline blocks or lists
@@ -113,7 +113,7 @@ public:
       for (int i = 0; i < (int)(commands.size()); i++)
          if ((commands[i].second.at(0) == '{') || (commands[i].second.at(0) == '[')) {
             if (i == 0) {
-               cout << "read module on file '" << input << "': error! block or list in the first line!" << endl;
+               std::cout << "read module on file '" << input << "': error! block or list in the first line!" << std::endl;
                return false;
             } else {
                commands[i - 1].second.append(" ");
@@ -191,12 +191,12 @@ public:
          }
 
          if ((lists == 0) && (blocks == 0))
-            commands.push_back(make_pair(numLine, line));
+            commands.push_back(std::make_pair(numLine, line));
          else {
             if (lists > 0)
-               cout << "read error on line " << numLine << " of file '" << input << "': wrong number of '[' and ']' => " << lists << " '[' left open!" << endl;
+               std::cout << "read error on line " << numLine << " of file '" << input << "': wrong number of '[' and ']' => " << lists << " '[' left open!" << std::endl;
             if (blocks > 0)
-               cout << "read error on line " << numLine << " of file '" << input << "': wrong number of '{' and '}' => " << blocks << " '{' left open!" << endl;
+               std::cout << "read error on line " << numLine << " of file '" << input << "': wrong number of '{' and '}' => " << blocks << " '{' left open!" << std::endl;
 
             delete scanner;
             return false;
@@ -210,7 +210,7 @@ public:
       char* path = nullptr;
       size_t size = 0;
       path = getcwd(path, size);
-      //cout<<"current Path"<<path << endl;
+      //cout<<"current Path"<<path << std::endl;
 
       // changing current directory
 
@@ -221,16 +221,16 @@ public:
       ptr = realpath(symlinkpath, actualpath);
       string fullpath(ptr);
 
-      //cout << "Target filename is: '" << ptr << "'" << endl;
+      //cout << "Target filename is: '" << ptr << "'" << std::endl;
 
       size_t found;
       found = fullpath.find_last_of("/\\");
       string dir = fullpath.substr(0, found);
-      //cout << " folder: " << fullpath.substr(0,found) << endl;
-      //cout << " file: " << fullpath.substr(found+1) << endl;
+      //cout << " folder: " << fullpath.substr(0,found) << std::endl;
+      //cout << " file: " << fullpath.substr(found+1) << std::endl;
 
       if (chdir(dir.substr(0, found).c_str()) != 0) {
-         cout << "module " << id() << " error: failed to change directory!" << endl;
+         std::cout << "module " << id() << " error: failed to change directory!" << std::endl;
          return false;
       }
 
@@ -247,7 +247,7 @@ public:
 
          if (!s2.hasNext()) // no command found in the line
          {
-            cout << "read module on line " << numLine << " of file '" << input << "': strange error! Empty command with line '" << line << "'" << endl;
+            std::cout << "read module on line " << numLine << " of file '" << input << "': strange error! Empty command with line '" << line << "'" << std::endl;
             return false;
          }
 
@@ -259,20 +259,20 @@ public:
 
          for (unsigned int i = 0; i < all_modules.size(); i++)
             if (all_modules[i]->canHandle(command, original)) {
-               //cout << "READ COMMAND: '" << command << "'" << endl;
+               //cout << "READ COMMAND: '" << command << "'" << std::endl;
 
                string* after_preprocess = all_modules[i]->preprocess(allFunctions, factory, dictionary, ldictionary, original);
 
                if (!after_preprocess) {
-                  cout << "read module on line " << numLine << " of file '" << input << "': preprocessing error!" << endl;
+                  std::cout << "read module on line " << numLine << " of file '" << input << "': preprocessing error!" << std::endl;
                   return false;
                }
 
-               //cout << "READ COMMAND INPUT: '" << after_preprocess << "'" << endl;
+               //cout << "READ COMMAND INPUT: '" << after_preprocess << "'" << std::endl;
 
                if (!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, *after_preprocess, command)) {
                   delete after_preprocess;
-                  cout << "read module on line " << numLine << " of file '" << input << "': error in module '" << command << "'" << endl;
+                  std::cout << "read module on line " << numLine << " of file '" << input << "': error in module '" << command << "'" << std::endl;
                   return false;
                }
 
@@ -287,7 +287,7 @@ public:
             if (command == "exit")
                break;
             else {
-               cout << "read module error on line " << numLine << " of file '" << input << "': command '" << command << "' not found!" << endl;
+               std::cout << "read module error on line " << numLine << " of file '" << input << "': command '" << command << "' not found!" << std::endl;
                return false;
             }
          }
@@ -300,7 +300,7 @@ public:
       // ===============================
 
       if (chdir(path) != 0) {
-         cout << "module " << id() << " error: failed to go back to old directory!" << endl;
+         std::cout << "module " << id() << " error: failed to go back to old directory!" << std::endl;
          return false;
       }
 
@@ -309,7 +309,7 @@ public:
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

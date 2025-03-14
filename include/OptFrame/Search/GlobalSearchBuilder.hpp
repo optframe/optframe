@@ -32,8 +32,8 @@ class GlobalSearchBuilder : public ComponentBuilder<XES> {
 
   std::string toString() const override { return id(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "GlobalSearch:";
     return ss.str();
   }

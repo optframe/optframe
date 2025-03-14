@@ -147,10 +147,10 @@ class BasicPareto {
   void clear() { paretoSetFront.clear(); }
 
   void print() {
-    cout << "Printing BasicPareto!" << endl;
-    cout << "paretoSetFront.size():" << paretoSetFront.size() << endl;
+    std::cout << "Printing BasicPareto!" << std::endl;
+    std::cout << "paretoSetFront.size():" << paretoSetFront.size() << std::endl;
     for (unsigned i = 0; i < paretoSetFront.size(); i++) {
-      cout << paretoSetFront[i]->first << endl;
+      std::cout << paretoSetFront[i]->first << std::endl;
       paretoSetFront[i]->second.print();
     }
   }

@@ -102,8 +102,8 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":MultiStart";
     return ss.str();
   }
@@ -191,8 +191,8 @@ class MultiStartBuilder : public GlobalSearchBuilder<XES> {
     return new MultiStart<XES>(ge, constructive, localSearch, iterMax);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
@@ -200,7 +200,7 @@ class MultiStartBuilder : public GlobalSearchBuilder<XES> {
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search heuristic"));
 
-    params.push_back(make_pair("OptFrame:int", "number of iterations"));
+    params.push_back(std::make_pair("OptFrame:int", "number of iterations"));
 
     return params;
   }
@@ -209,8 +209,8 @@ class MultiStartBuilder : public GlobalSearchBuilder<XES> {
     return component == MultiStart<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << GlobalSearchBuilder<XES>::idComponent() << "MultiStart";
     return ss.str();
   }

@@ -44,9 +44,9 @@ class MoveNEIGHVAlpha : public Move<ESolutionHFM> {
   }
 
   void print() const override {
-    cout << "MoveNEIGHVAlpha( vector: " << applyValue << " : ";
-    cout << " index " << index << " <=>  sign " << sign << " )";
-    cout << endl;
+    std::cout << "MoveNEIGHVAlpha( vector: " << applyValue << " : ";
+    std::cout << " index " << index << " <=>  sign " << sign << " )";
+    std::cout << std::endl;
   }
 };
 
@@ -117,8 +117,8 @@ class NSIteratorNEIGHVAlpha : public NSIterator<ESolutionHFM> {
 
   virtual uptr<Move<ESolutionHFM>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSIteratorNEIGHVAlpha. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSIteratorNEIGHVAlpha. Aborting." << std::endl;
       exit(1);
     }
 
@@ -174,7 +174,7 @@ class NSSeqNEIGHVAlpha : public NSSeq<ESolutionHFM> {
   }
 
   virtual string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqHFMChangeFuzzyAproxVAlpha with move: ";
     return ss.str();
   }

@@ -57,7 +57,7 @@ class ConstructiveRandom : public Constructive<SolutionOptHS> {
 
     for (unsigned i = 0; i < p.members.size() - 1; i++)
       for (unsigned j = i + 1; j < p.members.size(); j++)
-        newRep.push_back(make_pair(p.members[i], p.members[j]));
+        newRep.push_back(std::make_pair(p.members[i], p.members[j]));
 
     rg.shuffle(newRep);  // shuffle elements of newRep
 

@@ -65,9 +65,9 @@ public:
 			return "false";
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
-		//cout << "compare: '" << body << "'" << endl;
+		//cout << "compare: '" << body << "'" << std::endl;
 		Scanner scanner(body);
 		scanner.useSeparators("=+><!");
 
@@ -75,20 +75,20 @@ public:
 			return nullptr;
 
 		string sa     = Scanner::trim(scanner.next());
-		//cout << "SA: " << sa << endl;
+		//cout << "SA: " << sa << std::endl;
 
 		scanner.useDefaultSeparators();
 		if(!scanner.hasNext())
 			return nullptr;
 
 		string signal = scanner.next();
-		//cout << "OP: " << signal << endl;
+		//cout << "OP: " << signal << std::endl;
 
 		if(!scanner.hasNext())
 			return nullptr;
 
 		string sb     = Scanner::trim(scanner.rest());
-		//cout << "SB: " << sb << endl;
+		//cout << "SB: " << sb << std::endl;
 
 		if((signal == "==") || (signal == "!=")) // compare as string
 		{
@@ -98,7 +98,7 @@ public:
 				return new string(formatBool(sa != sb));
 		}
 
-		cout << "scompare function: no such comparison '" << sa << "' '" << signal << "' '" << sb << "'" << endl;
+		cout << "scompare function: no such comparison '" << sa << "' '" << signal << "' '" << sb << "'" << std::endl;
 
 		return nullptr;
 	}

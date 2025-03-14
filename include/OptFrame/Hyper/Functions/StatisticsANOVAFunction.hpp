@@ -64,7 +64,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -98,7 +98,7 @@ public:
 			list2.push_back(list1);
 		}
 
-		//cout << list2 << endl;
+		//cout << list2 << std::endl;
 
 		stringstream scommand;
 		scommand << "echo \"";
@@ -120,7 +120,7 @@ public:
 
 		ssx << ")";
 
-		//cout << "SSX: " << ssx.str() << endl;
+		//cout << "SSX: " << ssx.str() << std::endl;
 
 		stringstream ssf;
 		ssf << "fv <- factor(c(";
@@ -135,18 +135,18 @@ public:
 
 		ssf << "))";
 
-		//cout << "SSF: " << ssf.str() << endl;
+		//cout << "SSF: " << ssf.str() << std::endl;
 
 		scommand << ssx.str() << '\n' << ssf.str() << '\n';
 
 		scommand << "summary(aov(xv ~ fv))\" | R --no-save | grep fv";
 
-		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
+		//cout << "COMMAND: '" << scommand.str() << "'" << std::endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == nullptr)
 		{
-		    cout << "anova function: PIPE NOT OPEN!" << endl;
+		    std::cout << "anova function: PIPE NOT OPEN!" << std::endl;
 		    return nullptr;
 		}
 
@@ -162,7 +162,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "anova function: OUTPUT '" << output << "'" << endl;
+		//cout << "anova function: OUTPUT '" << output << "'" << std::endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return nullptr;
 
@@ -183,7 +183,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "anova function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "anova function warning: returning 'NA' result! p-value = 1.0" << std::endl;
 			pvalue = 1;
 		}
 		else

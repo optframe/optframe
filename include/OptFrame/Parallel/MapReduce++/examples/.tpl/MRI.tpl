@@ -57,7 +57,7 @@ public:
 
 int main()
 {
-	cout << "$MRI test" << endl;
+	cout << "$MRI test" << std::endl;
 
 	multimap<$keyA,$A> input;
 

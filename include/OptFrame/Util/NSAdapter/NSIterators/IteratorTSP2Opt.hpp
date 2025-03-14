@@ -91,8 +91,8 @@ class NSIteratorTSP2Opt : public NSIterator<XES> {
 
   virtual uptr<Move<XES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqRouteShift. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqRouteShift. Aborting." << std::endl;
       exit(1);
     }
 

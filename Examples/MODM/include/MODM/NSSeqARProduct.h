@@ -94,7 +94,7 @@ class MoveARProduct : public Move<ESolutionMODM> {
       // =======================================
       // Add clients to the new product yNew
 
-      vector<pair<double, int>> NPP;
+      std::vector<std::pair<double, int>> NPP;
       for (int c = 0; c < nClients; c++) {
         if (ads.clientOffers[c] < dmproblem->getClientMaxOffers(c)) {
           int r = dmproblem->getRevenue(c, yNew);
@@ -102,7 +102,7 @@ class MoveARProduct : public Move<ESolutionMODM> {
 
           double valueNPP = (r - cost) / cost;
 
-          NPP.push_back(make_pair(valueNPP, c));
+          NPP.push_back(std::make_pair(valueNPP, c));
         }
       }
 
@@ -115,9 +115,9 @@ class MoveARProduct : public Move<ESolutionMODM> {
       ads.totalRevenue[yNew] = 0;
       ads.productOffers[yNew] = 0;
       if (minSize >= oMin) {
-        //				cout << ads.totalCost[yNew] << endl;
-        //				cout << ads.totalRevenue[yNew] << endl;
-        //				cout << ads.productOffers[yNew] << endl;
+        //				cout << ads.totalCost[yNew] << std::endl;
+        //				cout << ads.totalRevenue[yNew] << std::endl;
+        //				cout << ads.productOffers[yNew] << std::endl;
 
         double yNewTCost = 0;
         double yNewTRevenue = 0;
@@ -142,10 +142,10 @@ class MoveARProduct : public Move<ESolutionMODM> {
         ads.totalCost[yNew] = yNewTCost;
         ads.totalRevenue[yNew] = yNewTRevenue;
         ads.productOffers[yNew] = yNewPOffers;
-        //				cout << "after:" << endl;
-        //				cout << ads.totalCost[yNew] << endl;
-        //				cout << ads.totalRevenue[yNew] << endl;
-        //				cout << ads.productOffers[yNew] << endl;
+        //				cout << "after:" << std::endl;
+        //				cout << ads.totalCost[yNew] << std::endl;
+        //				cout << ads.totalRevenue[yNew] << std::endl;
+        //				cout << ads.productOffers[yNew] << std::endl;
         //				getchar();
       }
       // =======================================
@@ -195,13 +195,13 @@ class MoveARProduct : public Move<ESolutionMODM> {
   }
 
   void print() const override {
-    cout << "MoveARProduct( ";
-    cout << yRemove << "," << yNew << "," << oldC << "," << tCost << ","
+    std::cout << "MoveARProduct( ";
+    std::cout << yRemove << "," << yNew << "," << oldC << "," << tCost << ","
          << tRevenue << "," << productOffers << "," << reverse << " )";
-    cout << endl;
+    std::cout << std::endl;
   }
 
-  void toString() { cout << "MoveARProduct" << endl; }
+  void toString() { std::cout << "MoveARProduct" << std::endl; }
 };
 
 class NSIteratorARProduct : public NSIterator<ESolutionMODM> {
@@ -240,8 +240,8 @@ class NSIteratorARProduct : public NSIterator<ESolutionMODM> {
 
   uptr<Move<ESolutionMODM>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqARProduct. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqARProduct. Aborting." << std::endl;
       exit(1);
     }
     vector<int> vazio;
@@ -291,13 +291,13 @@ class NSSeqARProduct : public NSSeq<ESolutionMODM> {
         alpha));  // return an iterator to the neighbors of 'rep'
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NS<ESolutionMODM>::idComponent() << ":NSSeqARProduct";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 }  // namespace MODM
 

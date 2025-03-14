@@ -51,17 +51,17 @@ class ParetoDominanceStrict : public ParetoDominance<XES, XMES> {
   using ParetoDominance<XES, XMES>::dominates;
   using ParetoDominance<XES, XMES>::birelation;
 
-  ParetoDominanceStrict(vector<Evaluator<S, XEv, XES>*> _v_e)
+  ParetoDominanceStrict(std::vector<Evaluator<S, XEv, XES>*> _v_e)
       : ParetoDominance<XES, XMES>(_v_e) {}
 
-  ParetoDominanceStrict(vector<Direction<>*> _v_d)
+  ParetoDominanceStrict(std::vector<Direction<>*> _v_d)
       : ParetoDominance<XES, XMES>(_v_d) {}
 
   ParetoDominanceStrict() {}
 
   virtual ~ParetoDominanceStrict() {}
 
-  void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e) {
+  void insertEvaluators(std::vector<Evaluator<XES, XEv>*> _v_e) {
     ParetoDominance<XES, XMES>::v_e = _v_e;
   }
 
@@ -70,7 +70,7 @@ class ParetoDominanceStrict : public ParetoDominance<XES, XMES> {
     vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<XES, XMES>::v_e;
 
     if (!((v_e.size() == v1.size()) && (v1.size() == v2.size()))) {
-      cout << "WARNING in ParetoDominanceStrict: different sizes." << endl;
+      std::cout << "WARNING in ParetoDominanceStrict: different sizes." << std::endl;
       return false;
     }
 

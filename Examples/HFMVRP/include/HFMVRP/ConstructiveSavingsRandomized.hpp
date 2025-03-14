@@ -38,7 +38,7 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
   // Your private vars
 
   // heurística construtiva Savings de Clarke and Wright
-  vector<vector<int> >* savings(vector<int>& LC, Matrix<double>* dist,
+  vector<vector<int> >* savings(std::vector<int>& LC, Matrix<double>* dist,
                                 vector<int>* loads, double capVehicle) {
     /*
      tabela auxiliar, mantem os seguintes dados:
@@ -52,7 +52,7 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
 
     // ls:  vetor(valor da economia, [i,j] ) -> valor da economia ao ligar i com
     // j
-    vector<pair<double, pair<int, int> > > ls;
+    std::vector<std::pair<double, pair<int, int> > > ls;
 
     // mapeamento que identifica em qual rota está cada cliente
     map<int, int> rotaCliente;
@@ -253,7 +253,7 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
     return (a.first < b.first);
   }
 
-  vector<int>& CriaLC(vector<vector<int> >& rep, vector<bool> allocated,
+  vector<int>& CriaLC(std::vector<vector<int> >& rep, vector<bool> allocated,
                       int vType) {
     vector<int>* LC = new vector<int>;
     // int qAtualPP = 0; // capacidade atual do periodo, iniciado com 0
@@ -274,13 +274,13 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
     return *LC;
   }
 
-  void chooseRoutes(vector<vector<int> >& newRep,
+  void chooseRoutes(std::vector<vector<int> >& newRep,
                     vector<vector<int> >& parcialRep, vector<bool>& allocated,
                     int vType, double alpha) {
     int nVehicles = pHFMVRP.getVehicleNumber(vType);
     int nRoutes = parcialRep.size();
-    // cout << "number of vehicles of type " << vType << " = " << nVehicles <<
-    // endl;
+    // std::cout << "number of vehicles of type " << vType << " = " << nVehicles <<
+    // std::endl;
 
     // Ordena as melhores rotas
 
@@ -297,14 +297,14 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
       }
     }
 
-    vector<pair<int, double> > rankGreedyCAP;
+    std::vector<std::pair<int, double> > rankGreedyCAP;
     for (int i = 0; i < (int)routeGreedyCAP.size(); i++)
-      rankGreedyCAP.push_back(make_pair(i, routeGreedyCAP[i]));
+      rankGreedyCAP.push_back(std::make_pair(i, routeGreedyCAP[i]));
 
     sort(rankGreedyCAP.begin(), rankGreedyCAP.end(), compare);
 
-    // cout << "Melhores rotas" << endl;
-    // cout << rankGreedyCAP << endl;
+    // std::cout << "Melhores rotas" << std::endl;
+    // std::cout << rankGreedyCAP << std::endl;
     // getchar();
 
     // Seleciona e transfere as melhores rotas para o vetor newRep
@@ -327,12 +327,12 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
     }
   }
 
-  void chooseRoutesMultiTrip(vector<vector<int> >& newRep,
+  void chooseRoutesMultiTrip(std::vector<vector<int> >& newRep,
                              vector<vector<int> >& parcialRep,
                              vector<bool>& allocated, int vType) {
     // Ordena as melhores rotas
     int nRoutes = parcialRep.size();
-    // cout << "Number of Multi-Trips Routes = " << nRoutes << endl;
+    // std::cout << "Number of Multi-Trips Routes = " << nRoutes << std::endl;
     // getchar();
     // Seleciona e transfere as melhores rotas para o vetor newRep
     for (int nv = 0; nv < nRoutes; nv++) {
@@ -360,10 +360,10 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
         if (pHFMVRP.getComp(v, s)) sumComp[s]++;
 
     /*
-     cout << sumComp << endl;
+     std::cout << sumComp << std::endl;
      for (int s = 0; s < pHFMVRP.nodes; s++)
      if (sumComp[s] == 2)
-     cout << s << endl;
+     std::cout << s << std::endl;
      */
   }
 
@@ -378,7 +378,7 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
                                                    double timelimit) override {
     if (alpha == 0) alpha = 0.00001;
 
-    cout << "ConstructiveSavingsRandomized..." << endl;
+    std::cout << "ConstructiveSavingsRandomized..." << std::endl;
     vector<vector<int> > newRep;
 
     // TODO resize for multi-trip case
@@ -388,14 +388,14 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
     int nTentativas = 0;
 
     while (!feasibleSol) {
-      cout << "Iteration = " << nTentativas << endl;
+      std::cout << "Iteration = " << nTentativas << std::endl;
       // getchar();
       vector<vector<int> > parcialRep;  // Keep the parcial solution
       vector<bool> allocated(
           pHFMVRP.nodes);  // mark the clients that has already been assigned
 
       for (int r = 0; r < pHFMVRP.nVehicles; r++)
-        parcialRep.push_back(vector<int>());
+        parcialRep.push_back(std::vector<int>());
 
       // gerando vetor de demandas dos clientes
       vector<int> demands;
@@ -416,25 +416,25 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
         v = types;
 
         int vehiclesCap = pHFMVRP.getVehicleTypeCap(v);
-        // cout << "Generating solution for vehicle type = " << v << "\t
-        // vehiclesCap = " << vehiclesCap << endl;
+        // std::cout << "Generating solution for vehicle type = " << v << "\t
+        // vehiclesCap = " << vehiclesCap << std::endl;
         vector<vector<int> >* vTypeRep;
         vTypeRep = savings(CriaLC(parcialRep, allocated, v), pHFMVRP.dist,
                            &demands, vehiclesCap);
-        // cout << "Parcial Solution for class of vehicles v = " << v << endl;
-        // cout << *vTypeRep << endl;
+        // std::cout << "Parcial Solution for class of vehicles v = " << v << std::endl;
+        // std::cout << *vTypeRep << std::endl;
         // getchar();
         chooseRoutes(parcialRep, *vTypeRep, allocated, v, alpha);
 
-        // cout << "REP" << endl;
-        // cout << parcialRep << endl;
-        // cout << "Allocated" << endl;
-        // cout << allocated << endl << endl;
+        // std::cout << "REP" << std::endl;
+        // std::cout << parcialRep << std::endl;
+        // std::cout << "Allocated" << std::endl;
+        // std::cout << allocated << std::endl << std::endl;
         // getchar();
       }
 
-      // cout << "PARCIAL SOLUTION:" << endl;
-      // cout << parcialRep << endl;
+      // std::cout << "PARCIAL SOLUTION:" << std::endl;
+      // std::cout << parcialRep << std::endl;
 
       // =============================================
       // ============Multi-Trip Allocation============
@@ -445,23 +445,23 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
       for (int i = 0; i < (int)allocated.size(); i++)
         if (allocated[i] == false) {
           nonAllocated++;
-          // cout << "cliente " << i << " demand = " << pHFMVRP.demands[i] <<
-          // endl;
+          // std::cout << "cliente " << i << " demand = " << pHFMVRP.demands[i] <<
+          // std::endl;
         }
-      cout << "Stores not allocated: " << nonAllocated << endl;
+      std::cout << "Stores not allocated: " << nonAllocated << std::endl;
       // getchar();
 
       if (nonAllocated != 0) {
-        // cout << "Multi-Trip Allocation" << endl;
+        // std::cout << "Multi-Trip Allocation" << std::endl;
         int r =
             2;  // Vehicle type 2 is allowed to do multi-trips (ONLY THIS ONE)
-        // cout << "Generating multi-trip solution for vehicle type = " << r <<
-        // endl;
+        // std::cout << "Generating multi-trip solution for vehicle type = " << r <<
+        // std::endl;
         vector<vector<int> >* vMultiTripRep;
         vMultiTripRep = savings(CriaLC(parcialRep, allocated, r), pHFMVRP.dist,
                                 &demands, pHFMVRP.getVehicleTypeCap(r));
-        // cout << "Parcial MultiTrip Solution for this class of vehicles" <<
-        // endl; cout << *vMultiTripRep << endl;
+        // std::cout << "Parcial MultiTrip Solution for this class of vehicles" <<
+        // std::endl; std::cout << *vMultiTripRep << std::endl;
 
         chooseRoutesMultiTrip(parcialRep, *vMultiTripRep, allocated, r);
       }
@@ -471,14 +471,14 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
       for (int i = 0; i < (int)allocated.size(); i++)
         if (allocated[i] == false) {
           nonAllocated++;
-          cout << "BUG (EXIT-SOL) - Cliente " << i
+          std::cout << "BUG (EXIT-SOL) - Cliente " << i
                << "\tID = " << pHFMVRP.getStoreID(i)
-               << "\tdemand = " << pHFMVRP.demands[i] << endl;
-          cout << "pHFMVRP.getDist(" << i << ",0) = " << pHFMVRP.getDist(i, 0)
-               << endl;
+               << "\tdemand = " << pHFMVRP.demands[i] << std::endl;
+          std::cout << "pHFMVRP.getDist(" << i << ",0) = " << pHFMVRP.getDist(i, 0)
+               << std::endl;
         }
-      cout << "Stores not allocated after Multi trips: " << nonAllocated << endl
-           << endl;
+      std::cout << "Stores not allocated after Multi trips: " << nonAllocated << std::endl
+           << std::endl;
 
       if (nonAllocated == 0) {
         feasibleSol = true;
@@ -500,22 +500,22 @@ class ConstructiveSavingsRandomized : public GRConstructive<SolutionHFMVRP> {
         newAds);  // general initialization according to your neighborhoods
 
     /*
-     cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << endl;
-     cout << "newAds.maxDemand" << newAds.maxDemand << endl;
-     cout << "newAds.minDemand" << newAds.minDemand << endl;
-     cout << "newAds.maxPairDemand" << newAds.maxPairDemand << endl;
-     cout << "newAds.minPairDemand" << newAds.minPairDemand << endl;
-     cout << "newAds.sumDemand" << newAds.sumDemand << endl;
+     std::cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << std::endl;
+     std::cout << "newAds.maxDemand" << newAds.maxDemand << std::endl;
+     std::cout << "newAds.minDemand" << newAds.minDemand << std::endl;
+     std::cout << "newAds.maxPairDemand" << newAds.maxPairDemand << std::endl;
+     std::cout << "newAds.minPairDemand" << newAds.minPairDemand << std::endl;
+     std::cout << "newAds.sumDemand" << newAds.sumDemand << std::endl;
      getchar();
 
-     cout << "FINAL SOLUTION" << endl;
-     cout << newRep << endl;
-     cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << endl;
-     cout << "newAds.maxDemand" << newAds.maxDemand << endl;
-     cout << "newAds.minDemand" << newAds.minDemand << endl;
-     cout << "newAds.maxPairDemand" << newAds.maxPairDemand << endl;
-     cout << "newAds.minPairDemand" << newAds.minPairDemand << endl;
-     cout << "newAds.sumDemand" << newAds.sumDemand << endl;
+     std::cout << "FINAL SOLUTION" << std::endl;
+     std::cout << newRep << std::endl;
+     std::cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << std::endl;
+     std::cout << "newAds.maxDemand" << newAds.maxDemand << std::endl;
+     std::cout << "newAds.minDemand" << newAds.minDemand << std::endl;
+     std::cout << "newAds.maxPairDemand" << newAds.maxPairDemand << std::endl;
+     std::cout << "newAds.minPairDemand" << newAds.minPairDemand << std::endl;
+     std::cout << "newAds.sumDemand" << newAds.sumDemand << std::endl;
      */
     return make_optional(SolutionHFMVRP(newRep, newAds));
   }

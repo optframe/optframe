@@ -79,7 +79,7 @@ class DeltaMoveRotate : public MoveRotate {
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = MoveRotate::idComponent();
     idComp.append(":DeltaMoveRotate");
     return idComp;
@@ -91,9 +91,9 @@ class DeltaMoveRotate : public MoveRotate {
   }
 
   void print() const override {
-    cout << "DeltaMoveRotate( ";
-    cout << nRot << " rotations on (" << x << "," << y << ")" << endl;
-    cout << endl;
+    std::cout << "DeltaMoveRotate( ";
+    std::cout << nRot << " rotations on (" << x << "," << y << ")" << std::endl;
+    std::cout << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:DeltaMoveRotate"; }

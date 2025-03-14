@@ -237,7 +237,7 @@ int main() {
   // ----------------------------
 
   // list builders
-  vector<pair<string, std::vector<std::pair<std::string, std::string>>>> lbs =
+  std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> lbs =
       listBuilders("OptFrame:");
   std::cout << "# builders: " << lbs.size() << std::endl;
   for (unsigned i = 0; i < lbs.size(); i++) {

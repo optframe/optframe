@@ -144,7 +144,7 @@ class Pareto {
 
   //	void push_back(S* s, vector<Evaluation<>*>& v_e)
   //	{
-  //		cout << "something is called inside strange push_back" << endl;
+  //		cout << "something is called inside strange push_back" << std::endl;
   //		getchar();
   //		paretoSet.push_back(&s->clone()); // clone, otherwise it is
   // deleted 		paretoFront.push_back(new MultiEvaluation(v_e));
@@ -223,12 +223,12 @@ class Pareto {
                 return paretoFront;
         }
 
-        void setParetoSet(vector<S*> pSNew)
+        void setParetoSet(std::vector<S*> pSNew)
         {
                 paretoSet = std::move(pSNew);
         }
 
-        void setParetoFront(vector<XMEv*> pFNew)
+        void setParetoFront(std::vector<XMEv*> pFNew)
         {
                 paretoFront = std::move(pFNew);
 
@@ -287,13 +287,13 @@ class Pareto {
   }
 
   void print() {
-    cout << "Printing Pareto!" << endl;
-    // cout << "paretoSet.size():" << paretoSet.size() << endl;
-    // cout << "paretoFront.size():" << paretoFront.size() << endl;
-    cout << "paretoSetFront.size():" << paretoSetFront.size() << endl;
+    std::cout << "Printing Pareto!" << std::endl;
+    // std::cout << "paretoSet.size():" << paretoSet.size() << std::endl;
+    // std::cout << "paretoFront.size():" << paretoFront.size() << std::endl;
+    std::cout << "paretoSetFront.size():" << paretoSetFront.size() << std::endl;
     for (unsigned i = 0; i < paretoSetFront.size(); i++) {
-      // cout << paretoSet[i]->getR() << endl;
-      cout << paretoSetFront[i]->first << endl;
+      // std::cout << paretoSet[i]->getR() << std::endl;
+      std::cout << paretoSetFront[i]->first << std::endl;
       // paretoFront[i]->print();
       paretoSetFront[i]->second.print();
     }
@@ -352,7 +352,7 @@ class Pareto {
   // vector<double>, vector<Evaluation<>*>, MultiEvaluation<>*)
 
   //	template<class T>
-  //	static bool addSolution(vector<Direction*>& vDir, vector<T*>& nonDom, T*
+  //	static bool addSolution(std::vector<Direction*>& vDir, vector<T*>& nonDom, T*
   // candidate)
   //	{
   //		ParetoDominance<XES, XMES> dom(vDir);
@@ -598,7 +598,7 @@ class Pareto {
   //	}
   //
   //	static void addSolution(ParetoDominance<XES, XMES>& dom,
-  // ParetoDominanceWeak<XES, XMES>& domWeak, vector<pair<S*,
+  // ParetoDominanceWeak<XES, XMES>& domWeak, std::vector<std::pair<S*,
   // MultiEvaluation<>*> >& nonDom, pair<S*, MultiEvaluation<>*> candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)

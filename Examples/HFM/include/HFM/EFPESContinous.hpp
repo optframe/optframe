@@ -161,9 +161,9 @@ public:
 		int sizeMP = s->getR().averageFuzzyRS.size();
 		int sizeDP = s->getR().derivativeFuzzyRS.size();
 		/*
-		 cout << sizeSP << endl;
-		 cout << sizeMP << endl;
-		 cout << sizeDP << endl;
+		 std::cout << sizeSP << std::endl;
+		 std::cout << sizeMP << std::endl;
+		 std::cout << sizeDP << std::endl;
 		 s->print();
 		 getchar();*/
 

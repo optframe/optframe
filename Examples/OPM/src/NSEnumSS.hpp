@@ -77,7 +77,7 @@ class MoveSS : public Move<RepOPM> {
   }
 
   void print() const override {
-    cout << "MoveSS(" << f1 << "," << f2 << ")" << endl;
+    std::cout << "MoveSS(" << f1 << "," << f2 << ")" << std::endl;
   }
 };
 
@@ -95,7 +95,7 @@ class NSEnumSS : public NSEnum<RepOPM> {
     if (m > size()) {
       cerr << "Neighborhood SS Error! Move " << m
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
     }
 
@@ -119,7 +119,7 @@ class NSEnumSS : public NSEnum<RepOPM> {
     } /**/
 
     cerr << "Erro: estouro da vizinhanca SS. Nao existe o movimento " << m
-         << ". Intervalo de 0.." << (size() - 1) << "." << endl;
+         << ". Intervalo de 0.." << (size() - 1) << "." << std::endl;
     exit(1);
   }
 
@@ -127,7 +127,7 @@ class NSEnumSS : public NSEnum<RepOPM> {
     return opm.getNumFrentes() * (opm.getNumFrentes() - 1) / 2;
   }
 
-  void print() { cout << "NSEnum SS (" << size() << ")" << endl; }
+  void print() { std::cout << "NSEnum SS (" << size() << ")" << std::endl; }
 };
 }  // namespace POLAD
 

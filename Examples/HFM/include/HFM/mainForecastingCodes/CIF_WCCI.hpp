@@ -17,20 +17,20 @@ using namespace optframe;
 using namespace HFM;
 
 int CIFWCCICalibration(int argc, char** argv) {
-  cout << "Welcome to WCCI calibration for the competition!" << endl;
+  std::cout << "Welcome to WCCI calibration for the competition!" << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 5) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nomeOutput targetTS "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nomeOutput targetTS "
             "construtiveNRulesACF timeES"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -41,17 +41,17 @@ int CIFWCCICalibration(int argc, char** argv) {
 
   string nomeOutput = caminhoOutput;
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-  cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
-  cout << "argvTimeES=" << argvTimeES << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << std::endl;
+  std::cout << "argvMaxLagRate=" << argvMaxLagRate << std::endl;
+  std::cout << "argvTimeES=" << argvTimeES << std::endl;
 
   File fileWCCIInstances{"./MyProjects/HFM/Instance/WCCI/CIFInstances"};
 
   if (!fileWCCIInstances.isOpen()) {
-    cout << "File '" << "./MyProjects/HFM/Instance/WCCI/CIFInstances"
-         << "' not found" << endl;
+    std::cout << "File '" << "./MyProjects/HFM/Instance/WCCI/CIFInstances"
+         << "' not found" << std::endl;
     exit(1);
   }
 
@@ -63,14 +63,14 @@ int CIFWCCICalibration(int argc, char** argv) {
   scannerWCCI = new Scanner(testProblemWCCI);
 
   // TODO: must ignore next line?
-  cout << *scannerWCCI->nextInt() << endl;
+  std::cout << *scannerWCCI->nextInt() << std::endl;
   int WCCIStepsAhead = *scannerWCCI->nextInt();
-  cout << "Required steps ahead:" << WCCIStepsAhead << endl;
+  std::cout << "Required steps ahead:" << WCCIStepsAhead << std::endl;
 
   vector<double> forecastsTSWCCI;
   while (scannerWCCI->hasNext())
     forecastsTSWCCI.push_back(*scannerWCCI->nextDouble());
-  cout << forecastsTSWCCI << endl;
+  std::cout << forecastsTSWCCI << std::endl;
 
   vector<vector<double>> forecastingWCCIExogenousVariables;
   forecastingWCCIExogenousVariables.push_back(forecastsTSWCCI);
@@ -145,7 +145,7 @@ int CIFWCCICalibration(int argc, char** argv) {
     int nTotalForecastingsTrainningSet = rF.getForecastsSize(0) - stepsAhead;
 
     //========SET PROBLEM MAXIMUM LAG ===============
-    cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+    std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
     int iterationMaxLag =
         ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) /
@@ -172,17 +172,17 @@ int CIFWCCICalibration(int argc, char** argv) {
     // int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds *
     // stepsAhead;
 
-    cout << std::setprecision(9);
-    cout << std::fixed;
+    std::cout << std::setprecision(9);
+    std::cout << std::fixed;
     double NTRaprox =
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
-    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-    cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
-    cout << "#~NTR: " << NTRaprox << endl;
-    cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-    cout << "#maxNotUsed: " << maxLag << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+    std::cout << "#nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#~NTR: " << NTRaprox << std::endl;
+    std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
+    std::cout << "#maxNotUsed: " << maxLag << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
@@ -213,7 +213,7 @@ int CIFWCCICalibration(int argc, char** argv) {
     vfoIndicatorCalibration.push_back(foIndicators);
   }
 
-  cout << setprecision(3);
+  std::cout << setprecision(3);
 
   //	double averageError = 0;
   //	for (int t = 0; t < (vfoIndicatorCalibration[0].size() - 1); t++)
@@ -226,9 +226,9 @@ int CIFWCCICalibration(int argc, char** argv) {
   // =================== PRINTING RESULTS ========================
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 
@@ -249,22 +249,22 @@ int CIFWCCICalibration(int argc, char** argv) {
 }
 
 int CIFWCCIGeneratingForecasts(int argc, char** argv) {
-  cout << "Welcome to WCCI forecasting competition! With this code we "
+  std::cout << "Welcome to WCCI forecasting competition! With this code we "
           "generated the forecasts."
-       << endl;
+       << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 5) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nomeOutput targetTS "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nomeOutput targetTS "
             "construtiveNRulesACF timeES"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -273,25 +273,25 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
   int argvMaxLagRate = atoi(argv[3]);
   int argvTimeES = atoi(argv[4]);
 
-  cout << "================================" << endl;
-  cout << "forcing MaxLagRate to 40% and timeTraining to 20s" << endl;
+  std::cout << "================================" << std::endl;
+  std::cout << "forcing MaxLagRate to 40% and timeTraining to 20s" << std::endl;
   argvMaxLagRate = 40;
   argvTimeES = 20;
-  cout << "================================" << endl;
+  std::cout << "================================" << std::endl;
 
   string nomeOutput = caminhoOutput;
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-  cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
-  cout << "argvTimeES=" << argvTimeES << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << std::endl;
+  std::cout << "argvMaxLagRate=" << argvMaxLagRate << std::endl;
+  std::cout << "argvTimeES=" << argvTimeES << std::endl;
 
   File fileWCCIInstances{"./MyProjects/HFM/Instance/WCCI/CIFInstances"};
 
   if (!fileWCCIInstances.isOpen()) {
-    cout << "File '" << "./MyProjects/HFM/Instance/WCCI/CIFInstances"
-         << "' not found" << endl;
+    std::cout << "File '" << "./MyProjects/HFM/Instance/WCCI/CIFInstances"
+         << "' not found" << std::endl;
     exit(1);
   }
 
@@ -303,14 +303,14 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
   scannerWCCI = new Scanner(testProblemWCCI);
 
   // TODO: should ignore next line?
-  cout << *scannerWCCI->nextInt() << endl;
+  std::cout << *scannerWCCI->nextInt() << std::endl;
   int WCCIStepsAhead = *scannerWCCI->nextInt();
-  cout << "Required steps ahead:" << WCCIStepsAhead << endl;
+  std::cout << "Required steps ahead:" << WCCIStepsAhead << std::endl;
 
   vector<double> forecastsTSWCCI;
   while (scannerWCCI->hasNext())
     forecastsTSWCCI.push_back(*scannerWCCI->nextDouble());
-  cout << forecastsTSWCCI << endl;
+  std::cout << forecastsTSWCCI << std::endl;
 
   vector<vector<double>> forecastingWCCIExogenousVariables;
   forecastingWCCIExogenousVariables.push_back(forecastsTSWCCI);
@@ -385,7 +385,7 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
     int nTotalForecastingsTrainningSet = rF.getForecastsSize(0);
 
     //========SET PROBLEM MAXIMUM LAG ===============
-    cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+    std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
     int iterationMaxLag =
         ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) /
@@ -412,17 +412,17 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
     // int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds *
     // stepsAhead;
 
-    cout << std::setprecision(9);
-    cout << std::fixed;
+    std::cout << std::setprecision(9);
+    std::cout << std::fixed;
     double NTRaprox =
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
-    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-    cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
-    cout << "#~NTR: " << NTRaprox << endl;
-    cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-    cout << "#maxNotUsed: " << maxLag << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+    std::cout << "#nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#~NTR: " << NTRaprox << std::endl;
+    std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
+    std::cout << "#maxNotUsed: " << maxLag << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     trainningSet.push_back(
@@ -442,7 +442,7 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
     vector<double>* blindForecasts =
         forecastObject.returnBlind(sol->first.getR(), dataForBlindForecasts);
 
-    cout << blindForecasts << endl;
+    std::cout << blindForecasts << std::endl;
 
     string resultsWCCIComp = "./WCCI_CFI_FinalResults";
 
@@ -463,7 +463,7 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
     vfoIndicatorCalibration.push_back(foIndicators);
   }
 
-  cout << setprecision(3);
+  std::cout << setprecision(3);
 
   //	double averageError = 0;
   //	for (int t = 0; t < (vfoIndicatorCalibration[0].size() - 1); t++)
@@ -476,9 +476,9 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
   // =================== PRINTING RESULTS ========================
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 

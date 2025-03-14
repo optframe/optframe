@@ -44,30 +44,30 @@ class RandGenIntervalCommand : public Command<R, ADS, DS> {
            "randomized number from [begin,end].";
   }
 
-  bool run(vector<Command<R, ADS, DS>*>& all_modules,
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
            vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
            HeuristicFactory<R, ADS, DS>& factory,
-           map<string, string>& dictionary,
+           map<std::string, std::string>& dictionary,
            map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);
-    // cout << "random_number_interval command: '" << input << "'" << endl;
+    // std::cout << "random_number_interval command: '" << input << "'" << std::endl;
 
     if (!scanner.hasNext()) {
-      cout << "Usage: " << usage() << endl;
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
     }
 
     if (!scanner.hasNext()) {
-      cout << "missing 'begin' positive integer value!" << endl;
-      cout << "Usage: " << usage() << endl;
+      std::cout << "missing 'begin' positive integer value!" << std::endl;
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
     }
 
     int begin = *scanner.nextInt();
 
     if (!scanner.hasNext()) {
-      cout << "missing 'end' positive integer value!" << endl;
-      cout << "Usage: " << usage() << endl;
+      std::cout << "missing 'end' positive integer value!" << std::endl;
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
     }
 
@@ -76,25 +76,25 @@ class RandGenIntervalCommand : public Command<R, ADS, DS> {
     RandGen& rg = factory.getRandGen();
     int value = rg.rand(end - begin + 1) + begin;
 
-    // cout << "random_number_interval VALUE=" << value << endl;
+    // std::cout << "random_number_interval VALUE=" << value << std::endl;
 
     if (scanner.hasNext()) {
       string new_name = scanner.next();
-      stringstream ss;
+      std::stringstream ss;
       ss << new_name << " " << value;
       return Command<R, ADS, DS>::run_module("system.silent_define",
                                              all_modules, allFunctions, factory,
                                              dictionary, ldictionary, ss.str());
     } else {
-      cout << "random_number_interval command: random number is " << value
-           << endl;
+      std::cout << "random_number_interval command: random number is " << value
+           << std::endl;
       return true;
     }
   }
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary,
+      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
       const map<string, vector<string>>& ldictionary, string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);

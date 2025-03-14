@@ -31,6 +31,6 @@ Date   : 2009-02-09
 int
 main()
 {
-   cout << "MRITest" << endl;
+   std::cout << "MRITest" << std::endl;
    return 0;
 }

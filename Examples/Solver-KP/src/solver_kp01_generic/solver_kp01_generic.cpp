@@ -98,7 +98,7 @@ int solver_kp01_generic(int format, const char* config, char* output) {
   ESolutionKP melhor = *status.best;
   std::cout << "======== Imprime melhor solução do SA ========" << std::endl;
   // imprime representação da melhor solução
-  cout << melhor.first << endl;
+  std::cout << melhor.first << std::endl;
   // imprime avaliação da melhor solução
   melhor.second.print();
 

@@ -45,13 +45,13 @@ class VShuffle : public HTrajectory<R, ADS, DS> {
   using HTrajectory<R, ADS, DS>::exec;  // prevents name hiding
 
   virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f) {
-    cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << endl;
+    cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << std::endl;
     random_shuffle(s.getR().begin(), s.getR().end());
   }
 
   virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
                     double target_f) {
-    cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << endl;
+    cerr << "VShuffle exec(" << target_f << "," << timelimit << ")" << std::endl;
     random_shuffle(s.getR().begin(), s.getR().end());
   }
 

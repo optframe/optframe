@@ -117,26 +117,26 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
                                             SAmax, Ti, hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    // params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    // params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
     // "evaluation function"));
     params.push_back(
         make_pair(Evaluator<typename XES::first_type, typename XES::second_type,
                             XES>::idComponent(),
                   "evaluation function"));
     //
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    stringstream ss;
+    std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
-    params.push_back(make_pair("OptFrame:double", "cooling factor"));
+    params.push_back(std::make_pair(ss.str(), "list of NS"));
+    params.push_back(std::make_pair("OptFrame:double", "cooling factor"));
     params.push_back(
         make_pair("OptFrame:int", "number of iterations for each temperature"));
-    params.push_back(make_pair("OptFrame:double", "initial temperature"));
+    params.push_back(std::make_pair("OptFrame:double", "initial temperature"));
 
     return params;
   }
@@ -145,8 +145,8 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
     return component == BasicSimulatedAnnealing<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << GlobalSearchBuilder<XES>::idComponent() << SA::family() << "BasicSA";
     return ss.str();
   }

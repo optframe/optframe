@@ -62,7 +62,7 @@ class EtIIEvaluator : public Evaluator<SolutionEtII, EvaluationEtII> {
     const RepEtII& rep = s.getR();
     // counting evaluations.
     numEvs++;
-    // cout<<"##### Number of evaluates: "<<numEvs<<endl;
+    // std::cout<<"##### Number of evaluates: "<<numEvs<<endl;
 
     int fo = 0;  // Evaluation<> Function Value
 

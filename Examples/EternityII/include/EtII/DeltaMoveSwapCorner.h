@@ -169,7 +169,7 @@ class DeltaMoveSwapCorner : public MoveSwapCorner {
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = MoveSwapCorner::idComponent();
     idComp.append(":DeltaMoveSwapCorner");
     return idComp;
@@ -181,8 +181,8 @@ class DeltaMoveSwapCorner : public MoveSwapCorner {
   }
 
   void print() const override {
-    cout << "DeltaMoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2
-         << "," << y2 << ")" << endl;
+    std::cout << "DeltaMoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2
+         << "," << y2 << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveMoveSwapCorner"; }

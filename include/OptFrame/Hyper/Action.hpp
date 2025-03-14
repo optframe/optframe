@@ -52,15 +52,15 @@ class Action {
   virtual bool handleAction(string action) = 0;
 
   virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<string, string>& dictionary,
+                        map<std::string, std::string>& dictionary,
                         map<string, vector<string>>& ldictionary) = 0;
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<string, string>& d) = 0;
+                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) = 0;
 
   static bool addAndRegister(Scanner& scanner, Component& comp,
                              HeuristicFactory<XES>& hf,
-                             map<string, string>& d) {
+                             map<std::string, std::string>& d) {
     int index = hf.addComponent(comp);
 
     if (index == -1) return false;
@@ -81,7 +81,7 @@ class Action {
   }
 
   static bool registerText(Scanner& scanner, string value,
-                           map<string, string>& d) {
+                           map<std::string, std::string>& d) {
     if (scanner.hasNext()) {
       string varName = scanner.next();
 
@@ -90,21 +90,21 @@ class Action {
       return true;
       // return Command<S, XEv>::defineText(varName, sscomp.str(), d);
     } else {
-      cout << "Action error: no variable to store value '" << value << "'"
-           << endl;
+      std::cout << "Action error: no variable to store value '" << value << "'"
+           << std::endl;
       return false;
     }
   }
 
   static string formatDouble(double d) {
-    stringstream ss;
+    std::stringstream ss;
     ss << fixed;
     ss << d;
     return ss.str();
   }
 
   static string formatInt(int i) {
-    stringstream ss;
+    std::stringstream ss;
     ss << i;
     return ss.str();
   }
@@ -144,26 +144,26 @@ class ComponentAction : public Action<XES> {
   }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<string, string>& d) {
+                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) {
     if (!handleComponent(type)) {
-      cout << "ComponentAction::doCast error: can't handle component type '"
-           << type << " " << id << "'" << endl;
+      std::cout << "ComponentAction::doCast error: can't handle component type '"
+           << type << " " << id << "'" << std::endl;
       return false;
     }
 
     Component* comp = hf.components[component].at(id);
 
     if (!comp) {
-      cout << "ComponentAction::doCast error: nullptr component '" << component
-           << " " << id << "'" << endl;
+      std::cout << "ComponentAction::doCast error: nullptr component '" << component
+           << " " << id << "'" << std::endl;
       return false;
     }
 
     // cast object to upper base
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
-      cout << "ComponentAction::doCast error: component '" << comp->id()
-           << " is not base of " << type << "'" << endl;
+      std::cout << "ComponentAction::doCast error: component '" << comp->id()
+           << " is not base of " << type << "'" << std::endl;
       return false;
     }
 
@@ -179,9 +179,9 @@ class ComponentAction : public Action<XES> {
   }
 
   virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<string, string>& dictionary,
+                        map<std::string, std::string>& dictionary,
                         map<string, vector<string>>& ldictionary) {
-    // cout << "Evaluation::doAction '" << content << "'" << endl;
+    // std::cout << "Evaluation::doAction '" << content << "'" << std::endl;
 
     Scanner scanner(content);
 
@@ -208,7 +208,7 @@ class ComponentAction : public Action<XES> {
 
                         string var = scanner.next();
 
-                        stringstream ss;
+                        std::stringstream ss;
                         ss << c->log();
 
                         dictionary[var] = ss.str();
@@ -238,7 +238,7 @@ class ComponentAction : public Action<XES> {
 
       string var = scanner.next();
 
-      stringstream ss;
+      std::stringstream ss;
       ss << c->getVerboseLevel();
 
       dictionary[var] = ss.str();

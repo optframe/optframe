@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
   // do something!
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
 
   return 0;
 }

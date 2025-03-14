@@ -37,13 +37,13 @@ class MyMapper : public MaPI_StrMapper
 public:
    MyMapper(MaPI_StrMapReduce* mr, MaPI_StrSerializer* s)
      : MaPI_StrMapper(mr, s){};
-   virtual vector<pair<string, string>> map(pair<string, string> a)
+   virtual std::vector<std::pair<std::string, std::string>> map(pair<std::string, std::string> a)
    {
-      vector<pair<string, string>> mapped;
+      std::vector<std::pair<std::string, std::string>> mapped;
       mapped.push_back(a);
-      cout << "\tMapping..\n";
+      std::cout << "\tMapping..\n";
       sleep(1);
-      cout << "\tOk\n";
+      std::cout << "\tOk\n";
       return mapped;
    };
 };
@@ -53,22 +53,22 @@ class MyReducer : public MaPI_StrReducer
 public:
    MyReducer(MaPI_StrMapReduce* mr, MaPI_StrSerializer* s)
      : MaPI_StrReducer(mr, s){};
-   virtual pair<string, string> reduce(pair<string, vector<string>> bs)
+   virtual pair<std::string, std::string> reduce(pair<string, vector<string>> bs)
    {
       string reduced;
-      for (vector<string>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
+      for (std::vector<string>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
          reduced += *it;
-      cout << "\tReducing..\n";
+      std::cout << "\tReducing..\n";
       sleep(1);
-      cout << "\tOk\n";
-      return pair<string, string>(bs.first, reduced);
+      std::cout << "\tOk\n";
+      return pair<std::string, std::string>(bs.first, reduced);
    };
 };
 
 int
 main(int argc, char** argv)
 {
-   cout << "StrMaPI test" << endl;
+   std::cout << "StrMaPI test" << std::endl;
 
    MaPI_StrMapReduce mapReduce;
    MaPI_StrSerializer serializer;
@@ -76,13 +76,13 @@ main(int argc, char** argv)
    MyReducer reducer(&mapReduce, &serializer);
    mapReduce.initServers(argc, argv);
 
-   vector<pair<string, string>> input;
-   input.push_back(pair<string, string>("1", "Map"));
-   input.push_back(pair<string, string>("1", "Reduce"));
-   input.push_back(pair<string, string>("2", "Interface"));
+   std::vector<std::pair<std::string, std::string>> input;
+   input.push_back(pair<std::string, std::string>("1", "Map"));
+   input.push_back(pair<std::string, std::string>("1", "Reduce"));
+   input.push_back(pair<std::string, std::string>("2", "Interface"));
 
-   vector<pair<string, string>> output = mapReduce.run(mapper, reducer, input);
-   cout << output << endl;
+   std::vector<std::pair<std::string, std::string>> output = mapReduce.run(mapper, reducer, input);
+   std::cout << output << std::endl;
 
    return 0;
 }

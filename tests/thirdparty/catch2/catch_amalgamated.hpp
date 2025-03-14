@@ -9510,7 +9510,7 @@ namespace Catch {
 
 namespace Catch {
 
-    std::ostream& cout();
+    std::ostream& std::cout();
     std::ostream& cerr();
     std::ostream& clog();
 

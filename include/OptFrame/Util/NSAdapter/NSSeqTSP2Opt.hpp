@@ -140,20 +140,20 @@ class NSSeqTSP2Opt : public NSSeq<XES> {
     return uptr<NSIterator<XES>>(new NSITERATOR(se.first, p));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NSSeq<XES>::idComponent() << ":NSSeqTSP2Opt";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NSSeq<XES>::compatible(s));
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
 
     return ss.str();

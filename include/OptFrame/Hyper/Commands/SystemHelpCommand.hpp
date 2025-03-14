@@ -46,34 +46,34 @@ public:
       return "system.help";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& all_functions, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map<string, vector<string>>&, string)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& all_functions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>&, string)
    {
-      cout << "Available modules are:" << endl;
+      std::cout << "Available modules are:" << std::endl;
       for (unsigned int i = 0; i < all_modules.size(); i++) {
-         cout << all_modules[i]->id();
+         std::cout << all_modules[i]->id();
          if (all_modules[i]->handles.size() > 0)
-            cout << " =>";
+            std::cout << " =>";
          for (unsigned h = 0; h < all_modules[i]->handles.size(); h++)
-            cout << "\t" << all_modules[i]->handles[h] << " ";
-         cout << endl;
+            std::cout << "\t" << all_modules[i]->handles[h] << " ";
+         std::cout << std::endl;
       }
 
-      cout << "Available functions are:" << endl;
+      std::cout << "Available functions are:" << std::endl;
       for (unsigned int i = 0; i < all_functions.size(); i++) {
-         cout << all_functions[i]->id();
+         std::cout << all_functions[i]->id();
          if (all_functions[i]->handles.size() > 0)
-            cout << " =>";
+            std::cout << " =>";
          for (unsigned h = 0; h < all_functions[i]->handles.size(); h++)
-            cout << "\t" << all_functions[i]->handles[h];
-         cout << endl;
+            std::cout << "\t" << all_functions[i]->handles[h];
+         std::cout << std::endl;
       }
 
-      cout << "Type 'system.usage module_name' to learn how to use the command." << endl;
+      std::cout << "Type 'system.usage module_name' to learn how to use the command." << std::endl;
 
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

@@ -23,7 +23,7 @@ class Foo
 public:
    Foo()
    {
-      cout << F(10) << endl;
+      std::cout << F(10) << std::endl;
    }
 };
 
@@ -79,7 +79,7 @@ TEST_CASE("OptFrame FCore FMove: Create FMove")
    //
    //
 
-   MyMoveSwap mswap(make_pair(3, 4));
+   MyMoveSwap mswap(std::make_pair(3, 4));
 
    myDS p(2, 3);
    //std::function<bool (const MyXESolution&)> fApply;

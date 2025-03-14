@@ -29,7 +29,7 @@ class MoveShift : public Move<ESolutionPN> {
   virtual ~MoveShift() {}
 
   void print() const override {
-    cout << id() << " with params: '" << i << "'" << endl;
+    std::cout << id() << " with params: '" << i << "'" << std::endl;
   }
 
   std::string id() const override {
@@ -85,7 +85,7 @@ class NSSeqShift : public NSSeq<ESolutionPN> {
 
   virtual ~NSSeqShift() {}
 
-  void print() const override { cout << "NSSeqShift" << endl; }
+  void print() const override { std::cout << "NSSeqShift" << std::endl; }
 
   std::string id() const override {
     return NSSeq<ESolutionPN>::idComponent().append(":NSSeqShift");

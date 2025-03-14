@@ -32,13 +32,13 @@ class RandomDescentMethodBuilder : public LocalSearchBuilder<XES> {
     return new RandomDescentMethod<XES>(eval, ns, iterMax);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
         make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
-    params.push_back(make_pair("OptFrame:int",
+    params.push_back(std::make_pair("OptFrame:int",
                                "max number of iterations without improvement"));
 
     return params;
@@ -49,7 +49,7 @@ class RandomDescentMethodBuilder : public LocalSearchBuilder<XES> {
   }
 
   static std::string idComponent() {
-    stringstream ss;
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":RDM";
     return ss.str();
   }

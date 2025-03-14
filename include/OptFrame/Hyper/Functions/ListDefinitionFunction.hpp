@@ -57,7 +57,7 @@ public:
 		return "list.definition( list ) : return list as text";
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, const map< string, string >&, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, const map< string, string >&, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 

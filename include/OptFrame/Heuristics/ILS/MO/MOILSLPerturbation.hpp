@@ -32,8 +32,8 @@ class MOILSLPerturbation : public Component, public MOILS {
 
   virtual std::string toString() const override { return id(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << MOILS::family() << "LevelPert";
     return ss.str();
   }
@@ -80,8 +80,8 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
         // m->applyMEVUpdate(mev, se);
         m->applyUpdate(smev);
       } else if (Component::warning)
-        cout << "ILS Warning: perturbation had no effect in level " << a << "!"
-             << endl;
+        std::cout << "ILS Warning: perturbation had no effect in level " << a << "!"
+             << std::endl;
 
       // delete m;
     }
@@ -94,8 +94,8 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
            (MOILSLPerturbation<XMES, XMEv>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << MOILSLPerturbation<XMES, XMEv>::idComponent() << ":LPlus2";
     return ss.str();
   }
@@ -110,7 +110,7 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
  private:
   vector<NS<XMES>*> ns;
-  vector<pair<int, double>> pNS;
+  std::vector<std::pair<int, double>> pNS;
   IEvaluator<XMES>& evaluator;
   RandGen& rg;
 
@@ -119,24 +119,24 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
                                RandGen& _rg)
       : evaluator(_e), rg(_rg) {
     ns.push_back(&_ns);
-    pNS.push_back(make_pair(1, 1));
+    pNS.push_back(std::make_pair(1, 1));
   }
 
   virtual ~MOILSLPerturbationLPlus2Prob() {}
 
   void add_ns(NS<XMES>& _ns) {
     ns.push_back(&_ns);
-    pNS.push_back(make_pair(1, 1));
+    pNS.push_back(std::make_pair(1, 1));
 
     double soma = 0;
     for (int i = 0; i < ns.size(); i++) soma += pNS[i].first;
     for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
   }
 
-  void changeProb(vector<int> pri) {
+  void changeProb(std::vector<int> pri) {
     int nNeighborhoods = ns.size();
     if (pri.size() != nNeighborhoods) {
-      cout << "ERROR ON PRIORITES SIZE!" << endl;
+      std::cout << "ERROR ON PRIORITES SIZE!" << std::endl;
       return;
     }
 
@@ -148,11 +148,11 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
 
     for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
 
-    cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << endl;
+    std::cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << std::endl;
     for (int i = 0; i < ns.size(); i++)
-      cout << "pNS[i].first: " << pNS[i].first
-           << "\t pNS[i].second: " << pNS[i].second << endl;
-    cout << endl;
+      std::cout << "pNS[i].first: " << pNS[i].first
+           << "\t pNS[i].second: " << pNS[i].second << std::endl;
+    std::cout << std::endl;
   }
 
   // void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>&
@@ -180,8 +180,8 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
         // Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
         m->applyUpdate(smev);
       } else if (Component::warning)
-        cout << "ILS Warning: perturbation had no effect in level " << a << "!"
-             << endl;
+        std::cout << "ILS Warning: perturbation had no effect in level " << a << "!"
+             << std::endl;
 
       delete m;
     }
@@ -190,8 +190,8 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
     evaluator.reevaluate(smev);  // updates 'mev'
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << MOILSLPerturbation<XMES, XMEv>::idComponent() << ":LPlus2Prob";
     return ss.str();
   }

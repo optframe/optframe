@@ -79,7 +79,7 @@ class HillClimbing : public LocalSearch<XES> {
   std::string id() const override { return idComponent(); }
 
   static std::string idComponent() {
-    stringstream ss;
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":HC";
     return ss.str();
   }

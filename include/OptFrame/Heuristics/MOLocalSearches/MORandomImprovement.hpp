@@ -116,24 +116,24 @@ class MORandomImprovement : public MOLocalSearch<XES, XMES> {
     return (s == idComponent()) || (MOLocalSearch<XES, XMES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << MOLocalSearch<XES, XMES>::idComponent() << "MO-RI";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "MORI: " << ns->toString();
     return ss.str();
   }
 
   virtual string log() const {
-    stringstream ss;
+    std::stringstream ss;
     ss << sum_time;
     return ss.str();
   }

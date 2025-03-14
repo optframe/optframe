@@ -51,7 +51,7 @@ TEST_CASE("OptFrameUtilsTests: RandGen_20000_0_9_Is_Balanced_2_percent") {
   //    '\n';
   // }
 
-  // cout << "diff=" << (max-min)/20000.0 << endl;
+  // std::cout << "diff=" << (max-min)/20000.0 << std::endl;
   //  MUST HAVE LESS THAN 2 PERCENT DEVIATION
   REQUIRE(max - min <= 0.02 * 20000);
 }
@@ -75,7 +75,7 @@ TEST_CASE("OptFrameUtilsTests: RandGen_20000_10_Is_Balanced_2_percent") {
   //    '\n';
   // }
 
-  // cout << "diff=" << (max-min)/20000.0 << endl;
+  // std::cout << "diff=" << (max-min)/20000.0 << std::endl;
   //  MUST HAVE LESS THAN 2 PERCENT DEVIATION
   REQUIRE(max - min <= 0.02 * 20000);
 }
@@ -100,7 +100,7 @@ TEST_CASE("OptFrameUtilsTests: RandGenMT_20000_10_Is_Balanced_1_percent") {
   //    '\n';
   // }
 
-  // cout << "diff=" << (max-min)/20000.0 << endl;
+  // std::cout << "diff=" << (max-min)/20000.0 << std::endl;
   //  MUST HAVE LESS THAN 1 PERCENT DEVIATION
   REQUIRE(max - min <= 0.02 * 20000);
 }

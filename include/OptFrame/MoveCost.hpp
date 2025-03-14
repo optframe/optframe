@@ -37,7 +37,7 @@ class MoveCost : public Component {
   // flag indicating if cost is estimated
   bool estimated;
   // storing costs for lexicographic approaches
-  vector<pair<evtype, evtype>> alternatives;
+  std::vector<std::pair<evtype, evtype>> alternatives;
 
  public:
   explicit MoveCost(ObjType obj, ObjType inf = 0, evtype w = 1,
@@ -60,7 +60,7 @@ class MoveCost : public Component {
 
   bool isEstimated() const { return estimated; }
 
-  const vector<pair<evtype, evtype>>& getAlternativeCosts() const {
+  const std::vector<std::pair<evtype, evtype>>& getAlternativeCosts() const {
     return alternatives;
   }
 
@@ -73,7 +73,7 @@ class MoveCost : public Component {
   }
 
   void setAlternativeCosts(
-      const vector<pair<evtype, evtype>>& alternativeCosts) {
+      const std::vector<std::pair<evtype, evtype>>& alternativeCosts) {
     alternatives = alternativeCosts;
   }
 
@@ -96,21 +96,21 @@ class MoveCost : public Component {
     // may also update lexicographic costs...
   }
 
-  static string idComponent() { return "OptFrame:MoveCost"; }
+  static std::string idComponent() { return "OptFrame:MoveCost"; }
 
   std::string id() const override { return idComponent(); }
 
   virtual std::string toString() const override { return id(); }
 
   void print() const override {
-    cout << fixed;  // disable scientific notation
-    cout << "Move cost = " << cost() << endl;
+    std::cout << fixed;  // disable scientific notation
+    std::cout << "Move cost = " << cost() << std::endl;
     if (alternatives.size() > 0) {
-      cout << "Alternative Costs: ";
+      std::cout << "Alternative Costs: ";
       for (unsigned i = 0; i < alternatives.size(); i++)
-        cout << "(" << alternatives[i].first << ";" << alternatives[i].second
+        std::cout << "(" << alternatives[i].first << ";" << alternatives[i].second
              << ") ";
-      cout << endl;
+      std::cout << std::endl;
     }
   }
 

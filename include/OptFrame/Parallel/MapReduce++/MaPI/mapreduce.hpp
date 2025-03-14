@@ -32,21 +32,21 @@ class MaPI_MapReduce : public MapReduce<KeyA, A, KeyB, B, C>
 {
 public:
    ///MapReduce execution (implemented by library).
-   virtual vector<pair<KeyB, C>> run(Mapper<KeyA, A, KeyB, B, C>& mapper, Reducer<KeyA, A, KeyB, B, C>& reducer, vector<pair<KeyA, A>>& as)
+   virtual std::vector<std::pair<KeyB, C>> run(Mapper<KeyA, A, KeyB, B, C>& mapper, Reducer<KeyA, A, KeyB, B, C>& reducer, std::vector<std::pair<KeyA, A>>& as)
    {
       if (mappers.size() == 0 || reducers.size() == 0) {
-         cout << "Aborting: It is necessary to registry almost one mapper and almost one reducer\n";
-         return vector<pair<KeyB, C>>();
+         std::cout << "Aborting: It is necessary to registry almost one mapper and almost one reducer\n";
+         return std::vector<std::pair<KeyB, C>>();
       }
-      //cout << "Input  :\t" << as << endl;
+      //cout << "Input  :\t" << as << std::endl;
 #ifndef MRI_USE_MULTIMAP
-      vector<pair<KeyB, B>> bs = mapper.run(as);
+      std::vector<std::pair<KeyB, B>> bs = mapper.run(as);
 #else
       multimap<KeyB, B> bs = mapper.run(as);
 #endif
-      //cout << "Mapped :\t" << bs << endl;
-      vector<pair<KeyB, C>> cs = reducer.run(bs);
-      //cout << "Reduced:\t" << cs << endl;
+      //cout << "Mapped :\t" << bs << std::endl;
+      std::vector<std::pair<KeyB, C>> cs = reducer.run(bs);
+      //cout << "Reduced:\t" << cs << std::endl;
       return cs;
    };
    ///Constructor.
@@ -128,7 +128,7 @@ protected:
          if (operation == 1) // Mapping
          {
             if (object_id >= mappers.size()) {
-               cout << "\nERROR: Overflow at map server\n";
+               std::cout << "\nERROR: Overflow at map server\n";
                exit(1);
             }
 
@@ -146,17 +146,17 @@ protected:
                a.first = mappers[object_id]->getSerializer()->KeyA_fromString(scan.next());
                a.second = mappers[object_id]->getSerializer()->A_fromString(scan.next());
 
-               //cout << "#" << a << endl;
+               //cout << "#" << a << std::endl;
 
-               vector<pair<KeyB, B>> mapped = mappers[object_id]->map(a);
+               std::vector<std::pair<KeyB, B>> mapped = mappers[object_id]->map(a);
 
-               typename vector<pair<KeyB, B>>::iterator it;
+               typename std::vector<std::pair<KeyB, B>>::iterator it;
                for (it = mapped.begin(); it != mapped.end(); ++it) {
                   _output << mappers[object_id]->getSerializer()->KeyB_toString((*it).first) << "\1"
                           << mappers[object_id]->getSerializer()->B_toString((*it).second) << "\1";
                }
 
-               //cout << "_output: " << _output.str() << endl;
+               //cout << "_output: " << _output.str() << std::endl;
             }
 
             int output_size = _output.str().size() + 1;
@@ -167,13 +167,13 @@ protected:
          } else if (operation == 2) // Reducing
          {
             if (object_id >= reducers.size()) {
-               cout << "\nERROR: Overflow at reduce server\n";
+               std::cout << "\nERROR: Overflow at reduce server\n";
                exit(1);
             }
 
             //printf("Server reductor called\n");
 
-            //cout << input << endl;
+            //cout << input << std::endl;
 
             stringstream _output;
             if (input[0] == '_')
@@ -188,13 +188,13 @@ protected:
                while (scan.hasNext())
                   b.second.push_back(reducers[object_id]->getSerializer()->B_fromString(scan.next()));
 
-               //cout << b.first << endl;
-               //for (int i = 0 ; i < b.second.size() ; i++) cout << "#" << b.second[i] << endl;
+               //cout << b.first << std::endl;
+               //for (int i = 0 ; i < b.second.size() ; i++) std::cout << "#" << b.second[i] << std::endl;
 
                pair<KeyB, C> reduced = reducers[object_id]->reduce(b);
                _output << reducers[object_id]->getSerializer()->KeyB_toString(reduced.first) << "\1"
                        << reducers[object_id]->getSerializer()->C_toString(reduced.second) << "\1";
-               //cout << "_output: " << _output.str() << endl;
+               //cout << "_output: " << _output.str() << std::endl;
             }
 
             int output_size = _output.str().size() + 1;

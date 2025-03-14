@@ -148,9 +148,9 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
     return new BasicInitialMultiESolution<XES>(c, ev);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Constructive<S>::idComponent(), "constructive"));
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive"));
     params.push_back(
         make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
 
@@ -161,8 +161,8 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
     return component == BasicInitialMultiESolution<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent();
     ss << "BasicInitialMultiESolution";
     return ss.str();
@@ -217,9 +217,9 @@ class BasicInitialMultiESolutionMultiBuilder
     return new BasicInitialMultiESolution<XMES>(c, mev);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Constructive<S>::idComponent(), "constructive"));
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive"));
     params.push_back(
         make_pair(MultiEvaluator<XES, XMES>::idComponent(), "multi evaluator"));
 
@@ -230,8 +230,8 @@ class BasicInitialMultiESolutionMultiBuilder
     return component == BasicInitialMultiESolution<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent();
     ss << "BasicInitialMultiESolution";
     return ss.str();

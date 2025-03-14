@@ -62,12 +62,12 @@ class TestCommand {
   }
 
   bool run(HeuristicFactory<R, ADS, DS>& factory,
-           map<string, string>& dictionary,
+           map<std::string, std::string>& dictionary,
            map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);
 
     if (!scanner.hasNext()) {
-      cout << "Usage: " << usage() << endl;
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
     }
 
@@ -103,7 +103,7 @@ class TestCommand {
 
     FILE* file = fopen(filename.c_str(), "a");
     if (!file) {
-      cout << "Error creating file '" << filename << "'" << endl;
+      std::cout << "Error creating file '" << filename << "'" << std::endl;
       return false;
     }
 
@@ -128,14 +128,14 @@ class TestCommand {
     vector<long double> s_fo_tests(n);
 
     for (int i = 0; i < n; i++) {
-      cout << "Test " << i << "... Running";
+      std::cout << "Test " << i << "... Running";
       Timer t(false);
 
       pair<Solution<R, ADS>&, Evaluation<DS>&>* result =
           h->search(timelimit, tf);
 
       if (!result) {
-        cout << "ERROR IN TEST MODULE, NO RESULT!" << endl;
+        std::cout << "ERROR IN TEST MODULE, NO RESULT!" << std::endl;
         exit(1);
       }
 
@@ -156,7 +156,7 @@ class TestCommand {
       if (fo_now > max_fo) max_fo = fo_now;
       if (t_now > max_t) max_t = t_now;
 
-      cout << "... Finished! (" << t.now() << "secs.)" << endl;
+      std::cout << "... Finished! (" << t.now() << "secs.)" << std::endl;
 
       if (!s_star)
         s_star = &s2->clone();
@@ -204,7 +204,7 @@ class TestCommand {
     str << "OptFrame:Solution " << new_id;
     string s_new_id = str.str();
 
-    cout << "'" << s_new_id << "' added." << endl;
+    std::cout << "'" << s_new_id << "' added." << std::endl;
 
     return true;
   }

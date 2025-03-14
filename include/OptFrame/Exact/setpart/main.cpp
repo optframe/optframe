@@ -43,7 +43,7 @@ using namespace std;
 int
 main()
 {
-   cout << "Solving Set Partition" << endl;
+   std::cout << "Solving Set Partition" << std::endl;
 
    vector<bool> temp(3); // column with 3 lines
 
@@ -55,49 +55,49 @@ main()
    // SetPart::setColumn
    //   Parameters: cost and column
    //   Return: int column index (if >= 0) or error code (if < 0)
-   cout << "Trying to add a column: " << setPart.addColumn(10.0, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(10.0, temp) << std::endl;
 
    temp[0] = true;
    temp[1] = true;
    temp[2] = false;
-   cout << "Trying to add a column: " << setPart.addColumn(20, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(20, temp) << std::endl;
 
    temp[0] = false;
    temp[1] = false;
    temp[2] = true;
-   cout << "Trying to add a column: " << setPart.addColumn(10, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(10, temp) << std::endl;
 
    temp[0] = true;
    temp[1] = false;
    temp[2] = true;
-   cout << "Trying to add a column: " << setPart.addColumn(20, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(20, temp) << std::endl;
 
    temp[0] = false;
    temp[1] = true;
    temp[2] = false;
-   cout << "Trying to add a column: " << setPart.addColumn(5, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(5, temp) << std::endl;
 
    temp[0] = false;
    temp[1] = false;
    temp[2] = true;
-   cout << "Trying to add a column: " << setPart.addColumn(10, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(10, temp) << std::endl;
 
    temp[0] = false;
    temp[1] = false;
    temp[2] = false;
-   cout << "Trying to add a column: " << setPart.addColumn(10, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(10, temp) << std::endl;
 
    temp[0] = false;
    temp[1] = false;
    temp[2] = false;
    temp.push_back(true);
-   cout << "Trying to add a column: " << setPart.addColumn(10, temp) << endl;
+   std::cout << "Trying to add a column: " << setPart.addColumn(10, temp) << std::endl;
 
    pair<double, vector<int>> usedColumns = setPart.solve();
 
-   cout << "Used columns: " << usedColumns << endl;
+   std::cout << "Used columns: " << usedColumns << std::endl;
 
-   cout << "Finish" << endl;
+   std::cout << "Finish" << std::endl;
 
    return 0;
 }

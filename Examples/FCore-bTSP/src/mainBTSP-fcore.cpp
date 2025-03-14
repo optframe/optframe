@@ -48,7 +48,7 @@ PS& p, int indMutation)
 {
         PS q;
 
-        //cout << "indMutation = " << indMutation << endl;
+        //cout << "indMutation = " << indMutation << std::endl;
 
         for(int n = 1; n <= indMutation; n++)
         {
@@ -74,7 +74,7 @@ PS& p, int indMutation)
                 }
                 else
                 {
-                        cout << "WARNING: could not find a valid move for
+                        std::cout << "WARNING: could not find a valid move for
 neighborhood " << neigh << " "; neighbors[neigh]->print(); s_ind.print();
                 }
 
@@ -91,14 +91,14 @@ q.push_back(indiv);
 
 int indMissing = indMutation - q.size();
 if (indMissing > 0) {
-  cout << "MISSING " << indMissing << endl;
-  cout << "|P|=" << p.size() << " indMutation=" << indMutation << " |q|=" <<
-q.size() << " |NS|=" << neighbors.size() << endl; exit(1);
+  std::cout << "MISSING " << indMissing << std::endl;
+  std::cout << "|P|=" << p.size() << " indMutation=" << indMutation << " |q|=" <<
+q.size() << " |NS|=" << neighbors.size() << std::endl; exit(1);
 }
 
 for (int n = 1; n <= indMissing; n++) {
-  cout << "Warning: n=" << n << "/" << indMissing << " MISSING MUTATION =>
-CLONING ELEMENT!" << endl; int ind = rg.rand(p.size()); Solution<RepCARP>& s_ind
+  std::cout << "Warning: n=" << n << "/" << indMissing << " MISSING MUTATION =>
+CLONING ELEMENT!" << std::endl; int ind = rg.rand(p.size()); Solution<RepCARP>& s_ind
 = p.at(ind)->s.clone(); IndividualNSGAII<RepCARP>* indiv = new
 IndividualNSGAII<RepCARP>(s_ind); q.push_back(indiv);
 }

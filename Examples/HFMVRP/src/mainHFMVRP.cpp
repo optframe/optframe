@@ -43,11 +43,11 @@ using namespace HFMVRP;
 using namespace scannerpp;
 
 int main(int argc, char** argv) {
-  cout << argv[0] << endl;
+  std::cout << argv[0] << std::endl;
   sref<RandGen> rg = new RandGenMersenneTwister;
   long seed = time(NULL);
   seed = 100;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg->setSeed(seed);
 
@@ -56,10 +56,10 @@ int main(int argc, char** argv) {
   // srand(seed);
 
   if (argc != 7) {
-    cout << "Parametros incorretos! esperado 7 e recebeu " << argc << endl;
-    cout << "Os parametros esperados sao: nome tempo fo_alvo mutationRate mi "
+    std::cout << "Parametros incorretos! esperado 7 e recebeu " << argc << std::endl;
+    std::cout << "Os parametros esperados sao: nome tempo fo_alvo mutationRate mi "
             "batch"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -72,13 +72,13 @@ int main(int argc, char** argv) {
 
   string nome = caminho;
 
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "tempo=" << tempo << endl;
-  cout << "fo_alvo=" << fo_alvo << endl;
-  cout << "mutationRate=" << mutationRate << endl;
-  cout << "mi=" << mi << endl;
-  cout << "batch=" << batch << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "tempo=" << tempo << std::endl;
+  std::cout << "fo_alvo=" << fo_alvo << std::endl;
+  std::cout << "mutationRate=" << mutationRate << std::endl;
+  std::cout << "mi=" << mi << std::endl;
+  std::cout << "batch=" << batch << std::endl;
 
   Scanner scanner{File(nome)};
   ProblemInstance* p = new ProblemInstance{scanner};
@@ -329,7 +329,7 @@ int main(int argc, char** argv) {
   auto initialOutput = es->search(soscES);
   ESolutionHFMVRP initialSol = *initialOutput.best;
   double objFuncES = initialSol.second.getObjFunction();
-  cout << "getObjFunction: " << objFuncES << endl;
+  std::cout << "getObjFunction: " << objFuncES << std::endl;
 
   //
   // =============
@@ -340,7 +340,7 @@ int main(int argc, char** argv) {
   string instanceName = nome.substr(found + 1);
   FILE* arquivo = fopen("./MyProjects/Results/log.txt", "a");
   if (!arquivo) {
-    cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\"" << endl;
+    std::cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\"" << std::endl;
   } else {
     fprintf(arquivo, "%s\t%f\t%f\t%d\t%d\t%ld\n", instanceName.c_str(),
             mutationRate, objFuncES, mi, batch, seed);
@@ -362,13 +362,13 @@ int main(int argc, char** argv) {
    ilsl.search(soscILSL); Solution<ESolutionHFMVRP> ilsSOL = pairILS->first;
 
          EvaluationHFMVRP value = eval->evaluate(ilsSOL.getR());
-         cout << "getObjFunction: " << value.getObjFunction() << endl;
-         cout << "getInfMeasure: " << value.getInfMeasure() << endl;
+         std::cout << "getObjFunction: " << value.getObjFunction() << std::endl;
+         std::cout << "getInfMeasure: " << value.getInfMeasure() << std::endl;
          value.print();
 
          eval->exportEXCEL(ilsSOL.getR(), "./MyProjects/Results/teste");*/
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
 
   return 0;
 }

@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
   // File file("./tsplib/berlin52.txt");
 
   if (!file.isOpen()) {
-    cout << "File not found" << endl;
+    std::cout << "File not found" << std::endl;
     return 1;
   }
 
@@ -258,7 +258,7 @@ std::endl; #endif
   getchar();
   getchar();
 
-  cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
+  std::cout << "will test BRKGA (n=" << tsp.p->n << ")" << std::endl;
 
   TSPRepEvaluator eval_rep(tsp.p);
 
@@ -301,7 +301,7 @@ std::endl; #endif
    r2->first.print();
    pair<Evaluation<>, CopySolution<vector<int>>*> pd =
    eprk.decode(r2->first.getR()); pd.second->print(); if
-   (eval.verify(pd.second->getR())) cout << "CHECK: OK" << endl;
+   (eval.verify(pd.second->getR())) std::cout << "CHECK: OK" << std::endl;
    pd.first.print();
    */
 
@@ -318,17 +318,17 @@ std::endl; #endif
 
   r2->second.print();
 
-  cout << "end BRKGA tests" << endl;
+  std::cout << "end BRKGA tests" << std::endl;
 
   // TODO: return after refactor on Concepts and OptFrame v4
   /*
    BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> build;
    for (unsigned i = 0; i <= 7; i++) {
-      stringstream ss;
+      std::stringstream ss;
       ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0
    OptFrame:NS:NSSeq " << i; string name = build.run(optframe.factory,
-   optframe.dictionary, optframe.ldictionary, ss.str()); cout << "BUILT: '" <<
-   name << "'" << endl;
+   optframe.dictionary, optframe.ldictionary, ss.str()); std::cout << "BUILT: '" <<
+   name << "'" << std::endl;
    }
    */
 
@@ -352,9 +352,9 @@ std::endl; #endif
   // ils.setMessageLevel(4);
   //
   // ils.setVerbose();
-  if (ils.information) cout << "infomation is on for ILS" << endl;
+  if (ils.information) std::cout << "infomation is on for ILS" << std::endl;
 
-  cout << "will run ils" << endl;
+  std::cout << "will run ils" << std::endl;
   Timer tim;
   StopCriteria<EvaluationTSP> soscILS;
   soscILS.timelimit = 3;  // 1000
@@ -363,12 +363,12 @@ std::endl; #endif
   // NULL);
   auto sout2 = ils.search(soscILS);
   std::optional<ESolutionTSP> psol = sout2.best;
-  cout << "finished ILS!" << endl;
-  cout << tim.now() << " secs" << endl;
+  std::cout << "finished ILS!" << std::endl;
+  std::cout << tim.now() << " secs" << std::endl;
 
   psol->first.print();
   psol->second.print();
-  cout << endl << endl;
+  std::cout << std::endl << std::endl;
 
   // ===========
 
@@ -428,7 +428,7 @@ std::endl; #endif
          evaluate $Evaluator 0 $solucao_saida
          */
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
 
   return 0;
 }

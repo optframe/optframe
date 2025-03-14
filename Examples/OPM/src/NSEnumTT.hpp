@@ -33,7 +33,7 @@ class MoveTT : public Move<RepOPM> {
     rep.second(f2, cam)++;
 
     if (!opm.isCompatible(cam, rep.first[f2])) {
-      cout << "TT Erro Incompatibilidade!" << endl;
+      std::cout << "TT Erro Incompatibilidade!" << std::endl;
       this->print();
     }
 
@@ -46,8 +46,8 @@ class MoveTT : public Move<RepOPM> {
   }
 
   void print() const override {
-    cout << "MoveTT(from " << f1 << " to " << f2 << " of truck " << cam << ")"
-         << endl;
+    std::cout << "MoveTT(from " << f1 << " to " << f2 << " of truck " << cam << ")"
+         << std::endl;
   }
 };
 
@@ -65,7 +65,7 @@ class NSEnumTT : public NSEnum<RepOPM> {
     if (k > size()) {
       cerr << "Neighborhood TT Error! Move " << k
            << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
-           << endl;
+           << std::endl;
       exit(1);
     }
 
@@ -84,7 +84,7 @@ class NSEnumTT : public NSEnum<RepOPM> {
     return opm.getNumFrentes() * opm.getNumFrentes() * opm.getNumCaminhoes();
   }
 
-  void print() { cout << "NSEnum TT (" << size() << ")\n"; }
+  void print() { std::cout << "NSEnum TT (" << size() << ")\n"; }
 };
 }  // namespace POLAD
 #endif /*OPM_NSENUMTT_HPP_*/

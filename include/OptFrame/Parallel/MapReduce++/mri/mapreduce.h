@@ -29,7 +29,7 @@ class MapReduce
 {
 public:
    ///MapReduce execution (implemented by library).
-   virtual vector<pair<KeyB, C>> run(Mapper<KeyA, A, KeyB, B, C>&, Reducer<KeyA, A, KeyB, B, C>&, vector<pair<KeyA, A>>&) = 0;
+   virtual std::vector<std::pair<KeyB, C>> run(Mapper<KeyA, A, KeyB, B, C>&, Reducer<KeyA, A, KeyB, B, C>&, std::vector<std::pair<KeyA, A>>&) = 0;
 };
 
 ///StrMapReduce.

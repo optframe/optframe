@@ -119,16 +119,16 @@ class FirstImprovementSlow : public LocalSearch<XES> {
     return (s == idComponent()) || (LocalSearch<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << ":FISlow";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "FISlow: " << nsSeq.toString();
     return ss.str();
   }

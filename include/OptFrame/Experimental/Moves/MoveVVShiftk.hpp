@@ -48,7 +48,7 @@ class MoveVVShiftk : public Move<vector<vector<T>>, DS> {
 
   virtual bool canBeApplied(const vector<vector<T>>&) { return true; }
 
-  virtual Move<vector<vector<T>>, DS>& apply(vector<vector<T>>& rep) {
+  virtual Move<vector<vector<T>>, DS>& apply(std::vector<vector<T>>& rep) {
     pair<int, pair<pair<int, int>, pair<int, int>>> m;
     m.first = k;
     m.second.first.first = v1;
@@ -77,8 +77,8 @@ class MoveVVShiftk : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "Move Vector Vector Shiftk(" << k << " " << v1 << " " << p1 << " "
-         << v2 << " " << p2 << ")" << endl;
+    std::cout << "Move Vector Vector Shiftk(" << k << " " << v1 << " " << p1 << " "
+         << v2 << " " << p2 << ")" << std::endl;
   }
 
   virtual bool operator==(const Move<vector<vector<T>>, DS>& m) const {

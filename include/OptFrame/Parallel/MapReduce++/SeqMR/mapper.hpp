@@ -34,28 +34,28 @@ public:
      : mapReduce(_mapReduce){};
    ///Iterator mapping execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, B>> run(vector<pair<KeyA, A>>& as)
+   virtual std::vector<std::pair<KeyB, B>> run(std::vector<pair<KeyA, A>>& as)
    {
-      vector<pair<KeyB, B>> bs;
+      std::vector<std::pair<KeyB, B>> bs;
 
-      typename vector<pair<KeyA, A>>::iterator itAs;
+      typename std::vector<std::pair<KeyA, A>>::iterator itAs;
       for (itAs = as.begin(); itAs != as.end(); ++itAs) {
-         vector<pair<KeyB, B>> bss = map(*itAs);
-         typename vector<pair<KeyB, B>>::iterator itBss;
+         std::vector<std::pair<KeyB, B>> bss = map(*itAs);
+         typename std::vector<std::pair<KeyB, B>>::iterator itBss;
          for (itBss = bss.begin(); itBss != bss.end(); ++itBss)
             bs.push_back(*itBss);
       }
       return bs;
    };
 #else
-   virtual multimap<KeyB, B> run(vector<pair<KeyA, A>>& as)
+   virtual multimap<KeyB, B> run(std::vector<pair<KeyA, A>>& as)
    {
       multimap<KeyB, B> bs;
 
-      typename vector<pair<KeyA, A>>::iterator itAs;
+      typename std::vector<std::pair<KeyA, A>>::iterator itAs;
       for (itAs = as.begin(); itAs != as.end(); ++itAs) {
-         vector<pair<KeyB, B>> bss = map(*itAs);
-         typename vector<pair<KeyB, B>>::iterator itBss;
+         std::vector<std::pair<KeyB, B>> bss = map(*itAs);
+         typename std::vector<std::pair<KeyB, B>>::iterator itBss;
          for (itBss = bss.begin(); itBss != bss.end(); ++itBss)
             bs.insert(*itBss);
       }
@@ -63,7 +63,7 @@ public:
    };
 #endif
    ///Map function (implemented by user).
-   virtual vector<pair<KeyB, B>> map(pair<KeyA, A>) = 0;
+   virtual std::vector<std::pair<KeyB, B>> map(pair<KeyA, A>) = 0;
 
 protected:
    MapReduce<KeyA, A, KeyB, B, C>* mapReduce;

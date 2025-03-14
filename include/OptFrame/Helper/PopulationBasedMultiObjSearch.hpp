@@ -65,7 +65,7 @@ class PopulationBasedMultiObjSearch
   }
 
   // return true if any value was improved
-  virtual bool updateBounds(vector<MOSIndividual<XMES2>>& P,
+  virtual bool updateBounds(std::vector<MOSIndividual<XMES2>>& P,
                             vector<double>& best) {
     bool improved = false;
     for (unsigned s = 0; s < P.size(); s++) {
@@ -158,7 +158,7 @@ class NSPopulationBasedMultiObjSearch
   virtual ~NSPopulationBasedMultiObjSearch() = default;
 
   // evaluate and return best values for population
-  virtual vector<double> evaluate(vector<MOSIndividual<XMES2>>& Pop) = 0;
+  virtual vector<double> evaluate(std::vector<MOSIndividual<XMES2>>& Pop) = 0;
 
   // from PopulationBasedMultiObjSearch
   void assignFitness(
@@ -179,7 +179,7 @@ class NSPopulationBasedMultiObjSearch
                       vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // new method
-  virtual void freePopulation(vector<MOSIndividual<XMES2>>& P,
+  virtual void freePopulation(std::vector<MOSIndividual<XMES2>>& P,
                               vector<MOSIndividual<XMES2>>& archive) = 0;
 
   virtual void printPopulation(const vector<MOSIndividual<XMES2>>& P) {

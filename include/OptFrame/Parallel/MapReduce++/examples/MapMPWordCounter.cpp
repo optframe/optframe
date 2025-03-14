@@ -36,9 +36,9 @@ class MyMapper : public MapMP_Mapper<string, string, string, int, int>
 public:
    MyMapper(MapReduce<string, string, string, int, int>* mr)
      : MapMP_Mapper<string, string, string, int, int>(mr){};
-   virtual vector<pair<string, int>> map(pair<string, string> a) // Map function implementation
+   virtual std::vector<std::pair<string, int>> map(pair<std::string, std::string> a) // Map function implementation
    {
-      vector<pair<string, int>> mapped;
+      std::vector<std::pair<string, int>> mapped;
       Scanner scan(a.second);
       scan.useSeparators(string(" \n\r\t\\\'\"!@#^&*()+={[}]|:;,<>./?"));
       while (scan.hasNext())
@@ -55,7 +55,7 @@ public:
    virtual pair<string, int> reduce(pair<string, vector<int>> bs) // Reduce function implementation
    {
       int reduced = 0;
-      for (vector<int>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
+      for (std::vector<int>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
          reduced += *it;
       return pair<string, int>(bs.first, reduced);
    };
@@ -64,7 +64,7 @@ public:
 int
 main()
 {
-   cout << "MapMP_WorldCounter test" << endl;
+   std::cout << "MapMP_WorldCounter test" << std::endl;
 
    // Reading text
    Scanner scan(new File("doc"));
@@ -73,23 +73,23 @@ main()
       text += scan.next() + " ";
 
    // MapReduce input
-   vector<pair<string, string>> input;
-   input.push_back(pair<string, string>("doc", text));
+   std::vector<std::pair<std::string, std::string>> input;
+   input.push_back(pair<std::string, std::string>("doc", text));
 
    // MapReduce declaration and application
    MapMP_MapReduce<string, string, string, int, int> mapReduce;
    MyMapper mapper(&mapReduce);
    MyReducer reducer(&mapReduce);
 
-   vector<pair<string, int>> output = mapReduce.run(mapper, reducer, input);
+   std::vector<std::pair<string, int>> output = mapReduce.run(mapper, reducer, input);
 
    // Output exibition
-   cout << "MapReduce word counter result" << endl;
+   std::cout << "MapReduce word counter result" << std::endl;
    multimap<int, string> sortedOutput;
-   for (vector<pair<string, int>>::iterator it = output.begin(); it != output.end(); it++)
+   for (std::vector<pair<string, int>>::iterator it = output.begin(); it != output.end(); it++)
       sortedOutput.insert(pair<int, string>((*it).second, (*it).first));
    for (multimap<int, string>::reverse_iterator it = sortedOutput.rbegin(); it != sortedOutput.rend(); it++)
-      cout << *it << endl;
+      std::cout << *it << std::endl;
 
    return 0;
 }

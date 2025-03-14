@@ -85,7 +85,7 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
 
     vector<vector<pair<double, int>>> NPP(n);
 
-    if (Component::verbose) cout << "COMPLETE NPPs:" << endl;
+    if (Component::verbose) std::cout << "COMPLETE NPPs:" << std::endl;
 
     for (int product = 0; product < n; product++) {
       for (int client = 0; client < c; client++) {
@@ -105,20 +105,20 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
 
         if (r >= 14) clientRisk = 0.6;
 
-        // cout << "clientRisk = " << clientRisk << endl;
+        // std::cout << "clientRisk = " << clientRisk << std::endl;
 
         double valueNPP = (r - cost) / cost;
 
-        NPP[product].push_back(make_pair(valueNPP, client));
+        NPP[product].push_back(std::make_pair(valueNPP, client));
       }
 
       sort(NPP[product].begin(), NPP[product].end(), comparacao);
 
-      if (Component::verbose) cout << NPP[product] << endl;
+      if (Component::verbose) std::cout << NPP[product] << std::endl;
     }
 
     while (!ended) {
-      if (Component::verbose) cout << "\n iter = " << iter << endl;
+      if (Component::verbose) std::cout << "\n iter = " << iter << std::endl;
 
       vector<double> PRj(n);
       vector<double> Cj(n);
@@ -128,7 +128,7 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
 
       vector<vector<pair<double, int>>> NPPj(n);
 
-      if (Component::verbose) cout << "PARCIAL NPPjs:" << endl;
+      if (Component::verbose) std::cout << "PARCIAL NPPjs:" << std::endl;
 
       for (int product = 0; product < n; product++) {
         if (availableProducts[product])
@@ -139,7 +139,7 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
             }
           }
 
-        if (Component::verbose) cout << NPPj[product] << endl;
+        if (Component::verbose) std::cout << NPPj[product] << std::endl;
       }
 
       for (int product = 0; product < n; product++) {
@@ -153,7 +153,7 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
             int client = NPPj[product][greedyRand].second;
 
             if (greedyRand > sizeLC) {
-              cout << "BUG!!!! ON CONSTRUTIVE" << endl;
+              std::cout << "BUG!!!! ON CONSTRUTIVE" << std::endl;
               getchar();
             }
 
@@ -169,22 +169,22 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
         }
       }
 
-      /*			cout << "Cj: " << endl;
-                      cout << Cj << endl;
-                      cout << "Pj: " << endl;
-                      cout << Pj << endl;
+      /*			cout << "Cj: " << std::endl;
+                      std::cout << Cj << std::endl;
+                      std::cout << "Pj: " << std::endl;
+                      std::cout << Pj << std::endl;
 
                       getchar();*/
 
       if (Component::verbose) {
-        cout << "Cj: " << endl;
-        cout << Cj << endl;
-        cout << "Pj: " << endl;
-        cout << Pj << endl;
-        cout << "PRj: " << endl;
-        cout << PRj << endl;
-        cout << "selectedClients: " << endl;
-        cout << selectedClients << endl;
+        std::cout << "Cj: " << std::endl;
+        std::cout << Cj << std::endl;
+        std::cout << "Pj: " << std::endl;
+        std::cout << Pj << std::endl;
+        std::cout << "PRj: " << std::endl;
+        std::cout << PRj << std::endl;
+        std::cout << "selectedClients: " << std::endl;
+        std::cout << selectedClients << std::endl;
       }
 
       int bestj = -1;  // Melhor Produto a ser inserido
@@ -202,25 +202,25 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
             if (PRj[product] > bestPRj) {
               bestj = product;
               bestPRj = PRj[product];
-              if (Component::verbose) cout << "bestPRj = " << bestPRj << endl;
+              if (Component::verbose) std::cout << "bestPRj = " << bestPRj << std::endl;
             }
         }
       }
 
       int bugs = 0;
       /*
-                      cout << "bestj" << bestj << endl;
+                      std::cout << "bestj" << bestj << std::endl;
 
                       sort(selectedClients[bestj].begin(),
-         selectedClients[bestj].end(), comparacaoClients); cout <<
-         selectedClients[bestj] << endl; for (int o = 0; o <
+         selectedClients[bestj].end(), comparacaoClients); std::cout <<
+         selectedClients[bestj] << std::endl; for (int o = 0; o <
          pMODM.getProductMinClients(bestj) - 1; o++)
                       {
                       if (selectedClients[bestj][o] == selectedClients[bestj][o
          + 1])
                       {
-                      cout << "Bug!!!!" << endl;
-                      cout << selectedClients[bestj][o] << endl;
+                      std::cout << "Bug!!!!" << std::endl;
+                      std::cout << selectedClients[bestj][o] << std::endl;
                       getchar();
                       }
                       }*/
@@ -229,8 +229,8 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
         int minSize = selectedClients[bestj].size();
         int bestOj = min(pMODM.getProductMinClients(bestj), minSize);
         if (Component::verbose) {
-          cout << "bestJ = " << bestj << endl;
-          cout << "bestOj = " << bestOj << endl;
+          std::cout << "bestJ = " << bestj << std::endl;
+          std::cout << "bestOj = " << bestOj << std::endl;
         }
 
         val += Pj[bestj];
@@ -250,34 +250,34 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
         }
 
         if (Component::verbose)
-          cout << "notAvailable: " << notAvailable << endl;
+          std::cout << "notAvailable: " << notAvailable << std::endl;
 
         for (int product = 0; product < n; product++)  // j = product
           if (notAvailable > (c - pMODM.getProductMinClients(product)))
             availableProducts[product] = false;
-        if (Component::verbose) cout << "bugs: " << bugs << endl;
+        if (Component::verbose) std::cout << "bugs: " << bugs << std::endl;
       } else
         ended = true;
 
-      // cout << newRep << endl;
+      // std::cout << newRep << std::endl;
       // getchar();
       iter++;
     }
     if (Component::verbose) {
-      cout << "Solucao Final - 1 :" << endl;
-      cout << newRep << endl;
+      std::cout << "Solucao Final - 1 :" << std::endl;
+      std::cout << newRep << std::endl;
     }
 
     adsMan.initializeADS(newRep, newAds);
 
     if (Component::verbose) {
-      cout << "Total Revenue: ";
-      cout << newAds.totalRevenue << endl;
-      cout << "Total Cost: ";
-      cout << newAds.totalCost << endl;
-      // cout << availableProducts << endl;
-      cout << "productOffers: ";
-      cout << newAds.productOffers << endl;
+      std::cout << "Total Revenue: ";
+      std::cout << newAds.totalRevenue << std::endl;
+      std::cout << "Total Cost: ";
+      std::cout << newAds.totalCost << std::endl;
+      // std::cout << availableProducts << std::endl;
+      std::cout << "productOffers: ";
+      std::cout << newAds.productOffers << std::endl;
       getchar();
     }
 
@@ -286,8 +286,8 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
 
     for (int product = 0; product < n; product++)
       for (int client = 0; client < c; client++) {
-        // cout << "(" << newRep[client] << "," <<
-        // pMODM.getClientMaxOffers(client) << ")" << endl;
+        // std::cout << "(" << newRep[client] << "," <<
+        // pMODM.getClientMaxOffers(client) << ")" << std::endl;
         if ((newAds.productOffers[product] > 0) &&
             (newRep[client][product] == false))
           if (newAds.clientOffers[client] <
@@ -297,12 +297,12 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
                  pMODM.getCost(client, product)) &&
                 (pMODM.getCost(client, product) + newAds.totalCost[product]) <=
                     pMODM.getProductBudget(product)) {
-              // cout << "OK, VALE A PENA!!!" << endl;
-              // cout << pMODM.getCost(client, product) << endl;
-              // cout << pMODM.getRevenue(client, product) << endl;
-              // cout << newAds.totalCost[product] << endl;
-              // cout<<"Client: "<<client<<endl;
-              // cout<<"Product: "<<product<<endl;
+              // std::cout << "OK, VALE A PENA!!!" << std::endl;
+              // std::cout << pMODM.getCost(client, product) << std::endl;
+              // std::cout << pMODM.getRevenue(client, product) << std::endl;
+              // std::cout << newAds.totalCost[product] << std::endl;
+              // std::cout<<"Client: "<<client<<endl;
+              // std::cout<<"Product: "<<product<<endl;
               newRep[client][product] = true;
 
               // update ADS
@@ -310,42 +310,42 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
               newAds.productOffers[product]++;
               newAds.totalCost[product] += pMODM.getCost(client, product);
               newAds.totalRevenue[product] += pMODM.getRevenue(client, product);
-              // cout << getchar();
+              // std::cout << getchar();
             }
       }
     //===================================================================================
 
     if (Component::verbose) {
-      cout << "Solucao Final - 2 :" << endl;
-      cout << newRep << endl;
-      cout << "Total Revenue: ";
-      cout << newAds.totalRevenue << endl;
-      cout << "Total Cost: ";
-      cout << newAds.totalCost << endl;
-      cout << "productOffers: ";
-      cout << newAds.productOffers << endl;
+      std::cout << "Solucao Final - 2 :" << std::endl;
+      std::cout << newRep << std::endl;
+      std::cout << "Total Revenue: ";
+      std::cout << newAds.totalRevenue << std::endl;
+      std::cout << "Total Cost: ";
+      std::cout << newAds.totalCost << std::endl;
+      std::cout << "productOffers: ";
+      std::cout << newAds.productOffers << std::endl;
 
       getchar();
     }
 
     // adsMan.initializeADS(newRep, newAds);
 
-    if (Component::verbose) cout << "Fim Constructive!";
+    if (Component::verbose) std::cout << "Fim Constructive!";
 
-    // cout << "Tempo Atual: " << t.now() << endl;
+    // std::cout << "Tempo Atual: " << t.now() << std::endl;
     // getchar();
     return make_optional(SolutionMODM(newRep, newAds));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << GRASP::family()
        << ":GRConstructive"
        << ":MODM";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 }  // namespace MODM
 

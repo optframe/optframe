@@ -197,8 +197,8 @@ class MoveSwapRotateCenter : public Move<ESolutionEtII> {
   }
 
   void print() const override {
-    cout << "MoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
-         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << endl;
+    std::cout << "MoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
+         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << std::endl;
   }
 
   std::string id() const override {
@@ -303,7 +303,7 @@ class NSSeqSwapRotateCenter : public NSSeq<ESolutionEtII> {
         rep.getNumRows() - 2, rep.getNumCols() - 2));
   }
 
-  void print() const override { cout << "NSSeqSwapRotateCenter" << endl; }
+  void print() const override { std::cout << "NSSeqSwapRotateCenter" << std::endl; }
 
   std::string id() const override {
     return "OptFrame:NS:NSSeqSwapRotateCenter";

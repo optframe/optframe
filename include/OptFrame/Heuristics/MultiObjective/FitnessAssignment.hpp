@@ -54,7 +54,7 @@ class FitnessAssignment : public Component {
   }
 
   // assign fitness to all individuals from population 'P'
-  virtual void assignFitnessAll(vector<MOSIndividual<XMES2>>& P) {
+  virtual void assignFitnessAll(std::vector<MOSIndividual<XMES2>>& P) {
     // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
     vector<int> v_id;
     for (unsigned i = 0; i < P.size(); i++) v_id.push_back(i);
@@ -66,7 +66,7 @@ class FitnessAssignment : public Component {
       // vector<MOSIndividual<XMES2>>& g,
       const vector<int>& g, vector<MOSIndividual<XMES2>>& P) = 0;
 
-  void print() const override { cout << "FitnessAssignment" << endl; }
+  void print() const override { std::cout << "FitnessAssignment" << std::endl; }
 
   string id() const override { return "FitnessAssignment"; }
 };

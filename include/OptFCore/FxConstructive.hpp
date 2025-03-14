@@ -19,8 +19,8 @@ class FxConstructive final : public Constructive<S> {
     return fGenerate(timelimit);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":FxConstructive";
     return ss.str();
   }

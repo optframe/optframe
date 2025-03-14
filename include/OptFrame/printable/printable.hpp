@@ -266,7 +266,7 @@ std::string toString(const std::vector<T>& v) {
 #ifndef NDEBUG
 
 // TODO(igormcoelho): use std::ostreamable<T> here to test structures, instead
-// of printing to cout
+// of printing to std::cout
 
 class test_runtime_can_print {
  public:

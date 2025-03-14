@@ -37,9 +37,9 @@ public:
    virtual multimap<int, int> map(pair<int, int> a)
    {
       multimap<int, int> m;
-      cout << "\tMapping..\n";
+      std::cout << "\tMapping..\n";
       //...
-      cout << "\tOk\n";
+      std::cout << "\tOk\n";
       return m;
    };
 };
@@ -52,9 +52,9 @@ public:
    virtual pair<int, int> reduce(pair<int, vector<int>> bs)
    {
       int reduced;
-      cout << "\tReducing..\n";
+      std::cout << "\tReducing..\n";
       //...
-      cout << "\tOk\n";
+      std::cout << "\tOk\n";
       return pair<int, int>(bs.first, reduced);
    };
 };
@@ -62,7 +62,7 @@ public:
 int
 main()
 {
-   cout << "MapMP test" << endl;
+   std::cout << "MapMP test" << std::endl;
 
    multimap<int, int> input;
 

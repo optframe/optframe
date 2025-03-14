@@ -47,7 +47,7 @@ public:
       return "component.builder_of_component component_name [store_list]\nWhere: store_list is an optional variable to store the builders.";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
@@ -58,20 +58,20 @@ public:
       for (unsigned i = Component::idComponent().length(); i < component_name.size(); i++)
          pattern += component_name.at(i);
 
-      vector<pair<string, vector<pair<string, string>>>> builders = factory.listBuilders(pattern);
+      std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> builders = factory.listBuilders(pattern);
 
       if (!scanner.hasNext()) {
          for (int i = 0; i < (int)builders.size(); i++) {
-            cout << builders[i].first << "\t";
+            std::cout << builders[i].first << "\t";
             for (unsigned j = 0; j < builders[i].second.size(); j++)
-               cout << builders[i].second[j].first << "=>'" << builders[i].second[j].second << "' ";
-            cout << endl;
+               std::cout << builders[i].second[j].first << "=>'" << builders[i].second[j].second << "' ";
+            std::cout << std::endl;
          }
 
          return true;
       } else {
          string new_name = scanner.next();
-         stringstream ss;
+         std::stringstream ss;
 
          ss << new_name << " [";
          for (unsigned i = 0; i < builders.size(); i++) {
@@ -92,7 +92,7 @@ public:
       }
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

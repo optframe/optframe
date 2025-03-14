@@ -25,12 +25,12 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
        mysolution_count++;
        if(mysolution_count>1)
        {
-           cout << "Exceeded 1 solutions = " << mysolution_count << endl;
+           std::cout << "Exceeded 1 solutions = " << mysolution_count << std::endl;
            //getchar();
        }
        if(mysolution_count>20)
        {
-           cout << "Exceeded 20 solutions!" << endl;
+           std::cout << "Exceeded 20 solutions!" << std::endl;
            exit(1);
        }
 */
@@ -41,12 +41,12 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
        mysolution_count++;
        if(mysolution_count>1)
        {
-           cout << "Exceeded 1 solutions = " << mysolution_count << endl;
+           std::cout << "Exceeded 1 solutions = " << mysolution_count << std::endl;
            //getchar();
        }
        if(mysolution_count>20)
        {
-           cout << "Exceeded 20 solutions!" << endl;
+           std::cout << "Exceeded 20 solutions!" << std::endl;
            exit(1);
        }
 */
@@ -58,17 +58,17 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
        mysolution_count++;
        if(mysolution_count>1)
        {
-           cout << "Exceeded 1 solutions = " << mysolution_count << endl;
+           std::cout << "Exceeded 1 solutions = " << mysolution_count << std::endl;
            //getchar();
        }
        if(mysolution_count>20)
        {
-           cout << "Exceeded 20 solutions!" << endl;
+           std::cout << "Exceeded 20 solutions!" << std::endl;
            exit(1);
        }
 */
 
-    // cout << "MyS: copy constructor" << endl;
+    // std::cout << "MyS: copy constructor" << std::endl;
 
     /*
       int* s = new int[getR().size()];
@@ -107,8 +107,8 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
   static bool syncADS(ProblemInstance& p, const RepSVRPDSP& rep,
                       AdsSVRPDSP& ads) {
     if (verbose) {
-      cout << "MyS: syncADS" << endl;
-      cout << "rep: " << rep << endl;
+      std::cout << "MyS: syncADS" << std::endl;
+      std::cout << "rep: " << rep << std::endl;
     }
 
     int N = p.N;
@@ -117,14 +117,14 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
     int n = p.n;
 
     if (rep.size() != (dn + 2)) {
-      cout << "syncADS: missing numbers! it's " << rep.size()
-           << " and should be " << (dn + 2) << endl;
+      std::cout << "syncADS: missing numbers! it's " << rep.size()
+           << " and should be " << (dn + 2) << std::endl;
       return false;
     }
 
     if (rep.at(0) != 0)  // no starting depot
     {
-      cout << "syncADS: missing initial depot!" << endl;
+      std::cout << "syncADS: missing initial depot!" << std::endl;
       return false;
     }
 
@@ -136,22 +136,22 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
     for (unsigned i = 0; i < rep.size(); i++) {
       if (rep[i] == 0) {
         ads.zero = i;
-        if (verbose) cout << "new zero on " << i << endl;
+        if (verbose) std::cout << "new zero on " << i << std::endl;
       }
 
       s[i] = rep[i];
     }
 
     ads.load[0] = p.Q;
-    if (verbose) cout << "load: ";
+    if (verbose) std::cout << "load: ";
     for (unsigned i = 1; i < ads.zero; i++) {
       ads.load[i] = ads.load[i - 1] + p.dp.at(rep[i]) - p.dd.at(rep[i]);
       if (verbose)
-        cout << i << "(" << rep[i]
+        std::cout << i << "(" << rep[i]
              << "): +=" << (p.dp.at(rep[i]) - p.dd.at(rep[i])) << "="
              << ads.load[i] << " ";
     }
-    if (verbose) cout << endl;
+    if (verbose) std::cout << std::endl;
 
     for (unsigned i = 0; i < ads.load.size(); i++) q[i] = ads.load[i];
 
@@ -161,7 +161,7 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
 
     if (!ads.gpuSol || !ads.gpuLoad) {
       initialize_gpu_solution(&ds, &dq, rep.size());  // max_size
-      if (verbose) cout << "NEW GPU ADS! (" << ds << "," << dq << ")" << endl;
+      if (verbose) std::cout << "NEW GPU ADS! (" << ds << "," << dq << ")" << std::endl;
     } else {
       ds = ads.gpuSol;
       dq = ads.gpuLoad;
@@ -175,10 +175,10 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
       get_gpu_solution(rep.size(), ds, dq, s, q);
       for (unsigned i = 0; i < rep.size(); i++)
         if (q[i] != ads.load[i]) {
-          cout << "GPU ERROR COPY LOAD: " << i << endl;
+          std::cout << "GPU ERROR COPY LOAD: " << i << std::endl;
           exit(1);
         }
-      cout << "GPU COPY OK!" << endl;
+      std::cout << "GPU COPY OK!" << std::endl;
     }
 #endif
 
@@ -191,14 +191,14 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
   }
 
   void print() const override {
-    cout << "SVRPDSP Solution => ";
+    std::cout << "SVRPDSP Solution => ";
     CopySolution<RepSVRPDSP, AdsSVRPDSP>::print();
-    // cout << "ADS: ";
+    // std::cout << "ADS: ";
     // getADS().print();
   }
 
   MySolution& operator=(const MySolution& s) {
-    // cout << "MyS: MyS = MyS" << endl;
+    // std::cout << "MyS: MyS = MyS" << std::endl;
     if (&s == this)  // auto ref check
       return *this;
 
@@ -212,7 +212,7 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
 
   CopySolution<RepSVRPDSP, AdsSVRPDSP>& operator=(
       const CopySolution<RepSVRPDSP, AdsSVRPDSP>& s) {
-    // cout << "MyS: S=S" << endl;
+    // std::cout << "MyS: S=S" << std::endl;
     if (&s == this)  // auto ref check
       return *this;
 
@@ -225,7 +225,7 @@ class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP> {
   }
 
   CopySolution<RepSVRPDSP, AdsSVRPDSP>& clone() const {
-    // cout << "MyS: clone()" << endl;
+    // std::cout << "MyS: clone()" << std::endl;
     CopySolution<RepSVRPDSP, AdsSVRPDSP>* s = new MySolution(*this);
     return (*s);
   }

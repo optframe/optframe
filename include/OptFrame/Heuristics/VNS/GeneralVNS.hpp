@@ -47,8 +47,8 @@ class GeneralVNS : public VariableNeighborhoodSearch<XES> {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << VariableNeighborhoodSearch<XES>::idComponent() << "GVNS";
     return ss.str();
   }
@@ -94,22 +94,22 @@ class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
     return new BasicVNS<XES, XSH>(eval, constructive, shakelist, searchlist);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
-    stringstream ss;
+    std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
+    params.push_back(std::make_pair(ss.str(), "list of NS"));
 
     stringstream ss2;
     ss2 << NSSeq<XES>::idComponent() << "[]";
-    params.push_back(make_pair(ss2.str(), "list of NSSeq"));
+    params.push_back(std::make_pair(ss2.str(), "list of NSSeq"));
 
     return params;
   }
@@ -118,8 +118,8 @@ class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
     return component == BasicVNS<XES, XSH>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family() << "GVNS";
     return ss.str();
   }

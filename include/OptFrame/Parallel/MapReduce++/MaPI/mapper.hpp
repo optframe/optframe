@@ -38,12 +38,12 @@ public:
    };
       ///Iterator mapping execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, B>> run(vector<pair<KeyA, A>>& as)
+   virtual std::vector<std::pair<KeyB, B>> run(std::vector<pair<KeyA, A>>& as)
    {
-      vector<pair<KeyB, B>> bs;
+      std::vector<std::pair<KeyB, B>> bs;
 
 #else
-   virtual multimap<KeyB, B> run(vector<pair<KeyA, A>>& as)
+   virtual multimap<KeyB, B> run(std::vector<pair<KeyA, A>>& as)
    {
       multimap<KeyB, B> bs;
 #endif
@@ -51,7 +51,7 @@ public:
       vector<string> outputs;
 
       vector<string> inputs;
-      typename vector<pair<KeyA, A>>::iterator itAs;
+      typename std::vector<std::pair<KeyA, A>>::iterator itAs;
       for (itAs = as.begin(); itAs != as.end(); ++itAs) {
          stringstream s;
          s << serializer->KeyA_toString((*itAs).first) << "\1"
@@ -68,7 +68,7 @@ public:
       if (numInputs <= numMapProcs) {
          // Mensagem
          // enviar para os processos
-         for (int i = 0; i < numInputs; i++) { //cout << "Enviando" << i << endl;
+         for (int i = 0; i < numInputs; i++) { //cout << "Enviando" << i << std::endl;
             // enviar
 
             int stsize = inputs.at(i).size() + 1;
@@ -82,7 +82,7 @@ public:
          }
 
          // enviar _ para os demais processos
-         for (int i = numInputs; i < numMapProcs; i++) { //cout << "Enviando_" << i << endl;
+         for (int i = numInputs; i < numMapProcs; i++) { //cout << "Enviando_" << i << std::endl;
             // enviar
             int stsize = 1;
             char st[] = "_";
@@ -112,7 +112,7 @@ public:
          // enviar para os processos
          for (int i = 0; i < numInputs; i++) {
             int dest = i % numMapProcs + 1;
-            //cout << "EnviandoDest " << dest << endl;
+            //cout << "EnviandoDest " << dest << std::endl;
             // enviar
             int stsize = inputs.at(i).size();
             char st[stsize];
@@ -154,7 +154,7 @@ public:
       return bs;
    };
    ///Map function (implemented by user).
-   virtual vector<pair<KeyB, B>> map(pair<KeyA, A>) = 0;
+   virtual std::vector<std::pair<KeyB, B>> map(pair<KeyA, A>) = 0;
 
    MaPI_Serializer<KeyA, A, KeyB, B, C>* getSerializer() { return serializer; };
 

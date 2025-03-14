@@ -175,7 +175,7 @@ class MultiEvaluation : public Component {
     assert(false);
   }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 
   std::string toString() const override {
     std::stringstream ss;

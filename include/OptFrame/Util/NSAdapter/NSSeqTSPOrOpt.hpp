@@ -102,20 +102,20 @@ class NSSeqTSPOrOpt : public NSSeq<XES, XSH> {
     return OrOpt1_2_3->getIterator(se);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NSSeq<XES>::idComponent() << ":NSSeqTSPOrOpt";
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NSSeq<XES>::compatible(s));
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqVectorOrOpt{1..3}";
     return ss.str();
   }

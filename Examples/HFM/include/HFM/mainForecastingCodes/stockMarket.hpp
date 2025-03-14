@@ -23,20 +23,20 @@ extern int nThreads;
 
 int stockMarketForecasting(int argc, char** argv) {
   nThreads = 1;
-  cout << "Welcome to stock market forecasting!" << endl;
-  cout << "Let's optimize with " << nThreads << " nThreads\n" << endl;
+  std::cout << "Welcome to stock market forecasting!" << std::endl;
+  std::cout << "Let's optimize with " << nThreads << " nThreads\n" << std::endl;
 
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   //	if (argc != 2)
   //	{
-  //		cout << "Parametros incorretos!" << endl;
+  //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
   //endl; 		exit(1);
   //	}
@@ -45,7 +45,7 @@ int stockMarketForecasting(int argc, char** argv) {
   //	string nomeOutput = caminhoOutput;
 
   //===================================
-  cout << "Parametros:" << endl;
+  std::cout << "Parametros:" << std::endl;
 
   // Numero de passos a frente - Horizonte de previsao
   int fh = 1;
@@ -62,7 +62,7 @@ int stockMarketForecasting(int argc, char** argv) {
        explanatoryVariables.push_back("./Instance/dadosBovespa/emprestimoAigorExp3");
        explanatoryVariables.push_back("./Instance/dadosBovespa/emprestimoAigorExp4");*/
 
-  cout << "Variables and explanation:" << explanatoryVariables << endl;
+  std::cout << "Variables and explanation:" << explanatoryVariables << std::endl;
 
   treatForecasts rF(explanatoryVariables);
 
@@ -72,7 +72,7 @@ int stockMarketForecasting(int argc, char** argv) {
   int lambda = mu * 6;
   int evalFOMinimizer = MAPE_INDEX;
   int contructiveNumberOfColumns = 100;
-  cout << "contructiveNumberOfColumns:" << contructiveNumberOfColumns << endl;
+  std::cout << "contructiveNumberOfColumns:" << contructiveNumberOfColumns << std::endl;
   int evalAprox = 0;
   double alphaACF = -1;
   int construtive = 2;
@@ -107,7 +107,7 @@ int stockMarketForecasting(int argc, char** argv) {
   int nTotalForecastingsTrainningSet = rF.getForecastsSize(0) - fh;
 
   //========SET PROBLEM MAXIMUM LAG ===============
-  cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+  std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
   int maxLargAccordingToRate =
       ((nTotalForecastingsTrainningSet - fh) * argvMaxLagRate) / 100.0;
@@ -116,7 +116,7 @@ int stockMarketForecasting(int argc, char** argv) {
     maxLargAccordingToRate--;
   if (maxLargAccordingToRate <= 0) maxLargAccordingToRate = 1;
 
-  cout << "maxLargAccordingToRate:" << maxLargAccordingToRate << endl;
+  std::cout << "maxLargAccordingToRate:" << maxLargAccordingToRate << std::endl;
   for (int expVar = 0; expVar < (int)explanatoryVariables.size(); expVar++)
     problemParam.setMaxLag(maxLargAccordingToRate, expVar);
 
@@ -143,16 +143,16 @@ int stockMarketForecasting(int argc, char** argv) {
 
   vector<double> foIndicators;
   int beginTrainingSet = 0;
-  cout << std::setprecision(9);
-  cout << std::fixed;
+  std::cout << std::setprecision(9);
+  std::cout << std::fixed;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
-  cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << endl;
-  cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << endl;
-  cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-  cout << "#~NTR: " << NTRaprox << endl;
-  cout << "#maxNotUsed: " << maxLag << endl;
-  cout << "#StepsAhead: " << fh << endl << endl;
+  std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+       << std::endl;
+  std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+  std::cout << "#~NTR: " << NTRaprox << std::endl;
+  std::cout << "#maxNotUsed: " << maxLag << std::endl;
+  std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
 
   vector<vector<double>> trainningSet;  // trainningSetVector
   for (int expVar = 0; expVar < (int)explanatoryVariables.size(); expVar++)
@@ -213,30 +213,30 @@ int stockMarketForecasting(int argc, char** argv) {
   //fh + maxLag));
 
   vector<vector<double>*> ensembleBlindForecasts;
-  cout << "\nPrinting obtained sets of predicted values..." << endl;
+  std::cout << "\nPrinting obtained sets of predicted values..." << std::endl;
   for (int i = 0; i < nObtainedParetoSol; i++) {
-    cout << setprecision(2);
+    std::cout << setprecision(2);
     vector<double>* blindForecasts = forecastObj.returnBlind(
         vESolPF[i]->first.getR(), dataForFeedingValidationTest);
     for (int f = 0; f < (int)blindForecasts->size(); f++)
-      cout << blindForecasts->at(f) << "/" << targetValidationSet.at(f) << "/"
+      std::cout << blindForecasts->at(f) << "/" << targetValidationSet.at(f) << "/"
            << (targetValidationSet.at(f) - blindForecasts->at(f)) << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
 
     //		cout <<
     //forecastObject->returnForecastsAndTargets(vSolPF[i]->getR(),
-    //validationSet) << endl; 		getchar();
+    //validationSet) << std::endl; 		getchar();
     ensembleBlindForecasts.push_back(blindForecasts);
     // getchar();
   }
 
-  cout << "\nPrinting pareto front forecast accuracy measures..." << endl;
+  std::cout << "\nPrinting pareto front forecast accuracy measures..." << std::endl;
   for (int i = 0; i < nObtainedParetoSol; i++) {
-    cout << setprecision(5);
+    std::cout << setprecision(5);
     for (int e = 0; e < (int)vEvalPF[i]->size(); e++)
-      cout << vEvalPF[i]->at(e).getObjFunction() << "\t\t";
-    cout << endl;
+      std::cout << vEvalPF[i]->at(e).getObjFunction() << "\t\t";
+    std::cout << std::endl;
   }
 
   opf->exportParetoFront("./Outputs/paretoFrontGPLS.txt", "w");
@@ -246,7 +246,7 @@ int stockMarketForecasting(int argc, char** argv) {
 
   for (int i = 0; i < nObtainedParetoSol; i++) delete ensembleBlindForecasts[i];
 
-  cout << "MO Stock Market forecasting finished!" << endl;
+  std::cout << "MO Stock Market forecasting finished!" << std::endl;
 
   //	===========================================
   //	TIME FOR BRINCANDO COM A BOLSA DE VALORES (BBV)

@@ -17,15 +17,15 @@ using namespace optframe;
 using namespace HFM;
 
 int HFM_API(int argc, char** argv) {
-  cout << "============================================================="
-       << endl;
-  cout << "Welcome to the Hybrid Metaheuristic Fuzzy Model API!" << endl;
-  cout << "Interface is on the way to go... :)" << endl;
-  cout << "============================================================="
-       << endl;
+  std::cout << "============================================================="
+       << std::endl;
+  std::cout << "Welcome to the Hybrid Metaheuristic Fuzzy Model API!" << std::endl;
+  std::cout << "Interface is on the way to go... :)" << std::endl;
+  std::cout << "============================================================="
+       << std::endl;
   RandGenMersenneTwister rg;
   long seed = time(nullptr);  // CalibrationMode
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
@@ -33,54 +33,54 @@ int HFM_API(int argc, char** argv) {
   vector<string> explanatoryVariables;
 
   while (option != 0) {
-    cout << "Please choose your action:" << endl;
-    cout << "1 - change current seed." << endl;
-    cout << "2 - add problem historical time-series." << endl;
-    cout << "3 - clear historical time-series." << endl;
-    cout << "4 - define problem pameters (training/validation/forecasting "
+    std::cout << "Please choose your action:" << std::endl;
+    std::cout << "1 - change current seed." << std::endl;
+    std::cout << "2 - add problem historical time-series." << std::endl;
+    std::cout << "3 - clear historical time-series." << std::endl;
+    std::cout << "4 - define problem pameters (training/validation/forecasting "
             "horizon)."
-         << endl;
-    cout << "5 - load hybrid model" << endl;
+         << std::endl;
+    std::cout << "5 - load hybrid model" << std::endl;
     cin >> option;
     switch (option) {
       case 1:
-        cout << "Please type new seed" << endl;
+        std::cout << "Please type new seed" << std::endl;
         cin >> seed;
-        cout << "Current Seed = " << seed << "\n \n";
+        std::cout << "Current Seed = " << seed << "\n \n";
         break;
 
       case 2: {
-        cout << "Please type instance path:" << endl;
+        std::cout << "Please type instance path:" << std::endl;
 
         string nome;
         cin >> nome;
-        cout << "You are trying to read the following path:" << nome << endl;
-        cout << "Is it right? (1 or 0) " << endl;
+        std::cout << "You are trying to read the following path:" << nome << std::endl;
+        std::cout << "Is it right? (1 or 0) " << std::endl;
         int right;
         cin >> right;
 
         if (right == 1) explanatoryVariables.push_back(nome);
 
-        cout << explanatoryVariables << endl;
+        std::cout << explanatoryVariables << std::endl;
       } break;
 
       case 3: {
-        cout << "Cleanning explanatory variables..." << endl;
+        std::cout << "Cleanning explanatory variables..." << std::endl;
         explanatoryVariables.clear();
       } break;
 
       case 4: {
         ProblemParameters problemParam;
-        cout << "Please type forecasting horizon:" << endl;
+        std::cout << "Please type forecasting horizon:" << std::endl;
         int nSA;
         cin >> nSA;
-        cout << "Forecasting horizonte set to be:" << nSA << endl;
+        std::cout << "Forecasting horizonte set to be:" << nSA << std::endl;
         problemParam.setStepsAhead(nSA);
 
-        cout << "Please type maximum LAG to be used:" << endl;
+        std::cout << "Please type maximum LAG to be used:" << std::endl;
         int maxLag;
         cin >> maxLag;
-        cout << "Maximum lag is:" << maxLag << endl;
+        std::cout << "Maximum lag is:" << maxLag << std::endl;
         problemParam.setMaxLag(maxLag);
 
       } break;
@@ -89,8 +89,8 @@ int HFM_API(int argc, char** argv) {
         treatForecasts rF(explanatoryVariables);
 
         HFMParams methodParam;
-        cout << "Please type Evolution Strategy Pop Size (offpring = 6*mu):"
-             << endl;
+        std::cout << "Please type Evolution Strategy Pop Size (offpring = 6*mu):"
+             << std::endl;
         int mu;
         cin >> mu;
         methodParam.setESMU(mu);
@@ -101,15 +101,15 @@ int HFM_API(int argc, char** argv) {
         // seting up Construtive params
         methodParam.setConstrutiveMethod(2);
 
-        cout << "Please type constructive ACF limit:" << endl;
+        std::cout << "Please type constructive ACF limit:" << std::endl;
         double alphaACF;
         cin >> alphaACF;
         vector<double> vAlphaACFlimits;
         vAlphaACFlimits.push_back(alphaACF);
         methodParam.setConstrutiveLimitAlphaACF(vAlphaACFlimits);
-        cout << "Please type constructive maximum number of rules "
+        std::cout << "Please type constructive maximum number of rules "
                 "(single/average/derivative):"
-             << endl;
+             << std::endl;
         double numberRules;
         cin >> numberRules;
         methodParam.setConstrutivePrecision(numberRules);
@@ -120,15 +120,15 @@ int HFM_API(int argc, char** argv) {
         methodParam.setESMutationDesv(mutationDesv);
 
         // seting up Eval params
-        cout << "Please type FO minizer (0 - MAPE \n 1- PINBAL \n 2- MSE...):"
-             << endl;
+        std::cout << "Please type FO minizer (0 - MAPE \n 1- PINBAL \n 2- MSE...):"
+             << std::endl;
         int evalFOMinimizer;
         cin >> evalFOMinimizer;
         methodParam.setEvalFOMinimizer(evalFOMinimizer);
 
-        cout << "Please type approximation (0 for no approx) otherwise, "
+        std::cout << "Please type approximation (0 for no approx) otherwise, "
                 "1,2,3,4,5:"
-             << endl;
+             << std::endl;
         int evalAprox;
         cin >> evalAprox;
         methodParam.setEvalAprox(evalAprox);

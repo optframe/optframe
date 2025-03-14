@@ -36,16 +36,16 @@ class BasicMOILSPerturbation : public MOILS, public Component {
                          int _pMax, vsref<NS<XMES>> _ns, sref<RandGen> _rg)
       : mEval(_mEval), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg) {
     if (pMax < pMin) {
-      cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both."
-           << endl;
+      std::cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both."
+           << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
     }
 
     if (ns.size() == 0)
-      cout << "BasicMOILSPerturbation warning: empty neighborhood list."
-           << endl;
+      std::cout << "BasicMOILSPerturbation warning: empty neighborhood list."
+           << std::endl;
   }
 
   // BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int
@@ -55,16 +55,16 @@ class BasicMOILSPerturbation : public MOILS, public Component {
       : mEval(_mEval), pMin(_pMin), pMax(_pMax), rg(_rg) {
     ns.push_back(_ns);
     if (pMax < pMin) {
-      cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both."
-           << endl;
+      std::cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both."
+           << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
     }
 
     if (ns.size() == 0)
-      cout << "BasicMOILSPerturbation warning: empty neighborhood list."
-           << endl;
+      std::cout << "BasicMOILSPerturbation warning: empty neighborhood list."
+           << std::endl;
   }
 
   ~BasicMOILSPerturbation() override {}
@@ -82,7 +82,7 @@ class BasicMOILSPerturbation : public MOILS, public Component {
       uptr<Move<XMES>> mp = ns[nk]->validRandomMove(smev);
 
       if (!mp) {
-        cout << "BasicMOILSPerturbation warning: perturbation found no valid "
+        std::cout << "BasicMOILSPerturbation warning: perturbation found no valid "
                 "move for neighborhood: ";
         ns[nk]->print();
       } else {
@@ -102,8 +102,8 @@ class BasicMOILSPerturbation : public MOILS, public Component {
 
   std::string toString() const override { return id(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << ILS::family() << "MObasic_pert";
     return ss.str();
   }

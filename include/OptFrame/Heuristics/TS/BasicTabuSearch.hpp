@@ -314,8 +314,8 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     return false;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "TS:BasicTabuSearch";
     return ss.str();
   }
@@ -394,18 +394,18 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
     return new BasicTabuSearch<XES>(eval, constructive, nsseq, tl, tsMax);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
                                "evaluation function"));
-    // params.push_back(make_pair(Constructive<S>::idComponent(),
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
     // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
         make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
-    params.push_back(make_pair("OptFrame:int", "tabu list size"));
-    params.push_back(make_pair("OptFrame:int", "max number of iterations"));
+    params.push_back(std::make_pair("OptFrame:int", "tabu list size"));
+    params.push_back(std::make_pair("OptFrame:int", "max number of iterations"));
 
     return params;
   }
@@ -414,8 +414,8 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
     return component == BasicTabuSearchBuilder<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << TS::family()
        << ":BasicTabuSearch";
     return ss.str();

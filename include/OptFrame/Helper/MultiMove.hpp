@@ -192,8 +192,8 @@ class Move : public Component {
 
   bool operator!=(const Move<XES, XSH>& m) const { return !(*this == m); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":Move";
     return ss.str();
   }

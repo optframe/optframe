@@ -65,9 +65,9 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
-		//cout << "paired_t_test run:'" << body << "'" << endl;
+		//cout << "paired_t_test run:'" << body << "'" << std::endl;
 		Scanner scanner(body);
 
 		vector<string>* plist1 = OptFrameList::readList(ldictionary, scanner);
@@ -100,7 +100,7 @@ public:
 
 		if(list1.size() != list2.size())
 		{
-			cout << "paired_t_test function: lists should have same size!" << endl;
+			cout << "paired_t_test function: lists should have same size!" << std::endl;
 			return nullptr;
 		}
 
@@ -140,19 +140,19 @@ public:
 			scommand << "'t'"; // two.sided
 		else
 		{
-			cout << "paired_t_test function: unknown signal '" << signal << "'" << endl;
+			cout << "paired_t_test function: unknown signal '" << signal << "'" << std::endl;
 			return nullptr;
 		}
 		*/
 
 		scommand << ")\" | R --no-save | grep p-value";
 
-		//cout << scommand.str() << endl;
+		//cout << scommand.str() << std::endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == nullptr)
 		{
-		    cout << "paired_t_test function: PIPE NOT OPEN!" << endl;
+		    std::cout << "paired_t_test function: PIPE NOT OPEN!" << std::endl;
 		    return nullptr;
 		}
 
@@ -168,7 +168,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "paired_t_test function: OUTPUT '" << output << "'" << endl;
+		//cout << "paired_t_test function: OUTPUT '" << output << "'" << std::endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return nullptr;
 
@@ -186,7 +186,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "paired_t_test function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "paired_t_test function warning: returning 'NA' result! p-value = 1.0" << std::endl;
 			pvalue = 1;
 		}
 		else

@@ -42,7 +42,7 @@ public:
    {
       n = *scanner.nextInt();
 
-      cout << n << endl;
+      std::cout << n << std::endl;
 
       // Initializing values
       xvalues = new vector<double>(n);
@@ -58,10 +58,10 @@ public:
          (*xvalues)[i] = *scanner.nextDouble(); // x
          //cout << (*xvalues)[i] << "\t";
          (*yvalues)[i] = *scanner.nextDouble(); // y
-                                                //cout << (*yvalues)[i] << endl;
+                                                //cout << (*yvalues)[i] << std::endl;
       }
 
-      cout << "All data read ok!" << endl;
+      std::cout << "All data read ok!" << std::endl;
       std::cout << "WARNING: euclidean distances will be rounded!" << std::endl;
 
       // Calculating the distances

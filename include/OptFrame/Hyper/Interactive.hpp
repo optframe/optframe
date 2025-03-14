@@ -248,7 +248,7 @@ class Interactive {
  private:
   vector<Command<R, ADS>*> modules;
   vector<PreprocessFunction<R, ADS>*> functions;
-  map<string, string> dictionary;
+  map<std::string, std::string> dictionary;
   map<string, vector<string>> ldictionary;
 
  public:
@@ -343,7 +343,7 @@ class Interactive {
   }
 
   void loadCallCommand() {
-    cout << "warning: system.call module loaded!" << endl;
+    std::cout << "warning: system.call module loaded!" << std::endl;
 
     loadCommand(new SystemCallCommand<R, ADS>);
   }
@@ -586,13 +586,13 @@ class Interactive {
         */
 
   void execute() {
-    cout << "Welcome to " << welcome() << endl;
+    std::cout << "Welcome to " << welcome() << std::endl;
 
     Scanner scanner(&cin);
     string line;
 
     while (true) {
-      cout << ">";
+      std::cout << ">";
       line = scanner.nextLine();
 
       Scanner s2(line);
@@ -603,7 +603,7 @@ class Interactive {
       if (command == "quit" || command == "q" || command == "exit") break;
 
       if (command == "version" || command == "v") {
-        cout << version() << endl;
+        std::cout << version() << std::endl;
         continue;
       }
 
@@ -621,28 +621,28 @@ class Interactive {
           delete r1;
 
           if (r == "INVALID_PARAM") {
-            cout << "Population size has to be, at least, equal 2.\n";
+            std::cout << "Population size has to be, at least, equal 2.\n";
             notfound = false;
             break;
           }
 
           if (!modules[i]->run(modules, functions, factory, dictionary,
                                ldictionary, r, command))
-            cout << "command failed!" << endl;
+            std::cout << "command failed!" << std::endl;
 
           notfound = false;
           break;
         }
 
       if (notfound) {
-        cout << "Sorry, i couldn't understand the command '" << command << "'."
-             << endl
-             << "Please, type 'system.help' or type the command again." << endl;
+        std::cout << "Sorry, i couldn't understand the command '" << command << "'."
+             << std::endl
+             << "Please, type 'system.help' or type the command again." << std::endl;
         printOptions(command, modules);
       }
     }
 
-    cout << "Goodbye." << endl;
+    std::cout << "Goodbye." << std::endl;
   }
 
   static void printOptions(string part_command,
@@ -656,7 +656,7 @@ class Interactive {
           break;
         }
 
-      if (found) cout << "option is: '" << allCommands[i]->id() << "'" << endl;
+      if (found) std::cout << "option is: '" << allCommands[i]->id() << "'" << std::endl;
     }
   }
 
@@ -675,7 +675,7 @@ class Interactive {
         */
 
   void execute(string line) {
-    // cout << "Welcome to " << version() << endl;
+    // std::cout << "Welcome to " << version() << std::endl;
 
     Scanner s2(line);
     s2.useSeparators(" \t\r\n=");
@@ -685,7 +685,7 @@ class Interactive {
     if (command == "quit" || command == "q" || command == "exit") return;
 
     if (command == "version" || command == "v") {
-      cout << version() << endl;
+      std::cout << version() << std::endl;
       return;
     }
 
@@ -700,13 +700,13 @@ class Interactive {
         if (!r) break;
 
         if (*r == "INVALID_PARAM") {
-          cout << "Population size has to be, at least, equal 2.\n";
+          std::cout << "Population size has to be, at least, equal 2.\n";
           exit(1);
         }
 
         if (!modules[i]->run(modules, functions, factory, dictionary,
                              ldictionary, *r, command))
-          cout << "error in command: '" << modules[i]->id() << "'" << endl;
+          std::cout << "error in command: '" << modules[i]->id() << "'" << std::endl;
 
         delete r;
 
@@ -715,11 +715,11 @@ class Interactive {
       }
 
     if (notfound)
-      cout << "Sorry, i couldn't understand the command '" << command << "'."
-           << endl
-           << "Please, type 'system.help' or type the command again." << endl;
+      std::cout << "Sorry, i couldn't understand the command '" << command << "'."
+           << std::endl
+           << "Please, type 'system.help' or type the command again." << std::endl;
 
-    // cout << "Goodbye." << endl;
+    // std::cout << "Goodbye." << std::endl;
   }
 };
 

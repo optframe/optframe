@@ -79,10 +79,10 @@ class MoveVRPSwap1_1Adapter : public Move<XES> {
   }
 
   void print() const override {
-    cout << "MoveVRPSwap1_1( ";
-    cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2
+    std::cout << "MoveVRPSwap1_1( ";
+    std::cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2
          << "] client " << c2 << ")";
-    cout << endl;
+    std::cout << std::endl;
   }
 
   std::string id() const override { return idComponent(); }
@@ -147,8 +147,8 @@ class NSIteratorVRPSwap1_1Adapter : public NSIterator<XES> {
 
   uptr<Move<XES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqVRPSwap1_1. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqVRPSwap1_1. Aborting." << std::endl;
       exit(1);
     }
 
@@ -240,13 +240,13 @@ class NSSeqVRPSwap1_1 : public NSSeq<XES> {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqVRPSwap1_1(ADAPTER=" << ADAPTER
        << ") with move: " << MOVE::idComponent();
     return ss.str();
   }
 
-  void print() const override { cout << toString() << endl; }
+  void print() const override { std::cout << toString() << std::endl; }
 };
 
 }  // namespace optframe

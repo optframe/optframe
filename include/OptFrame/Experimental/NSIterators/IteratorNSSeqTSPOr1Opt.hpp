@@ -93,8 +93,8 @@ public:
    MoveTSPOr1Opt<T, DS>& current()
    {
       if (isDone()) {
-         cout << "There isnt any current element!" << endl;
-         cout << "TSPOr1Opt. Aborting." << endl;
+         std::cout << "There isnt any current element!" << std::endl;
+         std::cout << "TSPOr1Opt. Aborting." << std::endl;
          exit(1);
       }
 

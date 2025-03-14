@@ -16,10 +16,10 @@ ProblemInstance::ProblemInstance(Scanner& scanner)
       w[i] = *scanner.nextDouble();
    W = *scanner.nextDouble();
 
-   cout << "N=" << N << endl;
-   cout << "profit:" << toString(p) << endl;
-   cout << "weight:" << toString(w) << endl;
-   cout << "W=" << W << endl;
+   std::cout << "N=" << N << std::endl;
+   std::cout << "profit:" << toString(p) << std::endl;
+   std::cout << "weight:" << toString(w) << std::endl;
+   std::cout << "W=" << W << std::endl;
 }
 
 ProblemInstance::~ProblemInstance()

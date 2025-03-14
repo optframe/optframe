@@ -80,11 +80,11 @@ class MyMapper : public MaPI_Mapper<int, int, int, int, int>
 public:
    MyMapper(MaPI_MapReduce<int, int, int, int, int>* mr, MaPI_Serializer<int, int, int, int, int>* s)
      : MaPI_Mapper<int, int, int, int, int>(mr, s){};
-   virtual vector<pair<int, int>> map(pair<int, int> a)
+   virtual std::vector<std::pair<int, int>> map(pair<int, int> a)
    {
-      vector<pair<int, int>> m;
+      std::vector<std::pair<int, int>> m;
       //cout << "\tMapping..\n";
-      m.push_back(make_pair(a.first, a.second));
+      m.push_back(std::make_pair(a.first, a.second));
       for (int i = 0; i < 100000000; i++)
          ;
       //cout << "\tOk\n";
@@ -113,7 +113,7 @@ public:
 int
 main(int argc, char** argv)
 {
-   cout << "MaPI test" << endl;
+   std::cout << "MaPI test" << std::endl;
 
    Timer timer;
 
@@ -126,11 +126,11 @@ main(int argc, char** argv)
    int n = 10;
    srand(n);
 
-   vector<pair<int, int>> input;
+   std::vector<std::pair<int, int>> input;
    for (int i = 0; i < n; i++)
-      input.push_back(make_pair(rand() % n, rand() % n));
+      input.push_back(std::make_pair(rand() % n, rand() % n));
 
-   vector<pair<int, int>> output = mapReduce.run(mapper, reducer, input);
+   std::vector<std::pair<int, int>> output = mapReduce.run(mapper, reducer, input);
 
    return 0;
 }

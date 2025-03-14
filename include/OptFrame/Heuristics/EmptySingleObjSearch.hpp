@@ -55,13 +55,13 @@ class EmptySingleObjSearch : public SingleObjSearch<XES> {
     return SearchStatus::NO_REPORT;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "empty";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

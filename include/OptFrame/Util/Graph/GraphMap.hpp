@@ -65,7 +65,7 @@ public:
 				double r = pm_it->second;
 				mapAll.erase(pm_it++); // USE POST OPERATOR!
 
-				vr.push_back(make_pair(make_pair(e1, e2), r));
+				vr.push_back(std::make_pair(std::make_pair(e1, e2), r));
 			}
 			else
 				++pm_it; // USE BEFORE FOR BETTER OPTIMIZATION
@@ -93,7 +93,7 @@ public:
 	{
 		if(directed)
 		{
-			mapAll.erase(make_pair(n1, n2));
+			mapAll.erase(std::make_pair(n1, n2));
 			nArcs--;
 		}
 	}
@@ -128,7 +128,7 @@ public:
 
 		if(!directed)
 		{
-			mapAll.erase(make_pair(n1, n2));
+			mapAll.erase(std::make_pair(n1, n2));
 			nEdges--;
 		}
 	}

@@ -95,8 +95,8 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<XES> {
     return new BasicDecoderRandomKeys<XES, double>(evaluator, decoderSol);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
     params.push_back(
@@ -110,8 +110,8 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<XES> {
     return component == BasicDecoderRandomKeys<RealXES, double>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << EA::family() << ":"
        << RK::family() << "BasicDecoderRandomKeysBuilder";
     return ss.str();

@@ -17,20 +17,20 @@ using namespace optframe;
 using namespace HFM;
 
 int GAPSO_SKU(int argc, char** argv) {
-  cout << "Welcome to GAPSO-SKU calibration" << endl;
+  std::cout << "Welcome to GAPSO-SKU calibration" << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 111212101990;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 5) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nomeOutput targetTS "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nomeOutput targetTS "
             "construtiveNRulesACF timeES"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -41,11 +41,11 @@ int GAPSO_SKU(int argc, char** argv) {
 
   string nomeOutput = caminhoOutput;
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-  cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
-  cout << "argvTimeES=" << argvTimeES << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << std::endl;
+  std::cout << "argvMaxLagRate=" << argvMaxLagRate << std::endl;
+  std::cout << "argvTimeES=" << argvTimeES << std::endl;
 
   string gapsoTimeSeries = "./MyProjects/HFM/Instance/GAPSO/SKUPure";
   File fileWCCIInstances{gapsoTimeSeries.c_str()};
@@ -53,7 +53,7 @@ int GAPSO_SKU(int argc, char** argv) {
   //	gapsoTimeSeries = "./MyProjects/HFM/Instance/GAPSO/SKU";
 
   if (!fileWCCIInstances.isOpen()) {
-    cout << "File '" << gapsoTimeSeries.c_str() << "' not found" << endl;
+    std::cout << "File '" << gapsoTimeSeries.c_str() << "' not found" << std::endl;
     exit(1);
   }
 
@@ -64,14 +64,14 @@ int GAPSO_SKU(int argc, char** argv) {
   delete scannerWCCI;
   scannerWCCI = new Scanner(testProblemWCCI);
 
-  //	cout << scannerWCCI->nextInt() << endl;
+  //	cout << scannerWCCI->nextInt() << std::endl;
   int GAPSOStepsAhead = 12;
-  //	cout << "Required steps ahead:" << WCCIStepsAhead << endl;
+  //	cout << "Required steps ahead:" << WCCIStepsAhead << std::endl;
 
   vector<double> forecastsTSWCCI;
   while (scannerWCCI->hasNext())
     forecastsTSWCCI.push_back(*scannerWCCI->nextDouble());
-  cout << forecastsTSWCCI << endl;
+  std::cout << forecastsTSWCCI << std::endl;
 
   vector<vector<double>> forecastingWCCIExogenousVariables;
   forecastingWCCIExogenousVariables.push_back(forecastsTSWCCI);
@@ -148,7 +148,7 @@ int GAPSO_SKU(int argc, char** argv) {
     int nTotalForecastingsTrainningSet = rF.getForecastsSize(0) - stepsAhead;
 
     //========SET PROBLEM MAXIMUM LAG ===============
-    cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+    std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
     int iterationMaxLag =
         ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) /
@@ -175,23 +175,23 @@ int GAPSO_SKU(int argc, char** argv) {
     // int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds *
     // stepsAhead;
 
-    cout << std::setprecision(9);
-    cout << std::fixed;
+    std::cout << std::setprecision(9);
+    std::cout << std::fixed;
     double NTRaprox =
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
-    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-    cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
-    cout << "#~NTR: " << NTRaprox << endl;
-    cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-    cout << "#maxNotUsed: " << maxLag << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+    std::cout << "#nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#~NTR: " << NTRaprox << std::endl;
+    std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
+    std::cout << "#maxNotUsed: " << maxLag << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
     //		getchar();
     vector<vector<double>> trainningSet;  // trainningSetVector
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, stepsAhead, nTotalForecastingsTrainningSet));
-    cout << trainningSet << endl;
+    std::cout << trainningSet << std::endl;
 
     ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
@@ -199,7 +199,7 @@ int GAPSO_SKU(int argc, char** argv) {
     //		getchar();
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
     sol = forecastObject.run(timeES, 0, 0);
-    cout << sol->first.getR() << endl;
+    std::cout << sol->first.getR() << std::endl;
     //		getchar();
 
     vector<double> foIndicatorCalibration;
@@ -207,17 +207,17 @@ int GAPSO_SKU(int argc, char** argv) {
     validationSet.push_back(
         rF.getPartsForecastsEndToBegin(0, 0, maxLag + stepsAhead));
 
-    cout << validationSet << endl;
+    std::cout << validationSet << std::endl;
     //		getchar();
 
     vector<double> errors =
         *forecastObject.returnErrors(sol->first.getR(), validationSet);
     vForecasts = *forecastObject.returnForecasts(*sol, validationSet);
-    cout << "Vector of forecasts: \n " << vForecasts << endl;
+    std::cout << "Vector of forecasts: \n " << vForecasts << std::endl;
     vector<vector<double>> blind = validationSet;
     blind[0].erase(blind[0].end() - stepsAhead, blind[0].end());
-    cout << "Blind forecasts: \n "
-         << forecastObject.returnBlind(sol->first.getR(), blind) << endl;
+    std::cout << "Blind forecasts: \n "
+         << forecastObject.returnBlind(sol->first.getR(), blind) << std::endl;
 
     foIndicators.push_back(errors[WMAPE_INDEX]);
     foIndicators.push_back(sol->second.evaluation());
@@ -231,7 +231,7 @@ int GAPSO_SKU(int argc, char** argv) {
     vfoIndicatorCalibration.push_back(foIndicators);
   }
 
-  cout << setprecision(3);
+  std::cout << setprecision(3);
 
   //	double averageError = 0;
   //	for (int t = 0; t < (vfoIndicatorCalibration[0].size() - 1); t++)
@@ -244,9 +244,9 @@ int GAPSO_SKU(int argc, char** argv) {
   // =================== PRINTING RESULTS ========================
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 

@@ -90,7 +90,7 @@ public:
 
    ///Chamada do MapReduce.
 
-   vector<string>* mapreduce(string (*map)(string, T), vector<string>* (*reduce)(vector<string>*, T), vector<string>* input); // MapReduce
+   vector<string>* mapreduce(string (*map)(string, T), vector<string>* (*reduce)(std::vector<string>*, T), vector<string>* input); // MapReduce
 
    ///Finalização do MaPI.
 
@@ -161,7 +161,7 @@ MaPI_FSMapReduce<T>::applyFunction()
       char input[input_size];
       MPI_Recv(&input, input_size, MPI_CHAR, 0, 1, MPI_COMM_WORLD, &MRStat);
       if (id_func >= functionsT.size()) {
-         cout << "\nERRO: overflow id_func\n";
+         std::cout << "\nERRO: overflow id_func\n";
          exit(1);
       }
 
@@ -192,7 +192,7 @@ MaPI_FSMapReduce<T>::mapper(string (*map)(string, T), vector<string>* inputs)
    if (numInputs <= numMapProcs) {
       // Mensagem
       // enviar para os processos
-      for (int i = 0; i < numInputs; i++) { //cout << "Enviando" << i << endl;
+      for (int i = 0; i < numInputs; i++) { //cout << "Enviando" << i << std::endl;
          // enviar
          int stsize = inputs->at(i).size() + 1;
          char st[stsize];
@@ -206,7 +206,7 @@ MaPI_FSMapReduce<T>::mapper(string (*map)(string, T), vector<string>* inputs)
       }
 
       // enviar _ para os demais processos
-      for (int i = numInputs; i < numMapProcs; i++) { //cout << "Enviando_" << i << endl;
+      for (int i = numInputs; i < numMapProcs; i++) { //cout << "Enviando_" << i << std::endl;
          // enviar
          int stsize = 1;
          char st[] = "_";
@@ -216,7 +216,7 @@ MaPI_FSMapReduce<T>::mapper(string (*map)(string, T), vector<string>* inputs)
       }
 
       // receber
-      for (int i = 1; i <= numMapProcs; i++) { //cout << "Recebendo" << i << endl;
+      for (int i = 1; i <= numMapProcs; i++) { //cout << "Recebendo" << i << std::endl;
          // enviar
          int stsize;
          MPI_Recv(&stsize, 1, MPI_INT, i, 1, MPI_COMM_WORLD, &MRStat);
@@ -235,7 +235,7 @@ MaPI_FSMapReduce<T>::mapper(string (*map)(string, T), vector<string>* inputs)
       // enviar para os processos
       for (int i = 0; i < numInputs; i++) {
          int dest = i % numMapProcs + 1;
-         //cout << "EnviandoDest " << dest << endl;
+         //cout << "EnviandoDest " << dest << std::endl;
          // enviar
          int stsize = inputs->at(i).size();
          char st[stsize];
@@ -262,13 +262,13 @@ MaPI_FSMapReduce<T>::mapper(string (*map)(string, T), vector<string>* inputs)
 
 template<class T>
 vector<string>*
-MaPI_FSMapReduce<T>::mapreduce(string (*map)(string, T), vector<string>* (*reduce)(vector<string>*, T), vector<string>* input)
+MaPI_FSMapReduce<T>::mapreduce(string (*map)(string, T), vector<string>* (*reduce)(std::vector<string>*, T), vector<string>* input)
 {
    // Map
-   cout << "== Mapper ==\n";
+   std::cout << "== Mapper ==\n";
    vector<string>* mapped = mapper(map, input);
    // Reduce
-   cout << "== Reducer ==\n";
+   std::cout << "== Reducer ==\n";
    vector<string>* output = reduce(mapped, shared);
    delete mapped;
    return output;

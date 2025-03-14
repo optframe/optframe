@@ -56,9 +56,9 @@ class NSSeqPairSecondAdapter : public NSSeq<pair<T1, T2>, DS> {
   }
 
   virtual void print() {
-    cout << "NSSeqPairSecondAdapter {" << endl;
+    std::cout << "NSSeqPairSecondAdapter {" << std::endl;
     ns.print();
-    cout << "}" << endl;
+    std::cout << "}" << std::endl;
   }
 };
 

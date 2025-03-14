@@ -35,14 +35,14 @@ public:
    {
    }
 
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module, string rest)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
    {
       for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
          if (modules[i]->canHandle(module, rest))
             return modules[i];
       }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
       return nullptr;
    }
 
@@ -56,13 +56,13 @@ public:
       return "command.rename command_name new_name";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) // no module
       {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -70,7 +70,7 @@ public:
 
       if (!scanner.hasNext()) // no module
       {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -79,7 +79,7 @@ public:
       Command<R, ADS, DS>* m = getCommand(allCommands, command_name, "");
 
       if (!m) {
-         cout << "command " << id() << " error: command '" << command_name << "' not found!" << endl;
+         std::cout << "command " << id() << " error: command '" << command_name << "' not found!" << std::endl;
          return false;
       }
 
@@ -89,7 +89,7 @@ public:
    }
 
    // disable preprocess, only need module prefix
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // disable preprocess!!
       return new string(input);

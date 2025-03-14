@@ -36,22 +36,22 @@ void PCAPSolCheck(PCAPProblemInstance& pPCAP, auto& s) {
 
     int d = pPCAP.vecCidades[i].demanda;
     utilizacao[med] += d;
-    cout << "Cidade i= " << i << " Associada Facilidade: " << s.getR().second[i]
-         << endl;
+    std::cout << "Cidade i= " << i << " Associada Facilidade: " << s.getR().second[i]
+         << std::endl;
   }
 
   for (unsigned int i = 0; i < s.getR().first.size(); i++) {
-    cout << "Facilidade i: " << i << " eh CIDADE: " << s.getR().first[i]
-         << endl;
+    std::cout << "Facilidade i: " << i << " eh CIDADE: " << s.getR().first[i]
+         << std::endl;
   }
 
   for (unsigned int i = 0; i < s.getR().first.size(); i++) {
     if (utilizacao[i] > pPCAP.vecCidades[i].capacidade)
-      cout << "Capacidade Estourada da mediana: " << s.getR().first[i]
+      std::cout << "Capacidade Estourada da mediana: " << s.getR().first[i]
            << " Passaram: " << utilizacao[i] - pPCAP.vecCidades[i].capacidade
-           << endl;
+           << std::endl;
 
-    // cout<<"Utilizacao = "<<utilizacao[i]<<" Capacidade=
+    // std::cout<<"Utilizacao = "<<utilizacao[i]<<" Capacidade=
     // "<<pPCAP.vecCidades[i].capacidade<<endl;
   }
 }

@@ -21,22 +21,22 @@ int nThreads;
 
 int APEN_SI_DemandForecasting(int argc, char** argv) {
   SPEED_UP_FLAG = false;
-  cout << "Welcome to REW2016 -- SI -- REED " << endl;
+  std::cout << "Welcome to REW2016 -- SI -- REED " << std::endl;
 
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // force seed
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 6) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: 1- instance 2- output 3- "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: 1- instance 2- output 3- "
             "granularidade 4-argvforecastingHorizonteMinutes 5-timeES "
-         << endl;
+         << std::endl;
 
     exit(1);
   }
@@ -51,39 +51,39 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
   string nomeInstace = instance;
 
   if (forecastingHorizonteMinutes < granularityMin) {
-    cout << "EXIT WITH ERROR! Forecasting horizon lower than granularity"
-         << endl;
-    cout << "granularityMin: " << granularityMin
+    std::cout << "EXIT WITH ERROR! Forecasting horizon lower than granularity"
+         << std::endl;
+    std::cout << "granularityMin: " << granularityMin
          << "\t forecastingHorizonteMinutes:" << forecastingHorizonteMinutes
-         << endl;
+         << std::endl;
     return 0;
   }
 
   treatREEDDataset alexandreTreatObj;
-  vector<pair<double, double>> datasetDemandCut =
+  std::vector<std::pair<double, double>> datasetDemandCut =
       alexandreTreatObj.cutData(nomeInstace.c_str(), "REED/saida.dat");
-  cout << "data has ben cut with success" << endl;
-  cout << datasetDemandCut.size() << endl;
+  std::cout << "data has ben cut with success" << std::endl;
+  std::cout << datasetDemandCut.size() << std::endl;
   //	getchar();
 
-  vector<pair<double, double>> datasetInterpolated =
+  std::vector<std::pair<double, double>> datasetInterpolated =
       alexandreTreatObj.interpolate(datasetDemandCut, 1);
-  cout << "data has been interpolated  with success" << endl;
-  cout << datasetInterpolated.size() << endl;
+  std::cout << "data has been interpolated  with success" << std::endl;
+  std::cout << datasetInterpolated.size() << std::endl;
   //	getchar();
 
-  vector<pair<double, double>> datasetWithSpecificGranularity =
+  std::vector<std::pair<double, double>> datasetWithSpecificGranularity =
       alexandreTreatObj.separateThroughIntervals(
           datasetInterpolated, 60 * granularityMin, "./REED/instance", false);
-  cout << "data has been split" << endl;
-  cout << "dataSize =" << datasetWithSpecificGranularity.size() << endl;
-  // cout<<dataset60Seconds<<endl;
-  cout << "data saved with sucess" << endl;
+  std::cout << "data has been split" << std::endl;
+  std::cout << "dataSize =" << datasetWithSpecificGranularity.size() << std::endl;
+  // std::cout<<dataset60Seconds<<endl;
+  std::cout << "data saved with sucess" << std::endl;
 
   alexandreTreatObj.createInstance(datasetWithSpecificGranularity,
                                    "./REED/instance");
 
-  cout << "instance created...." << endl;
+  std::cout << "instance created...." << std::endl;
   vector<string> explanatoryVariables;
   string instanceREED = "./REED/instance";
   vector<string> vInstances;
@@ -139,8 +139,8 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
     int nTrainningDays = 7;
     double pointsPerHour = 60.0 / granularityMin;
 
-    cout << "pointsPerHour:" << pointsPerHour << endl;
-    cout << "granularityMin:" << granularityMin << endl;
+    std::cout << "pointsPerHour:" << pointsPerHour << std::endl;
+    std::cout << "granularityMin:" << granularityMin << std::endl;
 
     //========SET PROBLEM MAXIMUM LAG ===============
     //		problemParam.setMaxLag(pointsPerHour*24*3); // with maxLag
@@ -166,15 +166,15 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
     int beginTrainingSet = 1;
 
     int totalNumberOfSamplesTarget = rF.getForecastsSize(0);
-    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-    cout << "\t #nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
-    cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget << endl;
-    cout << "maxNotUsed: " << problemParam.getMaxLag(0) << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl;
-    cout << "#forecastingHorizonteMinutes: " << forecastingHorizonteMinutes
-         << endl;
-    cout << "#granularityMin: " << granularityMin << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+    std::cout << "\t #nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget << std::endl;
+    std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl;
+    std::cout << "#forecastingHorizonteMinutes: " << forecastingHorizonteMinutes
+         << std::endl;
+    std::cout << "#granularityMin: " << granularityMin << std::endl << std::endl;
 
     int timeES = argvTimeES;
     vector<double> foIndicatorCalibration;
@@ -195,9 +195,9 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
       sol = forecastObject.run(timeES, 0, 0);
 
       vector<vector<double>> validationSet;  // validation set for calibration
-      cout << "blind test begin: " << nTotalForecastingsTrainningSet + begin
+      std::cout << "blind test begin: " << nTotalForecastingsTrainningSet + begin
            << " end:" << nTotalForecastingsTrainningSet + begin + stepsAhead
-           << endl;
+           << std::endl;
 
       validationSet.push_back(rF.getPartsForecastsBeginToEnd(
           0, nTotalForecastingsTrainningSet + begin - maxLag,
@@ -213,11 +213,11 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
       for (int cF = 0; cF < (int)currentForecasts.size(); cF++)
         vectorOfForecasts.push_back(currentForecasts[cF]);
 
-      cout << foIndicatorCalibration
-           << "\t average:" << averageError / (countSlidingWindows + 1) << endl;
+      std::cout << foIndicatorCalibration
+           << "\t average:" << averageError / (countSlidingWindows + 1) << std::endl;
       countSlidingWindows++;
     }
-    cout << foIndicatorCalibration << endl;
+    std::cout << foIndicatorCalibration << std::endl;
 
     double finalAverage = 0;
     for (int e = 0; e < (int)foIndicatorCalibration.size(); e++)
@@ -251,28 +251,28 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
     fclose(fResults);
   }
 
-  cout << "APEN Batch SI finished!" << endl;
+  std::cout << "APEN Batch SI finished!" << std::endl;
   return 0;
 }
 
 int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
   SPEED_UP_FLAG = true;
-  cout << "Welcome to APEN -- SI -- SPEED UP " << endl;
+  std::cout << "Welcome to APEN -- SI -- SPEED UP " << std::endl;
 
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // force seed
   seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 6) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: instance(notused) output(notused) ; "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: instance(notused) output(notused) ; "
             "samplesTraining set; argNSA ; argNThreads"
-         << endl;
+         << std::endl;
     // ./REED/channel_1.dat ./UBUNTU1604 60	24	120 1000 24
     exit(1);
   }
@@ -290,10 +290,10 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
   double granularityMin = 1 / 60.0;  // can be used for generating instance
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "granularityMin=" << granularityMin << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "granularityMin=" << granularityMin << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
 
   vector<string> explanatoryVariables;
   string instanceREED = "./REED/instanceForSpeedUp";
@@ -347,9 +347,9 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
     // ProblemParameters problemParam(vParametersFiles[randomParametersFiles]);
 
     // TODO remove for speed up
-    cout << "forcing number of steps ahead nSA - line 200 - Than "
+    std::cout << "forcing number of steps ahead nSA - line 200 - Than "
             "forecastingHorizonteMinutes is not used"
-         << endl;
+         << std::endl;
     int nSA = argNSA;
 
     problemParam.setStepsAhead(nSA);
@@ -358,8 +358,8 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
     //		int nTrainningDays = 10;
     double pointsPerHour = 60.0 / granularityMin;
 
-    cout << "pointsPerHour:" << pointsPerHour << endl;
-    cout << "granularityMin:" << granularityMin << endl;
+    std::cout << "pointsPerHour:" << pointsPerHour << std::endl;
+    std::cout << "granularityMin:" << granularityMin << std::endl;
 
     //========SET PROBLEM MAXIMUM LAG ===============
     //		problemParam.setMaxLag(pointsPerHour*24*3); // with maxLag
@@ -378,13 +378,13 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
     int beginTrainingSet = 1;
 
     int totalNumberOfSamplesTarget = rF.getForecastsSize(0);
-    cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-    cout << "\t #nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
-    cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget << endl;
-    cout << "maxNotUsed: " << problemParam.getMaxLag(0) << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl;
-    cout << "#granularityMin(NotUSED): " << granularityMin << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+    std::cout << "\t #nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget << std::endl;
+    std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl;
+    std::cout << "#granularityMin(NotUSED): " << granularityMin << std::endl << std::endl;
 
     int timeES = 1200;
     vector<double> foIndicatorCalibration;
@@ -415,9 +415,9 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
       sol = forecastObject.run(timeES, 0, 0);
 
       vector<vector<double>> validationSet;  // validation set for calibration
-      cout << "blind test begin: " << nTotalForecastingsTrainningSet + begin
+      std::cout << "blind test begin: " << nTotalForecastingsTrainningSet + begin
            << " end:" << nTotalForecastingsTrainningSet + begin + stepsAhead
-           << endl;
+           << std::endl;
 
       validationSet.push_back(rF.getPartsForecastsBeginToEnd(
           0, nTotalForecastingsTrainningSet + begin - maxLag,
@@ -433,13 +433,13 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
       for (int cF = 0; cF < (int)currentForecasts.size(); cF++)
         vectorOfForecasts.push_back(currentForecasts[cF]);
 
-      cout << foIndicatorCalibration
-           << "\t average:" << averageError / (countSlidingWindows + 1) << endl;
+      std::cout << foIndicatorCalibration
+           << "\t average:" << averageError / (countSlidingWindows + 1) << std::endl;
 
       countSlidingWindows++;
     }
   }
 
-  cout << "REW apen SI finished!" << endl;
+  std::cout << "REW apen SI finished!" << std::endl;
   return 0;
 }

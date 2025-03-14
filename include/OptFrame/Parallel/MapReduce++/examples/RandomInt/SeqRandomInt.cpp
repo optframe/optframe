@@ -36,11 +36,11 @@ class MyMapper : public SeqMR_Mapper<int, int, int, int, int>
 public:
    MyMapper(MapReduce<int, int, int, int, int>* mr)
      : SeqMR_Mapper<int, int, int, int, int>(mr){};
-   virtual vector<pair<int, int>> map(pair<int, int> a)
+   virtual std::vector<std::pair<int, int>> map(pair<int, int> a)
    {
-      vector<pair<int, int>> m;
+      std::vector<std::pair<int, int>> m;
       //cout << "\tMapping..\n";
-      m.push_back(make_pair(a.first, a.second));
+      m.push_back(std::make_pair(a.first, a.second));
       //cout << "\tOk\n";
       return m;
    };
@@ -65,21 +65,21 @@ public:
 int
 main()
 {
-   cout << "SeqMR test" << endl;
+   std::cout << "SeqMR test" << std::endl;
    Timer timer;
 
    int n = 1000000;
    srand(n);
 
-   vector<pair<int, int>> input;
+   std::vector<std::pair<int, int>> input;
    for (int i = 0; i < n; i++)
-      input.push_back(make_pair(rand() % n, rand() % n));
+      input.push_back(std::make_pair(rand() % n, rand() % n));
 
    SeqMR_MapReduce<int, int, int, int, int> mapReduce;
    MyMapper mapper(&mapReduce);
    MyReducer reducer(&mapReduce);
 
-   vector<pair<int, int>> output = mapReduce.run(mapper, reducer, input);
+   std::vector<std::pair<int, int>> output = mapReduce.run(mapper, reducer, input);
 
    return 0;
 }

@@ -40,20 +40,20 @@ class EtIIProblemCommand {
 
   bool registerComponent(sref<Component> component, string type, string name,
                          HeuristicFactory<ESolutionEtII>& hf,
-                         map<string, string>& dictionary) {
+                         map<std::string, std::string>& dictionary) {
     int idx = hf.addComponent(component, type);
-    stringstream ss;
+    std::stringstream ss;
     ss << type << " " << idx;
     return true;  // defineText(name, ss.str(), dictionary);
   }
 
   bool load(string filename, HeuristicFactory<ESolutionEtII>& hf,
-            map<string, string>& dictionary,
+            map<std::string, std::string>& dictionary,
             map<string, vector<string>>& ldictionary) {
     File file(filename);
 
     if (!file.isOpen()) {
-      cout << "File '" << filename << "' not found" << endl;
+      std::cout << "File '" << filename << "' not found" << std::endl;
       return false;
     }
 
@@ -92,7 +92,7 @@ class EtIIProblemCommand {
             .evaluate(s);
 
     e.print();
-    cout << endl;
+    std::cout << std::endl;
 
     hf.addComponent(is, "OptFrame:Constructive");
     hf.addComponent(eval, "OptFrame:GeneralEvaluator");
@@ -102,13 +102,13 @@ class EtIIProblemCommand {
     hf.addComponent(nsSwapRotateCenter, "OptFrame:NS:NSFind:NSSeq");
     hf.addComponent(nsSwapSide, "OptFrame:NS:NSFind:NSSeq");
 
-    cout << "problem '" << filename << "' loaded successfully" << endl;
+    std::cout << "problem '" << filename << "' loaded successfully" << std::endl;
 
     return true;
   }
 
   bool unload(HeuristicFactory<ESolutionEtII>& factory,
-              map<string, string>& dictionary,
+              map<std::string, std::string>& dictionary,
               map<string, vector<string>>& ldictionary) {
     if (p) delete p;
     p = NULL;

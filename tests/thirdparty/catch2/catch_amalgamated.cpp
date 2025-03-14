@@ -4093,12 +4093,12 @@ namespace Detail {
 
         ///////////////////////////////////////////////////////////////////////////
 
-        class CoutStream : public IStream {
+        class std::coutStream : public IStream {
             std::ostream m_os;
         public:
-            // Store the streambuf from cout up-front because
-            // cout may get redirected when running tests
-            CoutStream() : m_os( Catch::cout().rdbuf() ) {}
+            // Store the streambuf from std::cout up-front because
+            // std::cout may get redirected when running tests
+            std::coutStream() : m_os( Catch::cout().rdbuf() ) {}
             ~CoutStream() override = default;
 
         public: // IStream
@@ -4111,7 +4111,7 @@ namespace Detail {
 
         public:
             // Store the streambuf from cerr up-front because
-            // cout may get redirected when running tests
+            // std::cout may get redirected when running tests
             CerrStream(): m_os( Catch::cerr().rdbuf() ) {}
             ~CerrStream() override = default;
 
@@ -5698,7 +5698,7 @@ namespace Catch {
 
 // If you #define this you must implement these functions
 #if !defined( CATCH_CONFIG_NOSTDOUT )
-    std::ostream& cout() { return std::cout; }
+    std::ostream& std::cout() { return std::cout; }
     std::ostream& cerr() { return std::cerr; }
     std::ostream& clog() { return std::clog; }
 #endif

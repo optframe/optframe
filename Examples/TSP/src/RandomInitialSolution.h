@@ -83,8 +83,8 @@ class RandomInitialSolutionTSP : public InitialSearch<ESolutionTSP> {
     return make_pair(make_optional(se), SearchStatus::NO_REPORT);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialSearch<ESolutionTSP>::idComponent()
        << ":RandomInitialSolution";
     return ss.str();

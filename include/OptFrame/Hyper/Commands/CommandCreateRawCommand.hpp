@@ -42,11 +42,11 @@ public:
       name = _name;
       parameters = _parameters;
       commands = _commands;
-      //cout << "RAW MODULE(" << _name << "," << _parameters << "," << _commands << ")" << endl;
+      //cout << "RAW MODULE(" << _name << "," << _parameters << "," << _commands << ")" << std::endl;
    }
 
 private:
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module)
    {
       for (unsigned int i = 0; i < modules.size(); i++)
          if (modules[i]->canHandle(module, "")) // TODO: fix
@@ -54,7 +54,7 @@ private:
       return nullptr;
    }
 
-   bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string command)
+   bool exec_command(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string command)
    {
       Scanner scanner(command);
       string module = scanner.next();
@@ -125,13 +125,13 @@ public:
       return u;
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       string backup_input = input;
 
       Scanner scanner(input);
 
-      //cout << "raw_module '" << id() << "' run: '" << input << "'" << endl;
+      //cout << "raw_module '" << id() << "' run: '" << input << "'" << std::endl;
 
       vector<string> values;
       values.push_back(backup_input); // "$_all_params"
@@ -140,41 +140,41 @@ public:
 
       for (unsigned int i = 0; i < (parameters.size() - nsystem_params); i++)
          if (!scanner.hasNext()) {
-            cout << "Usage: " << usage() << endl;
+            std::cout << "Usage: " << usage() << std::endl;
             return false;
          } else
             values.push_back(scanner.next());
 
       for (unsigned v = 0; v < values.size(); v++) {
-         //cout << "RAW MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << endl;
+         //cout << "RAW MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << std::endl;
          if (!Command<R, ADS, DS>::defineText(parameters[v], values[v], dictionary)) {
-            cout << "command.create_raw error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
+            std::cout << "command.create_raw error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << std::endl;
             return false;
          }
       }
 
-      //cout << "MODULE '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;
+      //cout << "MODULE '" << id() << "' (CREATED) VALUES: '" << values << "'" << std::endl;
 
       for (unsigned int c = 0; c < commands.size(); c++) {
          string command = commands[c];
-         //cout << "RAW MODULE " << id() << " COMMAND: '" << command << "'" << endl;
+         //cout << "RAW MODULE " << id() << " COMMAND: '" << command << "'" << std::endl;
 
          for (unsigned int v = 0; v < values.size(); v++) {
-            //cout << "RAW MODULE " << id() << " SOLVING VARIABLE '" << parameters[v] << "'" << endl;
+            //cout << "RAW MODULE " << id() << " SOLVING VARIABLE '" << parameters[v] << "'" << std::endl;
             string* r = Command<R, ADS, DS>::solveVars(dictionary, ldictionary, command, parameters[v]);
             if (!r) {
-               cout << "Raw module '" << id() << "' error: couldn't solve variable '" << parameters[v] << "'" << endl;
+               std::cout << "Raw module '" << id() << "' error: couldn't solve variable '" << parameters[v] << "'" << std::endl;
                return false;
             }
             command = *r;
-            //cout << "RAW MODULE AFTER SOLVE: '" << command << "'" << endl << endl;
+            //cout << "RAW MODULE AFTER SOLVE: '" << command << "'" << std::endl << std::endl;
             delete r;
          }
 
-         //cout << "RAW MODULE '" << id() << "' EXEC COMMAND: '" << command << "'" << endl;
+         //cout << "RAW MODULE '" << id() << "' EXEC COMMAND: '" << command << "'" << std::endl;
 
          if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command)) {
-            cout << "raw_module '" << id() << "' error in command: " << command << endl;
+            std::cout << "raw_module '" << id() << "' error in command: " << command << std::endl;
             return false;
          }
       }
@@ -182,7 +182,7 @@ public:
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& fs, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& d, const map<string, vector<string>>& ld, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& fs, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& d, const map<string, vector<string>>& ld, string input)
    {
       // disable preprocess!! NEVER PREPROCESS HERE, IT'S THE ONLY DIFFERENCE FROM MODULE.CREATE!
       return new string(input);
@@ -201,7 +201,7 @@ private:
       return false;
    }
 
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module)
    {
       for (unsigned int i = 0; i < modules.size(); i++)
          if (module == modules[i]->id())
@@ -224,25 +224,25 @@ public:
       return "command.create_raw name list_of_$parameters block_of_commands";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
-      //cout << "create_module run: '" << input << "'" << endl;
+      //cout << "create_module run: '" << input << "'" << std::endl;
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string name = scanner.next();
 
       if (moduleExists(name, modules)) {
-         cout << "command.create_raw command: couldn't create module '" << name << "' because it already exists!" << endl;
+         std::cout << "command.create_raw command: couldn't create module '" << name << "' because it already exists!" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -261,12 +261,12 @@ public:
 
       for (unsigned int i = 0; i < parameters.size(); i++)
          if (parameters[i][0] == '$') {
-            cout << "command.create_raw error: operator $ in variable: '" << parameters[i] << "'" << endl;
+            std::cout << "command.create_raw error: operator $ in variable: '" << parameters[i] << "'" << std::endl;
             return false;
          }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -282,16 +282,16 @@ public:
       Command<R, ADS, DS>* m = getCommand(modules, name);
 
       if (m != nullptr) {
-         cout << "command.create_raw error: module with name '" << name << "' already exists!" << endl;
+         std::cout << "command.create_raw error: module with name '" << name << "' already exists!" << std::endl;
          return false;
       } else {
          modules.push_back(new RawCommand<R, ADS, DS>(name, parameters, commands));
-         //cout << "raw_module '" << name << "' loaded." << endl;
+         //cout << "raw_module '" << name << "' loaded." << std::endl;
          return true;
       }
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& fs, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& d, const map<string, vector<string>>& ld, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& fs, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& d, const map<string, vector<string>>& ld, string input)
    {
       int end = -1;
       string body = "";

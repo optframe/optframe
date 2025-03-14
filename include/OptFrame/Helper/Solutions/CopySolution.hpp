@@ -153,7 +153,7 @@ class CopySolution : public Component {
   // begin Object part
   // =================
 
-  static string idComponent() {
+  static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":CopySolution";
     return ss.str();

@@ -24,9 +24,9 @@ class RandGenBuilder : public ComponentBuilder<XES> {
     return new RandGen(seed);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    params.push_back(make_pair("long", "seed"));
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    params.push_back(std::make_pair("long", "seed"));
     return params;
   }
 
@@ -34,8 +34,8 @@ class RandGenBuilder : public ComponentBuilder<XES> {
     return component == RandGen::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "RandGen";
     return ss.str();
   }

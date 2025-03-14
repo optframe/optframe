@@ -80,13 +80,13 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
 
     if (Component::debug) {
       std::cout << this->id() << "::fastNonDominatedSort |P|=";
-      std::cout << P.size() << " begin" << endl;
+      std::cout << P.size() << " begin" << std::endl;
     }
 
     // Initialize pareto front vector F (of ids)
     vector<vector<int>> F;
     // initialize front 0 (empty)
-    F.push_back(vector<int>{});
+    F.push_back(std::vector<int>{});
     // S[p] is list of elements dominated by p
     vector<vector<int>> S(P.size());
     // n[p] is number of elements that dominate p
@@ -126,7 +126,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
     while (F[i].size() != 0) {
       if (Component::debug) {
         std::cout << "fastNonDominatedSort start i=" << i;
-        std::cout << " |F[i]|=" << F[i].size() << endl;
+        std::cout << " |F[i]|=" << F[i].size() << std::endl;
       }
       vector<int> Q;  // Q = {}
 
@@ -157,12 +157,12 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       }
 
       // will start new front
-      F.push_back(vector<int>{});
+      F.push_back(std::vector<int>{});
       i++;  // i = i + 1
       //
       F[i] = Q;  // Fi = Q
       if (Component::debug)
-        cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q.size() << endl;
+        std::cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q.size() << std::endl;
     }
 
     // =====================================

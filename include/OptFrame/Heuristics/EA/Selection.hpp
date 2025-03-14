@@ -85,8 +85,8 @@ class Selection : public Component, public EA {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << EA::family() << ":Selection";
     return ss.str();
   }
@@ -102,7 +102,7 @@ class SimpleSelection {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using VPopulation = vector<pair<Individual, Fitness>>;
+  using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
   Evaluator<S, XEv, XES>& evaluator;
 
@@ -145,7 +145,7 @@ class ElitismSelection final : public SimpleSelection<S, XEv, XES> {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using VPopulation = vector<pair<Individual, Fitness>>;
+  using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
  private:
   double alpha;  // selectionRate

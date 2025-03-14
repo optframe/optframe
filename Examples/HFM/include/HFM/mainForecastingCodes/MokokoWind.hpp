@@ -17,12 +17,12 @@ using namespace optframe;
 using namespace HFM;
 
 int mokokoWindSotavento(int argc, char** argv) {
-  cout << "Welcome to Mokoko Split Wind Sotavento  calibration!" << endl;
+  std::cout << "Welcome to Mokoko Split Wind Sotavento  calibration!" << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
@@ -31,15 +31,15 @@ int mokokoWindSotavento(int argc, char** argv) {
   int argvFH = 24;
   int argvNEXP = 3;
 
-  cout << "=========================================" << endl;
-  cout << std::setprecision(3);
-  cout << std::fixed;
-  cout << "Parametros:" << endl;
-  cout << "argvMaxLagRate=" << argvMaxLagRate << endl;
-  cout << "argvTimeES=" << argvTimeES << endl;
-  cout << "argvFH=" << argvFH << endl;
-  cout << "argvNEXP=" << argvNEXP << endl;
-  cout << "=========================================" << endl << endl;
+  std::cout << "=========================================" << std::endl;
+  std::cout << std::setprecision(3);
+  std::cout << std::fixed;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "argvMaxLagRate=" << argvMaxLagRate << std::endl;
+  std::cout << "argvTimeES=" << argvTimeES << std::endl;
+  std::cout << "argvFH=" << argvFH << std::endl;
+  std::cout << "argvNEXP=" << argvNEXP << std::endl;
+  std::cout << "=========================================" << std::endl << std::endl;
 
   vector<vector<double>>
       vfoIndicatorCalibration;  // vector with the FO of each batch
@@ -125,7 +125,7 @@ int mokokoWindSotavento(int argc, char** argv) {
     int nTotalForecastingsTrainningSet = rFTrain.getForecastsSize(0);
 
     //========SET PROBLEM MAXIMUM LAG ===============
-    cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+    std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
     int iterationMaxLag =
         ((nTotalForecastingsTrainningSet - stepsAhead) * argvMaxLagRate) /
@@ -146,28 +146,28 @@ int mokokoWindSotavento(int argc, char** argv) {
 
     vector<double> foIndicators;
 
-    cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << endl;
+    std::cout << "#nTotalForecastingsTrainningSet: "
+         << nTotalForecastingsTrainningSet << std::endl;
 
-    cout << "#sizeTrainingSet: " << rFTrain.getForecastsSize(0) << endl;
-    cout << "#maxNotUsed: " << maxLag << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    std::cout << "#sizeTrainingSet: " << rFTrain.getForecastsSize(0) << std::endl;
+    std::cout << "#maxNotUsed: " << maxLag << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
     int nTrainingDays = 30;
     int nTrainingSamples = maxLag + nTrainingDays * stepsAhead;  // 1176
     //		nTrainingSamples = 1176;
     double NTRaprox = (nTrainingSamples - maxLag) / double(stepsAhead);
-    cout << "#~NTR: " << NTRaprox << endl;
+    std::cout << "#~NTR: " << NTRaprox << std::endl;
 
     int nValidationRounds = 0;
     vector<double> predictedValues;
 
     int nSamplesComplete = rFComplete.getForecastsSize(0);
-    cout << "running test with:" << nSamplesComplete << " samples" << endl;
+    std::cout << "running test with:" << nSamplesComplete << " samples" << std::endl;
     for (int begin = 1176; (begin + nSA) <= nSamplesComplete; begin += nSA) {
-      cout << "=========================================" << endl;
-      cout << "Executing train and forecasts for round: " << nValidationRounds
-           << endl;
+      std::cout << "=========================================" << std::endl;
+      std::cout << "Executing train and forecasts for round: " << nValidationRounds
+           << std::endl;
       nValidationRounds++;
       vector<vector<double>> trainningSet;  // trainningSetVector
       for (int nEXP = 0; nEXP < argvNEXP; nEXP++)
@@ -189,7 +189,7 @@ int mokokoWindSotavento(int argc, char** argv) {
           *forecastObject.returnForecasts(*sol, validationSet);
       for (int fh = 0; fh < nSA; fh++)
         predictedValues.push_back(obtainedForecasts[fh]);
-      cout << predictedValues << endl;
+      std::cout << predictedValues << std::endl;
       //			getchar();
       //			avgErrors[MMAPE_INDEX] += errors[MMAPE_INDEX];
       //			avgErrors[RMSE_INDEX] += errors[RMSE_INDEX];
@@ -204,11 +204,11 @@ int mokokoWindSotavento(int argc, char** argv) {
       //persistanceMethodErrors[RMSE_INDEX];
 
       //			cout << "Round: " << nRounds << " HFM errors
-      //MMAPE and RMSE:" << endl; 			cout << errors[MMAPE_INDEX] << "\t" <<
-      //errors[RMSE_INDEX] << endl;
-      cout << "=========================================" << endl << endl;
+      //MMAPE and RMSE:" << std::endl; 			cout << errors[MMAPE_INDEX] << "\t" <<
+      //errors[RMSE_INDEX] << std::endl;
+      std::cout << "=========================================" << std::endl << std::endl;
     }
-    cout << "nRounds = " << nValidationRounds << endl;
+    std::cout << "nRounds = " << nValidationRounds << std::endl;
     //		getchar();
     //		avgErrors[MMAPE_INDEX] /= nRounds;
     //		avgErrors[RMSE_INDEX] /= nRounds;
@@ -220,14 +220,14 @@ int mokokoWindSotavento(int argc, char** argv) {
     //			trainningSet.push_back(rFTrain.getPartsForecastsEndToBegin(nEXP,
     //0, nTotalForecastingsTrainningSet));
     //
-    //		cout << trainningSet << endl;
+    //		cout << trainningSet << std::endl;
     //		ForecastClass forecastObject(trainningSet, problemParam, rg,
     //methodParam);
     //
     //		pair<Solution<RepEFP>&, Evaluation<>&>* sol;
     //		int timeES = argvTimeES; // online training time
     //		sol = forecastObject.run(timeES, 0, 0);
-    ////		cout << sol->first.getR() << endl;
+    ////		cout << sol->first.getR() << std::endl;
     ////		getchar();
     //
     //		vector<double> foIndicatorCalibration;
@@ -236,7 +236,7 @@ int mokokoWindSotavento(int argc, char** argv) {
     //			validationSet.push_back(rFVal.getPartsForecastsEndToBegin(nEXP,
     //0, rFVal.getForecastsSize(0)));
     //
-    //		cout << validationSet << endl;
+    //		cout << validationSet << std::endl;
     //		vector<double> errors = forecastObject.returnErrors(sol,
     //validationSet);
     //
@@ -253,17 +253,17 @@ int mokokoWindSotavento(int argc, char** argv) {
             rFComplete.getPartsForecastsEndToBegin(0, 0,
                                                    nValidationRounds * nSA + 1),
             nSA);
-    cout << "persistanceMethod errors MMAPE and RMSE:" << endl;
-    cout << persistanceMethodErrors[MMAPE_INDEX] << "\t"
-         << persistanceMethodErrors[RMSE_INDEX] << endl;
+    std::cout << "persistanceMethod errors MMAPE and RMSE:" << std::endl;
+    std::cout << persistanceMethodErrors[MMAPE_INDEX] << "\t"
+         << persistanceMethodErrors[RMSE_INDEX] << std::endl;
     //
 
     vector<double> targetValues =
         rFComplete.getPartsForecastsEndToBegin(0, 0, nValidationRounds * nSA);
     vector<double> errors =
         *forecastingClassOBJ.callEvalGetAccuracy(targetValues, predictedValues);
-    cout << "HFM errors MMAPE and RMSE:" << endl;
-    cout << errors[MMAPE_INDEX] << "\t" << errors[RMSE_INDEX] << endl;
+    std::cout << "HFM errors MMAPE and RMSE:" << std::endl;
+    std::cout << errors[MMAPE_INDEX] << "\t" << errors[RMSE_INDEX] << std::endl;
 
     foIndicators.push_back(errors[MMAPE_INDEX]);
     foIndicators.push_back(errors[RMSE_INDEX]);
@@ -281,15 +281,15 @@ int mokokoWindSotavento(int argc, char** argv) {
     vfoIndicatorCalibration.push_back(foIndicators);
   }
 
-  cout << setprecision(3);
+  std::cout << setprecision(3);
 
   // =================== PRINTING RESULTS ========================
-  cout << "\n Printing obtained results for each batch..." << endl;
+  std::cout << "\n Printing obtained results for each batch..." << std::endl;
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < int(vfoIndicatorCalibration[n].size()); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 

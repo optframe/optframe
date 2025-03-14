@@ -66,9 +66,9 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
-		//cout << "next function run: '" << body << "'" << endl;
+		//cout << "next function run: '" << body << "'" << std::endl;
 
 		// Maybe in future
 		// To be more useful: add spaces before and after '[', ']', '(' , ')' and ','
@@ -124,7 +124,7 @@ public:
 		for(unsigned i=j; i<body.length(); i++)
 			ssrest << body.at(i);
 
-		//cout << "next function run (after filter): '" << ss.str() << "'" << endl;
+		//cout << "next function run (after filter): '" << ss.str() << "'" << std::endl;
 
 		Scanner scanner(ss.str());
 
@@ -138,7 +138,7 @@ public:
 			next = formatNumber(*scanner.nextDouble());
 		else
 		{
-			cout << "next function: no such option '" << option << "'" << endl;
+			cout << "next function: no such option '" << option << "'" << std::endl;
 			return nullptr;
 		}
 		*/

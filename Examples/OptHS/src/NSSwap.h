@@ -63,7 +63,7 @@ class MoveSwap : public Move<ESolutionOptHS> {
   }
 
   void print() const override {
-    cout << "MoveSwap: (" << w1 << "," << w2 << ")" << endl;
+    std::cout << "MoveSwap: (" << w1 << "," << w2 << ")" << std::endl;
   }
 };
 
@@ -86,7 +86,7 @@ class NSSwap : public NS<ESolutionOptHS> {
     return uptr<Move<ESolutionOptHS>>(new MoveSwap(w1, w2));
   }
 
-  void print() const override { cout << "NSSwap" << endl; }
+  void print() const override { std::cout << "NSSwap" << std::endl; }
 };
 
 }  // namespace OptHS

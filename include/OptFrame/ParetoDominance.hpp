@@ -43,7 +43,7 @@ class ParetoDominance {
 
   virtual ~ParetoDominance() = default;
 
-  // void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e)
+  // void insertEvaluators(std::vector<Evaluator<XES, XEv>*> _v_e)
   // {
   //    mev.addEvaluator(_v_e);
   // }
@@ -61,8 +61,8 @@ class ParetoDominance {
         {
                 if (mev.size() == 0)
                 {
-                        cout << "ParetoDominance::error! not implemented for
-   direction only!" << endl; exit(1);
+                        std::cout << "ParetoDominance::error! not implemented for
+   direction only!" << std::endl; exit(1);
                 }
 
                 MultiEvaluation<> mev1(std::move(mev.evaluate(s1)));
@@ -93,7 +93,7 @@ class ParetoDominance {
     if ((mev1.size() != mev2.size()) || (mev1.size() == 0) ||
         (mev2.size() == 0)) {
       // if (Component::warning)
-      cout << "WARNING in ParetoDominance: different sizes or empty!" << endl;
+      std::cout << "WARNING in ParetoDominance: different sizes or empty!" << std::endl;
       return make_pair(-1, -1);
     }
 

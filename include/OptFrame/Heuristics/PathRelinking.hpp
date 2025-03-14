@@ -58,11 +58,11 @@ class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
 
   virtual ~PathRelinking() {}
 
-  virtual vector<pair<Move<R, ADS, DS>*, double>>& symmetric_difference(
+  virtual std::vector<std::pair<Move<R, ADS, DS>*, double>>& symmetric_difference(
       Solution<R, ADS>& x, Evaluation<DS>& e_x, const Solution<R, ADS>& xt,
       const Evaluation<DS>& e_xt) = 0;
 
-  virtual void update_delta(vector<pair<Move<R, ADS, DS>*, double>>& delta,
+  virtual void update_delta(std::vector<pair<Move<R, ADS, DS>*, double>>& delta,
                             int index_best, Solution<R, ADS>& x,
                             Evaluation<DS>& e_x, const Solution<R, ADS>& xt,
                             const Evaluation<DS>& e_xt) {
@@ -74,17 +74,17 @@ class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
       const Solution<R, ADS>& xs, const Evaluation<DS>& e_xs,
       const Solution<R, ADS>& xt, const Evaluation<DS>& e_xt, double timelimit,
       double target_f) {
-    cout << "path_relinking " << (forward ? "forward" : "backward") << endl;
-    cout << "from: ";
+    std::cout << "path_relinking " << (forward ? "forward" : "backward") << std::endl;
+    std::cout << "from: ";
     e_xs.print();
-    cout << "to: ";
+    std::cout << "to: ";
     e_xt.print();
 
     Solution<R, ADS>& x = xs.clone();
     Evaluation<DS>& e_x = e_xs.clone();
 
     // compute the symmetric difference 'delta' between xs and xt
-    vector<pair<Move<R, ADS, DS>*, double>>& delta =
+    std::vector<std::pair<Move<R, ADS, DS>*, double>>& delta =
         symmetric_difference(x, e_x, xt, e_xt);
 
     // compute f*
@@ -102,8 +102,8 @@ class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
     // while 'delta' > 0, i.e., 'xs' are 'xt' are different
     while (delta.size() > 0) {
       /*
-                         cout << "\nNOVA ITERACAO = |delta| = " << delta.size()
-         << endl; cout << "waiting..."; getchar();
+                         std::cout << "\nNOVA ITERACAO = |delta| = " << delta.size()
+         << std::endl; std::cout << "waiting..."; getchar();
                          */
 
       // 1. find best move
@@ -119,10 +119,10 @@ class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
       // 2. update 'x' and 'e_x'
       m_star->apply(e_x, x);
       // m_star->print();
-      // cout << "FO ATUAL ANTES BUSCA= " << evaluator.evaluate(x).evaluation()
-      // << endl;
+      // std::cout << "FO ATUAL ANTES BUSCA= " << evaluator.evaluate(x).evaluation()
+      // << std::endl;
       localSearch.searchFrom(x, e_x, timelimit, target_f);
-      // cout << "FO ATUAL= " << evaluator.evaluate(x).evaluation() << endl;
+      // std::cout << "FO ATUAL= " << evaluator.evaluate(x).evaluation() << std::endl;
 
       evaluator.evaluate(e_x, x);
 
@@ -145,7 +145,7 @@ class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
 
     pair<Solution<R, ADS>&, Evaluation<DS>&>& r =
         *new pair<Solution<R, ADS>&, Evaluation<DS>&>(*s_star, *e_star);
-    cout << "best path_relinking: ";
+    std::cout << "best path_relinking: ";
     e_star->print();
     // getchar();
     return r;
@@ -204,15 +204,15 @@ class PathRelinking : public Component  // LocalSearch<R, ADS, DS>
   void exec(Population<XES>& p, vector<Evaluation<DS>*>& ev, double timelimit,
             double target_f) {
     if (p.size() <= 1) {
-      cout << "Path Relinking exec(p&,e&) warning: empty or only one solution "
+      std::cout << "Path Relinking exec(p&,e&) warning: empty or only one solution "
               "in the pool!"
-           << endl;
+           << std::endl;
       return;
     }
 
     long tini = time(nullptr);
 
-    cout << "Path Relinking starts!" << endl;
+    std::cout << "Path Relinking starts!" << std::endl;
 
     vector<Solution<R, ADS>*> new_s;
     vector<Evaluation<DS>*> new_e;

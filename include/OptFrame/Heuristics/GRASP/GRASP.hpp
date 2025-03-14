@@ -47,7 +47,7 @@ class GRASP : public SingleObjSearch<XES> {
 
     while ((iter < iterMax) && ((tnow - tini) < timelimit) &&
            (evaluator.betterThan(target_f, e.evaluation()))) {
-      if (Component::verbose) cout << "GRASP::iter=" << iter << endl;
+      if (Component::verbose) std::cout << "GRASP::iter=" << iter << std::endl;
 
       Solution<R, ADS>& s1 = constructive.generateSolution();
       Evaluation<DS>& e1 = evaluator.evaluate(s1);
@@ -58,7 +58,7 @@ class GRASP : public SingleObjSearch<XES> {
         s = s1;
         e = e1;
         if (Component::information) {
-          cout << "GRASP iter " << iter << ": ";
+          std::cout << "GRASP iter " << iter << ": ";
           e.print();
         }
       }
@@ -75,8 +75,8 @@ class GRASP : public SingleObjSearch<XES> {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<R, ADS, DS>::idComponent() << GRASPH::family()
        << "GRASP";
     return ss.str();
@@ -118,17 +118,17 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     return new GRASP<R, ADS, DS>(*eval, *constructive, *h, iterMax);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(
         make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
-    params.push_back(make_pair("int", "max number of iterations"));
+    params.push_back(std::make_pair("int", "max number of iterations"));
 
     return params;
   }
@@ -137,8 +137,8 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     return component == GRASPBuilder<R, ADS, DS>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family()
        << "GRASP";
     return ss.str();

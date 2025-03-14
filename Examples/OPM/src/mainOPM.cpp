@@ -23,13 +23,13 @@ using namespace POLAD;
 int main(int argc, char** argv) {
   long seed = time(NULL);  // CalibrationMode
   // seed = 2;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   RandGen rg(seed);
 
   if (argc != 6) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: instance time targetObj "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: instance time targetObj "
             "batchOfTheSameInstance ESMutationRate";
     exit(1);
   }
@@ -42,22 +42,22 @@ int main(int argc, char** argv) {
 
   string nome = caminho;
 
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "tempo=" << tempo << endl;
-  cout << "fo_alvo=" << fo_alvo << endl;
-  cout << "batch=" << batch << endl;
-  cout << "seed=" << seed << endl;
-  cout << "mutationRate=" << mutationRate << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "tempo=" << tempo << std::endl;
+  std::cout << "fo_alvo=" << fo_alvo << std::endl;
+  std::cout << "batch=" << batch << std::endl;
+  std::cout << "seed=" << seed << std::endl;
+  std::cout << "mutationRate=" << mutationRate << std::endl;
 
   Scanner scanner(new File(nome + ".dat"));
 
   size_t found = nome.find_last_of("/\\");
   string instanceName = nome.substr(found + 1);
-  stringstream ss;
+  std::stringstream ss;
   ss << "./OPM/Results/" << instanceName;
   string outputFile = ss.str();
-  //	cout << outputFile << endl;
+  //	cout << outputFile << std::endl;
   //	getchar();
 
   OPMProblemInstance opm(scanner);
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
 
   FILE* arquivo = fopen("./Results/log.txt", "a");
   if (!arquivo) {
-    cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\"" << endl;
+    std::cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\"" << std::endl;
   } else {
     fprintf(arquivo, "%s\t%f\t%f\t%ld\n", instanceName.c_str(), mutationRate,
             finalSol->second.evaluation(), seed);
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
 
   //	OPMSolCheck(opm, s);
 
-  cout << "Program ended successfully";
+  std::cout << "Program ended successfully";
 
   return 0;
 }

@@ -80,10 +80,10 @@ class MoveHFMChangeSingleInput : public Move<hfmXES> {
   }
 
   void print() const override {
-    cout << "MoveNEIGHChangeSingleInput( vector:  rule " << rule
+    std::cout << "MoveNEIGHChangeSingleInput( vector:  rule " << rule
          << " <=>  sign " << sign << "\t X:" << X << "\t maxLag " << maxLag
          << "\t maxUpperLag " << maxUpperLag << " )";
-    cout << endl;
+    std::cout << std::endl;
   }
 };
 
@@ -149,8 +149,8 @@ class NSIteratorHFMChangeSingleInput : public NSIterator<hfmXES> {
 
   uptr<Move<hfmXES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSIteratorHFMChangeSingleInput. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSIteratorHFMChangeSingleInput. Aborting." << std::endl;
       exit(1);
     }
 
@@ -205,7 +205,7 @@ class NSSeqHFMChangeSingleInput : public NSSeq<hfmXES> {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqHFMChangeSingleInput";
     return ss.str();
   }

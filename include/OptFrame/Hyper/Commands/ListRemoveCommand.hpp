@@ -49,12 +49,12 @@ public:
       return "list.remove list index new_list_name";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -67,7 +67,7 @@ public:
          return false;
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -75,25 +75,25 @@ public:
       index--; // index is [1..size()], but in c++ is [0..size()-1]
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string new_name = Scanner::trim(scanner.next());
 
       if ((new_name != "") && (new_name.at(0) == '[')) {
-         cout << "list_remove command: invalid list new name '" << new_name << "'" << endl;
+         std::cout << "list_remove command: invalid list new name '" << new_name << "'" << std::endl;
          return false;
       }
 
       if ((index < 0) || (index >= ((int)list.size()))) {
-         cout << "list_remove command: invalid index '" << index << "'!" << endl;
+         std::cout << "list_remove command: invalid index '" << index << "'!" << std::endl;
          return false;
       }
 
       list.erase(list.begin() + index);
 
-      stringstream ss;
+      std::stringstream ss;
       ss << new_name << " " << OptFrameList::listToString(list);
 
       //TODO: acessar dicionario de listas diretamente!! Bem mais eficiente!
@@ -101,7 +101,7 @@ public:
       return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

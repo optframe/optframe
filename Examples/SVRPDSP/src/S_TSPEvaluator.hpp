@@ -30,7 +30,7 @@ class S_TSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
         pSVRPDSP(_pSVRPDSP) {}
 
   Evaluation<> evaluate(const RepSVRPDSP& rep) {
-    cout << "DEPRECATED:DO NOT USE THIS METHOD!" << endl;
+    std::cout << "DEPRECATED:DO NOT USE THIS METHOD!" << std::endl;
     exit(1);
     const AdsSVRPDSP ads1;
     return evaluate(rep, &ads1);
@@ -59,7 +59,7 @@ class S_TSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
 #endif
 
     if (rep2.size() == 0) {
-      cout << "Evaluator Error: rep.size() == 0!" << endl;
+      std::cout << "Evaluator Error: rep.size() == 0!" << std::endl;
       exit(1);
     }
 
@@ -104,8 +104,8 @@ class S_TSPEvaluator : public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution> {
 
     if (num_d_cust < pSVRPDSP.n) {
       fo_inf += (pSVRPDSP.n - num_d_cust) * INF_NO_DELIVERY_WEIGHT;
-      cout << "MISSING DELIVERY CUSTOMERS! " << num_d_cust << "<" << pSVRPDSP.n
-           << endl;
+      std::cout << "MISSING DELIVERY CUSTOMERS! " << num_d_cust << "<" << pSVRPDSP.n
+           << std::endl;
       exit(1);
     }
 

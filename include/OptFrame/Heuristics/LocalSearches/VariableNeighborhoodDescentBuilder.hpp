@@ -32,13 +32,13 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<XES> {
     return new VariableNeighborhoodDescent<XES>(eval, hlist);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    stringstream ss;
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of local searches"));
+    params.push_back(std::make_pair(ss.str(), "list of local searches"));
 
     return params;
   }
@@ -47,8 +47,8 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<XES> {
     return component == VariableNeighborhoodDescent<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":VND";
     return ss.str();
   }

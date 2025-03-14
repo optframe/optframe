@@ -22,20 +22,20 @@ extern int nThreads;
 
 int usingNonDominatedHFMModels(int argc, char** argv) {
   nThreads = 1;
-  cout << "Welcome to MO forecasting, let's generate a couple of non-dominated "
+  std::cout << "Welcome to MO forecasting, let's generate a couple of non-dominated "
           "HFM models!"
-       << endl;
+       << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   //	if (argc != 2)
   //	{
-  //		cout << "Parametros incorretos!" << endl;
+  //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
   //endl; 		exit(1);
   //	}
@@ -47,8 +47,8 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   nomeOutput = "MyProjects/HFM/Instance/Physionet/S001R01/Channel-30";
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
 
   // Numero de passos a frente - Horizonte de previsao
   int fh = 10;
@@ -100,7 +100,7 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   int nTotalForecastingsTrainningSet = rF.getForecastsSize(0) - fh;
 
   //========SET PROBLEM MAXIMUM LAG ===============
-  cout << "argvMaxLagRate = " << argvMaxLagRate << endl;
+  std::cout << "argvMaxLagRate = " << argvMaxLagRate << std::endl;
 
   int iterationMaxLag =
       ((nTotalForecastingsTrainningSet - fh) * argvMaxLagRate) / 100.0;
@@ -119,16 +119,16 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
 
   vector<double> foIndicators;
   int beginTrainingSet = 0;
-  cout << std::setprecision(9);
-  cout << std::fixed;
+  std::cout << std::setprecision(9);
+  std::cout << std::fixed;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
-  cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << endl;
-  cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << endl;
-  cout << "BeginTrainninningSet: " << beginTrainingSet << endl;
-  cout << "#~NTR: " << NTRaprox << endl;
-  cout << "#maxNotUsed: " << maxLag << endl;
-  cout << "#StepsAhead: " << fh << endl << endl;
+  std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+       << std::endl;
+  std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
+  std::cout << "#~NTR: " << NTRaprox << std::endl;
+  std::cout << "#maxNotUsed: " << maxLag << std::endl;
+  std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
 
   vector<vector<double>> trainningSet;  // trainningSetVector
   trainningSet.push_back(
@@ -180,31 +180,31 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   //maxLag));
 
   vector<vector<double>> ensembleBlindForecasts;
-  cout << "\nPrinting obtained sets of predicted values..." << endl;
+  std::cout << "\nPrinting obtained sets of predicted values..." << std::endl;
   for (int i = 0; i < nObtainedParetoSol; i++) {
-    cout << setprecision(2);
+    std::cout << setprecision(2);
     vector<double> blindForecasts = *forecastObj.returnBlind(
         vESolPF[i]->first.getR(), dataForFeedingValidationTest);
     for (int f = 0; f < (int)blindForecasts.size(); f++)
-      cout << blindForecasts[f] << "/" << targetValidationSet[targetFile][f]
+      std::cout << blindForecasts[f] << "/" << targetValidationSet[targetFile][f]
            << "/" << (targetValidationSet[targetFile][f] - blindForecasts[f])
            << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
 
     //		cout <<
     //forecastObject->returnForecastsAndTargets(vSolPF[i]->getR(),
-    //validationSet) << endl; 		getchar();
+    //validationSet) << std::endl; 		getchar();
     ensembleBlindForecasts.push_back(blindForecasts);
     // getchar();
   }
 
-  cout << "\nPrinting pareto front forecast accuracy measures..." << endl;
+  std::cout << "\nPrinting pareto front forecast accuracy measures..." << std::endl;
   for (int i = 0; i < nObtainedParetoSol; i++) {
-    cout << setprecision(5);
+    std::cout << setprecision(5);
     for (int e = 0; e < (int)vEvalPF[i]->size(); e++)
-      cout << vEvalPF[i]->at(e).getObjFunction() << "\t\t";
-    cout << endl;
+      std::cout << vEvalPF[i]->at(e).getObjFunction() << "\t\t";
+    std::cout << std::endl;
   }
 
   opf->exportParetoFront("../Outputs/paretoFrontGPLS.txt", "w");
@@ -212,7 +212,7 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   // delete pf;
   // delete forecastObject;
 
-  cout << "MO Stock Market forecasting finished!" << endl;
+  std::cout << "MO Stock Market forecasting finished!" << std::endl;
 
   //	//	===========================================
   //	//	TIME FOR BRINCANDO COM A BOLSA DE VALORES (BBV)

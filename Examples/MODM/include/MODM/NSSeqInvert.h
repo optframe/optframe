@@ -105,9 +105,9 @@ class MoveInvert : public Move<ESolutionMODM> {
   }
 
   void print() const override {
-    cout << "MoveInvert( ";
-    cout << y << ", " << c << " )";
-    cout << endl;
+    std::cout << "MoveInvert( ";
+    std::cout << y << ", " << c << " )";
+    std::cout << std::endl;
   }
 };
 
@@ -145,8 +145,8 @@ class NSIteratorInvert : public NSIterator<ESolutionMODM> {
 
   uptr<Move<ESolutionMODM>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "NSSeqInvert. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "NSSeqInvert. Aborting." << std::endl;
       exit(1);
     }
 
@@ -192,13 +192,13 @@ class NSSeqInvert : public NSSeq<ESolutionMODM> {
         *ads, dmproblem));  // return an iterator to the neighbors of 'rep'
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NS<ESolutionMODM>::idComponent() << ":NSSeqInvert";
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 };
 }  // namespace MODM
 

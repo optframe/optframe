@@ -53,14 +53,14 @@ class IteratorNSSeqUnion : public NSIterator<XES> {
  public:
   /*
   // ERROR! CANNOT PASS uptr CORRECTLY!
-       IteratorNSSeqUnion(vector<uptr<NSIterator<XES>>>&& _it) :
+       IteratorNSSeqUnion(std::vector<uptr<NSIterator<XES>>>&& _it) :
                        it(_it)
        {
                k = 0;
        }
 */
   // these pointers are passed together with ownership!! never delete them!
-  IteratorNSSeqUnion(vector<NSIterator<XES>*> _it) {
+  IteratorNSSeqUnion(std::vector<NSIterator<XES>*> _it) {
     k = 0;
     for (unsigned i = 0; i < _it.size(); i++)
       it.push_back(uptr<NSIterator<XES>>(_it[i]));

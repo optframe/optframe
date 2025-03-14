@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
   ////////////////////////////////////////////////////////////////////////////
   // Random Solution
   ////////////////////////////////////////////////////////////////////////////
-  cout << "\nWill generate random solution" << endl;
+  std::cout << "\nWill generate random solution" << std::endl;
 
   // SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
   op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10))
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
   std::cout << "solution: " << opse->first << std::endl;
   ev.reevaluate(se);
   se.second.print();
-  cout << "GUD\n\n";  // qq é isso Igor?
+  std::cout << "GUD\n\n";  // qq é isso Igor?
 
   // CheckCommand not working anymore... must CLEAN it!! not accepting R, ADS,
   // ... simplify it, please!
@@ -181,6 +181,6 @@ int main(int argc, char** argv) {
   std::cout << r2->first << std::endl;
   r2->second.print();
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
   return 0;
 }

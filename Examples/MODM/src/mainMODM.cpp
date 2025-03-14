@@ -69,7 +69,7 @@ char* execCommand(const char* command) {
   return result;
 }
 
-double hipervolume(vector<vector<double>> v) {
+double hipervolume(std::vector<vector<double>> v) {
   int nSol = v.size();
   int nObj = v[0].size();
   string tempFile = "tempFileHipervolueFunc";
@@ -83,7 +83,7 @@ double hipervolume(vector<vector<double>> v) {
   }
 
   fclose(fTempHV);
-  stringstream ss;
+  std::stringstream ss;
   ss << "./hv\t -r \"" << 0 << " " << 0 << "\" \t" << tempFile.c_str();
   string hvValueString = execCommand(ss.str().c_str());
   double hvValue = atof(hvValueString.c_str());
@@ -93,8 +93,8 @@ double hipervolume(vector<vector<double>> v) {
 int main(int argc, char** argv) {
   int nOfArguments = 7;
   if (argc != (1 + nOfArguments)) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: \n"
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: \n"
             "1 - instancia \n"
             "2 - saida - for saving solutions for each execution - type write\n"
             "3 - saida geral -- general file for savings all results - type "
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
             "5 - alpha Builder Int\n"
             "6 - alpha NS Int \n"
             "7 - initial population size \n"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -129,14 +129,14 @@ int main(int argc, char** argv) {
   string filename = instancia;
   string output = saida;
   string outputGeral = saidaGeral;
-  cout << "filename = " << filename << endl;
-  cout << "output = " << output << endl;
-  cout << "outputGeral = " << outputGeral << endl;
-  cout << "timeILS = " << timeILS << endl;
-  cout << "alphaBuilder = " << alphaBuilder << endl;
-  cout << "alphaNeighARProduct = " << alphaNeighARProduct << endl;
-  cout << "initial population size = " << pop << endl;
-  cout << "Seed = " << seed << endl;
+  std::cout << "filename = " << filename << std::endl;
+  std::cout << "output = " << output << std::endl;
+  std::cout << "outputGeral = " << outputGeral << std::endl;
+  std::cout << "timeILS = " << timeILS << std::endl;
+  std::cout << "alphaBuilder = " << alphaBuilder << std::endl;
+  std::cout << "alphaNeighARProduct = " << alphaNeighARProduct << std::endl;
+  std::cout << "initial population size = " << pop << std::endl;
+  std::cout << "Seed = " << seed << std::endl;
 
   // filename = "./MyProjects/MODM/Instances/S3-15/S3-10-15-1-s.txt";
   // filename = "./MyProjects/MODM/Instances/L-5/L-10-5-1-l.txt";
@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
   File file{filename};
 
   if (!file.isOpen()) {
-    cout << "File '" << filename << "' not found" << endl;
+    std::cout << "File '" << filename << "' not found" << std::endl;
     return false;
   }
 
@@ -320,14 +320,14 @@ getchar();
 262); vector<vector<double> > ref = US.unionSets(PF1, PF2);
         vector<vector<double> > refMin = ref;
 
-        cout << PF1.size() << endl;
-        cout << PF2.size() << endl;
-        cout << ref.size() << endl;
+        std::cout << PF1.size() << std::endl;
+        std::cout << PF2.size() << std::endl;
+        std::cout << ref.size() << std::endl;
 //	getchar();
-        cout << "Reference set" << endl;
+        std::cout << "Reference set" << std::endl;
         for (int p = 0; p < ref.size(); p++)
         {
-                cout << ref[p][0] << "\t" << ref[p][1] << endl;
+                std::cout << ref[p][0] << "\t" << ref[p][1] << std::endl;
                 refMin[p][0]*=-1;
                 refMin[p][1]*=-1;
         }
@@ -348,7 +348,7 @@ getchar();
         vector<vector<double> > paretoDoubleEval;
         vector<vector<double> > paretoDoubleEvalMin;
 
-        cout << "MO optimization finished! Printing Pareto Front!" << endl;
+        std::cout << "MO optimization finished! Printing Pareto Front!" << std::endl;
         for (int i = 0; i < nObtainedParetoSol; i++)
         {
 
@@ -367,14 +367,14 @@ getchar();
                 paretoDoubleEvalMin.push_back(solEvaluations);
 
                 vector<int> nPerCat =
-     evalRobustness.checkNClientsPerCategory(rep, ads); cout << foProfit << "\t"
+     evalRobustness.checkNClientsPerCategory(rep, ads); std::cout << foProfit << "\t"
      << foVolatility << "\t";
 
                 int nTotalClients = nPerCat[nPerCat.size() - 1];
 
                 for (int cat = 0; cat < 6; cat++)
-                        cout << nPerCat[cat] << "\t";
-                cout << endl;
+                        std::cout << nPerCat[cat] << "\t";
+                std::cout << std::endl;
         }
 
         int card = US.cardinalite(paretoDoubleEval, ref);
@@ -388,13 +388,13 @@ getchar();
         double delta = US.deltaMetric(paretoDoubleEvalMin, utopicSol);
 
         //Delta Metric and Hipervolume need to verify min
-        cout << "Cardinalite = " << card << endl;
-        cout << "Set Coverage to ref = " << sCToRef << endl;
-        cout << "Set Coverage from ref  = " << sCFromRef << endl;
-        cout << "delta  = " << delta << endl;
-        cout << "deltaRef  = " << US.deltaMetric(refMin, utopicSol) << endl;
-        cout << "hv  = " << hv << endl;
-        cout << "ref  = " << hipervolume(refMin) << endl;
+        std::cout << "Cardinalite = " << card << std::endl;
+        std::cout << "Set Coverage to ref = " << sCToRef << std::endl;
+        std::cout << "Set Coverage from ref  = " << sCFromRef << std::endl;
+        std::cout << "delta  = " << delta << std::endl;
+        std::cout << "deltaRef  = " << US.deltaMetric(refMin, utopicSol) << std::endl;
+        std::cout << "hv  = " << hv << std::endl;
+        std::cout << "ref  = " << hipervolume(refMin) << std::endl;
 
         FILE* fGeral = fopen(outputGeral.c_str(), "a");
 
@@ -419,15 +419,15 @@ getchar();
 
          finalSol = ils.search(timeILS, target);
 
-         cout << "ILS HAS ENDED!" << endl;
+         std::cout << "ILS HAS ENDED!" << std::endl;
          finalSol->second.print();
          //finalSol->first.print();
 
          RepMODM repFinal = finalSol->first.getR();
          //finalSol = g.search(time,target);
 
-         //cout << eval.getAverageTime() << endl;
-         //cout << eval.getAverageTimeEvalComplete() << endl;
+         //cout << eval.getAverageTime() << std::endl;
+         //cout << eval.getAverageTimeEvalComplete() << std::endl;
 
          double fo = finalSol->second.evaluation();
          int isFeasible = finalSol->second.isFeasible();
@@ -460,6 +460,6 @@ getchar();
          fclose(fGeral);
 
          */
-  cout << "Programa terminado com sucesso!" << endl;
+  std::cout << "Programa terminado com sucesso!" << std::endl;
   return 0;
 }

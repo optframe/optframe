@@ -66,7 +66,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -95,7 +95,7 @@ public:
 		}
 		catch(ConversionError& e)
 		{
-			cout << "math function: not a number to operate ('" <<sa << "' " << op << " '" << sb << "')!" << endl;
+			cout << "math function: not a number to operate ('" <<sa << "' " << op << " '" << sb << "')!" << std::endl;
 			return nullptr;
 		}
 
@@ -110,7 +110,7 @@ public:
 		if(op == "mod")
 			return new string(formatNumber(((int)a)%((int)b)));
 
-		cout << "math function: no such operation '" << op << "'" << endl;
+		cout << "math function: no such operation '" << op << "'" << std::endl;
 
 		return nullptr;
 	}

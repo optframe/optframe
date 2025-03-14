@@ -44,8 +44,8 @@ class InitialPareto : public InitialSearch<XMES, Pareto<XMES>> {
         SearchStatus::NO_REPORT);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":InitialPareto";
     return ss.str();
   }
@@ -80,8 +80,8 @@ class BasicInitialPareto : public InitialPareto<XMES> {
     return p;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialPareto<XMES>::idComponent() << ":BasicInitialPareto";
     return ss.str();
   }
@@ -131,8 +131,8 @@ class GRInitialPareto : public InitialPareto<XMES> {
     return *p;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialPareto<XMES>::idComponent() << ":GRInitialPareto";
     return ss.str();
   }

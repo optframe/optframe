@@ -65,9 +65,9 @@ class NSSeqMultiRouteAdapter : public NSSeq<vector<vector<T>>, DS> {
   }
 
   virtual void print() {
-    cout << "NSSeqMultiRouteAdapter {" << endl;
+    std::cout << "NSSeqMultiRouteAdapter {" << std::endl;
     ns.print();
-    cout << "}" << endl;
+    std::cout << "}" << std::endl;
   }
 };
 

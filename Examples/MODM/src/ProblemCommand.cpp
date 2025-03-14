@@ -6,7 +6,7 @@ bool MODMProblemCommand::load(string filename) {
   File file(filename);
 
   if (!file.isOpen()) {
-    cout << "File '" << filename << "' not found" << endl;
+    std::cout << "File '" << filename << "' not found" << std::endl;
     return false;
   }
 
@@ -48,7 +48,7 @@ bool MODMProblemCommand::load(string filename) {
        // ...
   */
 
-  cout << "problem '" << filename << "' loaded successfully" << endl;
+  std::cout << "problem '" << filename << "' loaded successfully" << std::endl;
 
   return true;
 }
@@ -57,9 +57,9 @@ bool MODMProblemCommand::unload() {
   if (p) delete p;
   p = NULL;
 
-  cout << "problem instance for MODM unloaded successfully (use 'drop_all' if "
+  std::cout << "problem instance for MODM unloaded successfully (use 'drop_all' if "
           "you want to remove all components)"
-       << endl;
+       << std::endl;
 
   return true;
 }

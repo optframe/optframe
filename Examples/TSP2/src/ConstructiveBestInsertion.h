@@ -59,7 +59,7 @@ class ConstructiveBestInsertion : public Constructive<RepTSP> {
   virtual ~ConstructiveBestInsertion() {}
 
   Solution<RepTSP>& generateSolution() {
-    // cout << "Generating solution" << endl;
+    // std::cout << "Generating solution" << std::endl;
     RepTSP newRep;
     vector<bool> used(pTSP.n, false);
 
@@ -75,9 +75,9 @@ class ConstructiveBestInsertion : public Constructive<RepTSP> {
     used[second] = true;
 
     while (((int)newRep.size()) < pTSP.n) {
-      vector<pair<double, pair<int, int>>> candidates;
+      std::vector<std::pair<double, pair<int, int>>> candidates;
 
-      // cout << "BASE: " << newRep << endl;
+      // std::cout << "BASE: " << newRep << std::endl;
 
       for (unsigned i = 0; i < used.size(); i++)
         if (!used[i])
@@ -87,18 +87,18 @@ class ConstructiveBestInsertion : public Constructive<RepTSP> {
             if (j == 0) bj = newRep.size() - 1;
 
             double cost = -pTSP.dist(newRep[bj], newRep[j]);  // remove arc
-            // cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
-            // cost << endl;
+            // std::cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
+            // cost << std::endl;
             cost += pTSP.dist(newRep[bj], i);
-            // cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
-            // cost << endl;
+            // std::cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
+            // cost << std::endl;
             cost += pTSP.dist(i, newRep[j]);
-            // cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
-            // cost << endl;
-            candidates.push_back(make_pair(cost, make_pair(i, j)));
+            // std::cout << "Candidate: " << " i=" <<i << " j=" << j << " cost=" <<
+            // cost << std::endl;
+            candidates.push_back(std::make_pair(cost, make_pair(i, j)));
           }
 
-      // cout << "before sort: " << newRep << endl;
+      // std::cout << "before sort: " << newRep << std::endl;
       sort(candidates.begin(), candidates.end(), compare);
 
       int best_pos = candidates[0].second.second;
@@ -107,9 +107,9 @@ class ConstructiveBestInsertion : public Constructive<RepTSP> {
       // CHECK
 
       /*
-         cout << "Solution is now: " << newRep << endl;
-         cout << "Best insertion is: city=" << best_city << " in position=" <<
-         best_pos << " value=" << candidates[0].first << endl;
+         std::cout << "Solution is now: " << newRep << std::endl;
+         std::cout << "Best insertion is: city=" << best_city << " in position=" <<
+         best_pos << " value=" << candidates[0].first << std::endl;
          */
 
       newRep.insert(newRep.begin() + best_pos, best_city);
@@ -125,29 +125,29 @@ class ConstructiveBestInsertion : public Constructive<RepTSP> {
              aft_pos = 0;
 
          double calcCost = -(*pTSP->dist)(newRep[bef_pos], newRep[aft_pos]);
-         cout << "calcCost = -d(" << newRep[bef_pos] << "," << newRep[aft_pos]
+         std::cout << "calcCost = -d(" << newRep[bef_pos] << "," << newRep[aft_pos]
          << ") "; calcCost += (*pTSP->dist)(newRep[bef_pos], newRep[best_pos]);
-         cout << "calcCost += d(" << newRep[bef_pos] << "," << newRep[best_pos]
+         std::cout << "calcCost += d(" << newRep[bef_pos] << "," << newRep[best_pos]
          << ") "; calcCost += (*pTSP->dist)(newRep[best_pos], newRep[aft_pos]);
-         cout << "calcCost += d(" << newRep[best_pos] << "," << newRep[aft_pos]
-         << ") " << endl; cout << "Solution became: " << newRep << endl;
+         std::cout << "calcCost += d(" << newRep[best_pos] << "," << newRep[aft_pos]
+         << ") " << std::endl; std::cout << "Solution became: " << newRep << std::endl;
 
 
          if(candidates[0].first != calcCost)
          {
-             cout << "DIFFERENCE BETWEEN COSTS! Best: "<<candidates[0].first <<
-         " CALC: " << calcCost << endl; exit(1);
+             std::cout << "DIFFERENCE BETWEEN COSTS! Best: "<<candidates[0].first <<
+         " CALC: " << calcCost << std::endl; exit(1);
          }
          */
 
-      // cout << "after sort: " << newRep << endl;
+      // std::cout << "after sort: " << newRep << std::endl;
     }
 
     return *new Solution<RepTSP>(newRep);
   }
 
   void print() const override {
-    cout << "Constructive heuristic best insertion" << endl;
+    std::cout << "Constructive heuristic best insertion" << std::endl;
   }
 };
 

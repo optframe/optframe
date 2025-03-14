@@ -70,7 +70,7 @@ class NearestNeighborConstructive : public InitialSearch<ESolutionTSP> {
   // std::optional<SolutionTSP> generateSolution(double timelimit) override
   std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(
       const StopCriteria<>& sosc) override {
-    // cout << "Generating solution" << endl;
+    // std::cout << "Generating solution" << std::endl;
     RepTSP newRep;
     vector<bool> used(pI->n, false);
 
@@ -78,23 +78,23 @@ class NearestNeighborConstructive : public InitialSearch<ESolutionTSP> {
 
     newRep.push_back(first);
     used[first] = true;
-    // cout << "first is " << first << endl;
+    // std::cout << "first is " << first << std::endl;
 
     while (((int)newRep.size()) < pI->n - 1) {
-      vector<pair<double, int>> candidates;
+      std::vector<std::pair<double, int>> candidates;
 
       for (unsigned i = 0; i < used.size(); i++)
         if (!used[i])
           candidates.push_back(
               make_pair((*pI->dist)(i, newRep.at(newRep.size() - 1)), i));
 
-      // cout << "before sort: " << newRep << endl;
+      // std::cout << "before sort: " << newRep << std::endl;
       sort(candidates.begin(), candidates.end(), compare);
 
       newRep.push_back(candidates[0].second);
       used[candidates[0].second] = true;
 
-      // cout << "after sort: " << newRep << endl;
+      // std::cout << "after sort: " << newRep << std::endl;
     }
 
     // add last

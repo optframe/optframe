@@ -34,7 +34,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class TryCommand : public Command<R, ADS, DS>
 {
 private:
-   Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module)
+   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module)
    {
       for (unsigned int i = 0; i < modules.size(); i++)
          if (module == modules[i]->id())
@@ -42,7 +42,7 @@ private:
       return nullptr;
    }
 
-   bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string command)
+   bool exec_command(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string command)
    {
       Scanner scanner(command);
       string module = scanner.next();
@@ -78,12 +78,12 @@ public:
       return "try block_of_try_commands [except block_of_exception_commands]";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -100,7 +100,7 @@ public:
          string text_except = scanner.next();
 
          if (text_except != "except") {
-            cout << "try command: error expecting word 'except' and got '" << text_except << "'" << endl;
+            std::cout << "try command: error expecting word 'except' and got '" << text_except << "'" << std::endl;
             return false;
          }
 
@@ -128,9 +128,9 @@ public:
                // EXPECTED ERROR, NO MESSAGE!
                /*
 					if (ltry.at(c) == "")
-						cout << "try command: (TRY) empty command! (perhaps an extra comma in list?)" << endl;
+						cout << "try command: (TRY) empty command! (perhaps an extra comma in list?)" << std::endl;
 					else
-						cout << "try command: (TRY) problem in command '" << ltry.at(c) << "'" << endl;
+						cout << "try command: (TRY) problem in command '" << ltry.at(c) << "'" << std::endl;
 					*/
 
                ok = false;
@@ -142,7 +142,7 @@ public:
          // DEBUG MESSAGE ONLY
          /*
 			if(lcatch.size()>0)
-				cout << "try_catch command: calling CATCH block" << endl;
+				cout << "try_catch command: calling CATCH block" << std::endl;
 			*/
 
          for (unsigned int c = 0; c < lcatch.size(); c++) {
@@ -154,9 +154,9 @@ public:
             if (command != "")
                if (!exec_command(allCommands, allFunctions, factory, dictionary, ldictionary, command)) {
                   if (lcatch.at(c) == "")
-                     cout << "try command: (AFTER ERROR) empty command! (perhaps an extra comma in list?)" << endl;
+                     std::cout << "try command: (AFTER ERROR) empty command! (perhaps an extra comma in list?)" << std::endl;
                   else
-                     cout << "try command: (AFTER ERROR) error in command '" << lcatch.at(c) << "'!" << endl;
+                     std::cout << "try command: (AFTER ERROR) error in command '" << lcatch.at(c) << "'!" << std::endl;
 
                   return false;
                }
@@ -167,7 +167,7 @@ public:
    }
 
    // should preprocess only until list of commands
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       string ibegin = "";
       string iend = "";

@@ -42,24 +42,24 @@ class RandGenSetSeedCommand : public Command<R, ADS, DS> {
            "for the system random number generator.";
   }
 
-  bool run(vector<Command<R, ADS, DS>*>& all_modules,
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
            vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
            HeuristicFactory<R, ADS, DS>& factory,
-           map<string, string>& dictionary,
+           map<std::string, std::string>& dictionary,
            map<string, vector<string>>& ldictionary, string input) {
     Scanner scanner(input);
 
     if (!scanner.hasNext()) {
-      cout << "missing 'seed' positive integer value!" << endl;
-      cout << "Usage: " << usage() << endl;
+      std::cout << "missing 'seed' positive integer value!" << std::endl;
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
     }
 
     unsigned long seed = *scanner.nextInt();
 
-    cout << "randgen.set_seed command: setting system random number generator "
+    std::cout << "randgen.set_seed command: setting system random number generator "
             "seed to: "
-         << seed << endl;
+         << seed << std::endl;
 
     RandGen& rg = factory.getRandGen();
     rg.setSeed(seed);
@@ -70,7 +70,7 @@ class RandGenSetSeedCommand : public Command<R, ADS, DS> {
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary,
+      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
       const map<string, vector<string>>& ldictionary, string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);

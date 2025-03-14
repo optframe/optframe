@@ -54,9 +54,9 @@ class NSSeqPairFirstAdapter : public NSSeq<pair<T1, T2>, DS> {
   }
 
   virtual void print() {
-    cout << "NSSeqPairFirstAdapter {" << endl;
+    std::cout << "NSSeqPairFirstAdapter {" << std::endl;
     ns.print();
-    cout << "}" << endl;
+    std::cout << "}" << std::endl;
   }
 };
 

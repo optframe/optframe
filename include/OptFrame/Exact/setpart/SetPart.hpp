@@ -85,7 +85,7 @@ public:
    int addColumn(double cost, vector<bool> values)
    {
       if (values.size() != lines) {
-         //cerr << "[SetPart::addColumn] Warning: the column size must be equal the number of lines" << endl;
+         //cerr << "[SetPart::addColumn] Warning: the column size must be equal the number of lines" << std::endl;
          return -1;
       }
 
@@ -95,17 +95,17 @@ public:
             hasATrue = true;
 
       if (!hasATrue) {
-         //cerr << "[SetPart::addColumn] Warning: there are no elements at this column" << endl;
+         //cerr << "[SetPart::addColumn] Warning: there are no elements at this column" << std::endl;
          return -2;
       }
 
       if (exists(cost, values)) {
-         //cerr << "[SetPart::addColumn] Warning: this column already exists in the set" << endl;
+         //cerr << "[SetPart::addColumn] Warning: this column already exists in the set" << std::endl;
          return -3;
       }
 
       if (cost < 0) {
-         //cerr << "[SetPart::addColumn] Warning: the cost must be non-negative" << endl;
+         //cerr << "[SetPart::addColumn] Warning: the cost must be non-negative" << std::endl;
          return -4;
       }
 
@@ -124,7 +124,7 @@ public:
 
    pair<double, vector<int>> solve()
    {
-      cout << "[SetPart::solve]: Calling optimizer" << endl;
+      std::cout << "[SetPart::solve]: Calling optimizer" << std::endl;
 
       double finalCost = 0;
       vector<int> cs;
@@ -162,7 +162,7 @@ public:
          IloIntArray2 matrix(env, m);
 
          for (i = 0; i < lines; i++) {
-            //cout << endl;
+            //cout << std::endl;
             matrix[i] = IloIntArray(env, columns.size());
             for (j = 0; j < columns.size(); j++) {
                matrix[i][j] = IloInt(columns[j].values[i]);
@@ -205,10 +205,10 @@ public:
             }
 
          for (i = 0; i < lines; i++) {
-            cout << endl;
+            std::cout << std::endl;
             for (j = 0; j < columns.size(); j++) {
                if (cplex.getValue(y[j]) > .5)
-                  cout << matrix[i][j] << " | ";
+                  std::cout << matrix[i][j] << " | ";
             }
          }
 

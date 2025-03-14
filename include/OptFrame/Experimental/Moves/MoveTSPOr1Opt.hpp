@@ -77,8 +77,8 @@ class MoveTSPOr1Opt : public Move<vector<T>, DS> {
   }
 
   void print() const override {
-    cout << "MoveTSPOr1Opt";
-    cout << "( " << c << " , " << pos << " )" << endl;
+    std::cout << "MoveTSPOr1Opt";
+    std::cout << "( " << c << " , " << pos << " )" << std::endl;
   }
 };
 

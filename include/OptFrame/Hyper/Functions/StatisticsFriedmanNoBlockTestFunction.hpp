@@ -64,7 +64,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -77,13 +77,13 @@ public:
 		}
 		else
         {
-            cout << id() << " function: list of values is invalid!" << endl;
+            std::cout << id() << " function: list of values is invalid!" << std::endl;
 			return nullptr;
         }
 
 		if(list.size()==0)
         {
-            cout << id() << " function: list of values is empty!" << endl;
+            std::cout << id() << " function: list of values is empty!" << std::endl;
 			return nullptr;
         }
 
@@ -100,14 +100,14 @@ public:
 			}
 			else
             {
-                cout << id() << " function: internal list of values couldn't be read!" << endl;
+                std::cout << id() << " function: internal list of values couldn't be read!" << std::endl;
 				return nullptr;
             }
 
 			list2.push_back(list1);
 		}
 
-		//cout << list2 << endl;
+		//cout << list2 << std::endl;
 
 		unsigned nrows = list2.at(0).size();
 		unsigned ncols = list2.size();
@@ -119,7 +119,7 @@ public:
 
         if(nrows*ncols > LIMIT) // TOO BIG! USING FILE TO TRANSPORT DATA
         {
-            cout << id() << " warning: too many data (" << (nrows*ncols) << " > " << LIMIT << ")! Will use 'optframe-friedman.aux' file to transport data." << endl;
+            std::cout << id() << " warning: too many data (" << (nrows*ncols) << " > " << LIMIT << ")! Will use 'optframe-friedman.aux' file to transport data." << std::endl;
             aux = fopen("optframe-friedman.aux", "w");
             fprintf(aux, "x <- matrix(c(");
         }
@@ -184,12 +184,12 @@ public:
     		scommand << "friedman.test(x)\" | R --slave --no-save | grep p-value";
         }
 
-		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
+		//cout << "COMMAND: '" << scommand.str() << "'" << std::endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == nullptr)
 		{
-		    cout << "friedman_test command: PIPE NOT OPEN!" << endl;
+		    std::cout << "friedman_test command: PIPE NOT OPEN!" << std::endl;
 		    return nullptr;
 		}
 
@@ -209,10 +209,10 @@ public:
         fprintf(log, "%s\n", scommand.str().c_str());
         fclose(log);
 
-		//cout << "friedman_test function: OUTPUT '" << output << "'" << endl;
+		//cout << "friedman_test function: OUTPUT '" << output << "'" << std::endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
         {
-            cout << id() << " function: possible error, no R!" << endl;
+            std::cout << id() << " function: possible error, no R!" << std::endl;
 			return nullptr;
         }
 
@@ -231,7 +231,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "friedman function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "friedman function warning: returning 'NA' result! p-value = 1.0" << std::endl;
 			pvalue = 1;
 		}
 		else

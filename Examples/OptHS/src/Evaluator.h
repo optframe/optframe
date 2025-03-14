@@ -40,7 +40,7 @@ class OptHSEvaluator
     int fo_inv = 0;  // Infeasible Value
 
     vector<int> lastClean(p.members.size(), -1);
-    // cout << "MEMBERS: " << p.members << endl;
+    // std::cout << "MEMBERS: " << p.members << std::endl;
 
     // first MUST be 'Y' and 'M'
     if (r.size() > 3) {
@@ -50,7 +50,7 @@ class OptHSEvaluator
     }
 
     for (unsigned i = 0; i < r.size(); i++) {
-      // cout << "ITER " << i << ": " << lastClean << endl;
+      // std::cout << "ITER " << i << ": " << lastClean << std::endl;
       for (unsigned m = 0; m < p.members.size(); m++) {
         if ((r[i].first == p.members[m]) || (r[i].second == p.members[m])) {
           if (lastClean[m] > -1) {
@@ -58,15 +58,15 @@ class OptHSEvaluator
 
             if (diff < 2) {
               fo_inv += diff;
-              // cout << "INF for member: " << p.members[m] << " (at week " << i
-              // << ")" << endl;
+              // std::cout << "INF for member: " << p.members[m] << " (at week " << i
+              // << ")" << std::endl;
             }
           }
 
           lastClean[m] = i;
         }
       }
-      // cout << "ITER (FINISH)" << i << ": " << lastClean << endl;
+      // std::cout << "ITER (FINISH)" << i << ": " << lastClean << std::endl;
     }
 
     return Evaluation<>(0, fo_inv);

@@ -19,20 +19,20 @@ extern int nThreads;
 
 int musicGen(int argc, char** argv) {
   nThreads = 2;
-  cout << "Welcome to automatic music learning and forecasting and generation"
-       << endl;
+  std::cout << "Welcome to automatic music learning and forecasting and generation"
+       << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
-  cout << "nThreads = " << nThreads << endl;
+  std::cout << "nThreads = " << nThreads << std::endl;
 
   //	if (argc != 2)
   //	{
-  //		cout << "Parametros incorretos!" << endl;
+  //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
   //endl; 		exit(1);
   //	}
@@ -44,8 +44,8 @@ int musicGen(int argc, char** argv) {
   //	inputTimeSeries = "MyProjects/HFM/Instance/mp3/jazzMonoChannel_10_20";
 
   //===================================
-  cout << "Parametros:" << endl;
-  //	cout << "nomeOutput=" << inputTimeSeries << endl;
+  std::cout << "Parametros:" << std::endl;
+  //	cout << "nomeOutput=" << inputTimeSeries << std::endl;
 
   vector<string> explanatoryVariables;
   explanatoryVariables.push_back(
@@ -124,18 +124,18 @@ int musicGen(int argc, char** argv) {
   problemParam.setMaxUpperLag(0);
   //=================================================
 
-  cout << std::setprecision(9);
-  cout << std::fixed;
+  std::cout << std::setprecision(9);
+  std::cout << std::fixed;
   int nTotalForecastingsTrainningSet = nSecondsOfTraining * fs + maxLag;
   int beginTrainingSet = fs;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
-  cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << endl;
-  cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << endl;
-  cout << "#~NTR: " << NTRaprox << endl;
-  cout << "#maxNotUsed: " << maxLag << endl;
-  cout << "#StepsAhead: " << fh << endl << endl;
-  cout << "#trainingTimeWithES: " << timeES << endl << endl;
+  std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+       << std::endl;
+  std::cout << "#~NTR: " << NTRaprox << std::endl;
+  std::cout << "#maxNotUsed: " << maxLag << std::endl;
+  std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
+  std::cout << "#trainingTimeWithES: " << timeES << std::endl << std::endl;
 
   vector<vector<double>> trainningSet;  // trainningSetVector
   trainningSet.push_back(rF.getPartsForecastsBeginToEnd(
@@ -170,7 +170,7 @@ int musicGen(int argc, char** argv) {
       forecastsAndTargets->second->at(n) /= multiplier;
     }
 
-    stringstream ss;
+    std::stringstream ss;
     ss << "forecast_Params_FH" << fh << "_max" << maxLag << "_Tr" << timeES
        << "_Times" << nSecondsOfTraining << "_" << nSecondsForFeeding << "_"
        << nSecondsOfForecasts << "_TS" << "_TS" << m << ".txt";
@@ -180,28 +180,28 @@ int musicGen(int argc, char** argv) {
   forecastObject->exportForecasts(*forecastsAndTargets->first,
                                   "./targetSmall.txt");
 
-  cout << "Music has been created." << endl;
+  std::cout << "Music has been created." << std::endl;
 
   return 0;
 }
 
 int musicGenMidiCSV(int argc, char** argv) {
   nThreads = 2;
-  cout << "Welcome to automatic music MIDI learning and forecasting and "
+  std::cout << "Welcome to automatic music MIDI learning and forecasting and "
           "generation"
-       << endl;
+       << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
-  cout << "nThreads = " << nThreads << endl;
+  std::cout << "nThreads = " << nThreads << std::endl;
 
   //	if (argc != 2)
   //	{
-  //		cout << "Parametros incorretos!" << endl;
+  //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
   //endl; 		exit(1);
   //	}
@@ -213,8 +213,8 @@ int musicGenMidiCSV(int argc, char** argv) {
   //	inputTimeSeries = "MyProjects/HFM/Instance/mp3/jazzMonoChannel_10_20";
 
   //===================================
-  cout << "Parametros:" << endl;
-  //	cout << "nomeOutput=" << inputTimeSeries << endl;
+  std::cout << "Parametros:" << std::endl;
+  //	cout << "nomeOutput=" << inputTimeSeries << std::endl;
 
   vector<string> explanatoryVariables;
   explanatoryVariables.push_back(
@@ -283,18 +283,18 @@ int musicGenMidiCSV(int argc, char** argv) {
   problemParam.setMaxUpperLag(0);
   //=================================================
 
-  cout << std::setprecision(3);
-  cout << std::fixed;
+  std::cout << std::setprecision(3);
+  std::cout << std::fixed;
   int nTotalForecastingsTrainningSet = 20000;
   int beginTrainingSet = 0;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
-  cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << endl;
-  cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << endl;
-  cout << "#~NTR: " << NTRaprox << endl;
-  cout << "#maxNotUsed: " << maxLag << endl;
-  cout << "#StepsAhead: " << fh << endl << endl;
-  cout << "#trainingTimeWithES: " << timeES << endl << endl;
+  std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+       << std::endl;
+  std::cout << "#~NTR: " << NTRaprox << std::endl;
+  std::cout << "#maxNotUsed: " << maxLag << std::endl;
+  std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
+  std::cout << "#trainingTimeWithES: " << timeES << std::endl << std::endl;
 
   vector<vector<double>> trainningSet;  // trainningSetVector
 
@@ -317,7 +317,7 @@ int musicGenMidiCSV(int argc, char** argv) {
     forecastsAndTargets = forecastObject->returnForecastsAndTargets(
         sol->first.getR(), validationSet);
 
-    stringstream ss;
+    std::stringstream ss;
     ss << "forecast_Params_FH_TrTs1_" << fh << "_max" << maxLag << "_Tr"
        << timeES << "nS" << nTotalForecastingsTrainningSet << "_TS" << m
        << ".txt";
@@ -327,7 +327,7 @@ int musicGenMidiCSV(int argc, char** argv) {
   forecastObject->exportForecasts(*forecastsAndTargets->first,
                                   "./midiExportTest.txt");
 
-  cout << "Music has been created." << endl;
+  std::cout << "Music has been created." << std::endl;
 
   return 0;
 }

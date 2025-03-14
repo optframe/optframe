@@ -49,12 +49,12 @@ private:
    string var_preprocess(string var, string value, string command)
    {
       if (command.length() < var.length()) {
-         //cout << "general module var_preprocess: command='" << command << "' var='" << var << "'" << endl;
-         //cout << "general module var_preprocess: no possible variable because command is smaller!" << endl;
+         //cout << "general module var_preprocess: command='" << command << "' var='" << var << "'" << std::endl;
+         //cout << "general module var_preprocess: no possible variable because command is smaller!" << std::endl;
          return command; // no possible variable!
       }
 
-      //cout << "general module var_preprocess: command='" << command << "' var='" << var << "' value='" << value << "'" << endl;
+      //cout << "general module var_preprocess: command='" << command << "' var='" << var << "' value='" << value << "'" << std::endl;
 
       string new_command = "";
       string rest = "";
@@ -71,7 +71,7 @@ private:
 
       if (((int)command.size()) == (dollar_pos + 1)) // just one dollar
       {
-         cout << "raw function warning: just one buck!" << endl;
+         std::cout << "raw function warning: just one buck!" << std::endl;
          return command;
       }
 
@@ -197,12 +197,12 @@ public:
       return u;
    }
 
-   string* run(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   string* run(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!) TODO: I DONT KNOW WHY =(
       for (unsigned i = 0; i < input.size(); i++)
          if (input.at(i) == '[') {
-            cout << "raw_function '" << id() << "' error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << endl;
+            std::cout << "raw_function '" << id() << "' error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << std::endl;
             return nullptr;
          }
 
@@ -210,7 +210,7 @@ public:
 
       Scanner scanner(input);
 
-      //cout << "raw_function '" << id() << "' run: '" << input << "'" << endl;
+      //cout << "raw_function '" << id() << "' run: '" << input << "'" << std::endl;
 
       vector<string> values;
       values.push_back(backup_input); // "$_all_params"
@@ -219,12 +219,12 @@ public:
 
       for (unsigned int i = 0; i < (parameters.size() - nsystem_params); i++)
          if (!scanner.hasNext()) {
-            cout << "Usage: " << usage() << endl;
+            std::cout << "Usage: " << usage() << std::endl;
             return nullptr;
          } else
             values.push_back(scanner.next());
 
-      //cout << "FUNCTION '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;
+      //cout << "FUNCTION '" << id() << "' (CREATED) VALUES: '" << values << "'" << std::endl;
 
       stringstream input_body; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
       for (unsigned i = 0; i < body.size(); i++)
@@ -236,12 +236,12 @@ public:
       string command = input_body.str();
       command.append(" "); // TODO: why we need this to find variable in the end?
 
-      //cout << "FUNCTION '" << id() << "' (CREATED) COMMAND: '" << command << "'" << endl;
+      //cout << "FUNCTION '" << id() << "' (CREATED) COMMAND: '" << command << "'" << std::endl;
 
       for (unsigned int v = 0; v < values.size(); v++)
          command = var_preprocess(parameters[v], values[v], command);
 
-      //cout << "FUNCTION '" << id() << "' (CREATED) BODY (after var_prep): '" << command << "'" << endl;
+      //cout << "FUNCTION '" << id() << "' (CREATED) BODY (after var_prep): '" << command << "'" << std::endl;
 
       Scanner scanBody(Scanner::trim(command));
 
@@ -257,7 +257,7 @@ public:
 
       if ((brackets == "(") && PreprocessFunction<R, ADS, DS>::functionExists(nameOrValue, allFunctions)) // found a function!
       {
-         pair<string, string>* p = PreprocessFunction<R, ADS, DS>::run_function(nameOrValue, allFunctions, hf, dictionary, ldictionary, scanBody.rest());
+         pair<std::string, std::string>* p = PreprocessFunction<R, ADS, DS>::run_function(nameOrValue, allFunctions, hf, dictionary, ldictionary, scanBody.rest());
 
          if (p) {
             string value = Scanner::trim(p->first);
@@ -267,15 +267,15 @@ public:
 
             // DO NOT WARN REST!
             //if(rest != "")
-            //	cout << "raw_function (" << name << ") warning: rest is '" << rest << "'" << endl;
+            //	cout << "raw_function (" << name << ") warning: rest is '" << rest << "'" << std::endl;
 
             return new string(value);
          } else {
-            cout << "preprocessing error in raw_function '" << name << "'" << endl;
+            std::cout << "preprocessing error in raw_function '" << name << "'" << std::endl;
             return nullptr; // error in valid function!
          }
       } else {
-         stringstream ss;
+         std::stringstream ss;
          ss << nameOrValue << scanBody.getDiscarded() << brackets;
          ss << scanBody.rest();
 
@@ -285,7 +285,7 @@ public:
 
    // FUNCTIONS ALWAYS NEED DEFAULT PREPROCESSING!!
    /*
-	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>&, map<std::string, std::string>&,  map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
@@ -320,25 +320,25 @@ public:
       return "function.create_raw name list_of_$parameters = body_of_function";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
-      //cout << "create_module run: '" << input << "'" << endl;
+      //cout << "create_module run: '" << input << "'" << std::endl;
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string name = scanner.next();
 
       if (functionExists(name, allFunctions)) {
-         cout << "function.create_raw command: couldn't create function '" << name << "' because it already exists!" << endl;
+         std::cout << "function.create_raw command: couldn't create function '" << name << "' because it already exists!" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -357,18 +357,18 @@ public:
 
       for (unsigned int i = 0; i < parameters.size(); i++)
          if (parameters[i][0] != '$') {
-            cout << "Missing operator $ in variable: " << parameters[i] << endl;
+            std::cout << "Missing operator $ in variable: " << parameters[i] << std::endl;
             return false;
          }
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string eq = scanner.next();
       if (eq != "=") {
-         cout << "function.create_raw error: expected '=' and found '" << eq << endl;
+         std::cout << "function.create_raw error: expected '=' and found '" << eq << std::endl;
          return false;
       }
 
@@ -376,12 +376,12 @@ public:
 
       allFunctions.push_back(new RawFunction<R, ADS, DS>(name, parameters, body));
 
-      //cout << "raw_function '" << name << "' loaded with parameters '" << parameters << "' and body: '" << body << "'" << endl;
+      //cout << "raw_function '" << name << "' loaded with parameters '" << parameters << "' and body: '" << body << "'" << std::endl;
 
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // disable preprocess!!
       return new string(input);

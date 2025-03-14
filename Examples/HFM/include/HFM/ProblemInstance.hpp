@@ -40,14 +40,14 @@ public:
 			vMax[exVar] = *max_element(forecastings[exVar].begin(), forecastings[exVar].end());
 		}
 
-		//cout <<"File means:"<< means << endl;
-		//cout <<"File std:"<< stdDesvs << endl;
+		//cout <<"File means:"<< means << std::endl;
+		//cout <<"File std:"<< stdDesvs << std::endl;
 		//getchar();
 
 		// ==================== Check if #stepsAhead are possible to be done
 
 		/*
-		 stringstream ss;
+		 std::stringstream ss;
 		 ss << problemParam.getValidationPath();
 		 File* file;
 
@@ -56,13 +56,13 @@ public:
 		 file = new File(ss.str());
 		 } catch (FileNotFound& f)
 		 {
-		 cout << "File '" << ss.str() << "' not found" << endl;
+		 std::cout << "File '" << ss.str() << "' not found" << std::endl;
 		 }
 
 		 Scanner scannerBlind(file);
 
 		 int nForecastingsBlind = scannerBlind.nextInt();
-		 cout << "nBlind: " << nForecastingsBlind << endl;
+		 std::cout << "nBlind: " << nForecastingsBlind << std::endl;
 		 */
 
 		//================================================

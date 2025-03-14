@@ -117,7 +117,7 @@ class CrossoverOX : public Crossover<RepTSP> {
   }
 
   void classicTest() {
-    cout << "========== OX test begins ==========" << endl;
+    std::cout << "========== OX test begins ==========" << std::endl;
     vector<int> v1;
     v1.push_back(9);
     v1.push_back(8);
@@ -144,10 +144,10 @@ class CrossoverOX : public Crossover<RepTSP> {
     vector<int> r;
     doCross(v1, v2, 3, 6, r);
 
-    cout << "v1=" << v1 << endl;
-    cout << "v2=" << v2 << endl;
-    cout << "r=" << r << endl;
-    cout << "========= OX test finished =========" << endl;
+    std::cout << "v1=" << v1 << std::endl;
+    std::cout << "v2=" << v2 << std::endl;
+    std::cout << "r=" << r << std::endl;
+    std::cout << "========= OX test finished =========" << std::endl;
   }
 };
 

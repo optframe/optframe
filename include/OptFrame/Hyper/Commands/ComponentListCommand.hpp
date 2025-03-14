@@ -47,7 +47,7 @@ public:
       return "component.list pattern [store_list]\nWhere: store_list is an optional variable to store the components.";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 
@@ -62,32 +62,32 @@ public:
 
       components.insert(components.end(), componentLists.begin(), componentLists.end());
 
-      //cout << "component.list command: NUM. COMPONENTS IS " << components.size() << endl;
+      //cout << "component.list command: NUM. COMPONENTS IS " << components.size() << std::endl;
 
       if (!scanner.hasNext()) {
          for (int i = 0; i < (int)components.size(); i++)
-            cout << components[i] << endl;
+            std::cout << components[i] << std::endl;
 
          return true;
       } else {
          string new_name = scanner.next();
 
-         //cout << "component.list command: NEW_NAME = '" << new_name << "'" << endl;
+         //cout << "component.list command: NEW_NAME = '" << new_name << "'" << std::endl;
 
-         stringstream ss;
+         std::stringstream ss;
 
-         //cout << "components.list command: COMPONENTS '" << components << "'" << endl;
+         //cout << "components.list command: COMPONENTS '" << components << "'" << std::endl;
 
          ss << new_name << " " << OptFrameList::listToString(components);
 
-         //cout << "component.list command: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << endl;
+         //cout << "component.list command: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << std::endl;
 
          return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
       }
    }
 
    // disable preprocess to don't destroy type!
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // disable preprocess!!
       return new string(input);

@@ -51,7 +51,7 @@ class DeltaIteratorVRPShift10 : public NSIterator<ESolutionHFMVRP> {
   DeltaIteratorVRPShift10(const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
       : r{se.first.getR()}, ads{se.first.getADS()}, p{_hfmvrp} {
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       exit(1);
     }
   }
@@ -92,8 +92,8 @@ class DeltaIteratorVRPShift10 : public NSIterator<ESolutionHFMVRP> {
 
   uptr<Move<ESolutionHFMVRP>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "DeltaNSIteratorVRPShift10. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "DeltaNSIteratorVRPShift10. Aborting." << std::endl;
       exit(1);
     }
 

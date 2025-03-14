@@ -36,10 +36,10 @@ class Intensification : public LocalSearch<XES> {
 
   virtual void addSolution(const XES&) = 0;
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearch<XES>::idComponent() << "INTENSIFICATION:";
     return ss.str();
   }

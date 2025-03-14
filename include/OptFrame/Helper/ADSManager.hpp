@@ -69,8 +69,8 @@ class ADSManager : public Component {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << "ADSManager";
     return ss.str();
   }
@@ -80,7 +80,7 @@ class ADSManager : public Component {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "ADSManager";
     return ss.str();
   }

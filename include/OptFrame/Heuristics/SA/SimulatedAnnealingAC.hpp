@@ -198,8 +198,8 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
 
       if (!move) {
         if (Component::warning)
-          cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T
-               << "! continue..." << endl;
+          std::cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T
+               << "! continue..." << std::endl;
         // TODO: return FAIL?
         // continue;
         return {SearchStatus::NO_REPORT, star};
@@ -329,7 +329,7 @@ XSH::first_type::typeR>);
             std::cout << "Best fo: " << se.second.evaluation()
                       << " Found on Iter = " << ctx.iterT
                       << " and T = " << ctx.T;
-            std::cout << endl;
+            std::cout << std::endl;
           }
 
 #ifdef OPTFRAME_AC
@@ -437,8 +437,8 @@ XSH::first_type::typeR>);
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
        << "SimulatedAnnealingAC";
     return ss.str();
@@ -559,26 +559,26 @@ class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
                                          Ti, hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    // params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    // params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
     // "evaluation function"));
     params.push_back(
         make_pair(Evaluator<typename XES::first_type, typename XES::second_type,
                             XES>::idComponent(),
                   "evaluation function"));
     //
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
     // heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    stringstream ss;
+    std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
-    params.push_back(make_pair("OptFrame:double", "cooling factor"));
+    params.push_back(std::make_pair(ss.str(), "list of NS"));
+    params.push_back(std::make_pair("OptFrame:double", "cooling factor"));
     params.push_back(
         make_pair("OptFrame:int", "number of iterations for each temperature"));
-    params.push_back(make_pair("OptFrame:double", "initial temperature"));
+    params.push_back(std::make_pair("OptFrame:double", "initial temperature"));
 
     return params;
   }
@@ -587,8 +587,8 @@ class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
     return component == SimulatedAnnealingAC<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << GlobalSearchBuilder<XES>::idComponent() << SA::family()
        << "SimulatedAnnealingAC";
     return ss.str();

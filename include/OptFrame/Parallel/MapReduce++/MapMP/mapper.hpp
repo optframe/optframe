@@ -34,13 +34,13 @@ public:
      : mapReduce(_mapReduce){};
    ///Iterator mapping execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, B>> run(vector<pair<KeyA, A>>& as)
+   virtual std::vector<std::pair<KeyB, B>> run(std::vector<pair<KeyA, A>>& as)
    {
-      vector<pair<KeyB, B>> bs;
+      std::vector<std::pair<KeyB, B>> bs;
 
 #pragma omp parallel for
       for (int i = 0; i < as.size(); i++) {
-         vector<pair<KeyB, B>> bss = map(as[i]);
+         std::vector<std::pair<KeyB, B>> bss = map(as[i]);
 #pragma omp critical
          for (int j = 0; j < bss.size(); j++)
             bs.push_back(bss[j]);
@@ -49,13 +49,13 @@ public:
       return bs;
    };
 #else
-   virtual multimap<KeyB, B> run(vector<pair<KeyA, A>>& as)
+   virtual multimap<KeyB, B> run(std::vector<pair<KeyA, A>>& as)
    {
       multimap<KeyB, B> bs;
 
 #pragma omp parallel for
       for (int i = 0; i < as.size(); i++) {
-         vector<pair<KeyB, B>> bss = map(as[i]);
+         std::vector<std::pair<KeyB, B>> bss = map(as[i]);
 #pragma omp critical
          for (int j = 0; j < bss.size(); j++)
             bs.insert(bss[j]);
@@ -65,7 +65,7 @@ public:
    };
 #endif
    ///Map function (implemented by user).
-   virtual vector<pair<KeyB, B>> map(pair<KeyA, A>) = 0;
+   virtual std::vector<std::pair<KeyB, B>> map(pair<KeyA, A>) = 0;
 
 protected:
    MapReduce<KeyA, A, KeyB, B, C>* mapReduce;

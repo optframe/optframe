@@ -49,9 +49,9 @@ public:
       return "plot.view file";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      //cout << "plot.view module input: '" << input << "'" << endl;
+      //cout << "plot.view module input: '" << input << "'" << std::endl;
 
       // Software: Eye of Gnome
       string view_software = "eog";
@@ -59,8 +59,8 @@ public:
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "plot.view command: no filename!" << endl;
-         cout << "Usage: " << usage() << endl;
+         std::cout << "plot.view command: no filename!" << std::endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
@@ -72,14 +72,14 @@ public:
       int c = system(ssdisp.str().c_str());
 
       if (c < 0) {
-         cout << "plot.view error: return is less than zero '" << c << "'" << endl;
+         std::cout << "plot.view error: return is less than zero '" << c << "'" << std::endl;
          return false;
       }
 
       return true;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
    }

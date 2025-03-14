@@ -59,8 +59,8 @@ class MSLocalSearch : public Component {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":MSLocalSearch";
     return ss.str();
   }

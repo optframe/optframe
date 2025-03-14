@@ -22,70 +22,70 @@ public:
       numFrentesEst = 0;
 
       for (int i = 0; i < 10; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " ";
+      std::cout << scanner.next() << " ";
       pl_est = *scanner.nextDouble();
       pr_est = *scanner.nextDouble();
       pu_est = *scanner.nextDouble();
-      cout << pl_est << " " << pr_est << " " << pu_est << endl;
+      std::cout << pl_est << " " << pr_est << " " << pu_est << std::endl;
 
-      cout << scanner.next() << " ";
+      std::cout << scanner.next() << " ";
       pl_min = *scanner.nextDouble();
       pr_min = *scanner.nextDouble();
       pu_min = *scanner.nextDouble();
-      cout << pl_min << " " << pr_min << " " << pu_min << endl;
+      std::cout << pl_min << " " << pr_min << " " << pu_min << std::endl;
 
       for (int i = 0; i < 8; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " "; // param
-      cout << scanner.next() << " "; // wnp
-      cout << scanner.next() << " "; // :=
-      cout << scanner.next() << " "; // esteril
+      std::cout << scanner.next() << " "; // param
+      std::cout << scanner.next() << " "; // wnp
+      std::cout << scanner.next() << " "; // :=
+      std::cout << scanner.next() << " "; // esteril
 
       wnp_est = *scanner.nextDouble();
-      cout << wnp_est << endl;
+      std::cout << wnp_est << std::endl;
 
-      cout << scanner.next() << " "; // minerio
+      std::cout << scanner.next() << " "; // minerio
       wnp_min = *scanner.nextDouble();
-      cout << wnp_min << endl;
+      std::cout << wnp_min << std::endl;
 
-      cout << scanner.nextLine() << endl;
+      std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " "; // param
-      cout << scanner.next() << " "; // wpp
-      cout << scanner.next() << " "; // :=
-      cout << scanner.next() << " "; // esteril
+      std::cout << scanner.next() << " "; // param
+      std::cout << scanner.next() << " "; // wpp
+      std::cout << scanner.next() << " "; // :=
+      std::cout << scanner.next() << " "; // esteril
 
       wpp_est = *scanner.nextDouble();
-      cout << wpp_est << endl;
+      std::cout << wpp_est << std::endl;
 
-      cout << scanner.next() << " "; // minerio
+      std::cout << scanner.next() << " "; // minerio
       wpp_min = *scanner.nextDouble();
-      cout << wpp_min << endl;
+      std::cout << wpp_min << std::endl;
 
       for (int i = 0; i < 4; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " "; // set
-      cout << scanner.next() << " "; // Parametros
-      cout << scanner.next() << " "; // :=
+      std::cout << scanner.next() << " "; // set
+      std::cout << scanner.next() << " "; // Parametros
+      std::cout << scanner.next() << " "; // :=
 
       numParams = 0;
       string param = scanner.next();
 
       while (param != ";") {
          numParams++;
-         cout << param << " ";
+         std::cout << param << " ";
          param = scanner.next();
       }
 
-      cout << endl
-           << scanner.nextLine() << endl;
+      std::cout << std::endl
+           << scanner.nextLine() << std::endl;
 
       for (int p = 0; p < numParams; p++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
          double _tu = *scanner.nextDouble();
          double _tr = *scanner.nextDouble();
          double _tl = *scanner.nextDouble();
@@ -94,46 +94,46 @@ public:
          tr.push_back(_tr);
          tl.push_back(_tl);
 
-         cout << _tu << " " << _tr << " " << _tl << endl;
+         std::cout << _tu << " " << _tr << " " << _tl << std::endl;
       }
-      cout << "tu: " << tu << endl;
-      cout << "tr: " << tr << endl;
-      cout << "tl: " << tl << endl;
+      std::cout << "tu: " << tu << std::endl;
+      std::cout << "tr: " << tr << std::endl;
+      std::cout << "tl: " << tl << std::endl;
 
       for (int i = 0; i < 4; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
       for (int p = 0; p < numParams; p++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
          double _wnm = *scanner.nextDouble();
          double _wpm = *scanner.nextDouble();
 
          wnm.push_back(_wnm);
          wpm.push_back(_wpm);
 
-         cout << _wnm << " " << _wpm << endl;
+         std::cout << _wnm << " " << _wpm << std::endl;
       }
-      cout << "wnm: " << wnm << endl;
-      cout << "wpm: " << wpm << endl;
+      std::cout << "wnm: " << wnm << std::endl;
+      std::cout << "wpm: " << wpm << std::endl;
 
       for (int i = 0; i < 5; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
       numFrentes = 0;
       string frente = scanner.next();
 
       while (frente != ";") {
          numFrentes++;
-         cout << frente << endl;
+         std::cout << frente << std::endl;
          frente = scanner.next();
       }
 
-      cout << endl
-           << scanner.nextLine() << endl;
-      cout << scanner.nextLine() << endl;
+      std::cout << std::endl
+           << scanner.nextLine() << std::endl;
+      std::cout << scanner.nextLine() << std::endl;
 
       for (int p = 0; p < numFrentes; p++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
          double _qu = *scanner.nextDouble();
          bool _isMin = *scanner.nextInt();
 
@@ -142,142 +142,142 @@ public:
 
          _isMin ? numFrentesMin++ : numFrentesEst++; // adicionei isso
 
-         cout << _qu << " " << _isMin << endl;
+         std::cout << _qu << " " << _isMin << std::endl;
       }
-      cout << "qu: " << qu << endl;
-      cout << "isMin: " << isMin << endl;
+      std::cout << "qu: " << qu << std::endl;
+      std::cout << "isMin: " << isMin << std::endl;
 
       for (int i = 0; i < 4; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " "; // set
-      cout << scanner.next() << " "; // Carregadeiras
-      cout << scanner.next() << " "; // :=
+      std::cout << scanner.next() << " "; // set
+      std::cout << scanner.next() << " "; // Carregadeiras
+      std::cout << scanner.next() << " "; // :=
 
       numCarregs = 0;
       string carreg = scanner.next();
 
       while (carreg != ";") {
          numCarregs++;
-         cout << carreg << " ";
+         std::cout << carreg << " ";
          carreg = scanner.next();
       }
 
-      cout << endl
-           << scanner.nextLine() << endl;
-      cout << scanner.nextLine() << endl;
+      std::cout << std::endl
+           << scanner.nextLine() << std::endl;
+      std::cout << scanner.nextLine() << std::endl;
 
       for (int g = 0; g < numCarregs; g++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
          double _cMin = *scanner.nextDouble();
          double _cMax = *scanner.nextDouble();
 
          cMin.push_back(_cMin);
          cMax.push_back(_cMax);
 
-         cout << _cMin << " " << _cMax << endl;
+         std::cout << _cMin << " " << _cMax << std::endl;
       }
-      cout << "cMin: " << cMin << endl;
-      cout << "cMax: " << cMax << endl;
+      std::cout << "cMin: " << cMin << std::endl;
+      std::cout << "cMax: " << cMax << std::endl;
 
       for (int i = 0; i < 4; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " "; // set
-      cout << scanner.next() << " "; // Caminhoes
-      cout << scanner.next() << " "; // :=
+      std::cout << scanner.next() << " "; // set
+      std::cout << scanner.next() << " "; // Caminhoes
+      std::cout << scanner.next() << " "; // :=
 
       numCaminhoes = 0;
       string caminhao = scanner.next();
 
       while (caminhao != ";") {
          numCaminhoes++;
-         cout << caminhao << endl;
+         std::cout << caminhao << std::endl;
          caminhao = scanner.next();
       }
 
-      cout << scanner.nextLine() << endl;
+      std::cout << scanner.nextLine() << std::endl;
 
-      cout << scanner.next() << " "; // param
-      cout << scanner.next() << " "; // txUtilCam
-      cout << scanner.next() << " "; // :=
+      std::cout << scanner.next() << " "; // param
+      std::cout << scanner.next() << " "; // txUtilCam
+      std::cout << scanner.next() << " "; // :=
       txUtilCam = *scanner.nextDouble();
-      cout << txUtilCam << endl;
+      std::cout << txUtilCam << std::endl;
 
-      cout << scanner.nextLine() << endl;
-      cout << scanner.nextLine() << endl;
+      std::cout << scanner.nextLine() << std::endl;
+      std::cout << scanner.nextLine() << std::endl;
 
       for (int c = 0; c < numCaminhoes; c++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
          double _l = *scanner.nextDouble();
 
          l.push_back(_l);
 
-         cout << _l << endl;
+         std::cout << _l << std::endl;
       }
 
-      cout << "l: " << l << endl;
+      std::cout << "l: " << l << std::endl;
 
       // =======================
       //       Matrizes
       // =======================
 
       for (int i = 0; i < 5; i++)
-         cout << scanner.nextLine() << endl;
+         std::cout << scanner.nextLine() << std::endl;
 
       teor = new Matrix<double>(numFrentes, numParams);
 
       for (int f = 0; f < numFrentes; f++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
 
          for (int p = 0; p < numParams; p++) {
             double _teor = *scanner.nextDouble();
-            cout << _teor << " ";
+            std::cout << _teor << " ";
 
             (*teor)(f, p) = _teor;
          }
 
-         cout << endl;
+         std::cout << std::endl;
       }
 
-      cout << "teor: " << (*teor);
+      std::cout << "teor: " << (*teor);
 
-      cout << scanner.nextLine() << endl;
-      cout << scanner.nextLine() << endl;
+      std::cout << scanner.nextLine() << std::endl;
+      std::cout << scanner.nextLine() << std::endl;
 
       comp = new Matrix<bool>(numCaminhoes, numCarregs);
 
       for (int c = 0; c < numCaminhoes; c++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
 
          for (int g = 0; g < numCarregs; g++) {
             bool _comp = *scanner.nextInt();
-            cout << _comp << " ";
+            std::cout << _comp << " ";
 
             (*comp)(c, g) = _comp;
          }
 
-         cout << endl;
+         std::cout << std::endl;
       }
 
-      cout << "comp: " << (*comp);
+      std::cout << "comp: " << (*comp);
 
-      cout << scanner.nextLine() << endl;
-      cout << scanner.nextLine() << endl;
+      std::cout << scanner.nextLine() << std::endl;
+      std::cout << scanner.nextLine() << std::endl;
 
       for (int f = 0; f < numFrentes; f++) {
-         cout << scanner.next() << " ";
+         std::cout << scanner.next() << " ";
          double _tempo = *scanner.nextDouble();
 
          tempo.push_back(_tempo);
 
-         cout << _tempo << endl;
+         std::cout << _tempo << std::endl;
       }
 
-      cout << "tempo: " << tempo << endl;
+      std::cout << "tempo: " << tempo << std::endl;
 
-      cout << endl
-           << "Fim leitura." << endl;
+      std::cout << std::endl
+           << "Fim leitura." << std::endl;
    }
 
    int getNumFrentes()
@@ -406,7 +406,7 @@ public:
          return false;
 
       //cout << "asking for isCompatible ("<<c<<","<<g<<") ";
-      //cout << "limits ["<<comp->getRows()<<","<<comp->getCols()<<"]" << endl;
+      //cout << "limits ["<<comp->getRows()<<","<<comp->getCols()<<"]" << std::endl;
 
       return (*comp)(c, g);
    }

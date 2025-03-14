@@ -33,19 +33,19 @@ public:
      : mapReduce(_mapReduce){};
    ///Iterator reducing execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-   virtual vector<pair<KeyB, C>> run(vector<pair<KeyB, B>>& _mapped)
+   virtual std::vector<std::pair<KeyB, C>> run(std::vector<pair<KeyB, B>>& _mapped)
    {
       multimap<KeyB, B> mapped;
       for (int i = 0; i < _mapped.size(); i++)
          mapped.insert(_mapped[i]);
 #else
-   virtual vector<pair<KeyB, C>> run(multimap<KeyB, B>& mapped)
+   virtual std::vector<std::pair<KeyB, C>> run(multimap<KeyB, B>& mapped)
    {
 #endif
 
       typename std::multimap<KeyB, B>::iterator it = mapped.begin();
       KeyB lastKey = (*it).first;
-      vector<pair<KeyB, vector<B>>> toReduce(1, pair<KeyB, vector<B>>(lastKey, vector<B>()));
+      std::vector<std::pair<KeyB, vector<B>>> toReduce(1, pair<KeyB, vector<B>>(lastKey, vector<B>()));
       for (; it != mapped.end(); ++it) {
          if ((*it).first != lastKey) {
             toReduce.push_back(pair<KeyB, vector<B>>((*it).first, vector<B>()));
@@ -54,7 +54,7 @@ public:
          toReduce.back().second.push_back((*it).second);
       }
 
-      vector<pair<KeyB, C>> reduced(toReduce.size());
+      std::vector<std::pair<KeyB, C>> reduced(toReduce.size());
 
 #pragma omp parallel for
       for (int i = 0; i < toReduce.size(); i++) {

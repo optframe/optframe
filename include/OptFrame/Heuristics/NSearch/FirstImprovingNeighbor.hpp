@@ -125,8 +125,8 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES> {
            (NeighborhoodExploration<XES>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NeighborhoodExploration<XES>::idComponent()
        << ":FirstImprovingNeighbor";
     return ss.str();
@@ -135,7 +135,7 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES> {
   std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "FirstImprovingNeighbor: " << nsSeq.toString();
     return ss.str();
   }
@@ -170,8 +170,8 @@ class FirstImprovingNeighborBuilder
     return new FirstImprovingNeighbor<XES>(*eval, *nsseq);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
@@ -184,8 +184,8 @@ class FirstImprovingNeighborBuilder
     return component == FirstImprovingNeighbor<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << LocalSearchBuilder<XES>::idComponent() << ":FirstImprovingNeighbor";
     return ss.str();
   }

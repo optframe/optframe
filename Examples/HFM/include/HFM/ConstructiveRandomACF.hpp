@@ -53,7 +53,7 @@ class ConstructiveACF : public InitialSearch<XXES> {
         precision(_precision),
         alphaACF(_alphaACF) {
     if (precision == 0) {
-      cerr << "Precision should be greater than 0 :" << precision << endl;
+      cerr << "Precision should be greater than 0 :" << precision << std::endl;
       getchar();
     }
 
@@ -68,8 +68,8 @@ class ConstructiveACF : public InitialSearch<XXES> {
     //		precisionMP = ceil(round(precision / 2));
     //		precisionDP = 1;
 
-    cout << "Inside constructive ACF -- Forcing average and derivative values"
-         << endl;
+    std::cout << "Inside constructive ACF -- Forcing average and derivative values"
+         << std::endl;
     precisionSP = precision;
     precisionMP = precision;  // 1 because it feeds a random generator --
                               // rg.rand(precisionMP);
@@ -161,7 +161,7 @@ class ConstructiveACF : public InitialSearch<XXES> {
       const StopCriteria<XXEv>& sosc) override {
     std::optional<SolutionHFM> s = generateSolutionACF(0.0, sosc.timelimit);
     // return make_pair(*s, EvaluationHFM(0)); // TODO: fix
-    return make_pair(make_pair(*s, XXEv()),
+    return make_pair(std::make_pair(*s, XXEv()),
                      SearchStatus::NO_REPORT);  // TODO: fix
   }
 
@@ -171,8 +171,8 @@ class ConstructiveACF : public InitialSearch<XXES> {
     int numberExplanatoryVariables = data.size();
 
     if ((int)alphaACF.size() != numberExplanatoryVariables) {
-      cout << "error on limits of ACF builder!" << endl;
-      //			cout << "forcing some values...." << endl;
+      std::cout << "error on limits of ACF builder!" << std::endl;
+      //			cout << "forcing some values...." << std::endl;
       //			for (int extraEV = 0; extraEV <
       //(numberExplanatoryVariables - alphaACF.size()); extraEV++)
       //				alphaACF.push_back(alphaACF[0]);
@@ -196,18 +196,18 @@ class ConstructiveACF : public InitialSearch<XXES> {
     vector<vector<pair<double, int>>> acfGreedy(numberExplanatoryVariables);
 
     if (acfPoints[0].size() == 1) {
-      cout << "ConstructiveACF: exiting Forecasting! There are no points to "
+      std::cout << "ConstructiveACF: exiting Forecasting! There are no points to "
               "use as input of the model";
       exit(1);
     }
 
     for (int nEXV = 0; nEXV < numberExplanatoryVariables; nEXV++) {
       while (acfGreedy[nEXV].size() == 0) {
-        vector<pair<double, int>> acfGreedyPoints;
+        std::vector<std::pair<double, int>> acfGreedyPoints;
         for (int k = 0; k < (int)acfPoints[nEXV].size(); k++) {
           if ((acfPoints[nEXV][k] >= alphaACF[nEXV]) &&
               (acfPoints[nEXV][k] != 1)) {
-            acfGreedyPoints.push_back(make_pair(acfPoints[nEXV][k], k));
+            acfGreedyPoints.push_back(std::make_pair(acfPoints[nEXV][k], k));
           }
         }
         acfGreedy[nEXV] = acfGreedyPoints;
@@ -215,9 +215,9 @@ class ConstructiveACF : public InitialSearch<XXES> {
       }
     }
 
-    //		 cout << alphaACF << endl;
-    //		 cout << acfPoints << endl;
-    //		 cout << acfGreedy << endl;
+    //		 std::cout << alphaACF << std::endl;
+    //		 std::cout << acfPoints << std::endl;
+    //		 std::cout << acfGreedy << std::endl;
     //		 getchar();
 
     return acfGreedy;
@@ -228,8 +228,8 @@ class ConstructiveACF : public InitialSearch<XXES> {
 
     // Jump targetFile
     for (int nEXV = 1; nEXV < pEFP.getNumberExplanatoryVariables(); nEXV++) {
-      vector<pair<double, int>> vLags;
-      vLags.push_back(make_pair(1, 0));
+      std::vector<std::pair<double, int>> vLags;
+      vLags.push_back(std::make_pair(1, 0));
       trivialLagsRLC.push_back(vLags);
     }
     return trivialLagsRLC;
@@ -237,7 +237,7 @@ class ConstructiveACF : public InitialSearch<XXES> {
 
   std::optional<SolutionHFM> generateSolutionACF(float notUsed,
                                                  double timelimit) {
-    // cout << "ACF generating solution.." << endl;
+    // std::cout << "ACF generating solution.." << std::endl;
     int numberExplanatoryVariables = pEFP.getNumberExplanatoryVariables();
 
     vector<vector<pair<double, int>>> lagsRLC = returnRLCUsingACF();
@@ -247,7 +247,7 @@ class ConstructiveACF : public InitialSearch<XXES> {
     //			lagsRLC = returnTrivialRLCForSamplesLearning();
 
     int earliestInput = 0;
-    vector<pair<int, int>> singleIndex;
+    std::vector<std::pair<int, int>> singleIndex;
     vector<vector<double>> singleFuzzyRS;
     vector<vector<pair<int, int>>> averageIndex;
     vector<vector<double>> averageFuzzyRS;
@@ -272,7 +272,7 @@ class ConstructiveACF : public InitialSearch<XXES> {
       for (int p = 0; p < pSP; p++) {
         int index = rg.rand(nACFUsefullPoints);
         int K = lagsRLC[expVar][index].second;
-        singleIndex.push_back(make_pair(expVar, K));
+        singleIndex.push_back(std::make_pair(expVar, K));
 
         if (K > earliestInput) earliestInput = K;
 
@@ -304,21 +304,21 @@ class ConstructiveACF : public InitialSearch<XXES> {
 
         singleFuzzyRS.push_back(fuzzyRules);
       }
-      // cout << nACFUsefullPoints << endl;
-      // cout << pSP << endl;
-      // cout << singleFuzzyRS << endl;
-      // cout << singleIndex << endl;
+      // std::cout << nACFUsefullPoints << std::endl;
+      // std::cout << pSP << std::endl;
+      // std::cout << singleFuzzyRS << std::endl;
+      // std::cout << singleIndex << std::endl;
       // getchar();
 
       int pMP = rg.rand(precisionMP);
 
       for (int p = 0; p < pMP; p++) {
         int nAveragePoints = rg.rand(5) + 2;
-        vector<pair<int, int>> aInputs;
+        std::vector<std::pair<int, int>> aInputs;
         for (int aI = 0; aI < nAveragePoints; aI++) {
           int index = rg.rand(nACFUsefullPoints);
           int K = lagsRLC[expVar][index].second;
-          aInputs.push_back(make_pair(expVar, K));
+          aInputs.push_back(std::make_pair(expVar, K));
           if (K > earliestInput) earliestInput = K;
         }
         averageIndex.push_back(aInputs);
@@ -342,19 +342,19 @@ class ConstructiveACF : public InitialSearch<XXES> {
         averageFuzzyRS.push_back(fuzzyRules);
       }
 
-      // cout << pMP << endl;
-      // cout << averageFuzzyRS << endl;
-      // cout << averageIndex << endl;
+      // std::cout << pMP << std::endl;
+      // std::cout << averageFuzzyRS << std::endl;
+      // std::cout << averageIndex << std::endl;
       // getchar();
 
       int pDP = rg.rand(precisionDP);
       for (int p = 0; p < pDP; p++) {
         int nDerivativePoints = 2;
-        vector<pair<int, int>> aInputs;
+        std::vector<std::pair<int, int>> aInputs;
         for (int aI = 0; aI < nDerivativePoints; aI++) {
           int index = rg.rand(nACFUsefullPoints);
           int K = lagsRLC[expVar][index].second;
-          aInputs.push_back(make_pair(expVar, K));
+          aInputs.push_back(std::make_pair(expVar, K));
           if (K > earliestInput) earliestInput = K;
         }
         derivativeIndex.push_back(aInputs);
@@ -378,9 +378,9 @@ class ConstructiveACF : public InitialSearch<XXES> {
         derivativeFuzzyRS.push_back(fuzzyRules);
       }
 
-      // cout << pDP << endl;
-      // cout << derivativeFuzzyRS << endl;
-      // cout << derivativeIndex << endl;
+      // std::cout << pDP << std::endl;
+      // std::cout << derivativeFuzzyRS << std::endl;
+      // std::cout << derivativeIndex << std::endl;
       // getchar();
     }
 
@@ -421,16 +421,16 @@ class ConstructiveACF : public InitialSearch<XXES> {
     //=================================================================
 
     /*
-               cout << newRep.earliestInput << endl;
-               cout << newRep.singleIndex << endl;
-               cout << newRep.singleFuzzyRS << endl;
-               cout << newRep.averageIndex << endl;
-               cout << newRep.averageFuzzyRS << endl;
-               cout << newRep.derivativeIndex << endl;
-               cout << newRep.derivativeFuzzyRS << endl;
+               std::cout << newRep.earliestInput << std::endl;
+               std::cout << newRep.singleIndex << std::endl;
+               std::cout << newRep.singleFuzzyRS << std::endl;
+               std::cout << newRep.averageIndex << std::endl;
+               std::cout << newRep.averageFuzzyRS << std::endl;
+               std::cout << newRep.derivativeIndex << std::endl;
+               std::cout << newRep.derivativeFuzzyRS << std::endl;
                getchar();
                */
-    // cout << "End of ACF sol generation!" << endl;
+    // std::cout << "End of ACF sol generation!" << std::endl;
     // getchar();
     return make_optional(SolutionHFM(newRep));
   }

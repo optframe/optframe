@@ -28,7 +28,7 @@ main(int argc, char** argv)
 
    optf.execute();
 
-   cout << "Program ended successfully" << endl;
+   std::cout << "Program ended successfully" << std::endl;
 
    return 0;
 }
@@ -43,7 +43,7 @@ using namespace PN;
 int main(int argc, char** argv) {
   PNProblemCommand p;
 
-  cout << "Program ended successfully" << endl;
+  std::cout << "Program ended successfully" << std::endl;
 
   return 0;
 }

@@ -100,7 +100,7 @@ Scanner::hasNextChar()
 
    char x = input->get();
 
-   //cout << "get = " << x << " (" << (int)x << ")" << endl;
+   //cout << "get = " << x << " (" << (int)x << ")" << std::endl;
 
    if (x > 0) {
       input->putback(x);
@@ -121,7 +121,7 @@ Scanner::nextChar()
    char x = input->get();
 
    if (x <= 0) {
-      cerr << "Excecao: Nao ha proximo char!" << endl;
+      cerr << "Excecao: Nao ha proximo char!" << std::endl;
       exit(1);
    }
 
@@ -139,7 +139,7 @@ Scanner::nextInt()
    if (myStream >> x)
       return x;
    else {
-      cerr << "Scanner++: Falha na conversao nextInt()." << endl;
+      cerr << "Scanner++: Falha na conversao nextInt()." << std::endl;
       exit(1);
    }
 }
@@ -152,7 +152,7 @@ Scanner::nextLong()
    if (myStream >> x)
       return x;
    else {
-      cerr << "Scanner++: Falha na conversao nextLong()." << endl;
+      cerr << "Scanner++: Falha na conversao nextLong()." << std::endl;
       exit(1);
    }
 }
@@ -165,7 +165,7 @@ Scanner::nextFloat()
    if (myStream >> x)
       return x;
    else {
-      cerr << "Scanner++: Falha na conversao nextFloat()." << endl;
+      cerr << "Scanner++: Falha na conversao nextFloat()." << std::endl;
       exit(1);
    }
 }
@@ -178,7 +178,7 @@ Scanner::nextDouble()
    if (myStream >> x)
       return x;
    else {
-      cerr << "Scanner++: Falha na conversao nextDouble()." << endl;
+      cerr << "Scanner++: Falha na conversao nextDouble()." << std::endl;
       exit(1);
    }
 }
@@ -253,7 +253,7 @@ Scanner::next()
 bool
 Scanner::hasNextLine()
 {
-   cout << "Unimplemented hasNextLine() -> calling hasNext()" << endl;
+   std::cout << "Unimplemented hasNextLine() -> calling hasNext()" << std::endl;
    return hasNext();
 }
 

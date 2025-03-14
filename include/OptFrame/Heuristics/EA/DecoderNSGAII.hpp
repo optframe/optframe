@@ -103,7 +103,7 @@ struct IndividualExtNSGAII {
     return *ind;
   }
 
-  static void zeroRanks(vector<IndividualNSGAII<R>*>& vs) {
+  static void zeroRanks(std::vector<IndividualNSGAII<R>*>& vs) {
     for (unsigned s = 0; s < vs.size(); s++) vs[s]->rank = 1000000;  // INF
   }
 
@@ -112,10 +112,10 @@ struct IndividualExtNSGAII {
     for (unsigned x = 0; x < vx.size(); x++) {
       for (unsigned j = 0; j < vx[x]->ls.size(); j++) {
         if (vx[x]->rank < vx[x]->ls.at(j)->rank) {
-          // cout << "update id " << vx[x]->ls.at(j)->id << ": " <<
+          // std::cout << "update id " << vx[x]->ls.at(j)->id << ": " <<
           // vx[x]->ls.at(j)->rank;
           vx[x]->ls.at(j)->rank = vx[x]->rank;
-          // cout << " => " << vx[x]->ls.at(j)->rank << endl;
+          // std::cout << " => " << vx[x]->ls.at(j)->rank << std::endl;
         }
       }
       // spread to twins
@@ -124,7 +124,7 @@ struct IndividualExtNSGAII {
     }
   }
 
-  static void zeroDistances(vector<IndividualNSGAII<R>*>& vs) {
+  static void zeroDistances(std::vector<IndividualNSGAII<R>*>& vs) {
     for (unsigned s = 0; s < vs.size(); s++) vs[s]->distance = -1;  // -INF
   }
 
@@ -142,33 +142,33 @@ struct IndividualExtNSGAII {
   }
 
   void print() const override {
-    cout << "IndExtNSGAII: rank=" << rank << "\tdist=" << distance << "\t";
-    cout << "[ ";
+    std::cout << "IndExtNSGAII: rank=" << rank << "\tdist=" << distance << "\t";
+    std::cout << "[ ";
     for (unsigned i = 0; i < mev.size(); i++)
-      cout << mev.at(i).evaluation() << " ; ";
-    cout << "]\t";
-    cout << "parents=" << ls.size() << "\tparent[0]=" << ls[0] << "\t";
+      std::cout << mev.at(i).evaluation() << " ; ";
+    std::cout << "]\t";
+    std::cout << "parents=" << ls.size() << "\tparent[0]=" << ls[0] << "\t";
     ls[0]->print();
   }
 
   static void print(const vector<IndividualExtNSGAII<R, X, ADS>*>& v) {
-    cout << "Population of IndExtNSGAII (" << v.size() << "):" << endl;
+    std::cout << "Population of IndExtNSGAII (" << v.size() << "):" << std::endl;
     for (unsigned i = 0; i < v.size(); i++) {
-      cout << i << ":\t";
+      std::cout << i << ":\t";
       v[i]->print();
     }
   }
 
   static void print(const vector<IndividualNSGAII<R>*>& ps,
                     const vector<IndividualExtNSGAII<R, X, ADS>*>& px) {
-    cout << "Details of Population: |PS|=" << ps.size() << " |PX|=" << px.size()
-         << endl;
+    std::cout << "Details of Population: |PS|=" << ps.size() << " |PX|=" << px.size()
+         << std::endl;
     for (unsigned s = 0; s < ps.size(); s++) {
-      cout << "#" << s << ": ";
+      std::cout << "#" << s << ": ";
       ps[s]->print();
       for (unsigned j = 0; j < px.size(); j++)
         if (&px[j]->s == ps[s]) {
-          cout << "\t";
+          std::cout << "\t";
           px[j]->print();
         }
     }
@@ -180,7 +180,7 @@ struct IndividualExtNSGAII {
     return true;
   }
 
-  static void mergeSameParents(vector<IndividualExtNSGAII<R, X, ADS>*>& vx) {
+  static void mergeSameParents(std::vector<IndividualExtNSGAII<R, X, ADS>*>& vx) {
     vector<IndividualExtNSGAII<R, X, ADS>*> vReduced;
     for (unsigned i = 0; i < vx.size(); i++)
       if (vx[i])  // not null
@@ -224,9 +224,9 @@ struct IndividualExtNSGAII {
       for (unsigned i = 0; i < vx.size(); i++)
         c.push_back(vx[i]->mev.at(k).evaluation());
 
-      cout << "OBJ " << k << ": MIN=" << min(c) << " MAX=" << max(c) << "\t";
+      std::cout << "OBJ " << k << ": MIN=" << min(c) << " MAX=" << max(c) << "\t";
     }
-    cout << endl;
+    std::cout << std::endl;
   }
 
   static void printLimits(unsigned n_objs,
@@ -237,14 +237,14 @@ struct IndividualExtNSGAII {
         if (vs[i]->mev)
           c.push_back(vs[i]->mev->at(k).evaluation());
         else
-          cout << "WARNING::printLimits i=" << i << " IS nullptr!" << endl;
+          std::cout << "WARNING::printLimits i=" << i << " IS nullptr!" << std::endl;
       }
-      cout << "OBJ " << k << ": MIN=" << min(c) << " MAX=" << max(c) << "\t";
+      std::cout << "OBJ " << k << ": MIN=" << min(c) << " MAX=" << max(c) << "\t";
     }
-    cout << endl;
+    std::cout << std::endl;
   }
 
-  static void mysort(vector<IndividualNSGAII<R>*>& vs,
+  static void mysort(std::vector<IndividualNSGAII<R>*>& vs,
                      NSGAIICrowdingComparison<R>& comp) {
     // sort(vs.begin(), vs.end(), comp);
     sort(vs.begin(), vs.end(), simpleCompare);
@@ -316,7 +316,7 @@ struct IndividualExtNSGAII {
   static void printToDisk(const vector<IndividualNSGAII<R>*>& ps,
                           const vector<IndividualExtNSGAII<R, X, ADS>*>& px) {
     if (ps[0]->mev->size() != 2) {
-      cout << "ERROR: cannot plot more than 2 objectives!" << endl;
+      std::cout << "ERROR: cannot plot more than 2 objectives!" << std::endl;
       return;
     }
 
@@ -347,7 +347,7 @@ struct IndividualExtNSGAII {
     for (unsigned x = 0; x < px.size(); x++) {
       int pn = px[x]->rank + 1;
       if (pn > count_pareto) count_pareto = pn;
-      stringstream ss;
+      std::stringstream ss;
       ss << "pareto_" << pn << ".log";
       FILE* pareto = fopen(ss.str().c_str(), "a");
 
@@ -370,7 +370,7 @@ struct IndividualExtNSGAII {
     fclose(fscript);
 
     for (unsigned s = 0; s < ps.size(); s++) {
-      stringstream ss;
+      std::stringstream ss;
       ss << "s_individual_" << (s + 1) << ".log";
       FILE* find = fopen(ss.str().c_str(), "w");
       for (unsigned x = 0; x < px.size(); x++)
@@ -387,12 +387,12 @@ struct IndividualExtNSGAII {
                 (int)px[x]->mev.at(1).evaluation());
     fclose(cinf);
 
-    cout << "FILE GENERATED!" << endl;
+    std::cout << "FILE GENERATED!" << std::endl;
 
     int out2 = system("gnuplot plot_current_population.p");
     int out3 = system("eog pngs/population-all.png");
     if (out1 + out2 > 0) {
-      cout << "WARNING: some error may have occured in system calls..." << endl;
+      std::cout << "WARNING: some error may have occured in system calls..." << std::endl;
     }
   }
 };
@@ -425,7 +425,7 @@ class NSGAIICrowdingComparison {
   virtual bool operator()(const IndividualNSGAII<R>* ind1,
                           const IndividualNSGAII<R>* ind2) {
     if (!ind1 || !ind2) {
-      cout << "CRZY ERROR!" << endl;
+      std::cout << "CRZY ERROR!" << std::endl;
       exit(1);
     }
 
@@ -443,7 +443,7 @@ class NSGAIICrowdingComparison {
   }
 
   void print() const override {
-    cout << "NSGAIICrowdingComparison DEFAULT" << endl;
+    std::cout << "NSGAIICrowdingComparison DEFAULT" << std::endl;
   }
 };
 
@@ -555,7 +555,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
   // free pareto front 'F'
   template <class T>
-  void freeFronts(vector<vector<T>*>& F) {
+  void freeFronts(std::vector<vector<T>*>& F) {
     for (unsigned i = 0; i < (int)F.size(); i++) delete F[i];
     F.clear();
   }
@@ -563,10 +563,10 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
   // print counting information of pareto front 'F'
   template <class T>
   void printFronts(const vector<vector<T>*>& F) {
-    cout << "Fronts(" << F.size() << ") => ";
+    std::cout << "Fronts(" << F.size() << ") => ";
     for (unsigned i = 0; i < (int)F.size(); i++)
-      cout << i << ": " << F[i]->size() << " ";
-    cout << endl;
+      std::cout << i << ": " << F[i]->size() << " ";
+    std::cout << std::endl;
   }
 
   // convert a population 'p' of Solution to a vector of 'IndividualNSGAII'
@@ -588,9 +588,9 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           decoder.decode(ps[i]->s);
       if (dx.first.size() != dx.second.size()) {
         // TODO: change format?
-        cout << "DecoderNSGAII::decode():error! Failed to get the same sizes "
+        std::cout << "DecoderNSGAII::decode():error! Failed to get the same sizes "
                 "for vx and vmev"
-             << endl;
+             << std::endl;
         exit(1);
       }
 
@@ -606,7 +606,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     Population<R>* p0 = &init_pop.generatePopulation(pSize);
 
     if (Component::information)
-      cout << id() << ": population of " << p0->size() << " generated!" << endl;
+      std::cout << id() << ": population of " << p0->size() << " generated!" << std::endl;
 
     PS* ps_base = convert(*p0);
     p0->clearNoKill();
@@ -648,8 +648,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     for (unsigned i = 0; i < ps.size(); i++) ps.at(i)->id = i;
 
     if (Component::information)
-      cout << id() << ": first decode okay! generated " << ps.size() << " => "
-           << px.size() << endl;
+      std::cout << id() << ": first decode okay! generated " << ps.size() << " => "
+           << px.size() << std::endl;
 
     // update values that may be used in later selection of individuals
     updateParentsObjectives(ps, px);
@@ -677,13 +677,13 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
   static bool crowdedComparisonParents(const IndividualNSGAII<R>& ind1,
                                        const IndividualNSGAII<R>& ind2) {
     if ((ind1.rank == -1) || (ind2.rank == -1)) {
-      cout << "crowdedComparisonParents()::error! uninitialized rank!" << endl;
+      std::cout << "crowdedComparisonParents()::error! uninitialized rank!" << std::endl;
       exit(1);
     }
 
     if ((ind1.distance == -1) || (ind2.distance == -1)) {
-      cout << "crowdedComparisonParents()::error! uninitialized distance!"
-           << endl;
+      std::cout << "crowdedComparisonParents()::error! uninitialized distance!"
+           << std::endl;
       exit(1);
     }
 
@@ -703,8 +703,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       }
 
     if (Component::debug)
-      cout << "countNewParents found " << count << " S elements from "
-           << rx.size() << " X elements!" << endl;
+      std::cout << "countNewParents found " << count << " S elements from "
+           << rx.size() << " X elements!" << std::endl;
 
     return count;
   }
@@ -719,7 +719,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
   // returns 'true' if value 't' is in list 'v'; and 'false' otherwise
   template <class T>
-  bool in(vector<T>& v, T t) {
+  bool in(std::vector<T>& v, T t) {
     for (unsigned i = 0; i < v.size(); i++)
       if (v[i] == t) return true;
     return false;
@@ -735,9 +735,9 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     Timer tnow;
 
     if (Component::information)
-      cout << "search: DECODER version of Non Sorting Genetic Algorithm Search "
+      std::cout << "search: DECODER version of Non Sorting Genetic Algorithm Search "
               "II"
-           << endl;
+           << std::endl;
 
     firstRatio = lastRatio = 0.0;
     bool fast = true;
@@ -769,14 +769,14 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     vector<vector<IndividualNSGAII<R>*>*> F =
         fastNonDominatedSort(grouped_px, *ps);
     if (Component::information)
-      cout << id() << ": first pareto front created with " << F.size()
-           << " elements!" << endl;
+      std::cout << id() << ": first pareto front created with " << F.size()
+           << " elements!" << std::endl;
     // also calculate crowding distance (for binary tournament!)
     Timer tDist;
     crowdingDistanceAssignment(*px, *ps);
     timeDist += tDist.now();
     if (Component::information)
-      cout << id() << ": first crowding distance calculation applied!" << endl;
+      std::cout << id() << ": first crowding distance calculation applied!" << std::endl;
 
     // if(Component::information)
     //	IndividualExtNSGAII<R, X, ADS>::print(*px);
@@ -784,7 +784,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
     // 3. create offspring of size 'N'
     if (Component::information)
-      cout << id() << ": will generate first children!" << endl;
+      std::cout << id() << ": will generate first children!" << std::endl;
 
     pair<PS, PX> pChildren = generateNextPopulation(*ps, *px);
     PS qs = pChildren.first;
@@ -792,14 +792,14 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
     // vector<IndividualNSGAII<R>*> qs = makeNewPopulation(*ps, N);
     // if(Component::information)
-    //	cout << id() << ": will decode first children!" << endl;
+    //	cout << id() << ": will decode first children!" << std::endl;
     // vector<IndividualExtNSGAII<R, X, ADS>*> qx = decode(qs);
     //// update values that may be used in later selection of individuals
     // updateParentsObjectives(qs, qx);
 
     logPopulation(qx, -1, tnow.now(), "first pop qx");
 
-    if (Component::information) cout << id() << ": main loop" << endl;
+    if (Component::information) std::cout << id() << ": main loop" << std::endl;
 
     vector<double> limits(nObjectives, 0.0);
     for (unsigned k = 0; k < nObjectives; k++) {
@@ -817,44 +817,44 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
     while ((t <= gMax) && (tnow.now() < timelimit)) {
       if (DISPLAY_GENERAL) {
-        // cout << endl << "===========================================" <<
-        // endl;
-        cout << endl
+        // std::cout << std::endl << "===========================================" <<
+        // std::endl;
+        std::cout << std::endl
              << "Generation = " << t << " / " << gMax << " tMax=" << tMax
-             << " time=" << tnow.now() << "s" << endl;
-        cout << "N=" << N << " ps=" << ps->size() << " qs=" << qs.size()
-             << " px=" << px->size() << " qx=" << qx.size() << endl;
-        cout << "RATIO(|X|/|S|)="
+             << " time=" << tnow.now() << "s" << std::endl;
+        std::cout << "N=" << N << " ps=" << ps->size() << " qs=" << qs.size()
+             << " px=" << px->size() << " qx=" << qx.size() << std::endl;
+        std::cout << "RATIO(|X|/|S|)="
              << ((px->size() + qx.size()) / ((double)ps->size() + qs.size()))
-             << endl;
-        cout << "|F|=" << F.size() << " |F_0|=" << F[0]->size() << endl;
+             << std::endl;
+        std::cout << "|F|=" << F.size() << " |F_0|=" << F[0]->size() << std::endl;
         double diff_cd =
             IndividualExtNSGAII<R, X, ADS>::countCrowdingValues(*px);
-        cout << "UNIQUE CROWDING VALUES(PX): " << diff_cd << "/" << px->size()
-             << " (" << (diff_cd * 100 / px->size()) << "%)" << endl;
+        std::cout << "UNIQUE CROWDING VALUES(PX): " << diff_cd << "/" << px->size()
+             << " (" << (diff_cd * 100 / px->size()) << "%)" << std::endl;
         diff_cd = IndividualExtNSGAII<R, X, ADS>::countCrowdingValuesPS(*ps);
-        cout << "UNIQUE CROWDING VALUES(PS): " << diff_cd << "/" << ps->size()
-             << " (" << (diff_cd * 100 / ps->size()) << "%)" << endl;
+        std::cout << "UNIQUE CROWDING VALUES(PS): " << diff_cd << "/" << ps->size()
+             << " (" << (diff_cd * 100 / ps->size()) << "%)" << std::endl;
 
         if (diff_cd == 1) {
           /*
-                                cout <<"WARNING: TOO LOW DIVERSITY (" << diff_cd
-             << "), DEBUGGING: " << endl; IndividualExtNSGAII<R, X,
+                                std::cout <<"WARNING: TOO LOW DIVERSITY (" << diff_cd
+             << "), DEBUGGING: " << std::endl; IndividualExtNSGAII<R, X,
              ADS>::print(*ps, *px); printToDisk(*ps, *px);
 
                                 exit(1);
                                 */
         } else {
           /*
-                                cout << "BETTER DIVERSITY!! " << diff_cd <<
-             endl; cout << "REALLY???" << endl; IndividualExtNSGAII<R, X,
+                                std::cout << "BETTER DIVERSITY!! " << diff_cd <<
+             std::endl; std::cout << "REALLY???" << std::endl; IndividualExtNSGAII<R, X,
              ADS>::print(*ps, *px); printToDisk(*ps, *px); exit(1);
                                 */
         }
 
-        cout << "PX LIMITS: ";
+        std::cout << "PX LIMITS: ";
         IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *px);
-        cout << "PS LIMITS: ";
+        std::cout << "PS LIMITS: ";
         IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *ps);
       }
 
@@ -867,21 +867,21 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           double dmin = IndividualExtNSGAII<R, X, ADS>::min(c);
           if (dmin < limits[k]) {
             if (DISPLAY_IMPROVEMENT)
-              cout << "N=" << N << " |QS|=" << qs.size() << " \tt=" << t << "/"
+              std::cout << "N=" << N << " |QS|=" << qs.size() << " \tt=" << t << "/"
                    << gMax << "\t Improved OBJ. " << k << " to " << dmin
-                   << "\t time=" << tnow.now() << "s" << endl;
+                   << "\t time=" << tnow.now() << "s" << std::endl;
             if (DISPLAY_IMPROVEMENT)
-              cout << "|PS|=" << ps->size() << " |PX|=" << px->size()
+              std::cout << "|PS|=" << ps->size() << " |PX|=" << px->size()
                    << " RATIO(X/S)=" << (px->size() / (double)ps->size())
-                   << endl;
+                   << std::endl;
             if (DISPLAY_IMPROVEMENT) IndividualNSGAII<R>::printResume(*ps);
             double tRest =
                 tnow.now() - timeSort - timeDist - timeLoop - timeNewPop;
-            cout << "times: sort=" << (timeSort * 100 / tnow.now())
+            std::cout << "times: sort=" << (timeSort * 100 / tnow.now())
                  << "%  dist=" << (timeDist * 100 / tnow.now())
                  << "% newPop=" << (timeNewPop * 100 / tnow.now())
                  << "% loop=" << (timeLoop * 100 / tnow.now())
-                 << "% rest=" << (tRest * 100 / tnow.now()) << "%" << endl;
+                 << "% rest=" << (tRest * 100 / tnow.now()) << "%" << std::endl;
             limits[k] = dmin;
             if (t > tMax) tMax = t;
             t = 0;
@@ -889,8 +889,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           }
 
           if (dmin > limits[k]) {
-            cout << "ERROR: algorithm lost better solution for OBJ " << k
-                 << " '" << limits[k] << "' for '" << dmin << "'" << endl;
+            std::cout << "ERROR: algorithm lost better solution for OBJ " << k
+                 << " '" << limits[k] << "' for '" << dmin << "'" << std::endl;
             exit(1);
           }
 
@@ -898,8 +898,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           double dmax = IndividualExtNSGAII<R, X, ADS>::max(c);
           if (dmax < limits[k]) {
             if (DISPLAY_IMPROVEMENT)
-              cout << "t=" << t << " Improved OBJ. " << k << " to " << dmax
-                   << endl;
+              std::cout << "t=" << t << " Improved OBJ. " << k << " to " << dmax
+                   << std::endl;
             limits[k] = dmax;
             if (t > tMax) tMax = t;
             t = 0;
@@ -907,8 +907,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           }
 
           if (dmax < limits[k]) {
-            cout << "ERROR: algorithm lost better solution for OBJ " << k
-                 << " '" << limits[k] << "' for '" << dmax << "'" << endl;
+            std::cout << "ERROR: algorithm lost better solution for OBJ " << k
+                 << " '" << limits[k] << "' for '" << dmax << "'" << std::endl;
             exit(1);
           }
         }
@@ -980,7 +980,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
       // 1. combine populations in 'Rt': Rt = Pt U Qt;
       if (Component::information) {
-        cout << id() << ": joining population!" << endl;
+        std::cout << id() << ": joining population!" << std::endl;
       }
       vector<IndividualNSGAII<R>*>* rs = ps;
       ps = nullptr;
@@ -998,37 +998,37 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       double diff =
           IndividualExtNSGAII<R, X, ADS>::countEquals(nObjectives, *rx);
       if (DISPLAY_GENERAL)
-        cout << "UNIQUE ELEMENTS(RX): " << diff << "/" << rx->size() << " ("
-             << (diff * 100 / rx->size()) << "%)" << endl;
+        std::cout << "UNIQUE ELEMENTS(RX): " << diff << "/" << rx->size() << " ("
+             << (diff * 100 / rx->size()) << "%)" << std::endl;
 
       if (Component::information) {
-        cout << id() << ": joint populations |rs|=" << rs->size()
-             << " |rx|=" << rx->size() << endl;
+        std::cout << id() << ": joint populations |rs|=" << rs->size()
+             << " |rx|=" << rx->size() << std::endl;
         // IndividualExtNSGAII<R, X, ADS>::print(*rx);
       }
 
       if (Component::information)
-        cout << id() << ": compressing elements" << endl;
+        std::cout << id() << ": compressing elements" << std::endl;
       Timer tcompress;
       vector<IndividualExtNSGAII<R, X, ADS>*> grouped_rx(*rx);
       IndividualExtNSGAII<R, X, ADS>::mergeSameParents(grouped_rx);
       if (DISPLAY_GENERAL)
-        cout << "|GROUPED|: " << grouped_rx.size() << " |RX|:" << rx->size()
+        std::cout << "|GROUPED|: " << grouped_rx.size() << " |RX|:" << rx->size()
              << ": compression of "
              << (((rx->size() - grouped_rx.size()) * 100.0) / rx->size())
-             << "% (took " << tcompress.inMilliSecs() << "ms)" << endl;
+             << "% (took " << tcompress.inMilliSecs() << "ms)" << std::endl;
 
       Timer tsort;
       // 2. sort population by non domination
       if (Component::information)
-        cout << id() << ": sorting by non domination" << endl;
+        std::cout << id() << ": sorting by non domination" << std::endl;
       freeFronts(F);
       F = fastNonDominatedSort(grouped_rx, *rs);
       // printFronts(F);
 
       if (DISPLAY_GENERAL)
-        cout << "sort time = " << tsort.inMilliSecs()
-             << " ms for |rx|=" << grouped_rx.size() << endl;
+        std::cout << "sort time = " << tsort.inMilliSecs()
+             << " ms for |rx|=" << grouped_rx.size() << std::endl;
       timeSort += tsort.now();
       logPopulation(*rx, t, tnow.now(), "rx sorted");
 
@@ -1041,18 +1041,18 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       /*
                         for(unsigned i = 0; i < F.size(); i++)
                         {
-                                cout << "S LIMITS FOR F[" << i << "/" <<
-         F.size() << "]: " << "|F[i]|=" << F[i]->size() << endl;
+                                std::cout << "S LIMITS FOR F[" << i << "/" <<
+         F.size() << "]: " << "|F[i]|=" << F[i]->size() << std::endl;
                                 IndividualExtNSGAII<R, X,
          ADS>::printLimits(nObjectives, *F[i]); for(unsigned j=0;
-         j<F[i]->size(); j++) cout << "#" << F[i]->at(j)->id << " "; cout <<
-         endl;
+         j<F[i]->size(); j++) std::cout << "#" << F[i]->at(j)->id << " "; std::cout <<
+         std::endl;
                         }
 */
 
       // 3. Pt+1 = {}
       if (Component::information)
-        cout << id() << ": creating new populations" << endl;
+        std::cout << id() << ": creating new populations" << std::endl;
       vector<IndividualNSGAII<R>*>* nextPopS = new vector<IndividualNSGAII<R>*>;
 
       // 4. i=1
@@ -1062,11 +1062,11 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       ////int count = countNewParents(*F[i], *nextPopS);
       // while |Pt+1| + |Fi| <= N
       if (Component::information)
-        cout << id() << ": while i=" << i << " (|S|:" << nextPopS->size()
-             << " + |F[i]|:" << F[i]->size() << " <= N:" << N << ")" << endl;
+        std::cout << id() << ": while i=" << i << " (|S|:" << nextPopS->size()
+             << " + |F[i]|:" << F[i]->size() << " <= N:" << N << ")" << std::endl;
       while ((nextPopS->size() + F[i]->size()) <= N) {
-        // cout << "WHILE: |S|:" << nextPopS->size() << " + |F_i|:" <<
-        // F[i]->size() << " <= " << N << " for i=" << i << endl;
+        // std::cout << "WHILE: |S|:" << nextPopS->size() << " + |F_i|:" <<
+        // F[i]->size() << " <= " << N << " for i=" << i << std::endl;
         //  do crowding distance assignment (already done!)
         ////crowdingDistanceAssignment(*F[i]);
         ////IndividualExtNSGAII<R, X, ADS>::updateDistances(*F[i]); // update
@@ -1080,39 +1080,39 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
         i = i + 1;
 
         if (i == F.size()) {
-          cout << "ERROR! Elements from S still missing and can't reach front "
-               << i << endl;
+          std::cout << "ERROR! Elements from S still missing and can't reach front "
+               << i << std::endl;
           exit(1);
         }
         ////count = countNewParents(*F[i], *nextPopS);
 
         if (Component::information)
-          cout << id() << ": while i=" << i << " (|S|:" << nextPopS->size()
-               << " + |F[i]|:" << F[i]->size() << " <= N:" << N << ")" << endl;
+          std::cout << id() << ": while i=" << i << " (|S|:" << nextPopS->size()
+               << " + |F[i]|:" << F[i]->size() << " <= N:" << N << ")" << std::endl;
       }
 
       if (nextPopS->size() < N) {
         if (i >= F.size()) {
-          cout << "ERROR in DecoderNSGAII! NOT EXPECTING i=" << i
-               << " |F|=" << F.size() << endl;
+          std::cout << "ERROR in DecoderNSGAII! NOT EXPECTING i=" << i
+               << " |F|=" << F.size() << std::endl;
           exit(1);
         }
 
         if (Component::information)
-          cout << id() << ": will finish adding elements! i=" << i
+          std::cout << id() << ": will finish adding elements! i=" << i
                << " / |F|=" << F.size() << " |nextPopS|=" << nextPopS->size()
-               << " < N=" << N << endl;
+               << " < N=" << N << std::endl;
 
         if (Component::information)
-          cout << id() << ": there are i=" << i << " |F_i|=" << F[i]->size()
-               << " elements from S" << endl;
+          std::cout << id() << ": there are i=" << i << " |F_i|=" << F[i]->size()
+               << " elements from S" << std::endl;
 
         // sort by last elements by crowding comparison (already sorted)
         ////crowdingDistanceAssignment(*F[i]);
         ////IndividualExtNSGAII<R, X, ADS>::updateDistances(*F[i]); // update
         /// parents' dists
 
-        if (Component::information) cout << id() << ": sorting!" << endl;
+        if (Component::information) std::cout << id() << ": sorting!" << std::endl;
 
         vector<IndividualNSGAII<R>*> toSort;
         for (unsigned j = 0; j < F[i]->size(); j++)
@@ -1123,12 +1123,12 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
         sort(toSort.begin(), toSort.end(),
              IndividualExtNSGAII<R, X, ADS>::simpleCompare);
         /*
-                                cout << "t=1 print sort!" << endl;
+                                std::cout << "t=1 print sort!" << std::endl;
                                 for(unsigned z=0; z<toSort.size(); z++)
                                         toSort[z]->print();
-                                cout << "t=" << t << " PS LIMITS AFTER SORT:";
+                                std::cout << "t=" << t << " PS LIMITS AFTER SORT:";
                                 IndividualExtNSGAII<R, X,
-           ADS>::printLimits(nObjectives, toSort); cout << "t=" << t << " FIRST
+           ADS>::printLimits(nObjectives, toSort); std::cout << "t=" << t << " FIRST
            IN LIST:"; toSort[0]->print();
 */
         // IndividualExtNSGAII<R, X, ADS>::mysort(toSort, comp);
@@ -1138,7 +1138,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
         int DIFF = N - nextPopS->size();
         for (unsigned j = 0; j < DIFF; j++) {
           if (j >= toSort.size()) {
-            cout << "ERROR in DecoderNSGAII: Didnt think about that..." << endl;
+            std::cout << "ERROR in DecoderNSGAII: Didnt think about that..." << std::endl;
             exit(1);
           }
 
@@ -1151,24 +1151,24 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       }
 
       if (DISPLAY_GENERAL)
-        cout << "loop time = " << tloop.inMilliSecs() << " ms" << endl;
+        std::cout << "loop time = " << tloop.inMilliSecs() << " ms" << std::endl;
       timeLoop += tloop.now();
 
       if (nextPopS->size() < N) {
-        cout << "ERROR: still missing elements in population! |nextPopS|="
-             << nextPopS->size() << " < N=" << N << endl;
+        std::cout << "ERROR: still missing elements in population! |nextPopS|="
+             << nextPopS->size() << " < N=" << N << std::endl;
         exit(1);
       }
 
-      // cout << "Next pop PS LIMITS: ";
+      // std::cout << "Next pop PS LIMITS: ";
       // IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *nextPopS);
 
       // TEST ESTAGNATION!
       bool stagnated = true;
       for (unsigned i = 0; i < ((int)nextPopS->size()) - 1; i++)
         for (unsigned j = i + 1; j < nextPopS->size(); j++) {
-          // cout << "i=" << i << " j=" << j << " size=" << nextPopS->size() <<
-          // endl;
+          // std::cout << "i=" << i << " j=" << j << " size=" << nextPopS->size() <<
+          // std::endl;
           /*
                         if(!nextPopS->at(i))
                                 continue;
@@ -1193,13 +1193,13 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
         }
 
       if (stagnated && false) {
-        cout << "STAGNATED AT t=" << t << "/" << gMax << " N=" << N << endl;
+        std::cout << "STAGNATED AT t=" << t << "/" << gMax << " N=" << N << std::endl;
         // IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *nextPopS);
 
         while (nextPopS->size() > N / 3)
           nextPopS->erase(nextPopS->begin() + (rand() % nextPopS->size()));
 
-        cout << "REDUCED TO A THIRD: " << nextPopS->size() << endl;
+        std::cout << "REDUCED TO A THIRD: " << nextPopS->size() << std::endl;
         // IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *nextPopS);
       }
 
@@ -1220,10 +1220,10 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       for (unsigned x = 0; x < nextPopX->size(); x++)
         nextPopX->at(x)->resetList();
 
-      // cout << "generation " << t << " final population sizes ";
-      // cout << " nextPopS: " << nextPopS->size();
-      // cout << " nextPopX: " << nextPopX->size();
-      // cout << endl;
+      // std::cout << "generation " << t << " final population sizes ";
+      // std::cout << " nextPopS: " << nextPopS->size();
+      // std::cout << " nextPopX: " << nextPopX->size();
+      // std::cout << std::endl;
 
       // if(Component::information)
       //	IndividualExtNSGAII<R, X, ADS>::print(*nextPopX);
@@ -1246,12 +1246,12 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
                         vector<IndividualExtNSGAII<R, X, ADS>*> check_px =
          decode(*ps); if(check_px.size() != px->size())
                         {
-                                cout << "ERROR! LOST 'X' INDIVIDUALS!" << endl;
-                                cout << "|check_px|=" << check_px.size() <<
-         endl; cout << "|px|=" << px->size() << endl; exit(1);
+                                std::cout << "ERROR! LOST 'X' INDIVIDUALS!" << std::endl;
+                                std::cout << "|check_px|=" << check_px.size() <<
+         std::endl; std::cout << "|px|=" << px->size() << std::endl; exit(1);
                         }
                         else
-                                cout << "SIZE OK FOR X POPULATION!" << endl;
+                                std::cout << "SIZE OK FOR X POPULATION!" << std::endl;
         */
 
       int count_child = 0;
@@ -1259,7 +1259,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
         if (ps->at(i)->isChild) count_child++;
 
       if (Component::information)
-        cout << id() << ": will generate next population!" << endl;
+        std::cout << id() << ": will generate next population!" << std::endl;
 
       Timer tNewPop;
       pair<PS, PX> pChildren = generateNextPopulation(*ps, *px);
@@ -1270,9 +1270,9 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       logPopulation(qx, t, tnow.now(), "new pop qx");
 
       if (DISPLAY_GENERAL)
-        cout << "Finished Generation = " << t << " time=" << tgen.inMilliSecs()
-             << "ms  grown_ups=" << count_child << endl;
-      // cout << "===========================================" << endl << endl;
+        std::cout << "Finished Generation = " << t << " time=" << tgen.inMilliSecs()
+             << "ms  grown_ups=" << count_child << std::endl;
+      // std::cout << "===========================================" << std::endl << std::endl;
       t++;
     }
 
@@ -1280,7 +1280,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
     // FINISH ALGORITHM!
     if (Component::information)
-      cout << id() << ": cleaning memory to finish!" << endl;
+      std::cout << id() << ": cleaning memory to finish!" << std::endl;
 
     // free all 'q'
     for (unsigned k = 0; k < qs.size(); k++) delete qs[k];
@@ -1296,7 +1296,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     px->clear();
     delete px;
 
-    if (Component::information) cout << id() << ": memory clean!" << endl;
+    if (Component::information) std::cout << id() << ": memory clean!" << std::endl;
 
     ExtendedPareto<R, X, ADS>* pf = new ExtendedPareto<R, X, ADS>;
     while (ps->size() > 0) {
@@ -1322,14 +1322,14 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
     delete ps;
 
-    if (Component::information) cout << id() << ": search finished!" << endl;
+    if (Component::information) std::cout << id() << ": search finished!" << std::endl;
 
     return pf;
   }
 
   // calculates de crowding distance for each element of vector 'I', and stores
   // in I[i].distance
-  void crowdingDistanceAssignment(vector<IndividualExtNSGAII<R, X, ADS>*>& I,
+  void crowdingDistanceAssignment(std::vector<IndividualExtNSGAII<R, X, ADS>*>& I,
                                   vector<IndividualNSGAII<R>*>& Ps) {
     int max_rank = 0;
     for (unsigned i = 0; i < I.size(); i++)
@@ -1349,12 +1349,12 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     for (unsigned m = 0; m < nObjectives; m++) {
       for (unsigned r = 0; r < nranks; r++) {
         // I = sort(I, m)
-        vector<pair<double, int>> fitness;  // (fitness, id)
+        std::vector<std::pair<double, int>> fitness;  // (fitness, id)
 
         for (int i = 0; i < (int)I.size(); i++)
           if (I[i]->rank == r) {
             double fit = I[i]->mev.at(m).evaluation();
-            fitness.push_back(make_pair(fit, i));
+            fitness.push_back(std::make_pair(fit, i));
           }
 
         sort(fitness.begin(), fitness.end(), compara);
@@ -1367,7 +1367,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
            1].second]->distance = numeric_limits<double>::infinity();
                                  */
 
-        ////cout << "ORDER: (rank=" << r << ") " << fitness << endl;
+        ////cout << "ORDER: (rank=" << r << ") " << fitness << std::endl;
 
         // for i=2 to l-1
         // ADAPTATION WITH ANOTHER LOOP
@@ -1454,7 +1454,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     for (unsigned i = 0; i < Px.size(); i++) Px[i]->rank = 10000000;  // INF
 
     for (unsigned i = 0; i < Px.size(); i++) {
-      // cout << "i:" << i << " ";
+      // std::cout << "i:" << i << " ";
       // Px[i]->print();
     }
 
@@ -1466,11 +1466,11 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       for (j = 0; j < Px.size(); j++)
         if (Px[j]->rank == 10000000) break;
       Px[j]->rank = rank;
-      // cout << "rank: " << rank << " to ";
+      // std::cout << "rank: " << rank << " to ";
       // Px[j]->print();
       int max_obj2 = Px[j]->mev.at(1).evaluation();
       int min_obj2 = max_obj2;
-      // cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
+      // std::cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << std::endl;
       count_x++;
       vector<int> m;
       m.push_back(j);
@@ -1483,13 +1483,13 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           if (Px[r]->mev.at(1).evaluation() <
               min_obj2)  // add element (improves the best obj2!)
           {
-            // cout << "r:" << r << " ";
+            // std::cout << "r:" << r << " ";
             Px[r]->rank = rank;
-            // cout << "rank: " << rank << " to ";
+            // std::cout << "rank: " << rank << " to ";
             // Px[r]->print();
-            // cout << "min_obj2: " << min_obj2 << " => ";
+            // std::cout << "min_obj2: " << min_obj2 << " => ";
             min_obj2 = Px[r]->mev.at(1).evaluation();
-            // cout << min_obj2 << endl;
+            // std::cout << min_obj2 << std::endl;
             count_x++;
             m.push_back(r);
             continue;
@@ -1503,28 +1503,28 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
                                                 // distance is better (and
                                                 // values are unique)
             {
-              // cout << "r: " << r << " dominated by " << m[z] << " m=" << m <<
-              // endl;
+              // std::cout << "r: " << r << " dominated by " << m[z] << " m=" << m <<
+              // std::endl;
               nonDom = false;
               break;
             }
 
           if (nonDom) {
-            // cout << "*r:" << r << " ";
+            // std::cout << "*r:" << r << " ";
             Px[r]->rank = rank;
-            // cout << "rank: " << rank << " to ";
+            // std::cout << "rank: " << rank << " to ";
             // Px[r]->print();
-            // cout << "m=" << m << endl;
+            // std::cout << "m=" << m << std::endl;
             count_x++;
             m.push_back(r);
           } else {
-            // cout << "r: " << r << " not selected! [" <<
+            // std::cout << "r: " << r << " not selected! [" <<
             // Px[r]->mev.at(0).evaluation() << ";" <<
-            // Px[r]->mev.at(1).evaluation() << "]" << endl;
+            // Px[r]->mev.at(1).evaluation() << "]" << std::endl;
           }
         }
 
-      // cout << "FINISHED RANK " << rank << " WITH " << m << endl << endl;
+      // std::cout << "FINISHED RANK " << rank << " WITH " << m << std::endl << std::endl;
       m.clear();
 
       rank++;
@@ -1532,7 +1532,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
 
     IndividualExtNSGAII<R, X, ADS>::updateRanks(P);  // update parents' ranks
 
-    // cout << "WILL CHECK IMPROVED SORT!" << endl;
+    // std::cout << "WILL CHECK IMPROVED SORT!" << std::endl;
     // testNonDominationSort(P, rank);
 
     /*
@@ -1547,27 +1547,27 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
                 vector<vector<IndividualNSGAII<R>*>*> F =
        fastNonDominatedSortClassical(P, Ps); freeFronts(F);
 
-                cout << "WILL CHECK CLASSIC SORT!" << endl;
+                std::cout << "WILL CHECK CLASSIC SORT!" << std::endl;
                 testNonDominationSort(P, rank);
 
 
                 for(unsigned i=0; i<vRank.size(); i++)
                         if(vRank[i] != P[i]->rank)
                         {
-                                cout << "ERROR IN RANKING " << i << endl;
-                                cout << "|vRank|=" << vRank.size() << " |P|=" <<
-       P.size() << endl; cout << "vRank: " << vRank[i] << " Px_i:" << P[i]->rank
-       << endl;
+                                std::cout << "ERROR IN RANKING " << i << std::endl;
+                                std::cout << "|vRank|=" << vRank.size() << " |P|=" <<
+       P.size() << std::endl; std::cout << "vRank: " << vRank[i] << " Px_i:" << P[i]->rank
+       << std::endl;
 
-                                cout << "will print first!" << endl;
+                                std::cout << "will print first!" << std::endl;
                                 IndividualExtNSGAII<R, X, ADS>::printToDisk(Ps,
        P);
 
-                                cout << "will return to last" << endl;
+                                std::cout << "will return to last" << std::endl;
                                 for(unsigned z=0; z < P.size(); z++)
                                         P.at(z)->rank = vRank.at(z);
 
-                                cout << "will print second!" << endl;
+                                std::cout << "will print second!" << std::endl;
                                 IndividualExtNSGAII<R, X, ADS>::printToDisk(Ps,
        P); exit(1);
                         }
@@ -1585,8 +1585,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     }
 
     if (count_check != Ps.size()) {
-      cout << "ERROR in nonDominatedSort! count_check=" << count_check
-           << " |Ps|=" << Ps.size() << endl;
+      std::cout << "ERROR in nonDominatedSort! count_check=" << count_check
+           << " |Ps|=" << Ps.size() << std::endl;
       exit(1);
     }
 
@@ -1600,8 +1600,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       vector<IndividualNSGAII<R>*>& Ps) {
     Timer tNonDomSort;
     if (Component::debug)
-      cout << id() << "::fastNonDominatedSort |P|=" << P.size() << " begin"
-           << endl;
+      std::cout << id() << "::fastNonDominatedSort |P|=" << P.size() << " begin"
+           << std::endl;
     // for(unsigned i=0; i<P.size(); i++)
     //	P[i]->print();
 
@@ -1640,17 +1640,17 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     }
 
     if (Component::information) {
-      cout << "count_dom_times=" << count_dom_times << endl;
-      cout << "sum_dom_time=" << sum_dom_time << "ms" << endl;
-      cout << "average: " << sum_dom_time / count_dom_times << "ms" << endl;
+      std::cout << "count_dom_times=" << count_dom_times << std::endl;
+      std::cout << "sum_dom_time=" << sum_dom_time << "ms" << std::endl;
+      std::cout << "average: " << sum_dom_time / count_dom_times << "ms" << std::endl;
     }
 
     int i = 0;                 // i=1
     while (F[i]->size() != 0)  // while Fi != {}
     {
       if (Component::debug)
-        cout << "fastNonDominatedSort start i=" << i
-             << " |F[i]|=" << F[i]->size() << endl;
+        std::cout << "fastNonDominatedSort start i=" << i
+             << " |F[i]|=" << F[i]->size() << std::endl;
       vector<int>* Q = new vector<int>;  // Q = {}
 
       // for each 'p' in 'Fi'
@@ -1676,21 +1676,21 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       F.push_back(nullptr);
       F[i] = Q;  // Fi = Q
       if (Component::debug)
-        cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q->size() << endl;
+        std::cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q->size() << std::endl;
     }
 
     // update all rank information
-    // cout << "printing ranks (" << Ps.size() << ") : ";
+    // std::cout << "printing ranks (" << Ps.size() << ") : ";
     // for(unsigned i=0; i<Ps.size(); i++)
     //	cout << "#" << Ps[i]->id << " " << Ps[i]->rank << " ";
-    // cout << endl;
+    // std::cout << std::endl;
 
     IndividualExtNSGAII<R, X, ADS>::updateRanks(P);  // update parents' ranks
 
-    // cout << "printing ranks (" << Ps.size() << ") : ";
+    // std::cout << "printing ranks (" << Ps.size() << ") : ";
     // for(unsigned i=0; i<Ps.size(); i++)
     //	cout << "#" << Ps[i]->id << " " << Ps[i]->rank << " ";
-    // cout << endl;
+    // std::cout << std::endl;
 
     unsigned count_check = 0;
     vector<vector<IndividualNSGAII<R>*>*> fronts;
@@ -1712,21 +1712,21 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
     /*
                 if(count_check != Ps.size())
                 {
-                        cout << "ERROR in fastNonDominatedSort! count_check=" <<
-       count_check << " != |Ps|=" << Ps.size() << endl; exit(1);
+                        std::cout << "ERROR in fastNonDominatedSort! count_check=" <<
+       count_check << " != |Ps|=" << Ps.size() << std::endl; exit(1);
                 }
 */
 
     freeFronts(F);
 
     if (Component::information) {
-      cout << id() << "::fastNonDominatedSort found " << fronts.size()
-           << " fronts" << endl;
+      std::cout << id() << "::fastNonDominatedSort found " << fronts.size()
+           << " fronts" << std::endl;
       printFronts(fronts);
-      cout << id() << "::fastNonDominatedSort end" << endl;
+      std::cout << id() << "::fastNonDominatedSort end" << std::endl;
     }
 
-    // cout << "TOOK: " << tNonDomSort.now() << "s" << endl;
+    // std::cout << "TOOK: " << tNonDomSort.now() << "s" << std::endl;
     // getchar();
     // getchar();
 
@@ -1734,7 +1734,7 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
   }
 
   // specific distance assignment may sum other values for distance metric
-  virtual void specificDistanceAssignment(vector<IndividualNSGAII<R>*>& Ps) {}
+  virtual void specificDistanceAssignment(std::vector<IndividualNSGAII<R>*>& Ps) {}
 
   // function to log data from the population
   virtual void logPopulation(const vector<IndividualExtNSGAII<R, X, ADS>*>& px,
@@ -1745,8 +1745,8 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
       for (unsigned j = i + 1; j < P.size(); j++)
         if ((P[i]->mev.at(0).evaluation() == P[j]->mev.at(0).evaluation()) &&
             (P[i]->mev.at(1).evaluation() == P[j]->mev.at(1).evaluation())) {
-          cout << "ERROR IN checkUnique! elements #" << i << " and #" << j
-               << " are equal! " << endl;
+          std::cout << "ERROR IN checkUnique! elements #" << i << " and #" << j
+               << " are equal! " << std::endl;
           P[i]->print();
           P[j]->print();
           exit(1);
@@ -1764,16 +1764,16 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           if ((i != j) && (P[i]->rank == r) && (P[j]->rank == r)) {
             pair<bool, bool> ret = pDominance.birelation(P[i]->mev, P[j]->mev);
             if (ret.first || ret.second) {
-              cout << "Strange error: " << i << "(rank " << r
+              std::cout << "Strange error: " << i << "(rank " << r
                    << ") should not dominate " << j << " (rank " << P[j]->rank
-                   << ")" << endl;
+                   << ")" << std::endl;
               P[i]->print();
               P[j]->print();
               getchar();
               getchar();
             }
           }
-    cout << "PASSED TEST 1" << endl;
+    std::cout << "PASSED TEST 1" << std::endl;
 
     // second test, check if somebody dominate the element from a previous front
     for (int r = 1; r < rank; r++)
@@ -1791,22 +1791,22 @@ class DecoderNSGAII : public ExtendedMultiObjSearch<R, X, ADS> {
           }
 
         if (!dominate) {
-          cout << "Strange error: #" << i << "(rank " << r
-               << ") is not dominated by previous front " << (r - 1) << endl;
+          std::cout << "Strange error: #" << i << "(rank " << r
+               << ") is not dominated by previous front " << (r - 1) << std::endl;
           P[i]->print();
-          cout << "FRONT " << (r - 1) << endl;
+          std::cout << "FRONT " << (r - 1) << std::endl;
           for (unsigned j = 0; j < P.size(); j++)
             if (P[j]->rank == (r - 1)) {
-              cout << "#" << j << " ";
+              std::cout << "#" << j << " ";
               P[j]->print();
             }
           getchar();
           getchar();
         }
       }
-    cout << "PASSED TEST 2" << endl;
+    std::cout << "PASSED TEST 2" << std::endl;
 
-    cout << "OKAY ALL TESTS!" << endl;
+    std::cout << "OKAY ALL TESTS!" << std::endl;
   }
 
   // returns id() of class

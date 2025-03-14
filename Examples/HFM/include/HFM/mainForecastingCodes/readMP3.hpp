@@ -84,9 +84,9 @@ int readWAV(int argc, char** argv) {
   //		fwrite(meta,1, sizeof(*meta), outfile);
   //		cout << " Size of Header file is "<<sizeof(*meta)<<" bytes" <<
   //endl; 		cout << " Sampling rate of the input wave file is "<<
-  //meta->sample_rate <<" Hz" << endl; 		cout << " Number of samples in wave file
-  //are " << meta->subchunk2_size << " samples" << endl; 		cout << " The number of
-  //channels of the file is "<< meta->num_channels << " channels" << endl;
+  //meta->sample_rate <<" Hz" << std::endl; 		cout << " Number of samples in wave file
+  //are " << meta->subchunk2_size << " samples" << std::endl; 		cout << " The number of
+  //channels of the file is "<< meta->num_channels << " channels" << std::endl;
   //
   //
   //
@@ -104,13 +104,13 @@ int readWAV(int argc, char** argv) {
   //Writing read data into output file (.txt) 			cout<<nb<<"\t"<<buff16<<endl;
   //			getchar();
   //		}
-  //	cout << " Number of frames in the input wave file are " <<count << endl;
+  //	cout << " Number of frames in the input wave file are " <<count << std::endl;
   //	}
   //
   //
   // return 0;
 
-  cout << "welcome to WAVRead project" << endl;
+  std::cout << "welcome to WAVRead project" << std::endl;
 
   wav_hdr wavHeader;
   int headerSize = sizeof(wav_hdr), filelength = 0;
@@ -118,7 +118,7 @@ int readWAV(int argc, char** argv) {
   const char* filePath;
 
   filePath = "./completed.wav";
-  cout << "Input wave file name: " << filePath << endl;
+  std::cout << "Input wave file name: " << filePath << std::endl;
 
   FILE* wavFile = fopen(filePath, "r");
   if (wavFile == nullptr) {
@@ -128,7 +128,7 @@ int readWAV(int argc, char** argv) {
 
   // Read the header
   size_t bytesRead = fread(&wavHeader, 1, headerSize, wavFile);
-  cout << "Header Read " << bytesRead << " bytes." << endl;
+  std::cout << "Header Read " << bytesRead << " bytes." << std::endl;
   if (bytesRead > 0) {
     // Read the data
     //	        uint16_t bytesPerSample = wavHeader.bitsPerSample / 8; //Number
@@ -141,38 +141,38 @@ int readWAV(int argc, char** argv) {
     while ((bytesRead = fread(buffer, sizeof buffer[0],
                               BUFFER_SIZE / (sizeof buffer[0]), wavFile)) > 0) {
       /** DO SOMETHING WITH THE WAVE DATA HERE **/
-      cout << "Read " << bytesRead << " bytes." << endl;
+      std::cout << "Read " << bytesRead << " bytes." << std::endl;
 
-      cout << *buffer << endl;
+      std::cout << *buffer << std::endl;
       getchar();
     }
     delete[] buffer;
     buffer = nullptr;
     filelength = getFileSize(wavFile);
 
-    cout << "File is                    :" << filelength << " bytes." << endl;
-    cout << "RIFF header                :" << wavHeader.RIFF[0]
-         << wavHeader.RIFF[1] << wavHeader.RIFF[2] << wavHeader.RIFF[3] << endl;
-    cout << "WAVE header                :" << wavHeader.WAVE[0]
-         << wavHeader.WAVE[1] << wavHeader.WAVE[2] << wavHeader.WAVE[3] << endl;
-    cout << "FMT                        :" << wavHeader.fmt[0]
-         << wavHeader.fmt[1] << wavHeader.fmt[2] << wavHeader.fmt[3] << endl;
-    cout << "Data size                  :" << wavHeader.ChunkSize << endl;
+    std::cout << "File is                    :" << filelength << " bytes." << std::endl;
+    std::cout << "RIFF header                :" << wavHeader.RIFF[0]
+         << wavHeader.RIFF[1] << wavHeader.RIFF[2] << wavHeader.RIFF[3] << std::endl;
+    std::cout << "WAVE header                :" << wavHeader.WAVE[0]
+         << wavHeader.WAVE[1] << wavHeader.WAVE[2] << wavHeader.WAVE[3] << std::endl;
+    std::cout << "FMT                        :" << wavHeader.fmt[0]
+         << wavHeader.fmt[1] << wavHeader.fmt[2] << wavHeader.fmt[3] << std::endl;
+    std::cout << "Data size                  :" << wavHeader.ChunkSize << std::endl;
 
     // Display the sampling Rate from the header
-    cout << "Sampling Rate              :" << wavHeader.SamplesPerSec << endl;
-    cout << "Number of bits used        :" << wavHeader.bitsPerSample << endl;
-    cout << "Number of channels         :" << wavHeader.NumOfChan << endl;
-    cout << "Number of bytes per second :" << wavHeader.bytesPerSec << endl;
-    cout << "Data length                :" << wavHeader.Subchunk2Size << endl;
-    cout << "Audio Format               :" << wavHeader.AudioFormat << endl;
+    std::cout << "Sampling Rate              :" << wavHeader.SamplesPerSec << std::endl;
+    std::cout << "Number of bits used        :" << wavHeader.bitsPerSample << std::endl;
+    std::cout << "Number of channels         :" << wavHeader.NumOfChan << std::endl;
+    std::cout << "Number of bytes per second :" << wavHeader.bytesPerSec << std::endl;
+    std::cout << "Data length                :" << wavHeader.Subchunk2Size << std::endl;
+    std::cout << "Audio Format               :" << wavHeader.AudioFormat << std::endl;
     // Audio format 1=PCM,6=mulaw,7=alaw, 257=IBM Mu-Law, 258=IBM A-Law,
     // 259=ADPCM
 
-    cout << "Block align                :" << wavHeader.blockAlign << endl;
-    cout << "Data string                :" << wavHeader.Subchunk2ID[0]
+    std::cout << "Block align                :" << wavHeader.blockAlign << std::endl;
+    std::cout << "Data string                :" << wavHeader.Subchunk2ID[0]
          << wavHeader.Subchunk2ID[1] << wavHeader.Subchunk2ID[2]
-         << wavHeader.Subchunk2ID[3] << endl;
+         << wavHeader.Subchunk2ID[3] << std::endl;
   }
   fclose(wavFile);
   return 0;

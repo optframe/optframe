@@ -44,7 +44,7 @@ class NSEnumVVShiftk : public NSEnum<vector<vector<T>>, DS>
 {
 protected:
    int k;
-   vector<pair<int, pair<pair<int, int>, pair<int, int>>>>* moves;
+   std::vector<std::pair<int, pair<pair<int, int>, pair<int, int>>>>* moves;
 
 public:
    using NSEnum<vector<vector<T>>, DS>::move; // prevents name hiding
@@ -52,7 +52,7 @@ public:
    NSEnumVVShiftk(int k)
    {
       this->k = k;
-      moves = new vector<pair<int, pair<pair<int, int>, pair<int, int>>>>;
+      moves = new std::vector<std::pair<int, pair<pair<int, int>, pair<int, int>>>>;
    }
 
    /*virtual void init(Solution<vector<vector<int> > >* s)
@@ -60,7 +60,7 @@ public:
 		init(s->getR());
 	}
 
-	virtual void init(vector<vector<int> >& rep)
+	virtual void init(std::vector<vector<int> >& rep)
 	{
 		delete moves;
 		moves = NSVector<int>::shiftk_appliableMoves(rep,k);
@@ -78,7 +78,7 @@ public:
    virtual Move<vector<vector<T>>, DS>& move(unsigned int _k)
    {
       if (_k > size()) {
-         cerr << "Neighborhood Shift Error! Move " << _k << " does not exist! Valid Interval from 0 to " << (size() - 1) << "." << endl;
+         cerr << "Neighborhood Shift Error! Move " << _k << " does not exist! Valid Interval from 0 to " << (size() - 1) << "." << std::endl;
          exit(1);
 
          //return nullptr;
@@ -118,7 +118,7 @@ public:
 
    virtual void print()
    {
-      cout << "NSEnum Vector Vector Shiftk (" << size() << ")" << endl;
+      std::cout << "NSEnum Vector Vector Shiftk (" << size() << ")" << std::endl;
    }
 };
 

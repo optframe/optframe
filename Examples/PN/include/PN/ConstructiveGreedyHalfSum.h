@@ -41,7 +41,7 @@ class ConstructiveGreedyHalfSum
   // Solution<ESolutionPN>* generateSolution(double timelimit);
   std::optional<SolutionPN> generateSolution(double timelimit) override;
 
-  void print() const override { cout << "ConstructiveGreedyHalfSum" << endl; }
+  void print() const override { std::cout << "ConstructiveGreedyHalfSum" << std::endl; }
 };
 
 }  // namespace PN

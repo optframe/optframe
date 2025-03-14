@@ -57,7 +57,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
   bool allowCosts;
 
  public:
-  // MultiEvaluator(vector<Evaluator<S, XEv, XES>*> _veval)
+  // MultiEvaluator(std::vector<Evaluator<S, XEv, XES>*> _veval)
   explicit MultiEvaluator(const vsref<Evaluator<S, XEv, XES>>& _veval)
       : sngEvaluators{_veval}, allowCosts{false} {
     for (unsigned i = 0; i < _veval.size(); i++)
@@ -157,14 +157,14 @@ class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
     return (s == idComponent()) || (GeneralEvaluator<XMES, XSH>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << GeneralEvaluator<XMES, XSH>::idComponent() << ":MultiEvaluator"
        << Domain::getAlternativeDomain<XMES>("<XMESf64>");
     return ss.str();
   }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
@@ -198,11 +198,11 @@ class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
     return new MultiEvaluator<XES, XMES>(evlist);
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     std::stringstream ss;
     ss << Evaluator<S, XEv, XES>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of evaluator"));
+    params.push_back(std::make_pair(ss.str(), "list of evaluator"));
 
     return params;
   }
@@ -211,8 +211,8 @@ class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
     return component == MultiEvaluator<XES, XMES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent();
     ss << "MultiEvaluator";
     return ss.str();
@@ -220,7 +220,7 @@ class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
@@ -258,8 +258,8 @@ class MultiEvaluatorMultiBuilder
     return new MultiEvaluator<XES, XMES>(evlist);
   }
 
-  vector<pair<string, string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<S, XEv, XES>::idComponent(), "list of evaluators"));
 
@@ -270,8 +270,8 @@ class MultiEvaluatorMultiBuilder
     return component == MultiEvaluator<XES, XMES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentMultiBuilder<S, XMEv, XMES, X2MES>::idComponent();
     ss << "MultiEvaluatorMultiBuilder";
     return ss.str();
@@ -279,7 +279,7 @@ class MultiEvaluatorMultiBuilder
 
   std::string toString() const override { return id(); }
 
-  string id() const override { return idComponent(); }
+  std::string id() const override { return idComponent(); }
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
@@ -311,27 +311,27 @@ class MultiEvaluatorAction : public Action<XES> {
   virtual bool handleAction(string action) { return (action == "evaluate"); }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<string, string>& d) {
-    cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
+                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) {
+    std::cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << std::endl;
     return false;
 
     if (!handleComponent(type)) {
-      cout << "EvaluatorAction::doCast error: can't handle component type '"
-           << type << " " << id << "'" << endl;
+      std::cout << "EvaluatorAction::doCast error: can't handle component type '"
+           << type << " " << id << "'" << std::endl;
       return false;
     }
 
     Component* comp = hf.components[component].at(id);
 
     if (!comp) {
-      cout << "EvaluatorAction::doCast error: nullptr component '" << component
-           << " " << id << "'" << endl;
+      std::cout << "EvaluatorAction::doCast error: nullptr component '" << component
+           << " " << id << "'" << std::endl;
       return false;
     }
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
-      cout << "EvaluatorAction::doCast error: component '" << comp->id()
-           << " is not base of " << type << "'" << endl;
+      std::cout << "EvaluatorAction::doCast error: component '" << comp->id()
+           << " is not base of " << type << "'" << std::endl;
       return false;
     }
 
@@ -344,8 +344,8 @@ class MultiEvaluatorAction : public Action<XES> {
     if (type == Evaluator<S, XEv, XES>::idComponent()) {
       final = (Evaluator<XES, XEv>*)comp;
     } else {
-      cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'"
-           << endl;
+      std::cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'"
+           << std::endl;
       return false;
     }
 
@@ -355,12 +355,12 @@ class MultiEvaluatorAction : public Action<XES> {
   }
 
   virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<string, string>& dictionary,
+                        map<std::string, std::string>& dictionary,
                         map<string, vector<string>>& ldictionary) {
-    cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
+    std::cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << std::endl;
     return false;
 
-    // cout << "Evaluator::doAction '" << content << "'" << endl;
+    // std::cout << "Evaluator::doAction '" << content << "'" << std::endl;
 
     Scanner scanner(content);
 

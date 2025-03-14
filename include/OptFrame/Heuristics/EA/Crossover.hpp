@@ -53,8 +53,8 @@ class Crossover : public Component, public EA {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":" << EA::family() << ":Crossover";
     return ss.str();
   }

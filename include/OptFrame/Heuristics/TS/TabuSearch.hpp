@@ -54,8 +54,8 @@ class TabuSearch : public SingleObjSearch<XES> {
   pair<S&, Evaluation<DS>&>* search(double timelimit = 100000000,
                                     double target_f = 0, const S* _s = nullptr,
                                     const Evaluation<DS>* _e = nullptr) {
-    // cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" <<
-    // endl;
+    // std::cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" <<
+    // std::endl;
 
     long tini = time(nullptr);
 
@@ -84,8 +84,8 @@ class TabuSearch : public SingleObjSearch<XES> {
       if ((Iter - BestIter) > estimative_BTmax)
         estimative_BTmax = (Iter - BestIter);
 
-      // cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without
-      // improvement)" << endl;
+      // std::cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without
+      // improvement)" << std::endl;
 
       // ==================
       // First: aspiration
@@ -159,8 +159,8 @@ class TabuSearch : public SingleObjSearch<XES> {
 
         BestIter = Iter;
 
-        // cout << "Improvement on " << BestIter << ": fo=" <<
-        // evalSStar->evaluation() << endl;
+        // std::cout << "Improvement on " << BestIter << ": fo=" <<
+        // evalSStar->evaluation() << std::endl;
       }
 
       tnow = time(nullptr);
@@ -183,7 +183,7 @@ class TabuSearch : public SingleObjSearch<XES> {
 
     FILE* ftabu = fopen("tabu.txt", "a");
     if (!ftabu) {
-      cout << "Error creating file 'tabu.txt'" << endl;
+      std::cout << "Error creating file 'tabu.txt'" << std::endl;
     } else {
       fprintf(ftabu, "%d\n", estimative_BTmax);
       fclose(ftabu);
@@ -251,20 +251,20 @@ class TabuSearch : public SingleObjSearch<XES> {
     return false;
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "TS:basic_ts";
     return ss.str();
   }
 
   std::string id() const override { return idComponent(); }
 
-  virtual vector<pair<string, string>> parameters() const {
-    vector<pair<string, string>> p;
-    p.push_back(make_pair("OptFrame:ev", "evaluator"));
-    p.push_back(make_pair("OptFrame:nsseq", "neighborhood_structure"));
-    p.push_back(make_pair("int", "tabu_list_size"));
-    p.push_back(make_pair("int", "ts_max"));
+  virtual std::vector<std::pair<std::string, std::string>> parameters() const {
+    std::vector<std::pair<std::string, std::string>> p;
+    p.push_back(std::make_pair("OptFrame:ev", "evaluator"));
+    p.push_back(std::make_pair("OptFrame:nsseq", "neighborhood_structure"));
+    p.push_back(std::make_pair("int", "tabu_list_size"));
+    p.push_back(std::make_pair("int", "ts_max"));
 
     return p;
   }

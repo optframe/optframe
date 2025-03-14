@@ -98,7 +98,7 @@ class NSSeqUnionAdapter : public NSSeq<XES> {
   }
 
   string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqUnionAdapter: [";
     for (unsigned int i = 0; i < ns.size(); i++) {
       ss << ns[i]->toString();

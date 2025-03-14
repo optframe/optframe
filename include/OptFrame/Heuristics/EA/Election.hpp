@@ -53,7 +53,7 @@ class SimpleElection {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using VPopulation = vector<pair<Individual, Fitness>>;
+  using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
  public:
   SimpleElection() = default;
@@ -73,7 +73,7 @@ class RandomElection final : public SimpleElection<S> {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using VPopulation = vector<pair<Individual, Fitness>>;
+  using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
  public:
   RandomElection() = default;
@@ -111,7 +111,7 @@ class RouletteElection final : public SimpleElection<S> {
   using Individual = S;
   // using Chromossome = R;
   using Fitness = XEv*;  // nullptr means there's no evaluation
-  using VPopulation = vector<pair<Individual, Fitness>>;
+  using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
  public:
   RouletteElection() = default;

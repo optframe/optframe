@@ -16,22 +16,22 @@ using namespace optframe;
 // using namespace HFM;
 
 int microGridLiuAppliedEnergyOnline(int argc, char** argv) {
-  cout << "Welcome to Micro Grid Liu Applied Energy Dataset Calibration Mode "
+  std::cout << "Welcome to Micro Grid Liu Applied Energy Dataset Calibration Mode "
           "ONLINE..."
-       << endl;
+       << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 5) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nomeOutput targetTS "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nomeOutput targetTS "
             "construtiveNRulesACF timeES"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -54,15 +54,15 @@ int microGridLiuAppliedEnergyOnline(int argc, char** argv) {
   string nomeOutput = caminhoOutput;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-  cout << "argvNumberOfRules=" << argvNumberOfRules << endl;
-  // cout << "argvAlphaACF=" << argvAlphaACF << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << std::endl;
+  std::cout << "argvNumberOfRules=" << argvNumberOfRules << std::endl;
+  // std::cout << "argvAlphaACF=" << argvAlphaACF << std::endl;
   //	getchar();
-  //	cout << "instN=" << instN << endl;
-  //	cout << "stepsAhead=" << stepsAhead << endl;
-  //	cout << "mu=" << mu << endl;
+  //	cout << "instN=" << instN << std::endl;
+  //	cout << "stepsAhead=" << stepsAhead << std::endl;
+  //	cout << "mu=" << mu << std::endl;
   //===================================
 
   // CONFIG FILES FOR CONSTRUTIVE 0 AND 1
@@ -96,8 +96,8 @@ int microGridLiuAppliedEnergyOnline(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -194,12 +194,12 @@ int microGridLiuAppliedEnergyOnline(int argc, char** argv) {
     vector<double> foIndicators;
     for (int beginTrainingSet = 168; beginTrainingSet >= stepsAhead;
          beginTrainingSet -= stepsAhead) {
-      cout << "BeginTrainninningSet: " << beginTrainingSet;
-      cout << "\t #SamplesTrainningSet: " << nTotalForecastingsTrainningSet
-           << endl;
-      cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-      cout << "maxNotUsed: " << problemParam.getMaxLag(0) << endl;
-      cout << "#StepsAhead: " << stepsAhead << endl << endl;
+      std::cout << "BeginTrainninningSet: " << beginTrainingSet;
+      std::cout << "\t #SamplesTrainningSet: " << nTotalForecastingsTrainningSet
+           << std::endl;
+      std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
+      std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
+      std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
       vector<vector<double>> trainningSet;  // trainningSetVector
       trainningSet.push_back(rF.getPartsForecastsEndToBegin(
@@ -234,9 +234,9 @@ int microGridLiuAppliedEnergyOnline(int argc, char** argv) {
   // =================== PRINTING RESULTS ========================
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 

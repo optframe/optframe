@@ -65,7 +65,7 @@ class MoveMultiRoute : public Move<vector<vector<T>>, DS> {
   }
 
   void print() const override {
-    cout << "MoveMultiRoute: k=" << k << "; move = ";
+    std::cout << "MoveMultiRoute: k=" << k << "; move = ";
     m.print();
   }
 };

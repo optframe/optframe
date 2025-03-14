@@ -19,6 +19,7 @@ int main() {
   sptr<Evaluator<std::vector<int>, Evaluation<int>, MyESolution>> ev;
   sptr<LocalSearch<MyESolution>> ls;
   sptr<BestImprovement<MyESolution>> bi;
+  sptr<IteratedLocalSearchLevels<MyESolution>> ils;
   std::print("now {}", t.now());
   return 0;
 }

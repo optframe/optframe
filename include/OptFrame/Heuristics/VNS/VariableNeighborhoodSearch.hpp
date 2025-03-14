@@ -76,8 +76,8 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
       XES p = p2;  // copy! AVOID
 
       if (Component::information) {
-        cout << "VNS: improvement at NS " << k << " => " << e2.evaluation()
-             << endl;
+        std::cout << "VNS: improvement at NS " << k << " => " << e2.evaluation()
+             << std::endl;
         // e2.print();
         // eStar.print();
       }
@@ -113,11 +113,11 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     //
     double timelimit = sosc.timelimit;
     // XEv target_f(sosc.target_f); // BROKEN
-    // cout << id() << " search(target=" << target_f << ", timelimit=" <<
-    // timelimit << ")" << endl;
-    cout << id() << " search("
+    // std::cout << id() << " search(target=" << target_f << ", timelimit=" <<
+    // timelimit << ")" << std::endl;
+    std::cout << id() << " search("
          << "timelimit=" << timelimit << ")"
-         << endl;  // TODO: 'stop'.toString()
+         << std::endl;  // TODO: 'stop'.toString()
 
     Timer tnow;
 
@@ -134,16 +134,16 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     auto& eStar = star->second;
 
     if (Component::information)
-      cout << "VNS starts: " << eStar.evaluation() << endl;
+      std::cout << "VNS starts: " << eStar.evaluation() << std::endl;
 
     while (
         (tnow.now() < timelimit))  //  && evaluator.betterThan(target_f, eStar))
     {
       unsigned k = 0;
-      // cout << "VNS k=0 initial target = " << target_f << " timelimit = " <<
-      // timelimit << endl; cout << eStar.evaluation() << endl; cout <<
-      // evaluator.betterThan(target_f, eStar) << endl; cout <<
-      // evaluator.betterThan(8000, 7962.15) << endl;
+      // std::cout << "VNS k=0 initial target = " << target_f << " timelimit = " <<
+      // timelimit << std::endl; std::cout << eStar.evaluation() << std::endl; std::cout <<
+      // evaluator.betterThan(target_f, eStar) << std::endl; std::cout <<
+      // evaluator.betterThan(8000, 7962.15) << std::endl;
 
       while (k < vshake.size()) {
         XES p1 = *star;  // copy (how to automatically invoke clone?)
@@ -170,7 +170,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
         // delete& e; // drop automatically?
 
         if (k != nc.second) {
-          // cout << "VNS k change from " << k << " to " << nc.second << endl;
+          // std::cout << "VNS k change from " << k << " to " << nc.second << std::endl;
         }
         k = nc.second;
       }
@@ -179,14 +179,14 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     // if (sosc.target && evaluator.betterThan(star->second,
     // sosc.target->second)) if (star->second.betterStrict(sosc.target_f))
     if (evaluator->betterStrict(star->second, sosc.target_f)) {
-      cout << "VNS exit by target_f: " << star->second.evaluation()
-           << " better than " << sosc.target_f.evaluation() << endl;
-      // cout << "isMin: " << evaluator.isMinimization() << endl;
-      //  cout << "isMin: " << star->second.isMini << endl;
+      std::cout << "VNS exit by target_f: " << star->second.evaluation()
+           << " better than " << sosc.target_f.evaluation() << std::endl;
+      // std::cout << "isMin: " << evaluator.isMinimization() << std::endl;
+      //  std::cout << "isMin: " << star->second.isMini << std::endl;
     }
 
     if (((tnow.now()) >= timelimit)) {
-      cout << "VNS exit by timelimit: " << timelimit << endl;
+      std::cout << "VNS exit by timelimit: " << timelimit << std::endl;
     }
 
     // updates method solution
@@ -196,8 +196,8 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     return {SearchStatus::NO_REPORT, star};
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << VNS::family();
     // ss << SingleObjSearch<XES>::idComponent() << VNS::family <<
     // "VariableNeighborhoodSearch:";

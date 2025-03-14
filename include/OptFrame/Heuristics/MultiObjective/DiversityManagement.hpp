@@ -55,7 +55,7 @@ class DiversityManagement : public Component {
   }
 
   // assign diversity to all individuals from population 'P'
-  virtual void assignDiversityAll(vector<MOSIndividual<XMES2>>& P) {
+  virtual void assignDiversityAll(std::vector<MOSIndividual<XMES2>>& P) {
     // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
 
     std::vector<int> v_id;
@@ -68,7 +68,7 @@ class DiversityManagement : public Component {
       // vector<MOSIndividual<XMES2>>& g,
       const std::vector<int>& g, vector<MOSIndividual<XMES2>>& P) = 0;
 
-  void print() const override { cout << "DiversityManagement" << endl; }
+  void print() const override { std::cout << "DiversityManagement" << std::endl; }
 };
 
 // template <class DS = OPTFRAME_DEFAULT_DS>
@@ -124,11 +124,11 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
     // for each objective 'm'
     for (unsigned m = 0; m < vDir.size(); m++) {
       // I = sort(I, m)
-      vector<pair<double, int>> fitness;  // (fitness, id)
+      std::vector<std::pair<double, int>> fitness;  // (fitness, id)
 
       for (int i = 0; i < (int)I.size(); i++) {
         double fit = I[i].mev.at(m).evaluation();
-        fitness.push_back(make_pair(fit, i));
+        fitness.push_back(std::make_pair(fit, i));
       }
 
       sort(fitness.begin(), fitness.end(), compare);
@@ -141,7 +141,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
          = numeric_limits<double>::infinity();
                          */
 
-      ////cout << "ORDER: (rank=" << r << ") " << fitness << endl;
+      ////cout << "ORDER: (rank=" << r << ") " << fitness << std::endl;
       // for i=2 to l-1
       // ADAPTATION WITH ANOTHER LOOP
       for (int k = 0; k < (int)fitness.size(); k++) {

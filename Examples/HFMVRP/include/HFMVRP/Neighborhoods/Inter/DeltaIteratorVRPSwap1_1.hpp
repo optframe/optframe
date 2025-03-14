@@ -42,7 +42,7 @@ class DeltaIteratorVRPSwap1_1 : public NSIterator<ESolutionHFMVRP> {
   DeltaIteratorVRPSwap1_1(const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp)
       : r{se.first.getR()}, ads{se.first.getADS()}, p{_hfmvrp} {
     if (!_hfmvrp) {
-      cout << "Error: hfmvrp problem is NULL!" << endl;
+      std::cout << "Error: hfmvrp problem is NULL!" << std::endl;
       exit(1);
     }
   }
@@ -64,21 +64,21 @@ class DeltaIteratorVRPSwap1_1 : public NSIterator<ESolutionHFMVRP> {
           /*
            if (teste1 != teste2)
            {
-           cout << "Bug SWAP 11!!!!" << endl;
-           cout << r[r1] << endl;
-           cout << r[r2] << endl;
-           cout << "ads.minDemand[r1] = " << ads.minDemand[r1] << endl;
-           cout << "ads.maxDemand[r1] = " << ads.maxDemand[r1] << endl;
-           cout << "ads.sumDemand[r1] = " << ads.sumDemand[r1] << endl;
-           cout << "ads.minDemand[r2] = " << ads.minDemand[r2] << endl;
-           cout << "ads.maxDemand[r2] = " << ads.maxDemand[r2] << endl;
-           cout << "ads.sumDemand[r2] = " << ads.sumDemand[r2] << endl;
-           cout << "ads.cumulativeDemand" << ads.cumulativeDemand << endl;
-           cout << "ads.maxDemand" << ads.maxDemand << endl;
-           cout << "ads.minDemand" << ads.minDemand << endl;
-           cout << "ads.maxPairDemand" << ads.maxPairDemand << endl;
-           cout << "ads.minPairDemand" << ads.minPairDemand << endl;
-           cout << "ads.sumDemand" << ads.sumDemand << endl;
+           std::cout << "Bug SWAP 11!!!!" << std::endl;
+           std::cout << r[r1] << std::endl;
+           std::cout << r[r2] << std::endl;
+           std::cout << "ads.minDemand[r1] = " << ads.minDemand[r1] << std::endl;
+           std::cout << "ads.maxDemand[r1] = " << ads.maxDemand[r1] << std::endl;
+           std::cout << "ads.sumDemand[r1] = " << ads.sumDemand[r1] << std::endl;
+           std::cout << "ads.minDemand[r2] = " << ads.minDemand[r2] << std::endl;
+           std::cout << "ads.maxDemand[r2] = " << ads.maxDemand[r2] << std::endl;
+           std::cout << "ads.sumDemand[r2] = " << ads.sumDemand[r2] << std::endl;
+           std::cout << "ads.cumulativeDemand" << ads.cumulativeDemand << std::endl;
+           std::cout << "ads.maxDemand" << ads.maxDemand << std::endl;
+           std::cout << "ads.minDemand" << ads.minDemand << std::endl;
+           std::cout << "ads.maxPairDemand" << ads.maxPairDemand << std::endl;
+           std::cout << "ads.minPairDemand" << ads.minPairDemand << std::endl;
+           std::cout << "ads.sumDemand" << ads.sumDemand << std::endl;
 
            getchar();
            }
@@ -117,8 +117,8 @@ class DeltaIteratorVRPSwap1_1 : public NSIterator<ESolutionHFMVRP> {
 
   uptr<Move<ESolutionHFMVRP>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "DeltaNSSeqVRPSwap1_1. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "DeltaNSSeqVRPSwap1_1. Aborting." << std::endl;
       exit(1);
     }
 

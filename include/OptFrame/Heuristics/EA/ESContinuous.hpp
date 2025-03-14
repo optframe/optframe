@@ -71,7 +71,7 @@ class ESContinous : public SingleObjSearch<XES> {
 
   typedef pair<S*, ESContinuousStructure<ESStruct>*> Individuo;
 
-  typedef vector<pair<Individuo, double>> Populacao;
+  typedef std::vector<std::pair<Individuo, double>> Populacao;
 
   static bool compara(pair<Individuo, double> p1, pair<Individuo, double> p2) {
     return p1.second < p2.second;
@@ -110,11 +110,11 @@ class ESContinous : public SingleObjSearch<XES> {
     for (int i = 0; i < nBuscas; i++) aux[i] = false;
 
     // ORDECAO QuickSort
-    vector<pair<Individuo, double>> v;
+    std::vector<std::pair<Individuo, double>> v;
 
     for (int i = 0; i < (int)p.size(); i++) {
       Evaluation<>& e = eval.evaluate(*p[i].first);
-      v.push_back(make_pair(p[i], e.evaluation()));
+      v.push_back(std::make_pair(p[i], e.evaluation()));
       delete &e;
     }
 
@@ -138,14 +138,14 @@ class ESContinous : public SingleObjSearch<XES> {
   }
 
   Populacao& competition(Populacao& pais, Populacao& filhos) {
-    vector<pair<Individuo, double>> v;
+    std::vector<std::pair<Individuo, double>> v;
 
     for (int i = 0; i < (int)pais.size(); i++) {
-      v.push_back(make_pair(pais[i].first, pais[i].second));
+      v.push_back(std::make_pair(pais[i].first, pais[i].second));
     }
 
     for (int i = 0; i < (int)filhos.size(); i++) {
-      v.push_back(make_pair(filhos[i].first, filhos[i].second));
+      v.push_back(std::make_pair(filhos[i].first, filhos[i].second));
     }
 
     sort(v.begin(), v.end(), compara);  // ordena com QuickSort
@@ -156,7 +156,7 @@ class ESContinous : public SingleObjSearch<XES> {
 
     for (int i = 0; i < (int)v.size(); i++)
       if (i < mi) {
-        p->push_back(make_pair(v[i].first, v[i].second));
+        p->push_back(std::make_pair(v[i].first, v[i].second));
         fo_pop += v[i].second;
       } else {
         delete v[i].first.first;   // Solution
@@ -164,7 +164,7 @@ class ESContinous : public SingleObjSearch<XES> {
       }
 
     fo_pop = fo_pop / mi;
-    // cout << "Media Competicao, media: " << fo_pop << endl;
+    // std::cout << "Media Competicao, media: " << fo_pop << std::endl;
 
     // AVALIA MELHOR INDIVIDUO
     double fo = v[0].second;
@@ -183,40 +183,40 @@ class ESContinous : public SingleObjSearch<XES> {
       (*eStar) = eval.evaluate(*sStar);
 
       /*
-                         cout << "vRealClone = " <<
-         (&eval.evaluate(*v[0].first.first))->evaluation() << endl; cout <<
+                         std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl; std::cout <<
          "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() <<
-         endl; cout << "vRealClone = " <<
-         (&eval.evaluate(*v[0].first.first))->evaluation() << endl; cout <<
+         std::endl; std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl; std::cout <<
          "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() <<
-         endl; cout << "vRealClone = " <<
-         (&eval.evaluate(*v[0].first.first))->evaluation() << endl; cout <<
+         std::endl; std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl; std::cout <<
          "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() <<
-         endl; cout << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << endl; cout
+         std::endl; std::cout << "eStarClone = " <<
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
          << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << endl; cout
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
          << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << endl; cout
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
          << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << endl; cout
-         << "eStarClone = " << eStar->evaluation() << endl;
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
+         << "eStarClone = " << eStar->evaluation() << std::endl;
 
-                         cout << v[0].first.first->getR() << endl;
-                         cout << sStar->getR() << endl;
+                         std::cout << v[0].first.first->getR() << std::endl;
+                         std::cout << sStar->getR() << std::endl;
                          */
-      cout << "Iter:" << gAtual << "\tWithoutImprovement: " << iterSemMelhora;
-      cout << "\t Best: " << v[0].second;
-      cout << "\t [";
-      cout << "imprimirMatriz";
-      cout << "]" << endl;
+      std::cout << "Iter:" << gAtual << "\tWithoutImprovement: " << iterSemMelhora;
+      std::cout << "\t Best: " << v[0].second;
+      std::cout << "\t [";
+      std::cout << "imprimirMatriz";
+      std::cout << "]" << std::endl;
 
       /*
                          FILE* arquivo = fopen("logParam.txt", "a");
                          if (!arquivo)
                          {
-                         cout << "ERRO: falha ao criar arquivo \"logParam.txt\""
-         << endl;
+                         std::cout << "ERRO: falha ao criar arquivo \"logParam.txt\""
+         << std::endl;
                          }
                          else
                          {
@@ -271,8 +271,8 @@ class ESContinous : public SingleObjSearch<XES> {
     // op<XES>& star = this->best;
     //  TODO: reimplement with SearchBy ...
     op<XES> star;
-    cout << "ES search(" << stopCriteria.target_f << ","
-         << stopCriteria.timelimit << ")" << endl;
+    std::cout << "ES search(" << stopCriteria.target_f << ","
+         << stopCriteria.timelimit << ")" << std::endl;
 
     Timer tnow;
 
@@ -287,7 +287,7 @@ class ESContinous : public SingleObjSearch<XES> {
 
       ESStruct a =
           generateInitialESStructure(&(*s));  // TODO: fix original function
-      // cout << a;
+      // std::cout << a;
       // getchar();
 
       ESContinuousStructure<ESStruct>* m =
@@ -305,8 +305,8 @@ class ESContinous : public SingleObjSearch<XES> {
         // First solution of the method
         eStar = &e.clone();
         sStar = &pop[i].first.first->clone();
-        // cout<<"e.evaluation() = "<<(double)e.evaluation()<<endl;
-        // cout<< " eStar = "<<(double)eStar->evaluation()<<endl;
+        // std::cout<<"e.evaluation() = "<<(double)e.evaluation()<<endl;
+        // std::cout<< " eStar = "<<(double)eStar->evaluation()<<endl;
         // getchar();
 
       } else {
@@ -321,8 +321,8 @@ class ESContinous : public SingleObjSearch<XES> {
       delete &e;
     }
 
-    cout << "Mean initial population FO: " << fo_Constructive / mi << "\t";
-    cout << "best:" << (double)eStar->evaluation() << endl;
+    std::cout << "Mean initial population FO: " << fo_Constructive / mi << "\t";
+    std::cout << "best:" << (double)eStar->evaluation() << std::endl;
     // ===============================
 
     iterSemMelhora = 0;
@@ -334,7 +334,7 @@ class ESContinous : public SingleObjSearch<XES> {
 
     while ((iterSemMelhora < gMax) && ((tnow.now()) < stopCriteria.timelimit) &&
            eval.betterThan(stopCriteria.target_f, *eStar)) {
-      // cout << "gAtual = " << gAtual << endl;
+      // std::cout << "gAtual = " << gAtual << std::endl;
       // getchar();
 
       Populacao pop_filhos;
@@ -370,30 +370,30 @@ class ESContinous : public SingleObjSearch<XES> {
         // counter++;
 
         pop_filhos.push_back(
-            make_pair(make_pair(filho_bl, vt), e.evaluation()));
+            make_pair(std::make_pair(filho_bl, vt), e.evaluation()));
 
         fo_filhos += e.evaluation();
       }
 
-      // cout << "Valor Medio das FO's dos filhos: " << fo_filhos / mi << endl;
+      // std::cout << "Valor Medio das FO's dos filhos: " << fo_filhos / mi << std::endl;
 
       // APLICA B.L VND EM 'nb' INDIVIDUOS DA POP_FILHOS
       // applyLocalSearchBest(pop_filhos, 2);
-      // cout<<"Applying local Search ..."<<endl;
+      // std::cout<<"Applying local Search ..."<<endl;
 
       // applyLocalSearch(pop_filhos, nb, lambda);
 
-      // cout<<" local search finished!"<<endl;
+      // std::cout<<" local search finished!"<<endl;
       // getchar();
       //  ETAPA DE SELECAO - MI,LAMBDA ou MI + LAMBDA // ATUALIZA BEST
-      // cout<<"Applying selection ..."<<endl;
+      // std::cout<<"Applying selection ..."<<endl;
 
       // Populacao& pNova = lowSelectivePression(pop, pop_filhos); //Estrategia
       // (Mi,Lamda)
       Populacao& pNova =
           highSelectivePression(pop, pop_filhos);  // Estrategia (Mi+Lamda)
 
-      // cout<<"selection finished !"<<endl;
+      // std::cout<<"selection finished !"<<endl;
       pop.clear();
       pop_filhos.clear();
 
@@ -405,20 +405,20 @@ class ESContinous : public SingleObjSearch<XES> {
       delete &pNova;
     }
 
-    /*cout << sumEval << endl;
-                cout << sumClone << endl;
-                cout << counter << endl;
-                cout << sumEval / counter << endl;
-                cout << sumClone / counter << endl;
-                cout << tnow.now() << endl;
+    /*cout << sumEval << std::endl;
+                std::cout << sumClone << std::endl;
+                std::cout << counter << std::endl;
+                std::cout << sumEval / counter << std::endl;
+                std::cout << sumClone / counter << std::endl;
+                std::cout << tnow.now() << std::endl;
                 getchar();*/
 
-    cout << "tnow.now() = " << tnow.now()
-         << " timelimit = " << stopCriteria.timelimit << endl;
-    cout << "Acabou ES = iterSemMelhor = " << iterSemMelhora
-         << " gMax = " << gMax << endl;
-    cout << "target_f = " << stopCriteria.target_f
-         << " eStar->evaluation() = " << (double)eStar->evaluation() << endl;
+    std::cout << "tnow.now() = " << tnow.now()
+         << " timelimit = " << stopCriteria.timelimit << std::endl;
+    std::cout << "Acabou ES = iterSemMelhor = " << iterSemMelhora
+         << " gMax = " << gMax << std::endl;
+    std::cout << "target_f = " << stopCriteria.target_f
+         << " eStar->evaluation() = " << (double)eStar->evaluation() << std::endl;
     // getchar();
 
     for (int i = 0; i < (int)pop.size(); i++) {
@@ -429,20 +429,20 @@ class ESContinous : public SingleObjSearch<XES> {
     // S& s = *sStar;
     // Evaluation<>& e = *eStar;
 
-    // cout<<s.getR();
+    // std::cout<<s.getR();
     // getchar();
     // delete eStar;
     // delete sStar;
 
     // return new pair<S, Evaluation<>>(s, e);
-    // return make_optional(make_pair(*sStar, *eStar)); // fix: leak
-    star = make_optional(make_pair(*sStar, *eStar));  // fix: leak
+    // return make_optional(std::make_pair(*sStar, *eStar)); // fix: leak
+    star = make_optional(std::make_pair(*sStar, *eStar));  // fix: leak
     // this->best = star;
     return SearchOutput<XES>{SearchStatus::NO_REPORT, star};
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << "ESContinous";
     return ss.str();
   }

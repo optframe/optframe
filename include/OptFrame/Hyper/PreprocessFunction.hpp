@@ -54,7 +54,7 @@ protected:
 
 public:
 
-	static pair<string, string>* run_function(string func, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string raw_input)
+	static pair<std::string, std::string>* run_function(string func, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string raw_input)
 	{
 		string input = Scanner::trim(raw_input);
 
@@ -63,7 +63,7 @@ public:
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(allFunctions[i]->canHandle(func, "")) // TODO: check
 			{
-				//cout << "found function: '" << func << "'" << endl;
+				//cout << "found function: '" << func << "'" << std::endl;
 				string* iprep = allFunctions[i]->preprocess(allFunctions, hf, dictionary, ldictionary, input);
 				if(!iprep)
 					return nullptr;
@@ -126,11 +126,11 @@ public:
 				{
 					string r1 = *r;
 					delete r;
-					return new pair<string, string>(r1, rest);
+					return new pair<std::string, std::string>(r1, rest);
 				}
 			}
 
-		cout << "Function '" << func << "' not found." << endl;
+		cout << "Function '" << func << "' not found." << std::endl;
 
 		return nullptr;
 	}
@@ -165,15 +165,15 @@ public:
 
 	virtual string usage() = 0;
 
-	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body) = 0;
+	virtual string* run(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body) = 0;
 
 	// SHOULD NOT REIMPLEMENT!! TO BE REMOVED IN FUTURE (TODO)
-	string* preprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string input)
+	string* preprocess(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string input)
 	{
 		return defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
 	}
 
-	static string* defaultPreprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string input)
+	static string* defaultPreprocess(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -215,7 +215,7 @@ public:
 
 			if( (current == "(") && PreprocessFunction<R,ADS,DS>::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = PreprocessFunction<R,ADS,DS>::run_function(last, allFunctions, hf, dictionary, ldictionary, scanFunc.rest());
+				pair<std::string, std::string>* p = PreprocessFunction<R,ADS,DS>::run_function(last, allFunctions, hf, dictionary, ldictionary, scanFunc.rest());
 
 				if(p)
 				{
@@ -242,7 +242,7 @@ public:
 				}
 				else
 				{
-					cout << "function error in '" << last << "'" << endl;
+					cout << "function error in '" << last << "'" << std::endl;
 					return nullptr; // error in valid function!
 				}
 			}

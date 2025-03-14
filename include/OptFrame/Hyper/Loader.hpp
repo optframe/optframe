@@ -81,7 +81,9 @@
 #include <OptFrame/Heuristics/ILS/BasicILSPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/BasicIteratedLocalSearch.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
+#include <OptFrame/Heuristics/ILS/ILSLPerturbationBuilder.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
+#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevelsBuilder.hpp>
 #include <OptFrame/Heuristics/MultiStart.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealingBuilder.hpp>
@@ -154,7 +156,7 @@ class Loader {
 
  public:
   HeuristicFactory<XES> factory;
-  map<string, string> dictionary;
+  map<std::string, std::string> dictionary;
   map<string, vector<string>> ldictionary;
 
   Loader() { loadComponentBuilders(); }

@@ -26,7 +26,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
   DeltaMoveOrOptk(const super& s, ProblemInstance* _svrpdsp)
       : super(s.get_i(), s.get_j(), s.get_k(), _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -35,7 +35,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
   DeltaMoveOrOptk(int i, int j, int k, ProblemInstance* _svrpdsp)
       : super(i, j, k, _svrpdsp), svrpdsp(_svrpdsp) {
     if (!svrpdsp) {
-      cout << "Error: svrpdsp problem is NULL!" << endl;
+      std::cout << "Error: svrpdsp problem is NULL!" << std::endl;
       print();
       exit(1);
     }
@@ -50,7 +50,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
     const AdsSVRPDSP& ads = *_ads;
     /*
     if((i==29) && (j==31))
-       cout << "canBeApplied?i="<<i<<"j="<<j<<endl;
+       std::cout << "canBeApplied?i="<<i<<"j="<<j<<endl;
 */
     if (!super::canBeApplied(rep, _ads)) return false;
 
@@ -70,7 +70,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
 
     /*
     if((i==29) && (j==31))
-       cout << "canBeApplied=TRUE"<<endl;
+       std::cout << "canBeApplied=TRUE"<<endl;
 */
 
     return true;
@@ -103,8 +103,8 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
       if((i==5) && (j==30))
       {
           verbose = true;
-          cout << "DEBUGGING MoveOrOpt(" << k << ") i=" <<i << " j=" << j <<
-      endl;
+          std::cout << "DEBUGGING MoveOrOpt(" << k << ") i=" <<i << " j=" << j <<
+      std::endl;
       //getchar();
       }
 */
@@ -129,125 +129,125 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
 
     if (i == j) {
       f = 0;
-      cout << "OROPTK SHOULDN'T BE APPLIED! I==J" << endl;
+      std::cout << "OROPTK SHOULDN'T BE APPLIED! I==J" << std::endl;
       getchar();
     }
 
     if ((i > (ads.zero - k)) && (j > (ads.zero - k)))  // all zero!
     {
       f = 0;
-      cout << "OROPTK SHOULDN'T BE APPLIED!" << endl;
+      std::cout << "OROPTK SHOULDN'T BE APPLIED!" << std::endl;
       getchar();
     } else if ((i < j) && (i <= (ads.zero - k)) &&
                (j <= (ads.zero - k)))  // inside zeros (I < J)
     {
-      if (verbose) cout << "CASE 1" << endl;
+      if (verbose) std::cout << "CASE 1" << std::endl;
       f -= svrpdsp->dc(rep[bi], rep[i]);
-      // cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
+      // std::cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
       f -= svrpdsp->dc(rep[lik], rep[aik]);
-      // cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
+      // std::cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
       f -= svrpdsp->dc(rep[nj], rep[anj]);
-      // cout << "-d(" << rep[nj] << "," << rep[aj] << ") ";
+      // std::cout << "-d(" << rep[nj] << "," << rep[aj] << ") ";
 
       f += svrpdsp->dc(rep[bi], rep[aik]);
-      // cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
+      // std::cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
       f += svrpdsp->dc(rep[nj], rep[i]);
-      // cout << "+d(" << rep[j] << "," << rep[i] << ") ";
+      // std::cout << "+d(" << rep[j] << "," << rep[i] << ") ";
       f += svrpdsp->dc(rep[lik], rep[anj]);
-      // cout << "+d(" << rep[lik] << "," << rep[aj] << ") ";
+      // std::cout << "+d(" << rep[lik] << "," << rep[aj] << ") ";
     } else if ((i > j) && (i <= (ads.zero - k)) &&
                (j <= (ads.zero - k)))  // inside zeros (I > J)
     {
-      if (verbose) cout << "CASE 2" << endl;
+      if (verbose) std::cout << "CASE 2" << std::endl;
       f -= svrpdsp->dc(rep[bi], rep[i]);
       if (verbose)
-        cout << "-d(" << rep[bi] << "," << rep[i]
+        std::cout << "-d(" << rep[bi] << "," << rep[i]
              << ")=" << -svrpdsp->dc(rep[bi], rep[i]) << " ";
       f -= svrpdsp->dc(rep[lik], rep[aik]);
       if (verbose)
-        cout << "-d(" << rep[lik] << "," << rep[aik]
+        std::cout << "-d(" << rep[lik] << "," << rep[aik]
              << ")=" << -svrpdsp->dc(rep[lik], rep[aik]) << " ";
       f -= svrpdsp->dc(rep[bj], rep[j]);
       if (verbose)
-        cout << "-d(" << rep[bj] << "," << rep[j]
+        std::cout << "-d(" << rep[bj] << "," << rep[j]
              << ")=" << -svrpdsp->dc(rep[bj], rep[j]) << " ";
 
       f += svrpdsp->dc(rep[bi], rep[aik]);
       if (verbose)
-        cout << "+d(" << rep[bi] << "," << rep[aik]
+        std::cout << "+d(" << rep[bi] << "," << rep[aik]
              << ")=" << svrpdsp->dc(rep[bi], rep[aik]) << " ";
       f += svrpdsp->dc(rep[bj], rep[i]);
       if (verbose)
-        cout << "+d(" << rep[bj] << "," << rep[i]
+        std::cout << "+d(" << rep[bj] << "," << rep[i]
              << ")=" << svrpdsp->dc(rep[bj], rep[i]) << " ";
       f += svrpdsp->dc(rep[lik], rep[j]);
       if (verbose)
-        cout << "+d(" << rep[lik] << "," << rep[j]
+        std::cout << "+d(" << rep[lik] << "," << rep[j]
              << ")=" << svrpdsp->dc(rep[lik], rep[j]) << " ";
     } else if ((i < j) && (j > (ads.zero - k)))  // after zeros REMOVING PICKUP
     {
-      // cout << "AFTER ZERO REMOVING PICKUP!" << endl;
-      if (verbose) cout << "CASE 3" << endl;
+      // std::cout << "AFTER ZERO REMOVING PICKUP!" << std::endl;
+      if (verbose) std::cout << "CASE 3" << std::endl;
       f -= svrpdsp->dc(rep[bi], rep[i]);
-      if (verbose) cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
+      if (verbose) std::cout << "-d(" << rep[bi] << "," << rep[i] << ") ";
       f -= svrpdsp->dc(rep[lik], rep[aik]);
-      if (verbose) cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
+      if (verbose) std::cout << "-d(" << rep[lik] << "," << rep[aik] << ") ";
 
       f += svrpdsp->dc(rep[bi], rep[aik]);
-      if (verbose) cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
+      if (verbose) std::cout << "+d(" << rep[bi] << "," << rep[aik] << ") ";
 
       // REMOVING PICKUP
       for (int ci = i; ci <= (i + k - 1); ci++) {
         f += svrpdsp->dr[rep[ci]];  // revenue is reverse!
         if (verbose)
-          cout << "+r(" << rep[ci] << ")=" << svrpdsp->dr[rep[ci]] << " ";
+          std::cout << "+r(" << rep[ci] << ")=" << svrpdsp->dr[rep[ci]] << " ";
 
         if ((ci + 1) <= (i + k - 1)) {
           f -= svrpdsp->dc(rep[ci], rep[ci + 1]);
-          if (verbose) cout << "f-=d(" << rep[ci] << "," << rep[ci + 1] << ") ";
+          if (verbose) std::cout << "f-=d(" << rep[ci] << "," << rep[ci + 1] << ") ";
         }
       }
     } else if ((i > j) && (i > (ads.zero - k)))  // after zeros ADDING PICKUP
     {
-      // cout << "After zero!************" << endl;
-      if (verbose) cout << "CASE 4" << endl;
+      // std::cout << "After zero!************" << std::endl;
+      if (verbose) std::cout << "CASE 4" << std::endl;
       f -= svrpdsp->dc(rep[bj], rep[j]);
       if (verbose)
-        cout << "-d(" << rep[bj] << "," << rep[j]
+        std::cout << "-d(" << rep[bj] << "," << rep[j]
              << ")=" << -svrpdsp->dc(rep[bj], rep[j]) << " ";
 
       f += svrpdsp->dc(rep[bj], rep[i]);
       if (verbose)
-        cout << "+d(" << rep[bj] << "," << rep[i]
+        std::cout << "+d(" << rep[bj] << "," << rep[i]
              << ")=" << svrpdsp->dc(rep[bj], rep[i]) << " ";
       f += svrpdsp->dc(rep[lik], rep[j]);
       if (verbose)
-        cout << "+d(" << rep[lik] << "," << rep[j]
+        std::cout << "+d(" << rep[lik] << "," << rep[j]
              << ")=" << svrpdsp->dc(rep[lik], rep[j]) << " ";
 
-      // cout << "DDIST=" << f << endl;
+      // std::cout << "DDIST=" << f << std::endl;
 
-      // cout << "ADDING PICKUP" << endl;
+      // std::cout << "ADDING PICKUP" << std::endl;
       for (int ci = i; ci <= (i + k - 1); ci++) {
-        // cout << rep[ci] << endl;
+        // std::cout << rep[ci] << std::endl;
         f -= svrpdsp->dr[rep[ci]];  // revenue is reverse!
         if (verbose)
-          cout << "-r(" << rep[ci] << ")=" << -svrpdsp->dr[rep[ci]] << " ";
+          std::cout << "-r(" << rep[ci] << ")=" << -svrpdsp->dr[rep[ci]] << " ";
         if ((ci + 1) <= (i + k - 1)) {
           f += svrpdsp->dc(rep[ci], rep[ci + 1]);
-          if (verbose) cout << "+d(" << rep[ci] << "," << rep[ci + 1] << ") ";
+          if (verbose) std::cout << "+d(" << rep[ci] << "," << rep[ci + 1] << ") ";
         }
       }
     } else {
-      cout << "OR OPTK DONT KNOW!!" << endl;
+      std::cout << "OR OPTK DONT KNOW!!" << std::endl;
       exit(1);
     }
 
     if (verbose) {
-      cout << "delta=" << f << endl;
+      std::cout << "delta=" << f << std::endl;
     }
 
-    // cout << endl;
+    // std::cout << std::endl;
 
     // ==========
     // Infeasible
@@ -255,12 +255,12 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
 
     int f_inv = 0;
 
-    if (verbose) cout << "INF: ";
+    if (verbose) std::cout << "INF: ";
 
     int nQ = ads.load[0];  // FULL Q
     for (int c = 0; c < ads.zero; c++) {
       if (verbose)
-        cout << "{" << nQ << "->" << f_inv << "}\t"
+        std::cout << "{" << nQ << "->" << f_inv << "}\t"
              << "c:" << c << " ";
 
       if ((c >= i) && (c < i + k))  // not there anymore
@@ -277,7 +277,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
                   svrpdsp->dd[rep[nc]];  // sum 'j' real value
             f_inv += (rep[nc] != 0) * infv(nQ, ads.load[0]);
             if (verbose)
-              cout << "inf_j_before_" << rep[nc]
+              std::cout << "inf_j_before_" << rep[nc]
                    << "+=" << ((rep[nc] != 0) * infv(nQ, ads.load[0])) << " ";
           }
         }
@@ -287,7 +287,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
             nQ += svrpdsp->dp[rep[nc]] - svrpdsp->dd[rep[nc]];
             f_inv += infv(nQ, ads.load[0]);
             if (verbose)
-              cout << "addY_" << rep[nc] << "+=" << infv(nQ, ads.load[0])
+              std::cout << "addY_" << rep[nc] << "+=" << infv(nQ, ads.load[0])
                    << " ";
           }
 
@@ -299,7 +299,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
                   svrpdsp->dd[rep[nc]];  // sum 'j' real value
             f_inv += infv(nQ, ads.load[0]);
             if (verbose)
-              cout << "inf_j_after_" << rep[nc] << "+=" << infv(nQ, ads.load[0])
+              std::cout << "inf_j_after_" << rep[nc] << "+=" << infv(nQ, ads.load[0])
                    << " ";
           }
         }
@@ -311,30 +311,30 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
         f_inv += infv(nQ, ads.load[0]);
 
         if (verbose)
-          cout << "addX_" << rep[c] << "+=" << infv(nQ, ads.load[0]) << " ";
+          std::cout << "addX_" << rep[c] << "+=" << infv(nQ, ads.load[0]) << " ";
       }
     }
 
     if (verbose)
-      cout << endl
+      std::cout << std::endl
            << "END {" << nQ << "->" << f_inv << "}(" << e.getInfMeasure() << ")"
-           << endl;
+           << std::endl;
 
-    if (verbose) cout << endl;
+    if (verbose) std::cout << std::endl;
 
     long long f_inv2 = ((long long)f_inv) * 100000 - e.getInfMeasure();
 
     if (verbose) {
-      cout << "COST() inf was: " << e.getInfMeasure() << " => "
-           << (((long long)f_inv) * 100000) << endl;
-      cout << "COST() FINAL: " << f << " and " << f_inv2 << endl;
+      std::cout << "COST() inf was: " << e.getInfMeasure() << " => "
+           << (((long long)f_inv) * 100000) << std::endl;
+      std::cout << "COST() FINAL: " << f << " and " << f_inv2 << std::endl;
     }
 
     /*
       if((i==5) && (j==30))
       {
           verbose = false;
-          cout << endl;
+          std::cout << std::endl;
       }
 */
 
@@ -347,7 +347,7 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
 
   int infv(int nv, int Q) { return max((nv - Q), 0); }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":SVRPDSPDeltaMoveOrOptk");
     return idComp;
@@ -359,8 +359,8 @@ class DeltaMoveOrOptk : public MoveTSPOrOptk<int, AdsSVRPDSP> {
   }
 
   void print() const override {
-    cout << "SVRPDSPDeltaMoveOrOpt{K=" << k << "}";
-    cout << "(" << i << ";" << j << ")" << endl;
+    std::cout << "SVRPDSPDeltaMoveOrOpt{K=" << k << "}";
+    std::cout << "(" << i << ";" << j << ")" << std::endl;
   }
 };
 

@@ -49,7 +49,7 @@ class PNEvaluator
   std::string toString() const override { return "PNEvaluator"; }
 
   void print() const override {
-    cout << "Evaluation<> function for the Partition for Numbers (PN)" << endl;
+    std::cout << "Evaluation<> function for the Partition for Numbers (PN)" << std::endl;
   }
 };
 

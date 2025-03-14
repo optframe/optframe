@@ -62,7 +62,7 @@ public:
    Evaluation<> evaluate(const int&, const OPTFRAME_DEFAULT_ADS*) override
    {
       //SimbolicEvaluator
-      cout << "It should not have reached inside EmptyParetoEvaluatorMinimizer evaluate function " << endl;
+      std::cout << "It should not have reached inside EmptyParetoEvaluatorMinimizer evaluate function " << std::endl;
       exit(1);
       return Evaluation<>(-1);
    }
@@ -74,7 +74,7 @@ public:
 
    static string idComponent()
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << Component::idComponent() << ":EmptyParetoEvaluatorMinimizer";
       return ss.str();
    }
@@ -88,7 +88,7 @@ protected:
    paretoManager<int>* pMan;
    Pareto<int> p;
 
-   //	bool addSolution(vector<vector<double> >& p, vector<double>& s)
+   //	bool addSolution(std::vector<vector<double> >& p, vector<double>& s)
    //	{
    //		bool added = true;
    //		for (int ind = 0; ind < p.size(); ind++)
@@ -150,7 +150,7 @@ protected:
 
 public:
    /*
-	MOMETRICS(vector<Evaluator<ParetoFitness>*> _v_e)
+	MOMETRICS(std::vector<Evaluator<ParetoFitness>*> _v_e)
 	{
 		pDom = new ParetoDominance<R, ADS>(_v_e);
 		pDomWeak = new ParetoDominanceWeak<R, ADS>(_v_e);
@@ -159,7 +159,7 @@ public:
 
    MOMETRICS(int nObj)
    {
-      cout << "Be careful, some methods of MOMETRICS might results in error! \n Direction is being created only as Minimization! " << endl;
+      std::cout << "Be careful, some methods of MOMETRICS might results in error! \n Direction is being created only as Minimization! " << std::endl;
       vector<Evaluator<int>*> v_e;
       for (int o = 0; o < nObj; o++) {
          EmptyParetoEvaluatorMinimizer* paretoEval = new EmptyParetoEvaluatorMinimizer();
@@ -178,7 +178,7 @@ public:
       try {
          file = new File(filename);
       } catch (FileNotFound& f) {
-         cout << "File '" << filename << "' not found" << endl;
+         std::cout << "File '" << filename << "' not found" << std::endl;
          exit(1);
       }
       return file;
@@ -190,7 +190,7 @@ public:
       Pareto<int> pAux;
 
       for (int e = 0; e < nTests; e++) {
-         stringstream ss;
+         std::stringstream ss;
          ss << caminho;
 
          Scanner scanner(createFile(caminho));
@@ -214,7 +214,7 @@ public:
       pMan->addSolutionWithMEV(pAux, *emptySol, mev);
    }
 
-   vector<ParetoFitness> unionSetsReturnEvaluations(vector<ParetoFitness> D1, vector<ParetoFitness> D2)
+   vector<ParetoFitness> unionSetsReturnEvaluations(std::vector<ParetoFitness> D1, vector<ParetoFitness> D2)
    {
       Pareto<int> ref = createParetoSetFromEvaluations(D1);
 
@@ -224,7 +224,7 @@ public:
       return getParetoEvaluations(ref, ref.size());
    }
 
-   Pareto<int> createParetoSetFromEvaluations(vector<ParetoFitness> popParetoFitness)
+   Pareto<int> createParetoSetFromEvaluations(std::vector<ParetoFitness> popParetoFitness)
    {
       Pareto<int> ref;
 
@@ -234,7 +234,7 @@ public:
       return ref;
    }
 
-   vector<ParetoFitness> createParetoSetAndReturnEvaluations(vector<ParetoFitness> popParetoFitness)
+   vector<ParetoFitness> createParetoSetAndReturnEvaluations(std::vector<ParetoFitness> popParetoFitness)
    {
       Pareto<int> ref = createParetoSetFromEvaluations(popParetoFitness);
 
@@ -259,7 +259,7 @@ public:
       return paretoDoubleEval;
    }
 
-   int cardinalite(vector<ParetoFitness> D, vector<ParetoFitness> ref)
+   int cardinalite(std::vector<ParetoFitness> D, vector<ParetoFitness> ref)
    {
       int card = 0;
       for (int i = 0; i < D.size(); i++) {
@@ -274,7 +274,7 @@ public:
       return card;
    }
 
-   double setCoverage(vector<ParetoFitness> a, vector<ParetoFitness> b)
+   double setCoverage(std::vector<ParetoFitness> a, vector<ParetoFitness> b)
    {
       double cover = 0;
 
@@ -298,7 +298,7 @@ public:
    }
 
    //Delta Metric and Hipervolume are working requires Minimization problems
-   double deltaMetric(vector<ParetoFitness> pareto, vector<double> utopicEval, bool minimization)
+   double deltaMetric(std::vector<ParetoFitness> pareto, vector<double> utopicEval, bool minimization)
    {
       int nSol = pareto.size();
       int nObj = utopicEval.size();
@@ -359,11 +359,11 @@ public:
 
       double delta = (dUtopic + sumDist) / (nSol * dMean + dUtopic);
       return delta;
-      //cout << "delta = " << delta << endl;
+      //cout << "delta = " << delta << std::endl;
       //getchar();
    }
 
-   double spacing(vector<vector<double>> a)
+   double spacing(std::vector<vector<double>> a)
    {
       double ss = 0;
       vector<double> distMin;
@@ -401,7 +401,7 @@ public:
       return ss;
    }
 
-   vector<double> spacingMultiplePF(vector<vector<vector<double>>> D)
+   vector<double> spacingMultiplePF(std::vector<vector<vector<double>>> D)
    {
       vector<double> spacings;
       for (int frente = 0; frente < D.size(); frente++) {
@@ -448,7 +448,7 @@ public:
    }
 
    //Delta Metric and Hipervolume are working requires Minimization problems
-   double hipervolumeWithExecRequested(vector<vector<double>> pareto, vector<double> refPoints, bool minimization)
+   double hipervolumeWithExecRequested(std::vector<vector<double>> pareto, vector<double> refPoints, bool minimization)
    {
       int nSol = pareto.size();
       int nObj = pareto[0].size();
@@ -470,7 +470,7 @@ public:
       }
 
       fclose(fTempHV);
-      stringstream ss;
+      std::stringstream ss;
       ss << "./hv\t -r \"";
       for (int o = 0; o < nObj; o++)
          ss << refPoints[o] << " ";
@@ -482,7 +482,7 @@ public:
 
    double hipervolumeWithExecRequested(string filename, vector<double> refPoints)
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << "./hv\t -r \"";
       for (int o = 0; o < refPoints.size(); o++)
          ss << refPoints[o] << " ";

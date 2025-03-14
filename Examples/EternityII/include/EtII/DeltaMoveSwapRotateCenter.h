@@ -46,7 +46,7 @@ class DeltaMoveSwapRotateCenter : public MoveSwapRotateCenter {
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = MoveSwapRotateCenter::idComponent();
     idComp.append(":DeltaMoveSwapRotateCenter");
     return idComp;
@@ -59,8 +59,8 @@ class DeltaMoveSwapRotateCenter : public MoveSwapRotateCenter {
   }
 
   void print() const override {
-    cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
-         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << endl;
+    std::cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
+         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << std::endl;
   }
 
   std::string id() const override {

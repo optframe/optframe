@@ -59,7 +59,7 @@ protected:
 				// TODO: NO PREPROCESSING?? WHY?
 				return allCommands[i]->run(allCommands, allFunctions, f, dictionary, ldictionary, input, mod);
 			}
-		cout << "Command '"<<mod<<"' not found." << endl;
+		cout << "Command '"<<mod<<"' not found." << std::endl;
 		return false;
 	}
 
@@ -105,7 +105,7 @@ public:
 	{
 		if(var.length()==0)
 		{
-			//cout << "Command::validVariableName error: empty variable!" << endl;
+			//cout << "Command::validVariableName error: empty variable!" << std::endl;
 			return false;
 		}
 
@@ -121,8 +121,8 @@ public:
 
 		if(number)
 		{
-			//cout << "Command::validVariableName error: cannot define a number! ('" << var << "')" << endl;
-			//cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+			//cout << "Command::validVariableName error: cannot define a number! ('" << var << "')" << std::endl;
+			//cout << "Did you forget a command 'undefine variable' before this module?" << std::endl;
 			return false;
 		}
 
@@ -131,21 +131,21 @@ public:
 		string optframe = scanType.next();
 		if(optframe == "OptFrame")
 		{
-			//cout << "Command defineText: cannot define an OptFrame type! ('" << var << "')" << endl;
-			//cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+			//cout << "Command defineText: cannot define an OptFrame type! ('" << var << "')" << std::endl;
+			//cout << "Did you forget a command 'undefine variable' before this module?" << std::endl;
 			return false;
 		}
 
 		return true;
 	}
 
-	static bool isInDictionary(string var, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	static bool isInDictionary(string var, map<std::string, std::string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		return (dictionary.count(var) > 0) || (ldictionary.count(var) > 0);
 	}
 
 	// do: new_var => content of target_var
-	static bool pointVars(string new_var, string target_var, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	static bool pointVars(string new_var, string target_var, map<std::string, std::string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		if (dictionary.count(target_var) > 0)
 		{
@@ -157,12 +157,12 @@ public:
 		}
 		else
 		{
-			cout << "Command::pointVars error: variable '" << target_var << "' not found!" << endl;
+			cout << "Command::pointVars error: variable '" << target_var << "' not found!" << std::endl;
 			return false;
 		}
 	}
 
-	static string solveTextVar(string variable, map<string, string>& dictionary)
+	static string solveTextVar(string variable, map<std::string, std::string>& dictionary)
 	{
 		Scanner scanDef(variable);
 		scanDef.useSeparators("$");
@@ -171,18 +171,18 @@ public:
 
 		string var_name = scanDef.next();
 
-		//cout << "pure var_name = " << var_name << endl;
+		//cout << "pure var_name = " << var_name << std::endl;
 
 		if(dictionary.count(var_name) == 0)
 		{
-			cout << "Command::solveReference error: variable '" << variable << "' not defined!" << endl;
+			cout << "Command::solveReference error: variable '" << variable << "' not defined!" << std::endl;
 			return "";
 		}
 
 		return dictionary.find(var_name)->second;
 	}
 
-	static bool define(string variable, string value, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	static bool define(string variable, string value, map<std::string, std::string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		string trimValue = Scanner::trim(value);
 
@@ -198,7 +198,7 @@ public:
 		{
 			if(dictionary.count(variable) > 0)
 			{
-				cout << "Command::define error: variable '" << variable << "' already defined in text dictionary!" << endl;
+				cout << "Command::define error: variable '" << variable << "' already defined in text dictionary!" << std::endl;
 				return false;
 			}
 
@@ -226,20 +226,20 @@ public:
 
 		if(!validVariableName(definition))
 		{
-			cout << "Command::defineText error: not a variable name '" << definition << "'" << endl;
+			cout << "Command::defineText error: not a variable name '" << definition << "'" << std::endl;
 			return false;
 		}
 
 		if(definition[0]=='$')
 		{
 			// TODO: WHY?
-			//cout << "defineText error: trying to define variable with dollar '" << definition << "'" << endl;
+			//cout << "defineText error: trying to define variable with dollar '" << definition << "'" << std::endl;
 			//return false;
 			string newVar = solveTextVar(definition, dictionary);
-			//cout << "newVar='" << newVar << "'" << endl;
+			//cout << "newVar='" << newVar << "'" << std::endl;
 			if(newVar=="")
 			{
-				cout << "defineText error: variable '" << definition << "' is empty!" << endl;
+				cout << "defineText error: variable '" << definition << "' is empty!" << std::endl;
 				return false;
 			}
 
@@ -253,8 +253,8 @@ public:
 			string next_word = scanner.next();
 			if(definition==next_word)
 			{
-				cout << "defineText: recursive definitions are not allowed! (define: '" << definition << "' as '" << next_word << "')" << endl;
-				cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+				cout << "defineText: recursive definitions are not allowed! (define: '" << definition << "' as '" << next_word << "')" << std::endl;
+				cout << "Did you forget a command 'undefine variable' before this module?" << std::endl;
 				return false;
 			}
 		}
@@ -268,14 +268,14 @@ public:
 	{
 		if(!validVariableName(definition))
 		{
-			cout << "Command::defineList error: not a variable name '" << definition << "'" << endl;
+			cout << "Command::defineList error: not a variable name '" << definition << "'" << std::endl;
 			return false;
 		}
 
 		if(definition[0]=='$')
 		{
 			//TODO: WHY?
-			cout << "defineList error: trying to define variable with dollar '" << definition << "' (can't use references for lists)" << endl;
+			cout << "defineList error: trying to define variable with dollar '" << definition << "' (can't use references for lists)" << std::endl;
 				return false;
 
 			///Scanner scanDef(definition);
@@ -309,29 +309,29 @@ public:
 	{
 		if(scanner.hasNext())
 		{
-			cout << "Error in module '" << id << "': unused text '" << scanner.rest() << "'" << endl;
+			cout << "Error in module '" << id << "': unused text '" << scanner.rest() << "'" << std::endl;
 			return false;
 		}
 
 		return true;
 	}
 
-	virtual bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
+	virtual bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
 	{
 		return run(allCommands, allFunctions, factory, dictionary, ldictionary, input);
 	}
 
-	virtual bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
+	virtual bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
 
-	virtual string* preprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input) = 0;
+	virtual string* preprocess(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input) = 0;
 
 	//{
 	//	return defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
 	//}
 
-	static string* solveVars(const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input, string only_var="")
+	static string* solveVars(const map<std::string, std::string>& dictionary, const map<string, vector<string> >& ldictionary, string input, string only_var="")
 	{
-		//cout << "SOLVEVARS WITH '" << input << "' and only_var='" << only_var<< "'" << endl;
+		//cout << "SOLVEVARS WITH '" << input << "' and only_var='" << only_var<< "'" << std::endl;
 		string result = "";
 
 		bool inVar = false;
@@ -360,7 +360,7 @@ public:
 
 				if(var == "")
 				{
-					cout << "solveVars error: empty variable ${}!" << endl;
+					cout << "solveVars error: empty variable ${}!" << std::endl;
 					return nullptr;
 				}
 
@@ -370,7 +370,7 @@ public:
 					result.append(OptFrameList::listToString(ldictionary.find(var)->second));
 				else
 				{
-					cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
+					cout << "Error: variable '$" << var << "' not defined in any dictionary!" << std::endl;
 					return nullptr; // no variable in dictionary!
 				}
 
@@ -446,7 +446,7 @@ public:
 
 			if (var == "")
 			{
-				cout << "solveVars error: empty variable ${}!" << endl;
+				cout << "solveVars error: empty variable ${}!" << std::endl;
 				return nullptr;
 			}
 
@@ -456,7 +456,7 @@ public:
 				result.append(OptFrameList::listToString(ldictionary.find(var)->second));
 			else
 			{
-				cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
+				cout << "Error: variable '$" << var << "' not defined in any dictionary!" << std::endl;
 				return nullptr; // no variable in dictionary!
 			}
 		}
@@ -465,7 +465,7 @@ public:
 		return new string(result);
 	}
 
-	static string* defaultPreprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input)
+	static string* defaultPreprocess(std::vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input)
 	{
 		//stringstream input_func; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
 		string input_func = ""; // add spaces before and after '(', ')'
@@ -511,7 +511,7 @@ public:
 
 			if( (current == "(") && PreprocessFunction<R,ADS,DS>::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = PreprocessFunction<R,ADS,DS>::run_function(last, allFunctions, hf, dictionary, ldictionary, scanFunc.rest());
+				pair<std::string, std::string>* p = PreprocessFunction<R,ADS,DS>::run_function(last, allFunctions, hf, dictionary, ldictionary, scanFunc.rest());
 
 				if(p)
 				{
@@ -538,7 +538,7 @@ public:
 				}
 				else
 				{
-					cout << "module preprocessing error in function '" << last << "'" << endl;
+					cout << "module preprocessing error in function '" << last << "'" << std::endl;
 					return nullptr; // error in valid function!
 				}
 			}

@@ -89,8 +89,8 @@ class MoveVRPOrOpt2 : public Move<XES> {
   }
 
   void print() const override {
-    cout << "MoveVRPOrOpt2";
-    cout << "( " << r << " , " << c << " , " << pos << " )" << endl;
+    std::cout << "MoveVRPOrOpt2";
+    std::cout << "( " << r << " , " << c << " , " << pos << " )" << std::endl;
   }
 
   std::string id() const override { return idComponent(); }
@@ -155,8 +155,8 @@ class NSIteratorVRPOrOpt2 : public NSIterator<XES> {
 
   uptr<Move<XES>> current() override {
     if (isDone()) {
-      cout << "There isnt any current element!" << endl;
-      cout << "VRPOrOpt1. Aborting." << endl;
+      std::cout << "There isnt any current element!" << std::endl;
+      std::cout << "VRPOrOpt1. Aborting." << std::endl;
       exit(1);
     }
 
@@ -218,7 +218,7 @@ class NSSeqVRPOrOpt2 : public NSSeq<XES> {
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << "NSSeqVRPOrOpt2 with move: " << MOVE::idComponent();
     return ss.str();
   }

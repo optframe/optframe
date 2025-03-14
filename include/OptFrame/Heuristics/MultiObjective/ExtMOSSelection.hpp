@@ -42,7 +42,7 @@ class ExtMOSSelection : Component {
   virtual void extSelect(unsigned target_size, vector<MOSIndividual<R>*>& ps, vector<MOSExtIndividual<R, X>*>& p, vector<MOSExtIndividual<R, X>*>& archive) = 0;
 
   void print() const override {
-    cout << "ExtMOSSelection" << endl;
+    std::cout << "ExtMOSSelection" << std::endl;
   }
 };
 
@@ -102,7 +102,7 @@ class NSGAIIExtSelection : public ExtMOSSelection<R, X, ADS, DS> {
     archive = Pop;  // no other archiving
   }
 
-  virtual void free(vector<MOSExtIndividual<R, X>*>& Pop, vector<MOSExtIndividual<R, X>*>& archive) {
+  virtual void free(std::vector<MOSExtIndividual<R, X>*>& Pop, vector<MOSExtIndividual<R, X>*>& archive) {
     archive = Pop;
     Pop.clear();
   }

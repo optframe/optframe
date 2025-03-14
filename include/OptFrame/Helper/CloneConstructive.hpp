@@ -44,7 +44,7 @@ class CloneConstructive : public Constructive<S> {
   }
 
   static std::string idComponent() {
-    stringstream ss;
+    std::stringstream ss;
     ss << Constructive<S>::idComponent() << ":CloneConstructive";
     return ss.str();
   }
@@ -70,12 +70,12 @@ class CloneConstructiveBuilder : public ComponentBuilder<XES> {
     return nullptr;
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
     // assert(false);
     //
-    // params.push_back(make_pair(S::idComponent(), "solution"));
-    params.push_back(make_pair("NO_TYPE", "solution"));
+    // params.push_back(std::make_pair(S::idComponent(), "solution"));
+    params.push_back(std::make_pair("NO_TYPE", "solution"));
     //
 
     return params;
@@ -85,8 +85,8 @@ class CloneConstructiveBuilder : public ComponentBuilder<XES> {
     return component == CloneConstructive<S>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << ComponentBuilder<XES>::idComponent() << "CloneConstructive";
     return ss.str();
   }

@@ -47,20 +47,20 @@ public:
       return "for_each variable list_of_values block_of_commands";
    }
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
-      //cout << "for_each run: '" << input << "'" << endl;
+      //cout << "for_each run: '" << input << "'" << std::endl;
 
       if (!scanner.hasNext()) {
-         cout << "Usage: " << usage() << endl;
+         std::cout << "Usage: " << usage() << std::endl;
          return false;
       }
 
       string var = scanner.next();
 
       if (var[0] == '$') {
-         cout << "for_each error: operator $ in variable '" << var << "'" << endl;
+         std::cout << "for_each error: operator $ in variable '" << var << "'" << std::endl;
          return false;
       }
 
@@ -72,7 +72,7 @@ public:
          values = vector<string>(*pvalues);
          delete pvalues;
       } else {
-         cout << "for_each error: couldn't read input list!" << endl;
+         std::cout << "for_each error: couldn't read input list!" << std::endl;
          return false;
       }
 
@@ -82,7 +82,7 @@ public:
          commands = vector<string>(*pcommands);
          delete pcommands;
       } else {
-         cout << "for_each error: couldn't read block of commands!" << endl;
+         std::cout << "for_each error: couldn't read block of commands!" << std::endl;
          return false;
       }
 
@@ -93,12 +93,12 @@ public:
          Command<R, ADS, DS>::undefine(var, dictionary, ldictionary);
 
          if (!Command<R, ADS, DS>::define(var, values[v], dictionary, ldictionary)) {
-            cout << "for_each error: failed to define variable '" << var << "' to value '" << values[v] << "'" << endl;
+            std::cout << "for_each error: failed to define variable '" << var << "' to value '" << values[v] << "'" << std::endl;
             return false;
          }
 
          if (!Command<R, ADS, DS>::run_module("system.run", allCommands, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands))) {
-            cout << "for_each command: error in command!" << endl;
+            std::cout << "for_each command: error in command!" << std::endl;
             return false;
          }
       }
@@ -110,7 +110,7 @@ public:
    }
 
    // should preprocess only until list of commands
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       Scanner scanner(input);
 

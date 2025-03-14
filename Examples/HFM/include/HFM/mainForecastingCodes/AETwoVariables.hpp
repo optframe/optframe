@@ -16,20 +16,20 @@ using namespace optframe;
 using namespace HFM;
 
 int AETwoVariables(int argc, char** argv) {
-  cout << "Welcome to AE batch with two variables!" << endl;
+  std::cout << "Welcome to AE batch with two variables!" << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 1;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 4) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
             "parameters options precision"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -37,9 +37,9 @@ int AETwoVariables(int argc, char** argv) {
   double alphaLimitTemp = atof(argv[2]);
   int nTempVariables = atoi(argv[3]);  // maxNumberOfInputVariables;
 
-  cout << "nTrainningRounds=" << nTrainningRounds << endl;
-  cout << "nTempVariables=" << nTempVariables << endl;
-  cout << "alphaLimitTemp=" << alphaLimitTemp << endl;
+  std::cout << "nTrainningRounds=" << nTrainningRounds << std::endl;
+  std::cout << "nTempVariables=" << nTempVariables << std::endl;
+  std::cout << "alphaLimitTemp=" << alphaLimitTemp << std::endl;
   //===================================
 
   vector<string> explanatoryVariables;
@@ -139,9 +139,9 @@ int AETwoVariables(int argc, char** argv) {
     int maxLag = problemParam.getMaxLag(0);
 
     int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds * stepsAhead;
-    cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << endl;
-    cout << "maxNotUsed: " << maxLag << endl;
+    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
+         << std::endl;
+    std::cout << "maxNotUsed: " << maxLag << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
@@ -186,9 +186,9 @@ int AETwoVariables(int argc, char** argv) {
   // =================== PRINTING RESULTS ========================
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 

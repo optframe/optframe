@@ -323,66 +323,66 @@ struct PackTypes
 		PackTypes t(0, 25);
 
 		t += 50;
-		cout << t << endl;
+		cout << t << std::endl;
 		t = ((int)INT_MAX);
 		t = t + 1;
-		cout << t << endl;
-		cout << unsigned(t) << endl;
+		cout << t << std::endl;
+		cout << unsigned(t) << std::endl;
 		t = 3.15;
-		cout << t << endl;
+		cout << t << std::endl;
 		t.type = 1;
 		t = 3.15;
-		cout << t << endl;
-		cout << int(t) << endl;
+		cout << t << std::endl;
+		cout << int(t) << std::endl;
 
 		t += 50;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t.type = 2;
 		t = ((long long)INT_MAX)*20;
-		cout << t << endl;
+		cout << t << std::endl;
 
-		cout << double(t) << endl;
+		cout << double(t) << std::endl;
 		t = double(t);
-		cout << t << endl;
+		cout << t << std::endl;
 		t = int(t);
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t.type = 0;
-		cout << t << endl;
+		cout << t << std::endl;
 		t = t - 10;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t.type = 1;
 		t = 74.5;
 		t = t - 4.5;
-		cout << t << endl;
+		cout << t << std::endl;
 		t = -t;
-		cout << t << endl;
+		cout << t << std::endl;
 		t = 10.5 - t;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t *= -1;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t *= 20;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t /= 10;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		t = 6.0/7.0;
-		cout << t << endl;
+		cout << t << std::endl;
 
 		if(t == 10)
-			cout << "equals to 10" << endl;
+			cout << "equals to 10" << std::endl;
 		else
-			cout << "different from 10" << endl;
+			cout << "different from 10" << std::endl;
 
 		if(t < 10)
-			cout << "less than 10" << endl;
+			cout << "less than 10" << std::endl;
 		else
-			cout << "greater than 10" << endl;
+			cout << "greater than 10" << std::endl;
 	}
 };
 

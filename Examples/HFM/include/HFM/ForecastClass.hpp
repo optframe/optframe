@@ -92,7 +92,7 @@ class ForecastClass {
   sptr<IteratedLocalSearchLevels<ESolutionHFM>> ils;
 
   vector<vector<double>> vBlindResults;
-  vector<pair<SolutionHFM, Evaluation<>>*> vFinalSol;
+  std::vector<std::pair<SolutionHFM, Evaluation<>>*> vFinalSol;
 
   sptr<ILSLPerturbation<ESolutionHFM, EvaluationHFM>> ilsPert;
   //
@@ -114,7 +114,7 @@ class ForecastClass {
       checkModule;
 
  public:
-  ForecastClass(vector<vector<double>>& _tForecastings,
+  ForecastClass(std::vector<vector<double>>& _tForecastings,
                 ProblemParameters& _problemParam, sref<RandGen> _rg,
                 HFMParams& _methodParam)
       : tForecastings(_tForecastings),
@@ -247,7 +247,7 @@ class ForecastClass {
     // = methodParam.getESMutationDesv(); //Parameter for ESContinous - Used in
     // Clemson's Paper
 
-    // cout<<mu<<"\t"<<lambda<<"\t"<<esMaxG<<"\t"<<initialDesv<<"\t"<<mutationDesv<<endl;
+    // std::cout<<mu<<"\t"<<lambda<<"\t"<<esMaxG<<"\t"<<initialDesv<<"\t"<<mutationDesv<<endl;
     // getchar();
 
     // Old continous Evolution Strategy - Deprecated
@@ -519,8 +519,8 @@ class ForecastClass {
     // {
     // //vector<double> solEvaluations;
     // for (int e = 0; e < vEval[i]->size(); e++)
-    // cout << vEval[i]->at(e).getObjFunction() <<
-    // "\t"; cout << endl;
+    // std::cout << vEval[i]->at(e).getObjFunction() <<
+    // "\t"; std::cout << std::endl;
     //
     // }
 
@@ -637,18 +637,18 @@ class ForecastClass {
     // for (int i = maxLag; i < vForecastingsValidation[0].size(); i++)
     // targetValues.push_back(vForecastingsValidation[0][i]);
     //
-    //// cout << validationSetValues << endl;
+    //// std::cout << validationSetValues << std::endl;
     //// getchar();
     // foIndicatorNew = returnErrorsCallGetAccuracy(targetValues,
     // estimatedValues);
-    //// cout << "insideForecastClassNew" << endl;
-    //// cout << foIndicatorNew << endl;
+    //// std::cout << "insideForecastClassNew" << std::endl;
+    //// std::cout << foIndicatorNew << std::endl;
 
     // return foIndicatorNew;
   }
 
   // return all possible forecasting measures
-  vector<double>* callEvalGetAccuracy(vector<double> targetValues,
+  vector<double>* callEvalGetAccuracy(std::vector<double> targetValues,
                                       vector<double> estimatedValues) {
     return eval->getAccuracy(targetValues, estimatedValues, ALL_EVALUATIONS);
   }
@@ -673,7 +673,7 @@ class ForecastClass {
                                                problemParam.getStepsAhead());
   }
 
-  vector<double>* returnErrorsPersistance(vector<double> targetValues, int fH) {
+  vector<double>* returnErrorsPersistance(std::vector<double> targetValues, int fH) {
     vector<double> estimatedValues;
     int nSamples = targetValues.size();
     for (int s = 1; s < nSamples; s += fH)
@@ -681,10 +681,10 @@ class ForecastClass {
         if (s + k < nSamples) estimatedValues.push_back(targetValues[s - 1]);
       }
 
-    // cout<<targetValues<<endl;
+    // std::cout<<targetValues<<endl;
     targetValues.erase(targetValues.begin());
-    // cout << estimatedValues << endl;
-    // cout << targetValues << endl;
+    // std::cout << estimatedValues << std::endl;
+    // std::cout << targetValues << std::endl;
     // getchar();
 
     return eval->getAccuracy(targetValues, estimatedValues, -1);
@@ -693,7 +693,7 @@ class ForecastClass {
   void exportForecasts(const vector<double> forecasts, string output) {
     FILE* fResults = fopen(output.c_str(), "w");
     for (int n = 0; n < (int)forecasts.size(); n++) {
-      // cout<< forecasts[n]<<endl;
+      // std::cout<< forecasts[n]<<endl;
       // getchar();
       fprintf(fResults, "%.10f\n", forecasts[n]);
     }

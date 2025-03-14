@@ -246,7 +246,7 @@ class ESolution final
   // begin Object part
   // =================
 
-  static string idComponent() {
+  static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":ESolution";
     return ss.str();

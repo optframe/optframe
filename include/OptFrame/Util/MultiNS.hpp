@@ -38,7 +38,7 @@ class MultiMove : public Move<R, ADS, DS> {
  public:
   vector<Move<R, ADS, DS>*> vm;
 
-  MultiMove(vector<Move<R, ADS, DS>*>& _vm) : vm(_vm) {}
+  MultiMove(std::vector<Move<R, ADS, DS>*>& _vm) : vm(_vm) {}
 
   virtual ~MultiMove() {
     for (unsigned i = 0; i < vm.size(); i++) delete vm[i];
@@ -62,16 +62,16 @@ class MultiMove : public Move<R, ADS, DS> {
   }
 
   virtual bool operator==(const Move<R, ADS, DS>& m) const {
-    cout << "STUB IN MultiMove: TODO IMPLEMENT operator==" << endl;
+    std::cout << "STUB IN MultiMove: TODO IMPLEMENT operator==" << std::endl;
     return true;  // STUB
   }
 
-  static string idComponent() { return "OptFrame:Move:MultiMove"; }
+  static std::string idComponent() { return "OptFrame:Move:MultiMove"; }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   void print() const override {
-    cout << "MultiMove(" << vm.size() << "):";
+    std::cout << "MultiMove(" << vm.size() << "):";
     for (unsigned i = 0; i < vm.size(); i++) vm[i]->print();
   }
 };
@@ -93,16 +93,16 @@ class MultiNS : public NS<R, ADS, DS> {
   virtual Move<R, ADS, DS>& move(const R& r, const ADS& ads) {
     vector<Move<R, ADS, DS>*> vm;
     unsigned k = rg.rand(kMin, kMax);
-    // cout << "K=" << k << endl;
+    // std::cout << "K=" << k << std::endl;
     for (unsigned i = 0; i < k; i++) vm.push_back(&ns.move(r, ads));
-    // cout << "created move!" << endl;
+    // std::cout << "created move!" << std::endl;
     return *new MultiMove<R, ADS, DS>(vm);
   }
 
  public:
-  static string idComponent() { return "OptFrame:NS:MultiNS"; }
+  static std::string idComponent() { return "OptFrame:NS:MultiNS"; }
 
-  virtual string id() const override { return idComponent(); }
+  virtual std::string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NS<R, ADS, DS>::compatible(s));

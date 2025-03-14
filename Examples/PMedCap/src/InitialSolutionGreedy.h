@@ -61,7 +61,7 @@ class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP> {
     // double timelimit = stop.timelimit;
     RepPCAP newRep;
 
-    // cout << "pPCAP.nCidades = " << pPCAP.nCidades << endl;
+    // std::cout << "pPCAP.nCidades = " << pPCAP.nCidades << std::endl;
     vector<bool> medianasUtilizadas;
     for (int i = 0; i < pPCAP.nCidades; i++)
       medianasUtilizadas.push_back(false);
@@ -87,7 +87,7 @@ class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP> {
       utilizacao[i] += pPCAP.vecCidades[cidade].demanda;
       vertices[cidade] = true;
 
-      // cout<<"i = "<<i<<"  cidade "<<cidade<<" newRep.second[cidade] =
+      // std::cout<<"i = "<<i<<"  cidade "<<cidade<<" newRep.second[cidade] =
       // "<<newRep.second[cidade]<<endl;
     }
 

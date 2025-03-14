@@ -75,7 +75,7 @@ public:
 /*
 ostream& operator<<(ostream &os, const Matrix<Piece> &obj)
 {
-	cout << "game" << endl;
+	cout << "game" << std::endl;
 	for (unsigned int i = 0; i < obj.getNumRows(); i++)
 		for (int count = 0; count < 3; count++)
 		{
@@ -91,7 +91,7 @@ ostream& operator<<(ostream &os, const Matrix<Piece> &obj)
 					cout << obj(i, j).down << "   ";
 			}
 
-			cout << endl;
+			cout << std::endl;
 		}
 
 	return os;

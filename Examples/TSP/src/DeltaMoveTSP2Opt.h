@@ -46,7 +46,7 @@ class DeltaMoveTSP2Opt : public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> {
     /*
               if(!tsp)
               {
-                      cout << "Error: tsp problem is NULL!" << endl;
+                      std::cout << "Error: tsp problem is NULL!" << std::endl;
                       print();
                       exit(1);
               }
@@ -81,7 +81,7 @@ class DeltaMoveTSP2Opt : public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> {
     const RepTSP& rep = se.first.getR();
     // const OPTFRAME_DEFAULT_ADS& ads = se.first.getADS();
     if (p1 >= p2) {
-      cout << "DeltaMoveTSP2Opt FATAL ERROR!" << endl;
+      std::cout << "DeltaMoveTSP2Opt FATAL ERROR!" << std::endl;
       exit(1);
     }
     unsigned k1 = p1;
@@ -100,22 +100,22 @@ class DeltaMoveTSP2Opt : public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> {
 
     if (myabs(k1 - k2) >= 2) {
       f -= (*tsp->dist)(rep[bk1], rep[k1]);
-      // cout << "-d(" << rep[bk1] << "," << rep[k1] << ") ";
+      // std::cout << "-d(" << rep[bk1] << "," << rep[k1] << ") ";
       f -= (*tsp->dist)(rep[bk2], rep[k2]);
-      // cout << "-d(" << rep[bk2] << "," << rep[k2] << ") ";
+      // std::cout << "-d(" << rep[bk2] << "," << rep[k2] << ") ";
 
       f += (*tsp->dist)(rep[bk1], rep[bk2]);
-      // cout << "+d(" << rep[bk1] << "," << rep[bk2] << ") ";
+      // std::cout << "+d(" << rep[bk1] << "," << rep[bk2] << ") ";
       f += (*tsp->dist)(rep[k1], rep[k2]);
-      // cout << "+d(" << rep[k1] << "," << rep[k2] << ") ";
+      // std::cout << "+d(" << rep[k1] << "," << rep[k2] << ") ";
     }
-    // cout << endl;
+    // std::cout << std::endl;
 
     // return new MoveCost<>(f, 0);
     return make_optional(Evaluation<>(f, 0));
   }
 
-  static string idComponent() {
+  static std::string idComponent() {
     string idComp = super::idComponent();
     idComp.append(":DeltaMoveTSP2Opt");
     return idComp;
@@ -127,9 +127,9 @@ class DeltaMoveTSP2Opt : public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> {
   }
 
   void print() const override {
-    cout << "DeltaMoveTSP2Opt( ";
-    cout << " edge " << p1 << " <=>  edge " << p2 << " )";
-    cout << endl;
+    std::cout << "DeltaMoveTSP2Opt( ";
+    std::cout << " edge " << p1 << " <=>  edge " << p2 << " )";
+    std::cout << std::endl;
   }
 };
 

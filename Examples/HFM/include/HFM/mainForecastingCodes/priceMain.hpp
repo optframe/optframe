@@ -15,20 +15,20 @@ using namespace optframe;
 using namespace HFM;
 
 int priceCompetitionBlind(int argc, char** argv) {
-  cout << "Welcome to Price Competition Mode Blind Result Generation..."
-       << endl;
+  std::cout << "Welcome to Price Competition Mode Blind Result Generation..."
+       << std::endl;
   RandGenMersenneTwister rg;
   long seed = time(nullptr);
   seed = 2;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 10) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
             "parameters options precision"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -48,16 +48,16 @@ int priceCompetitionBlind(int argc, char** argv) {
   string parametersFile = caminhoParameters;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "nomeValidationSet=" << nomeValidationSet << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "nomeParameters=" << parametersFile << endl;
-  cout << "instN=" << instN << endl;
-  cout << "stepsAhead=" << stepsAhead << endl;
-  cout << "precision=" << precision << endl;
-  cout << "function=" << function << endl;
-  cout << "mu=" << mu << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "nomeValidationSet=" << nomeValidationSet << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "nomeParameters=" << parametersFile << std::endl;
+  std::cout << "instN=" << instN << std::endl;
+  std::cout << "stepsAhead=" << stepsAhead << std::endl;
+  std::cout << "precision=" << precision << std::endl;
+  std::cout << "function=" << function << std::endl;
+  std::cout << "mu=" << mu << std::endl;
   //===================================
 
   vector<string> vParametersFiles;
@@ -143,7 +143,7 @@ int priceCompetitionBlind(int argc, char** argv) {
 
     // getchar();
     // int randomObjFunc = rg.rand(2);
-    // cout<<"randomObjFunc = "<<randomObjFunc<<endl;
+    // std::cout<<"randomObjFunc = "<<randomObjFunc<<endl;
     // problemParam.setFunction(randomObjFunc);
 
     trainningSet.clear();
@@ -198,17 +198,17 @@ int priceCompetitionBlind(int argc, char** argv) {
     blindResults = *forecastObject.returnBlind(sol->first.getR(),
                                                validationBlindForecastings);
     batchOfBlindResults.push_back(blindResults);
-    // cout << blindResults << endl;
+    // std::cout << blindResults << std::endl;
 
     /*
     vector<vector<double> > validationTest; //Validation Blind for the
     Competition validationTest.push_back(rF.getPartsForecastsEndToBegin(0, 0,
     sol->first.getR().earliestInput + stepsAhead)); vector<double>
     resultsErrors; resultsErrors = forecastObject.returnErrors(sol,
-    validationTest); cout << resultsErrors << endl; getchar();*/
+    validationTest); std::cout << resultsErrors << std::endl; getchar();*/
   }
 
-  cout << batchOfBlindResults << endl;
+  std::cout << batchOfBlindResults << std::endl;
   // getchar();
   vector<vector<double>> finalResultQuantis;
 
@@ -222,7 +222,7 @@ int priceCompetitionBlind(int argc, char** argv) {
     finalResultQuantis.push_back(quantis);
   }
 
-  // cout << finalResultQuantis << endl;
+  // std::cout << finalResultQuantis << std::endl;
   rF.exportQuantisVector(finalResultQuantis,
                          "./ProbResults/quantilFromDifferentBatches");
 
@@ -237,19 +237,19 @@ int priceCompetitionBlind(int argc, char** argv) {
 }
 
 int priceCompetitionCalibrationMode(int argc, char** argv) {
-  cout << "Welcome to Price Competition Calibration Mode..." << endl;
+  std::cout << "Welcome to Price Competition Calibration Mode..." << std::endl;
   RandGenMersenneTwister rg;
   // long seed = 1;
   long seed = time(nullptr);  // CalibrationMode
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 10) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nome nomeValidationSet saida "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
             "parameters options precision"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -268,16 +268,16 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
   string nomeOutput = caminhoOutput;
   string parametersFile = caminhoParameters;
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nome=" << nome << endl;
-  cout << "nomeValidationSet=" << nomeValidationSet << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "nomeParameters=" << parametersFile << endl;
-  cout << "instN=" << instN << endl;
-  cout << "stepsAhead=" << stepsAhead << endl;
-  cout << "precision=" << precision << endl;
-  cout << "function=" << function << endl;
-  cout << "mu=" << mu << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nome=" << nome << std::endl;
+  std::cout << "nomeValidationSet=" << nomeValidationSet << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "nomeParameters=" << parametersFile << std::endl;
+  std::cout << "instN=" << instN << std::endl;
+  std::cout << "stepsAhead=" << stepsAhead << std::endl;
+  std::cout << "precision=" << precision << std::endl;
+  std::cout << "function=" << function << std::endl;
+  std::cout << "mu=" << mu << std::endl;
   //=======================================
 
   vector<string> vParametersFiles;
@@ -313,8 +313,8 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -510,7 +510,7 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
     foIndicatorCalibration.push_back(construtive);
 
     // getchar();
-    // cout << foIndicatorCalibration << endl;
+    // std::cout << foIndicatorCalibration << std::endl;
     vfoIndicatorCalibration.push_back(foIndicatorCalibration);
     // vSolutionsBatches.push_back(&(sol->first.clone()));
     ////delete &sol->first;
@@ -518,12 +518,12 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
     ////delete sol;
   }
 
-  cout << vfoIndicatorCalibration << endl;
+  std::cout << vfoIndicatorCalibration << std::endl;
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
 
   string calibrationFile = "./priceCalibrationTask7_Func_Construtive";

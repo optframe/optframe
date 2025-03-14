@@ -84,8 +84,8 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
 
         if (!move) {
           if (Component::warning)
-            cout << "SA warning: no move in iter=" << iterT << " T=" << T << "!"
-                 << "cannot continue..." << endl;
+            std::cout << "SA warning: no move in iter=" << iterT << " T=" << T << "!"
+                 << "cannot continue..." << std::endl;
           // This is not normal... but not catastrophic stop either.
           return {SearchStatus::EARLY_STOP, star};
         }
@@ -103,7 +103,7 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
             if (Component::information) {
               std::cout << "Best fo: " << se.second.evaluation()
                         << " Found on Iter = " << iterT << " and T = " << T;
-              std::cout << endl;
+              std::cout << std::endl;
             }
           }
         } else {
@@ -146,8 +146,8 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
        << "GeometricSA";
     return ss.str();
@@ -261,9 +261,9 @@ class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
                                                 SAmax, Ti, hf.getRandGen());
   }
 
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    // params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(),
+  std::vector<std::pair<std::string, std::string>> parameters() override {
+    std::vector<std::pair<std::string, std::string>> params;
+    // params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
     // "evaluation function"));
     params.push_back(
         make_pair(Evaluator<typename XES::first_type, typename XES::second_type,
@@ -272,11 +272,11 @@ class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
     params.push_back(
         make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(NS<XES, XSH>::idComponent(), "NS"));
-    params.push_back(make_pair("OptFrame:double", "cooling factor"));
+    params.push_back(std::make_pair(NS<XES, XSH>::idComponent(), "NS"));
+    params.push_back(std::make_pair("OptFrame:double", "cooling factor"));
     params.push_back(
         make_pair("OptFrame:int", "number of iterations for each temperature"));
-    params.push_back(make_pair("OptFrame:double", "initial temperature"));
+    params.push_back(std::make_pair("OptFrame:double", "initial temperature"));
 
     return params;
   }
@@ -285,8 +285,8 @@ class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
     return component == GeometricSimulatedAnnealing<XES>::idComponent();
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << GlobalSearchBuilder<XES>::idComponent() << SA::family()
        << "GeometricSA";
     return ss.str();

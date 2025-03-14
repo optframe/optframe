@@ -13,7 +13,7 @@ class WLxEvaluation final : public Component {
   // infeasibility measure value (default = double)
   ObjType infMeasure;
   // for lexicographic approaches, use these extra evaluation values
-  vector<pair<ObjType, ObjType>> alternatives;
+  std::vector<std::pair<ObjType, ObjType>> alternatives;
 
   // ==== Objective Space auxiliary information ====
   // LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
@@ -103,7 +103,7 @@ class WLxEvaluation final : public Component {
     return weight;
   }
 
-  const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const {
+  const std::vector<std::pair<ObjType, ObjType>>& getAlternativeCosts() const {
     return alternatives;
   }
 
@@ -123,7 +123,7 @@ class WLxEvaluation final : public Component {
     alternatives.push_back(alternativeCost);
   }
 
-  void setAlternativeCosts(const vector<pair<ObjType, ObjType>>& alternativeCosts) {
+  void setAlternativeCosts(const std::vector<std::pair<ObjType, ObjType>>& alternativeCosts) {
     alternatives = alternativeCosts;
   }
 
@@ -180,7 +180,7 @@ class WLxEvaluation final : public Component {
 
     pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
     // get original values for lexicographic part
-    vector<pair<evtype, evtype>> alt_begin(this->getAlternativeCosts().size());
+    std::vector<std::pair<evtype, evtype>> alt_begin(this->getAlternativeCosts().size());
     for (unsigned i = 0; i < alt_begin.size(); i++) {
       alt_begin[i].first = this->getAlternativeCosts()[i].first;
       alt_begin[i].second = this->getAlternativeCosts()[i].second;
@@ -195,7 +195,7 @@ class WLxEvaluation final : public Component {
 
     // compute alternative costs
     for (unsigned i = 0; i < alt_begin.size(); i++)
-      mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
+      mcost.addAlternativeCost(std::make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
 
     return WLxEvaluation<ObjType>(mcost);
   }
@@ -217,8 +217,8 @@ class WLxEvaluation final : public Component {
   // Object specific part
   // ======================
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":WLxEvaluation";
     return ss.str();
   }
@@ -228,11 +228,11 @@ class WLxEvaluation final : public Component {
   }
 
   void print() const override {
-    cout << toString() << endl;
+    std::cout << toString() << std::endl;
   }
 
   std::string toString() const override {
-    stringstream ss;
+    std::stringstream ss;
     ss << fixed;  // disable scientific notation
     ss << "WLxEvaluation function value = " << evaluation();
     ss << (isFeasible() ? " " : " (not feasible) ");
@@ -244,7 +244,7 @@ class WLxEvaluation final : public Component {
       for (unsigned i = 0; i < alternatives.size(); i++)
         ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
     }
-    // ss << endl;
+    // ss << std::endl;
 
     return ss.str();
   }

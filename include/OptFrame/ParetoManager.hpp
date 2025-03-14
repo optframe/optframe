@@ -60,7 +60,7 @@ class ParetoManager {
   // mev)
   //	{
   //		cout << "Something wrong has happen! \n It is inside addSolution
-  // candidate,mev! \n This should be reimplemented" << endl; getchar();
+  // candidate,mev! \n This should be reimplemented" << std::endl; getchar();
   // exit(1);
   ////		return false;
   //	}
@@ -113,9 +113,9 @@ class ParetoManager {
 
     if ((int)pFiltered.size() == nInd) return true;
 
-    cout << "CheckDominance, inside MOSearch, found dominated solution inside "
+    std::cout << "CheckDominance, inside MOSearch, found dominated solution inside "
             "the Pareto!"
-         << endl;
+         << std::endl;
     exit(1);
     return false;
   }
@@ -144,7 +144,7 @@ class ParetoManager {
   //	}
 
   //	template<class T>
-  //	bool addSolution(vector<T>& nonDom, T candidate)
+  //	bool addSolution(std::vector<T>& nonDom, T candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{
@@ -163,7 +163,7 @@ class ParetoManager {
   //	}
 
   //	template<class T>
-  //	bool addSolution(vector<T*>& nonDom, T* candidate)
+  //	bool addSolution(std::vector<T*>& nonDom, T* candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{

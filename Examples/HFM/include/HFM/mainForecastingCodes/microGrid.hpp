@@ -16,21 +16,21 @@ using namespace optframe;
 using namespace HFM;
 
 int microGridLiuAppliedEnergy(int argc, char** argv) {
-  cout << "Welcome to Micro Grid Liu Applied Energy Dataset Calibration Mode..."
-       << endl;
+  std::cout << "Welcome to Micro Grid Liu Applied Energy Dataset Calibration Mode..."
+       << std::endl;
   RandGenMersenneTwister rg;
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 9;
-  cout << "Seed = " << seed << endl;
+  std::cout << "Seed = " << seed << std::endl;
   srand(seed);
   rg.setSeed(seed);
 
   if (argc != 5) {
-    cout << "Parametros incorretos!" << endl;
-    cout << "Os parametros esperados sao: nomeOutput targetTS "
+    std::cout << "Parametros incorretos!" << std::endl;
+    std::cout << "Os parametros esperados sao: nomeOutput targetTS "
             "construtiveNRulesACF timeES"
-         << endl;
+         << std::endl;
     exit(1);
   }
 
@@ -54,15 +54,15 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
   string nomeOutput = caminhoOutput;
 
   //===================================
-  cout << "Parametros:" << endl;
-  cout << "nomeOutput=" << nomeOutput << endl;
-  cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << endl;
-  cout << "argvNumberOfRules=" << argvNumberOfRules << endl;
-  // cout << "argvAlphaACF=" << argvAlphaACF << endl;
+  std::cout << "Parametros:" << std::endl;
+  std::cout << "nomeOutput=" << nomeOutput << std::endl;
+  std::cout << "argvTargetTimeSeries=" << argvTargetTimeSeries << std::endl;
+  std::cout << "argvNumberOfRules=" << argvNumberOfRules << std::endl;
+  // std::cout << "argvAlphaACF=" << argvAlphaACF << std::endl;
   //	getchar();
-  //	cout << "instN=" << instN << endl;
-  //	cout << "stepsAhead=" << stepsAhead << endl;
-  //	cout << "mu=" << mu << endl;
+  //	cout << "instN=" << instN << std::endl;
+  //	cout << "stepsAhead=" << stepsAhead << std::endl;
+  //	cout << "mu=" << mu << std::endl;
   //===================================
 
   // CONFIG FILES FOR CONSTRUTIVE 0 AND 1
@@ -96,8 +96,8 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; cout << "nValidationSamples = " <<
-   nValidationSamples << endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
+   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -194,12 +194,12 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
 
     int beginTrainingSet = 672;
 
-    cout << "BeginTrainninningSet: " << beginTrainingSet;
-    cout << "\t #SamplesTrainningSet: " << nTotalForecastingsTrainningSet
-         << endl;
-    cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << endl;
-    cout << "maxNotUsed: " << problemParam.getMaxLag(0) << endl;
-    cout << "#StepsAhead: " << stepsAhead << endl << endl;
+    std::cout << "BeginTrainninningSet: " << beginTrainingSet;
+    std::cout << "\t #SamplesTrainningSet: " << nTotalForecastingsTrainningSet
+         << std::endl;
+    std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
+    std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
+    std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
     // else
     // beginTrainingSet = nTotalForecastingsValidationSet + n *
@@ -245,8 +245,8 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
     //		foIndicatorCalibration.push_back(foIndicatorsWeeks[MAPE_INDEX]);
     //		foIndicatorCalibration.push_back(foIndicatorsWeeks[RMSE_INDEX]);
 
-    cout << "maxLag:" << maxLag << endl;
-    cout << "nValidationSamples:" << nValidationSamples << endl;
+    std::cout << "maxLag:" << maxLag << std::endl;
+    std::cout << "nValidationSamples:" << nValidationSamples << std::endl;
     // int beginValidationSet = 0;
     for (int w = 3; w >= 0; w--) {
       vector<vector<double>> validationSet;  // validation set for calibration
@@ -287,7 +287,7 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
     foIndicatorCalibration.push_back(nIterGRASP);
     foIndicatorCalibration.push_back(seed);
     // getchar();
-    // cout << foIndicatorCalibration << endl;
+    // std::cout << foIndicatorCalibration << std::endl;
     vfoIndicatorCalibration.push_back(foIndicatorCalibration);
     vSolutionsBatches.push_back(sol->first);
   }
@@ -295,9 +295,9 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
   // =================== PRINTING RESULTS ========================
   for (int n = 0; n < nBatches; n++) {
     for (int i = 0; i < (int)vfoIndicatorCalibration[n].size(); i++)
-      cout << vfoIndicatorCalibration[n][i] << "\t";
+      std::cout << vfoIndicatorCalibration[n][i] << "\t";
 
-    cout << endl;
+    std::cout << std::endl;
   }
   // =======================================================
 

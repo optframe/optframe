@@ -36,7 +36,7 @@ public:
 		// You can read the input data from the 'scanner' object
 
 		readFile(parametersFile);
-		//cout << vNotUsedForTests << endl;
+		//cout << vNotUsedForTests << std::endl;
 		//getchar();
 	}
 
@@ -57,47 +57,47 @@ public:
 			file = new File(parametersFile);
 		} catch (FileNotFound& f)
 		{
-			cout << "Parameters File '" << parametersFile << "' not found" << endl;
+			cout << "Parameters File '" << parametersFile << "' not found" << std::endl;
 			exit(1);
 		}
 		Scanner scanner(file);
 
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
 		precision = *scanner.nextInt();
-		cout << "precision = " << precision << endl;
-		cout << scanner.nextLine() << endl;
+		cout << "precision = " << precision << std::endl;
+		cout << scanner.nextLine() << std::endl;
 		stepsAhead = *scanner.nextInt();
-		cout << "stepsAhead = " << stepsAhead << endl;
-		cout << scanner.nextLine() << endl;
+		cout << "stepsAhead = " << stepsAhead << std::endl;
+		cout << scanner.nextLine() << std::endl;
 		function = *scanner.nextInt();
-		cout << "function = " << function << endl;
+		cout << "function = " << function << std::endl;
 
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
 
 		int nSP = *scanner.nextInt();
-		cout << "nSP = " << nSP << endl;
+		cout << "nSP = " << nSP << std::endl;
 
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
 
 		for (int i = 0; i < nSP; i++)
 		{
 			int file = *scanner.nextInt();
 			int K = *scanner.nextInt();
-			oForesSP.push_back(make_pair(file, K));
+			oForesSP.push_back(std::make_pair(file, K));
 		}
 
-		cout << oForesSP << endl;
+		cout << oForesSP << std::endl;
 
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
 
 		int nMP = *scanner.nextInt();
-		cout << "nMP = " << nMP << endl;
+		cout << "nMP = " << nMP << std::endl;
 
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
 
 		for (int i = 0; i < nMP; i++)
 		{
@@ -110,18 +110,18 @@ public:
 				int K = *scanner.nextInt();
 				meansP.push_back(K);
 			}
-			oForesMP.push_back(make_pair(file, meansP));
+			oForesMP.push_back(std::make_pair(file, meansP));
 		}
 
-		cout << oForesMP << endl;
+		cout << oForesMP << std::endl;
 
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
 
 		int nDP = *scanner.nextInt();
-		cout << "nDP = " << nDP << endl;
+		cout << "nDP = " << nDP << std::endl;
 
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
 
 		for (int i = 0; i < nDP; i++)
 		{
@@ -133,20 +133,20 @@ public:
 			derivativeP.push_back(K1);
 			derivativeP.push_back(K2);
 
-			oForesDP.push_back(make_pair(file, derivativeP));
+			oForesDP.push_back(std::make_pair(file, derivativeP));
 		}
 
-		cout << oForesDP << endl;
+		cout << oForesDP << std::endl;
 
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
 
-		//cout << "===== options = nSP + nMP + nDP =====" << endl;
+		//cout << "===== options = nSP + nMP + nDP =====" << std::endl;
 		//options = nSP + nMP + nDP;
-		//cout << "options = " << options << endl;
+		//cout << "options = " << options << std::endl;
 
-		cout << scanner.nextLine() << endl;
-		cout << scanner.nextLine() << endl;
+		cout << scanner.nextLine() << std::endl;
+		cout << scanner.nextLine() << std::endl;
 
 		//number of Single Points + Average Points + Derivative and Integral Ones
 
@@ -194,8 +194,8 @@ public:
 		}
 
 		maxLag = oldestStep;
-		//cout << "nFiles =" << nFiles << endl;
-		//cout << "notUsedForTest = " << notUsedForTest << endl;
+		//cout << "nFiles =" << nFiles << std::endl;
+		//cout << "notUsedForTest = " << notUsedForTest << std::endl;
 		vNotUsedForTests.resize(nFiles);
 
 		for (int i = 0; i < oForesSP.size(); i++)

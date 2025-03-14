@@ -164,7 +164,7 @@ class MOSIndividual {
     return os;
   }
 
-  virtual void print() const { cout << toString() << endl; }
+  virtual void print() const { std::cout << toString() << std::endl; }
 
   virtual std::string toString() const {
     std::stringstream ss;
@@ -185,7 +185,7 @@ class MOSIndividual {
   }
 */
 
-  static void compress(vector<MOSIndividual<XMES2>*>& P) {
+  static void compress(std::vector<MOSIndividual<XMES2>*>& P) {
     for (int s = 0; s < ((int)P.size()) - 1; s++)
       for (int j = s + 1; j < ((int)P.size()); j++)
         if (P[s]->mev->sameValues(*P[j]->mev)) {
@@ -195,7 +195,7 @@ class MOSIndividual {
         }
   }
 
-  static void spreadToCopies(vector<MOSIndividual<XMES2>*>& P) {
+  static void spreadToCopies(std::vector<MOSIndividual<XMES2>*>& P) {
     for (unsigned s = 0; s < P.size(); s++)
       for (int j = 0; j < P[s]->copies.size(); j++) {
         P[s]->copies[j]->fitness = P[s]->fitness;
@@ -230,7 +230,7 @@ public:
         {
         }
 
-        virtual void setVector(vector<MOSIndividual<XMES2>*>& v)
+        virtual void setVector(std::vector<MOSIndividual<XMES2>*>& v)
         {
                 P = v;
         }
@@ -265,7 +265,7 @@ public:
                 P.insert(P.end(), Pop.P.begin(), Pop.P.end());
         }
 
-        virtual void add(vector<MOSIndividual<XMES2>*>& v)
+        virtual void add(std::vector<MOSIndividual<XMES2>*>& v)
         {
                 P.insert(P.end(), v.begin(), v.end());
         }

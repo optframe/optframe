@@ -61,22 +61,22 @@ public:
       return false;
    }
 
-   virtual bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input, string module_name)
+   virtual bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input, string module_name)
    {
-      ///cout << "ASSIGN:'" << input << "' and module_name='" << module_name << "'" << endl;
+      ///cout << "ASSIGN:'" << input << "' and module_name='" << module_name << "'" << std::endl;
       module_name.append(" ");
       module_name.append(input);
       return run(allCommands, allFunctions, factory, dictionary, ldictionary, module_name);
    }
 
-   bool run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string>>& ldictionary, string input)
+   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
    {
-      ///cout << "ASSIGN:'" << input << "'" << endl;
+      ///cout << "ASSIGN:'" << input << "'" << std::endl;
 
       Scanner scanner(input);
 
       if (!scanner.hasNext()) {
-         cout << "module " << id() << " missing variable name!" << endl;
+         std::cout << "module " << id() << " missing variable name!" << std::endl;
          return false;
       }
 
@@ -85,7 +85,7 @@ public:
       if ((first == "operator.assign") || (first == "assign")) {
          // read again the variable
          if (!scanner.hasNext()) {
-            cout << "module " << id() << " missing variable name!" << endl;
+            std::cout << "module " << id() << " missing variable name!" << std::endl;
             return false;
          }
 
@@ -93,26 +93,26 @@ public:
       }
 
       if (!scanner.hasNext()) {
-         cout << "module " << id() << " missing assignment '='!" << endl;
+         std::cout << "module " << id() << " missing assignment '='!" << std::endl;
          return false;
       }
 
       string assign = scanner.next();
 
       if (assign != "=") {
-         cout << "module " << id() << " error: expected '='!" << endl;
+         std::cout << "module " << id() << " error: expected '='!" << std::endl;
          return false;
       }
 
       if (!scanner.hasNext()) {
-         cout << "module " << id() << " missing value!" << endl;
+         std::cout << "module " << id() << " missing value!" << std::endl;
          return false;
       }
 
       string value = scanner.rest();
 
       if (!Command<R, ADS, DS>::define(var_name, value, dictionary, ldictionary)) {
-         cout << "module " << id() << " error: failed to define '" << var_name << "' to '" << value << "'" << endl;
+         std::cout << "module " << id() << " error: failed to define '" << var_name << "' to '" << value << "'" << std::endl;
          return false;
       }
 
@@ -136,7 +136,7 @@ public:
       return output;
    }
 
-   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
    {
       // ============================================
       // add spaces before and after FIRST assignment

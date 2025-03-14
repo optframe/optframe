@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 
    //check.run(10,10);
 
-   cout << "Program ended successfully" << endl;
+   std::cout << "Program ended successfully" << std::endl;
    
    return 0;
 }

@@ -64,9 +64,9 @@ class MyMapper : public MaPI_Mapper<string, string, string, int, int>
 public:
    MyMapper(MaPI_MapReduce<string, string, string, int, int>* mr, MaPI_Serializer<string, string, string, int, int>* s)
      : MaPI_Mapper<string, string, string, int, int>(mr, s){};
-   virtual vector<pair<string, int>> map(pair<string, string> a) // Map function implementation
+   virtual std::vector<std::pair<string, int>> map(pair<std::string, std::string> a) // Map function implementation
    {
-      vector<pair<string, int>> mapped;
+      std::vector<std::pair<string, int>> mapped;
       Scanner scan(a.second);
       scan.useSeparators(string(" \n\r\t\\\'\"!@#^&*()+={[}]|:;,<>./?"));
       while (scan.hasNext())
@@ -83,7 +83,7 @@ public:
    virtual pair<string, int> reduce(pair<string, vector<int>> bs) // Reduce function implementation
    {
       int reduced = 0;
-      for (vector<int>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
+      for (std::vector<int>::iterator it = bs.second.begin(); it != bs.second.end(); ++it)
          reduced += *it;
       return pair<string, int>(bs.first, reduced);
    };
@@ -92,7 +92,7 @@ public:
 int
 main(int argc, char** argv)
 {
-   cout << "MaPI_WorldCounter test" << endl;
+   std::cout << "MaPI_WorldCounter test" << std::endl;
 
    // MapReduce declaration
    MaPI_MapReduce<string, string, string, int, int> mapReduce;
@@ -109,19 +109,19 @@ main(int argc, char** argv)
       text += scan.next() + " ";
 
    // MapReduce input
-   vector<pair<string, string>> input;
-   input.push_back(pair<string, string>("doc", text));
+   std::vector<std::pair<std::string, std::string>> input;
+   input.push_back(pair<std::string, std::string>("doc", text));
 
    // MapReduce application
-   vector<pair<string, int>> output = mapReduce.run(mapper, reducer, input);
+   std::vector<std::pair<string, int>> output = mapReduce.run(mapper, reducer, input);
 
    // Output exibition
-   cout << "MapReduce word counter result" << endl;
+   std::cout << "MapReduce word counter result" << std::endl;
    multimap<int, string> sortedOutput;
-   for (vector<pair<string, int>>::iterator it = output.begin(); it != output.end(); it++)
+   for (std::vector<pair<string, int>>::iterator it = output.begin(); it != output.end(); it++)
       sortedOutput.insert(pair<int, string>((*it).second, (*it).first));
    for (multimap<int, string>::reverse_iterator it = sortedOutput.rbegin(); it != sortedOutput.rend(); it++)
-      cout << *it << endl;
+      std::cout << *it << std::endl;
 
    return 0;
 }

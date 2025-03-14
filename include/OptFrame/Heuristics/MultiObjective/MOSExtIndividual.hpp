@@ -63,14 +63,14 @@ class MOSExtIndividual : public MOSIndividual<X, ADS, DS> {
   virtual ~MOSExtIndividual() {}
 
   void print() const override {
-    cout << "MOSExtIndividual: parent=" << &parent
+    std::cout << "MOSExtIndividual: parent=" << &parent
          << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
-    cout << "\t[ ";
+    std::cout << "\t[ ";
     for (unsigned e = 0; e < this->mev->size(); e++)
-      cout << this->mev->at(e).evaluation()
+      std::cout << this->mev->at(e).evaluation()
            << (e == this->mev->size() - 1 ? " " : " ; ");
-    cout << " ]";
-    cout << endl;
+    std::cout << " ]";
+    std::cout << std::endl;
   }
 
   virtual MOSIndividual<X, ADS, DS>& clone() const {
@@ -100,12 +100,12 @@ vector<MOSExtIndividual<R, ADS, DS>*>& _PX) : MOSPopulation<R>(_PS), PX(_PX)
         {
         }
 
-        inline void setVector(vector<MOSIndividual<R>*>& v)
+        inline void setVector(std::vector<MOSIndividual<R>*>& v)
         {
                 this->P = v;
         }
 
-        inline void setVector(vector<MOSExtIndividual<R, X>*>& v)
+        inline void setVector(std::vector<MOSExtIndividual<R, X>*>& v)
         {
                 PX = v;
         }
@@ -195,12 +195,12 @@ vector<MOSExtIndividual<R, ADS, DS>*>& _PX) : MOSPopulation<R>(_PS), PX(_PX)
                 PX.insert(PX.end(), Pop.PX.begin(), Pop.PX.end());
         }
 
-        inline void add(vector<MOSIndividual<R>*>& v)
+        inline void add(std::vector<MOSIndividual<R>*>& v)
         {
                 this->P.insert(this->P.end(), v.begin(), v.end());
         }
 
-        inline void add(vector<MOSExtIndividual<R, X, ADS, DS>*>& v)
+        inline void add(std::vector<MOSExtIndividual<R, X, ADS, DS>*>& v)
         {
                 PX.insert(PX.end(), v.begin(), v.end());
         }
