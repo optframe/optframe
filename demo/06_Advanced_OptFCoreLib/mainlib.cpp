@@ -158,7 +158,7 @@ std::any frandom() {
   vector<int> v(pTSP.n, -1);  // get information from context
   for (unsigned i = 0; i < v.size(); i++) v[i] = i;
   // leave 0 on first position and shuffle the rest
-  std::random_shuffle(v.begin() + 1, v.end());
+  std::shuffle(v.begin() + 1, v.end());
   return v;
 }
 

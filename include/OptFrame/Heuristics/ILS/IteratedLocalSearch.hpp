@@ -15,6 +15,7 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Search/ITrajectory.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "./ILS.h"

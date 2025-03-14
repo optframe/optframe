@@ -41,8 +41,8 @@ class ConstructiveRandom
     for (unsigned int i = 0; i < pSVRPDSP.n; i++)
       p_cust[i] = i + 1 + pSVRPDSP.n;
 
-    std::random_shuffle(d_cust.begin(), d_cust.end());
-    std::random_shuffle(p_cust.begin(), p_cust.end());
+    std::shuffle(d_cust.begin(), d_cust.end());
+    std::shuffle(p_cust.begin(), p_cust.end());
 
     RepSVRPDSP repAux;
 
@@ -57,7 +57,7 @@ class ConstructiveRandom
     RepSVRPDSP rep;
     rep.push_back(0);  // start depot
 
-    std::random_shuffle(repAux.begin(), repAux.end());
+    std::shuffle(repAux.begin(), repAux.end());
 
     for (unsigned i = 0; i < repAux.size(); i++) rep.push_back(repAux[i]);
 

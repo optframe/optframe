@@ -13,7 +13,9 @@
 #include <OptFrame/Heuristics/EA/RK/RKGA.hpp>
 #include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/Search/GlobalSearch.hpp>
+#include <OptFrame/Search/GlobalSearchBuilder.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "OptFrame/Concepts/MyConcepts.hpp"
 

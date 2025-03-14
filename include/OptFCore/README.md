@@ -117,7 +117,7 @@ using TSPRandom = FConstructive <
    vector<int> v(pTSP.n, -1); // get information from pTSP problem
    for (unsigned i = 0; i < v.size(); i++)
       v[i] = i;
-   std::random_shuffle(v.begin(), v.end());
+   std::shuffle(v.begin(), v.end());
    return make_optional(v);
 }
 > ;

@@ -10,6 +10,7 @@
 #include <vector>
 //
 #include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "./ILS.h"
 #include "./ILSLPerturbation.hpp"

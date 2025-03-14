@@ -127,7 +127,7 @@ VRP_RepADS frandom(sref<ProblemContext> pVRP) {
   vector<int> v(pVRP->n, -1);  // get information from context
   for (int i = 0; i < v.size(); i++) v[i] = i + 1;  // excludes depot 0
   // shuffle (TODO: use randgen)
-  std::random_shuffle(v.begin(), v.end());
+  std::shuffle(v.begin(), v.end());
   //
   // begin random construction
   // clients are added one by one, unless capacity is exceeded, and a new route

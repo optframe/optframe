@@ -58,6 +58,7 @@ class MyRandomKeysInitEPop
   }
 };
 
+
 pair<Evaluation<int>, vector<int>> fDecodeEval(
     sref<Evaluator<typename ESolutionTSP::first_type,
                    typename ESolutionTSP::second_type, ESolutionTSP>>
