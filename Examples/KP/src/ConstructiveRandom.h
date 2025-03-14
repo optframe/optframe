@@ -2,7 +2,7 @@
 #define KP_CONSTRUCTIVE_Random_H_
 
 #include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/InitialSearch.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 // #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include <stdlib.h>

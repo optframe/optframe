@@ -4,8 +4,26 @@
 #ifndef OPTFRAME_ITRAJECTORY_HPP_
 #define OPTFRAME_ITRAJECTORY_HPP_
 
-#include <OptFrame/SearchOutput.hpp>
-#include <OptFrame/StopCriteria.hpp>
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#include <OptFrame/Search/SearchOutput.hpp>
+#include <OptFrame/Search/StopCriteria.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -15,9 +33,9 @@ namespace optframe {
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 // for trajectory methods, XSH2 = XSH
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
 class ITrajectory {
   // using XEv = typename XES::second_type;

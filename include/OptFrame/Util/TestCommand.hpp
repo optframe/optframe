@@ -30,7 +30,7 @@
 
 #include "../Component.hpp"
 #include "../Constructive.hpp"
-#include "../SingleObjSearch.hpp"
+#include "../Search/SingleObjSearch.hpp"
 #include "../Timer.hpp"
 
 namespace optframe {

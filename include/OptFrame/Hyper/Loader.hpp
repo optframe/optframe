@@ -21,8 +21,8 @@
 #include <vector>
 //
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
@@ -55,7 +55,7 @@
 #include <OptFrame/Hyper/RandGenBuilder.hpp>
 #include <OptFrame/Hyper/TimerBuilder.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 // base components
 #include <OptFrame/Core/Constructive.hpp>
@@ -73,6 +73,9 @@
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
 #include <OptFrame/Heuristics/SingleObjSearchToLocalSearch.hpp>
 
+// general builders
+#include <OptFrame/Search/GlobalSearchBuilder.hpp>
+
 // single obj search
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/BasicILSPerturbation.hpp>
@@ -81,6 +84,7 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/MultiStart.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealingBuilder.hpp>
 #include <OptFrame/Heuristics/SA/GeometricSimulatedAnnealing.hpp>
 #include <OptFrame/Heuristics/SA/SimulatedAnnealingAC.hpp>
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>

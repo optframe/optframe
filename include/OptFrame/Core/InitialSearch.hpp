@@ -12,8 +12,8 @@
 #include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/SearchStatus.hpp>
-#include <OptFrame/StopCriteria.hpp>
+#include <OptFrame/Search/SearchStatus.hpp>
+#include <OptFrame/Search/StopCriteria.hpp>
 
 namespace optframe {
 

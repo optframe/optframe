@@ -11,7 +11,7 @@
 /// #include "../../InitialPopulation.hpp"
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/printable/printable.hpp>  // TODO: remove!
 
 /*

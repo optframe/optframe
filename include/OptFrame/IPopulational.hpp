@@ -6,9 +6,9 @@
 
 #include <string>
 //
-#include <OptFrame/GlobalSearch.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
-#include <OptFrame/StopCriteria.hpp>
+#include <OptFrame/Search/GlobalSearch.hpp>
+#include <OptFrame/Search/StopCriteria.hpp>
 
 // IMPORTANT: This file has IPopulational and Populational
 // Populational inherits from GlobalSearch, while IPopulational does not

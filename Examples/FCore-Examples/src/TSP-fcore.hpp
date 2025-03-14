@@ -2,7 +2,7 @@
 
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>
-#include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
+#include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/printable/printable.hpp>
@@ -19,10 +19,12 @@ using namespace scannerpp;
 namespace TSP_fcore {
 
 // define TSP solution type as 'vector<int>', using 'double' as evaluation type
-using ESolutionTSP1 = std::pair<
-    std::vector<int>,  // first part of search space element: solution (representation)
-    Evaluation<int>    // second part of search space element: evaluation (objective value)
-    >;
+using ESolutionTSP1 =
+    std::pair<std::vector<int>,  // first part of search space element: solution
+                                 // (representation)
+              Evaluation<int>    // second part of search space element:
+                                 // evaluation (objective value)
+              >;
 
 template <class X = nullptr_t>
 using ESolutionTSP2 = ESolutionTSP1;
@@ -50,7 +52,8 @@ class ProblemContext {
     // calculate distance values, for every client pair (i,j)
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
-        dist(i, j) = ::round(distance(xvalues.at(i), yvalues.at(i), xvalues.at(j), yvalues.at(j)));
+        dist(i, j) = ::round(distance(xvalues.at(i), yvalues.at(i),
+                                      xvalues.at(j), yvalues.at(j)));
   }
   // euclidean distance (double as return)
   double distance(double x1, double y1, double x2, double y2) {
@@ -60,44 +63,40 @@ class ProblemContext {
 // Create TSP Problem Context
 ProblemContext pTSP;
 
-Evaluation<int>
-fevaluate(const std::vector<int>& s) {
+Evaluation<int> fevaluate(const std::vector<int>& s) {
   int f = 0;
-  for (int i = 0; i < int(pTSP.n) - 1; i++)
-    f += pTSP.dist(s[i], s[i + 1]);
+  for (int i = 0; i < int(pTSP.n) - 1; i++) f += pTSP.dist(s[i], s[i + 1]);
   f += pTSP.dist(s[int(pTSP.n) - 1], s[0]);
   return Evaluation<int>{f};
 }
 
 // Evaluate
-sref<Evaluator<typename ESolutionTSP::first_type, typename ESolutionTSP::second_type>> ev{
-    new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{fevaluate}};
+sref<Evaluator<typename ESolutionTSP::first_type,
+               typename ESolutionTSP::second_type>>
+    ev{new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{fevaluate}};
 
-//FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>
-//  ev{
-//     fevaluate
-//  };
+// FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>
+//   ev{
+//      fevaluate
+//   };
 
-//sref<GeneralEvaluator<ESolutionTSP>> ev2{
-//   new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{
-//     fevaluate }
-//};
+// sref<GeneralEvaluator<ESolutionTSP>> ev2{
+//    new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{
+//      fevaluate }
+// };
 
 // ===========================
 
-std::vector<int>
-frandom() {
+std::vector<int> frandom() {
   vector<int> v(pTSP.n, -1);  // get information from context
-  for (unsigned i = 0; i < v.size(); i++)
-    v[i] = i;
+  for (unsigned i = 0; i < v.size(); i++) v[i] = i;
   // leave 0 on first position and shuffle the rest
   std::random_shuffle(v.begin() + 1, v.end());
   return v;
 }
 
 // Generate random solution
-FConstructive<std::vector<int>> crand{
-    frandom};
+FConstructive<std::vector<int>> crand{frandom};
 
 /*
 std::pair<int, int>
@@ -139,9 +138,7 @@ class MoveSwap : public Move<ESolutionTSP> {
  public:
   int i, j;
 
-  MoveSwap(int _i, int _j)
-      : i{_i}, j{_j} {
-  }
+  MoveSwap(int _i, int _j) : i{_i}, j{_j} {}
 
   bool canBeApplied(const ESolutionTSP& se) override {
     return (::abs(i - j) >= 2) && (i >= 1) && (j >= 1);
@@ -151,19 +148,26 @@ class MoveSwap : public Move<ESolutionTSP> {
     // input cannot be outdated
     assert(!se.second.isOutdated());
     auto& s = se.first;
-    int diff = -pTSP.dist(s[i - 1], s[i]) - pTSP.dist(s[i], s[(i + 1) % pTSP.n]) - pTSP.dist(s[j - 1], s[j]) - pTSP.dist(s[j], s[(j + 1) % pTSP.n]);
-    diff += pTSP.dist(s[i - 1], s[j]) + pTSP.dist(s[j], s[(i + 1) % pTSP.n]) + pTSP.dist(s[j - 1], s[i]) + pTSP.dist(s[i], s[(j + 1) % pTSP.n]);
+    int diff = -pTSP.dist(s[i - 1], s[i]) -
+               pTSP.dist(s[i], s[(i + 1) % pTSP.n]) -
+               pTSP.dist(s[j - 1], s[j]) - pTSP.dist(s[j], s[(j + 1) % pTSP.n]);
+    diff += pTSP.dist(s[i - 1], s[j]) + pTSP.dist(s[j], s[(i + 1) % pTSP.n]) +
+            pTSP.dist(s[j - 1], s[i]) + pTSP.dist(s[i], s[(j + 1) % pTSP.n]);
     // solution swap
     auto rev = this->apply(se);
     se.second.setObjFunction(se.second.evaluation() + diff);
     return rev;
   }
 
-  virtual op<Evaluation<int>> cost(const ESolutionTSP& se, bool allowEstimated) override {
+  virtual op<Evaluation<int>> cost(const ESolutionTSP& se,
+                                   bool allowEstimated) override {
     assert(!se.second.isOutdated());
     auto& s = se.first;
-    int diff = -pTSP.dist(s[i - 1], s[i]) - pTSP.dist(s[i], s[(i + 1) % pTSP.n]) - pTSP.dist(s[j - 1], s[j]) - pTSP.dist(s[j], s[(j + 1) % pTSP.n]);
-    diff += pTSP.dist(s[i - 1], s[j]) + pTSP.dist(s[j], s[(i + 1) % pTSP.n]) + pTSP.dist(s[j - 1], s[i]) + pTSP.dist(s[i], s[(j + 1) % pTSP.n]);
+    int diff = -pTSP.dist(s[i - 1], s[i]) -
+               pTSP.dist(s[i], s[(i + 1) % pTSP.n]) -
+               pTSP.dist(s[j - 1], s[j]) - pTSP.dist(s[j], s[(j + 1) % pTSP.n]);
+    diff += pTSP.dist(s[i - 1], s[j]) + pTSP.dist(s[j], s[(i + 1) % pTSP.n]) +
+            pTSP.dist(s[j - 1], s[i]) + pTSP.dist(s[i], s[(j + 1) % pTSP.n]);
     return std::make_optional(Evaluation<int>(diff));
   }
 
@@ -172,36 +176,34 @@ class MoveSwap : public Move<ESolutionTSP> {
     int aux = se.first[j];
     se.first[j] = se.first[i];
     se.first[i] = aux;
-    return uptr<Move<ESolutionTSP>>(new MoveSwap{j, i});  // return a reverse move ('undo' move)s
+    return uptr<Move<ESolutionTSP>>(
+        new MoveSwap{j, i});  // return a reverse move ('undo' move)s
   }
 
-  bool
-  operator==(const Move<ESolutionTSP>& other) const override {
+  bool operator==(const Move<ESolutionTSP>& other) const override {
     auto& fmove = (MoveSwap&)other;
     return (i == fmove.i) && (j == fmove.j);
   }
 };
 
-uptr<Move<ESolutionTSP>>
-makeMoveSwap(int i, int j) {
+uptr<Move<ESolutionTSP>> makeMoveSwap(int i, int j) {
   return uptr<Move<ESolutionTSP>>(new MoveSwap{i, j});
 }
 
-uptr<Move<ESolutionTSP>>
-fRandomSwap(const ESolutionTSP& se) {
+uptr<Move<ESolutionTSP>> fRandomSwap(const ESolutionTSP& se) {
   int i = rand() % pTSP.n;
   int j = i;
   while (j <= i) {
     i = rand() % pTSP.n;
     j = rand() % pTSP.n;
   }
-  //return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
+  // return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap,
+  // fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
   return uptr<Move<ESolutionTSP>>(makeMoveSwap(i, j));
 }
 
 // Swap move (NS)
-FNS<ESolutionTSP> nsswap{
-    fRandomSwap};
+FNS<ESolutionTSP> nsswap{fRandomSwap};
 
 // Swap move (NSSeq) - with "Boring" iterator
 FNSSeq<std::pair<int, int>, ESolutionTSP> nsseq{
@@ -212,7 +214,9 @@ FNSSeq<std::pair<int, int>, ESolutionTSP> nsseq{
         i = rand() % pTSP.n;
         j = rand() % pTSP.n;
       }
-      //return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
+      // return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j),
+      // fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>,
+      // fCompare });
       return uptr<Move<ESolutionTSP>>(makeMoveSwap(i, j));
     },
     // iterator initialization (fGenerator)
@@ -220,12 +224,12 @@ FNSSeq<std::pair<int, int>, ESolutionTSP> nsseq{
       return make_pair(-1, -1);
     },
     [](std::pair<int, int>& p) -> void {
-      //void (*fFirst)(IMS&),                   // iterator.first()
+      // void (*fFirst)(IMS&),                   // iterator.first()
       p.first = 0;
       p.second = 1;
     },
     [](std::pair<int, int>& p) -> void {
-      //void (*fNext)(IMS&),                    // iterator.next()
+      // void (*fNext)(IMS&),                    // iterator.next()
       if (p.second < (pTSP.n - 1))
         p.second++;
       else {
@@ -234,12 +238,13 @@ FNSSeq<std::pair<int, int>, ESolutionTSP> nsseq{
       }
     },
     [](std::pair<int, int>& p) -> bool {
-      //bool (*fIsDone)(IMS&),                  // iterator.isDone()
+      // bool (*fIsDone)(IMS&),                  // iterator.isDone()
       return p.first >= pTSP.n - 1;
     },
     [](std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
-      //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
-      //return uptr<Move<ESolutionTSP>>(new MoveSwap{ p, fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
+      // uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
+      // return uptr<Move<ESolutionTSP>>(new MoveSwap{ p, fApplySwap,
+      // fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
       return uptr<Move<ESolutionTSP>>(makeMoveSwap(p.first, p.second));
     }};
 //
@@ -252,7 +257,9 @@ sref<NSSeq<ESolutionTSP>> nsseq2{
             i = rand() % pTSP.n;
             j = rand() % pTSP.n;
           }
-          //return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
+          // return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j),
+          // fApplySwap, fDefaultCanBeApplied<std::pair<int, int>,
+          // ESolutionTSP>, fCompare });
           return uptr<Move<ESolutionTSP>>(makeMoveSwap(i, j));
         },
         // iterator initialization (fGenerator)
@@ -260,12 +267,12 @@ sref<NSSeq<ESolutionTSP>> nsseq2{
           return make_pair(-1, -1);
         },
         [](std::pair<int, int>& p) -> void {
-          //void (*fFirst)(IMS&),                   // iterator.first()
+          // void (*fFirst)(IMS&),                   // iterator.first()
           p.first = 0;
           p.second = 1;
         },
         [](std::pair<int, int>& p) -> void {
-          //void (*fNext)(IMS&),                    // iterator.next()
+          // void (*fNext)(IMS&),                    // iterator.next()
           if (p.second < (pTSP.n - 1))
             p.second++;
           else {
@@ -274,14 +281,16 @@ sref<NSSeq<ESolutionTSP>> nsseq2{
           }
         },
         [](std::pair<int, int>& p) -> bool {
-          //bool (*fIsDone)(IMS&),                  // iterator.isDone()
+          // bool (*fIsDone)(IMS&),                  // iterator.isDone()
           return p.first >= pTSP.n - 1;
         },
         [](std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
-          //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
-          //return uptr<Move<ESolutionTSP>>(new MoveSwap{ p, fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare });
+          // uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
+          // return uptr<Move<ESolutionTSP>>(new MoveSwap{ p, fApplySwap,
+          // fDefaultCanBeApplied<std::pair<int, int>, ESolutionTSP>, fCompare
+          // });
           return uptr<Move<ESolutionTSP>>(makeMoveSwap(p.first, p.second));
         }}  // FNSSeq
-};          // nsseq2
+};  // nsseq2
 
 }  // namespace TSP_fcore

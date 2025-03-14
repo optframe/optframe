@@ -13,14 +13,14 @@
 #include <OptFrame/IPopulational.hpp>
 
 #include "../../../InitialPopulation.hpp"
-#include "../../../SingleObjSearch.hpp"
+#include "../../../Search/SingleObjSearch.hpp"
 #include "../Crossover.hpp"
 #include "../Elitism.hpp"
 #include "../Mutation.hpp"
 #include "../Selection.hpp"
 #include "DecoderRandomKeys.hpp"
 #include "OptFrame/Concepts/MyConcepts.hpp"
-#include "OptFrame/SearchStatus.hpp"
+#include "OptFrame/Search/SearchStatus.hpp"
 
 // RKGA - Random Key Genetic Algorithms
 // Bean, J.C.: Genetic algorithms and random keys for

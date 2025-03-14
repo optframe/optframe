@@ -14,7 +14,7 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/NSIterator.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 // using namespace std;
 

@@ -16,7 +16,7 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "../../Constructive.hpp"

@@ -4,8 +4,26 @@
 #ifndef OPTFRAME_ILOOP_HPP_  // NOLINT
 #define OPTFRAME_ILOOP_HPP_
 
-#include <OptFrame/SearchOutput.hpp>
-#include <OptFrame/StopCriteria.hpp>
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#include <OptFrame/Search/SearchOutput.hpp>
+#include <OptFrame/Search/StopCriteria.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // This is meant for Loop-Based metaheuristics
 // Includes methods:
@@ -21,9 +39,9 @@ namespace optframe {
 // - onUpdateLoop(SCTX)
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <class SCTX, XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <class SCTX, XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <class SCTX, typename XES, typename XSH = XES>
+MOD_EXPORT template <class SCTX, typename XES, typename XSH = XES>
 #endif
 class ILoop  // do not inherit here!
 {

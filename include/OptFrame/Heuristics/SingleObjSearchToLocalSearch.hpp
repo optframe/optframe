@@ -14,7 +14,7 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 namespace optframe {
 

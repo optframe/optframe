@@ -10,7 +10,7 @@
 #include <vector>
 //
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "GRASPFamily.h"

@@ -27,7 +27,7 @@
 
 #include "../Command.hpp"
 #include "../MultiObjSearch.hpp"
-#include "../SingleObjSearch.hpp"
+#include "../Search/SingleObjSearch.hpp"
 #include "SystemSilentDefineCommand.hpp"
 
 namespace optframe {

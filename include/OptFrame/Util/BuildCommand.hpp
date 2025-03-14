@@ -26,7 +26,7 @@
 #include <OptFrame/LocalSearch.hpp>
 
 #include "../MultiObjSearch.hpp"
-#include "../SingleObjSearch.hpp"
+#include "../Search/SingleObjSearch.hpp"
 
 namespace optframe {
 

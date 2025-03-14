@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_STOPCRITERIA_HPP_
 #define OPTFRAME_STOPCRITERIA_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <cstring>
 #include <functional>  // std::function
 #include <iostream>
@@ -12,12 +14,28 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/SearchStatus.hpp>
+#include <OptFrame/Search/SearchStatus.hpp>
 #include <OptFrame/Timer.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
-template <XEvaluation XEv = Evaluation<>>
+MOD_EXPORT template <XEvaluation XEv = Evaluation<>>
 class StopCriteria final : public Component {
  public:
   // NOLINTNEXTLINE

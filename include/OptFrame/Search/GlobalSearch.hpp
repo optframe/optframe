@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_GLOBALSEARCH_HPP_
 #define OPTFRAME_GLOBALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <cstring>
 #include <iostream>
@@ -14,10 +16,25 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
-#include <OptFrame/Hyper/ComponentBuilder.hpp>
-#include <OptFrame/InitialSearch.hpp>
-#include <OptFrame/SearchOutput.hpp>
-#include <OptFrame/StopCriteria.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
+#include <OptFrame/Search/SearchOutput.hpp>
+#include <OptFrame/Search/StopCriteria.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 // REMEMBER: XES = (some Solution Type, some Evaluation Type)
@@ -95,43 +112,6 @@ class GlobalSearch : public Component {
   }
 
   std::string toString() const override { return id(); }
-
-  std::string id() const override { return idComponent(); }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
-#else
-template <typename XES, typename XSH = XES>
-#endif
-class GlobalSearchBuilder : public ComponentBuilder<XES> {
-  using S = typename XES::first_type;
-  using XEv = typename XES::second_type;
-
- public:
-  virtual ~GlobalSearchBuilder() = default;
-
-  // NOLINTNEXTLINE
-  virtual GlobalSearch<XES, XSH>* build(Scanner& scanner,
-                                        HeuristicFactory<XES>& hf,
-                                        string family = "") = 0;
-  // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    return build(scanner, hf, family);
-  }
-
-  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
-
-  bool canBuild(string) override = 0;
-
-  std::string toString() const override { return id(); }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << "GlobalSearch:";
-    return ss.str();
-  }
 
   std::string id() const override { return idComponent(); }
 };

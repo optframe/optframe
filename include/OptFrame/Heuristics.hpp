@@ -3,6 +3,9 @@
 
 // Heuristics Module: inclusion of common heuristic strategies
 
-#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+// SA family
+#include "Heuristics/SA/SA.hpp"
+//
+#include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
 
 #endif  // OPTFRAME_HEURISTICS_HPP

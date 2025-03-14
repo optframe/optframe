@@ -8,12 +8,12 @@
 #include <vector>
 //
 #include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
-#include <OptFrame/InitialSearch.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
 #include "KahanSummation.hpp"

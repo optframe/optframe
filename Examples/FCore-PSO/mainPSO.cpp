@@ -6,8 +6,8 @@
 //
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>
+#include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/PSO.hpp>
-#include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/printable/printable.hpp>

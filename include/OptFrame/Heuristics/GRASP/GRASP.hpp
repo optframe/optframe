@@ -5,7 +5,7 @@
 #define OPTFRAME_HEURISTICS_GRASP_GRASP_HPP_
 
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <string>
 #include <utility>
 #include <vector>

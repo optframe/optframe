@@ -26,7 +26,7 @@
 #include <math.h>
 
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <vector>
 
 namespace optframe {

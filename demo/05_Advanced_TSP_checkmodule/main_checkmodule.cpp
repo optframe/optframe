@@ -7,7 +7,7 @@
 #include <OptFrame/printable/printable.hpp>
 //
 #include <OptFrame/Core.hpp>
-#include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
+#include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>

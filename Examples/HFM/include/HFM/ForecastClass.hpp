@@ -32,10 +32,10 @@
 #include <OptFrame/Heuristics/MOLocalSearches/GPLS.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MOBestImprovement.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MORandomImprovement.hpp>
-#include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/ParetoManager.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 
 #include "./ConstructiveRandom.hpp"

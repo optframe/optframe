@@ -30,7 +30,7 @@
 #include <vector>
 //
 
-#include "../SingleObjSearch.hpp"
+#include "../Search/SingleObjSearch.hpp"
 
 namespace optframe {
 

@@ -5,7 +5,7 @@
 #define OPTFRAME_HEURISTICS_EA_BASICGENETICALGORITHM_HPP_
 
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <algorithm>
 #include <string>
 #include <utility>

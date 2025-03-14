@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <math.h>
 // C++
@@ -14,20 +16,36 @@
 
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/ILoop.hpp>
-#include <OptFrame/ITrajectory.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/ILoop.hpp>
+#include <OptFrame/Search/ITrajectory.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 #include "./HelperSA.hpp"
 #include "./SA.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 // forward declaration
-template <XESSolution XES>
+MOD_EXPORT template <XESSolution XES>
 class BasicSimulatedAnnealing;
 
-template <XESSolution XES>
+MOD_EXPORT template <XESSolution XES>
 struct SearchContextSA {
   BasicSimulatedAnnealing<XES>& self;
   std::optional<XES>& best;
@@ -37,7 +55,7 @@ struct SearchContextSA {
   int iterT;
 };
 
-template <XESSolution XES>
+MOD_EXPORT template <XESSolution XES>
 class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
                                 public SA,
                                 public ILoop<SearchContextSA<XES>, XES>,
@@ -205,8 +223,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
       if (!move) {
         if (Component::warning)
-          cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T
-               << "! cannot continue..." << endl;
+          std::cout << "SA warning: no move in iter=" << ctx.iterT
+                    << " T=" << ctx.T << "! cannot continue..." << std::endl;
         // This is not normal... but not catastrophic stop either.
         return {SearchStatus::EARLY_STOP, star};
       }
@@ -260,7 +278,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
             std::cout << "Best fo: " << se.second.evaluation()
                       << " Found on Iter = " << ctx.iterT
                       << " and T = " << ctx.T;
-            std::cout << endl;
+            std::cout << std::endl;
             this->onBestCtx(ctx, *star);
           }
         }
@@ -307,164 +325,12 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
   std::string id() const override { return idComponent(); }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
        << "BasicSA";
     return ss.str();
   }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XESolution XES2,
-          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
-#else
-template <typename XES, typename XES2, typename X2ES = MultiESolution<XES2>>
-#endif
-class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
-                                       public SA {
-  // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
-  // using XM = Component; // only general builds here
-  using S = typename XES::first_type;
-  using XEv = typename XES::second_type;
-  using XSH = XES;  // primary-based search type only (BestType)
-
- public:
-  virtual ~BasicSimulatedAnnealingBuilder() {}
-
-  // has sptr instead of sref, is that on purpose or legacy class?
-  GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                           string family = "") override {
-    if (Component::debug)
-      std::cout << "BasicSA Builder Loading Parameter #0" << std::endl;
-    if (!scanner.hasNext()) {
-      if (Component::warning)
-        std::cout << "no next1a! aborting..." << std::endl;
-      return nullptr;
-    }
-
-    sptr<GeneralEvaluator<XES>> eval;
-    std::string sid_0 = scanner.next();
-    int id_0 = *scanner.nextInt();
-    hf.assign(eval, id_0, sid_0);
-    assert(eval);
-
-    sptr<GeneralEvaluator<XES>> ge{eval};
-
-    if (Component::debug)
-      std::cout << "BasicSA Builder Loading Parameter #2" << std::endl;
-    if (!scanner.hasNext()) {
-      if (Component::warning)
-        std::cout << "no next1b! aborting..." << std::endl;
-      return nullptr;
-    }
-    // Constructive<S>* constructive;
-    sptr<InitialSearch<XES>> constructive;
-    std::string sid_1 = scanner.next();
-    int id_1 = *scanner.nextInt();
-    hf.assign(constructive, id_1, sid_1);
-    assert(constructive);
-
-    // return nullptr;
-
-    if (Component::debug)
-      std::cout << "BasicSA Builder Loading Parameter #3" << std::endl;
-    if (!scanner.hasNext()) {
-      if (Component::warning)
-        std::cout << "no next1c! aborting..." << std::endl;
-      return nullptr;
-    }
-    vsptr<NS<XES, XSH>> _hlist;
-
-    std::string sid_2 = scanner.next();
-    int id_2 = *scanner.nextInt();
-    hf.assignList(_hlist, id_2, sid_2);
-    vsref<NS<XES, XSH>> hlist;
-    for (sptr<NS<XES, XSH>> x : _hlist) {
-      assert(x);
-      hlist.push_back(x);
-    }
-
-    if (Component::debug) std::cout << "list ok!" << hlist.size() << std::endl;
-
-    if (Component::debug)
-      std::cout << "BasicSA Builder Loading Parameter #4" << std::endl;
-    if (!scanner.hasNext()) {
-      if (Component::debug)
-        std::cout << "no next alpha! aborting..." << std::endl;
-      return nullptr;
-    }
-    double alpha = *scanner.nextDouble();
-
-    if (Component::debug)
-      std::cout << "BasicSA Builder Loading Parameter #5" << std::endl;
-    if (!scanner.hasNext()) {
-      if (Component::warning)
-        std::cout << "no next SAmax! aborting..." << std::endl;
-      return nullptr;
-    }
-    int SAmax = *scanner.nextInt();
-
-    if (Component::debug)
-      std::cout << "BasicSA Builder Loading Parameter #6" << std::endl;
-    if (!scanner.hasNext()) {
-      if (Component::warning)
-        std::cout << "no next Ti! aborting..." << std::endl;
-      return nullptr;
-    }
-    double Ti = *scanner.nextDouble();
-
-    if (Component::debug) {
-      std::cout << "BasicSA Builder: got all parameters!" << std::endl;
-      std::cout << "BasicSimulatedAnnealing with:" << std::endl;
-      std::cout << "\teval=" << ge->id() << std::endl;
-      std::cout << "\tconstructive=" << constructive->id() << std::endl;
-      std::cout << "\t|hlist|=" << hlist.size() << std::endl;
-      std::cout << "\thlist[0]=" << hlist[0]->id() << std::endl;
-      std::cout << "\talpha=" << alpha << std::endl;
-      std::cout << "\tSAmax=" << SAmax << std::endl;
-      std::cout << "\tTi=" << Ti << std::endl;
-    }
-
-    return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha,
-                                            SAmax, Ti, hf.getRandGen());
-  }
-
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    // params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(),
-    // "evaluation function"));
-    params.push_back(
-        make_pair(Evaluator<typename XES::first_type, typename XES::second_type,
-                            XES>::idComponent(),
-                  "evaluation function"));
-    //
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
-    params.push_back(
-        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    stringstream ss;
-    ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(make_pair(ss.str(), "list of NS"));
-    params.push_back(make_pair("OptFrame:double", "cooling factor"));
-    params.push_back(
-        make_pair("OptFrame:int", "number of iterations for each temperature"));
-    params.push_back(make_pair("OptFrame:double", "initial temperature"));
-
-    return params;
-  }
-
-  bool canBuild(std::string component) override {
-    return component == BasicSimulatedAnnealing<XES>::idComponent();
-  }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family() << "BasicSA";
-    return ss.str();
-  }
-
-  std::string id() const override { return idComponent(); }
 };
 
 /*

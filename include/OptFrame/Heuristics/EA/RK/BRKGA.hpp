@@ -8,12 +8,12 @@
 #include <algorithm>
 #include <string>
 //
-#include <OptFrame/GlobalSearch.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
 #include <OptFrame/Heuristics/EA/RK/RK.hpp>
 #include <OptFrame/Heuristics/EA/RK/RKGA.hpp>
 #include <OptFrame/InitialPopulation.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/GlobalSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 #include "OptFrame/Concepts/MyConcepts.hpp"
 

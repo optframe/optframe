@@ -304,8 +304,9 @@ concept XPowerSet = requires(Self a, size_t idx) {
 // too bad (x2), this explores a gcc bug!! "error: a variable concept cannot be
 // constrained"
 // template<class Self, XSolution S> // needs to fix this 'XSolution S'
-template <class Self, class S>  // fixed "constrained variable concept" on line
-                                // below... "XSolution<S>&&..."
+MOD_EXPORT template <class Self,
+                     class S>  // fixed "constrained variable concept" on line
+                               // below... "XSolution<S>&&..."
 concept X2Solution =
     XSolution<S> &&
     XPowerSet<Self, S>;  // Too bad, this is unused on OptFrame... :'(
@@ -323,8 +324,9 @@ concept X2Solution =
 // directly by XSolution and XEvaluation down here...) concept bool X2ESolution
 // = X2Solution<Self, S>; concept bool X2ESolution = XPowerSet<Self, S> &&
 // XPowerSet<Self, XEv>;
-template <class Self,
-          class XES>  // fixes gcc bug! "XESolution<XES>&&..." is good!
+MOD_EXPORT template <class Self,
+                     class XES>  // fixes gcc bug! "XESolution<XES>&&..." is
+                                 // good!
 concept X2ESolution = XESolution<XES> && XPowerSet<Self, XES>;
 
 // TODO1: should make exponential over a XESolution... not separated sets!!
@@ -399,7 +401,7 @@ concept
 
 // template <class Self, class XSearch> // TODO: make this, if StopCriteria has
 // XESolution
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XSearchMethod = true;
 
 // ===================
@@ -431,7 +433,7 @@ concept XMEvaluation =
     } &&
     comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XESSolution =
     XESolution<Self> && XSEvaluation<typename Self::second_type>;
 
@@ -447,7 +449,7 @@ concept X2EMSolution = XEMSolution<XMES> && XPowerSet<Self, XMES>;
 
 // XFamily concept
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XFamily = requires(Self a) {
   { a.family() } -> my_same_as<std::string>;
 };

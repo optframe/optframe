@@ -110,8 +110,6 @@ target_link_libraries(optframe_timer PUBLIC OptFrameAll)
 target_sources(optframe_timer  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/timer.cppm)
 target_link_libraries(optframe_timer PUBLIC optframe_component)
 
-
-# make core
 add_library(optframe_core)
 target_link_libraries(optframe_core PUBLIC OptFrameAll)
 target_sources(optframe_core  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/core.cppm)
@@ -119,6 +117,17 @@ target_link_libraries(optframe_core PUBLIC optframe_component)
 target_link_libraries(optframe_core PUBLIC optframe_concepts)
 target_link_libraries(optframe_core PUBLIC optframe_values)
 target_link_libraries(optframe_core PUBLIC optframe_timer)
+
+add_library(optframe_search)
+target_link_libraries(optframe_search PUBLIC OptFrameAll)
+target_sources(optframe_search  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/search.cppm)
+target_link_libraries(optframe_search PUBLIC optframe_core)
+
+add_library(optframe_heuristics)
+target_link_libraries(optframe_heuristics PUBLIC OptFrameAll)
+target_sources(optframe_heuristics  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/heuristics.cppm)
+target_link_libraries(optframe_heuristics PUBLIC optframe_core)
+target_link_libraries(optframe_heuristics PUBLIC optframe_search)
 
 
 add_executable(trymod demo/07_Try_Modules/trymod.cpp)

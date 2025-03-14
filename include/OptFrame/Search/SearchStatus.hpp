@@ -1,14 +1,32 @@
 #pragma once
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <cstdint>
 #include <type_traits>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 // ADOPTING ENUM TO THINK ABOUT THE FUTURE...
 // ONLY FEW FLAGS NOW BUT WHO KNOWS!!
 // ONLY ENABLE FLAGS THAT ARE REALLY USED!!!
-enum class SearchStatus : uint32_t {
+MOD_EXPORT enum class SearchStatus : uint32_t {
   // ----------------------
   // General Method Reports
   // ----------------------

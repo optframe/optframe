@@ -26,7 +26,7 @@
 #include <OptFrame-Core-Examples/FCore-KP/KP-fcore.hpp>
 // #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
-#include <OptFrame/InitialSearch.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT

@@ -12,10 +12,10 @@
 #include <vector>
 //
 #include <OptFCore/FCore.hpp>
-#include <OptFrame/Core.hpp>
 #include <OptFrame/Concepts/Domain.hpp>
+#include <OptFrame/Core.hpp>
+#include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/RK/InitialEPopulationRK.hpp>
-#include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 #include <OptFrame/Pareto.hpp>

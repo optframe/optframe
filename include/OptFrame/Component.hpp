@@ -60,7 +60,13 @@ using std::stringstream;
 // warning ...
 //
 
-enum LogLevel { Silent = 0, Error = 1, Warning = 2, Info = 3, Debug = 4 };
+MOD_EXPORT enum LogLevel {
+  Silent = 0,
+  Error = 1,
+  Warning = 2,
+  Info = 3,
+  Debug = 4
+};
 
 enum StringFormat {
   Undefined = 0,  // undefined... typically 'Human'

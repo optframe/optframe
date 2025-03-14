@@ -14,8 +14,8 @@
 
 #include <OptFrame/LocalSearch.hpp>
 
-#include "../ITrajectory.hpp"
-#include "../SingleObjSearch.hpp"
+#include "../Search/ITrajectory.hpp"
+#include "../Search/SingleObjSearch.hpp"
 
 // Current MultiStart is a trajectory-based method and SingleObjSearch(SoS).
 // This means:

@@ -11,7 +11,7 @@
 
 //
 #include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/InitialSearch.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 
 #include "./Evaluator.hpp"
 #include "./ProblemInstance.hpp"

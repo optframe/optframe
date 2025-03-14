@@ -12,9 +12,8 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
-#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Direction.hpp>
-#include <OptFrame/GlobalSearch.hpp>  // Base class
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
@@ -22,6 +21,7 @@
 #include <OptFrame/Pareto.hpp>
 #include <OptFrame/ParetoDominance.hpp>
 #include <OptFrame/ParetoDominanceWeak.hpp>
+#include <OptFrame/Search/GlobalSearch.hpp>  // Base class
 
 // using namespace std;
 

@@ -24,7 +24,7 @@
 #define PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 
 #include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/InitialSearch.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 // #include "../../OptFrame/Util/TestSolution.hpp"
 #include <stdlib.h>
 

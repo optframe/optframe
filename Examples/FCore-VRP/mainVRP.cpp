@@ -10,8 +10,8 @@
 
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>
+#include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/PSO.hpp>
-#include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>

@@ -24,7 +24,7 @@
 #define TSP_BEST_INSERTION_CONSTRUCTIVE_HPP_
 
 #include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/InitialSearch.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 // #include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include <stdlib.h>

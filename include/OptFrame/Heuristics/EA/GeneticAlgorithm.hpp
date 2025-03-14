@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_GENETICALGORITHM_HPP_
 #define OPTFRAME_GENETICALGORITHM_HPP_
 
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 #include <algorithm>
 #include <cassert>
 #include <chrono>

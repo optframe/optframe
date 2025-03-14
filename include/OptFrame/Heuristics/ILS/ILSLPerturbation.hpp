@@ -13,7 +13,7 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/StopCriteria.hpp>
+#include <OptFrame/Search/StopCriteria.hpp>
 
 #include "ILS.h"
 

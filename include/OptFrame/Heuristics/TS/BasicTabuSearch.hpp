@@ -12,7 +12,8 @@
 //
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSEnum.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "TS.h"
 

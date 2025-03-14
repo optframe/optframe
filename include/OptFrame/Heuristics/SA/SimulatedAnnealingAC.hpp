@@ -14,9 +14,9 @@
 
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/ILoop.hpp>
-#include <OptFrame/ITrajectory.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/ILoop.hpp>
+#include <OptFrame/Search/ITrajectory.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 #include "./HelperSA.hpp"
 #include "./SA.hpp"

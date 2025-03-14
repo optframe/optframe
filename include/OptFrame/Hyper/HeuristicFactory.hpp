@@ -23,7 +23,7 @@
 #include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 // Heuristics
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>

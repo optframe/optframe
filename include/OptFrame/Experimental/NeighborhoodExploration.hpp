@@ -34,7 +34,7 @@
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/LocalSearch.hpp>
-#include <OptFrame/SingleObjSearch.hpp>
+#include <OptFrame/Search/SingleObjSearch.hpp>
 
 // using namespace std;
 

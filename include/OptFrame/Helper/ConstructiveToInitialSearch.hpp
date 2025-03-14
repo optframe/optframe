@@ -27,9 +27,9 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-//#include "Solution.hpp"
-//#include "Solutions/CopySolution.hpp"
-#include <OptFrame/InitialSearch.hpp>  // TODO: remove
+// #include "Solution.hpp"
+// #include "Solutions/CopySolution.hpp"
+#include <OptFrame/Search/InitialSearch.hpp>  // TODO: remove
 
 namespace optframe {
 

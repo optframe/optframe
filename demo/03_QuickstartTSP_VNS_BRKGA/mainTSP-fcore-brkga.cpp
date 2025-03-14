@@ -11,8 +11,8 @@
 // implementation of TSP
 //
 #include <OptFrame/Core.hpp>
+#include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
-#include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/LocalSearch.hpp>
 
@@ -57,7 +57,6 @@ class MyRandomKeysInitEPop
     return pop;
   }
 };
-
 
 pair<Evaluation<int>, vector<int>> fDecodeEval(
     sref<Evaluator<typename ESolutionTSP::first_type,
