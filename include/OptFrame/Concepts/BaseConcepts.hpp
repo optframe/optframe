@@ -422,7 +422,7 @@ concept XSEvaluation =
 
 // XMEvaluation mimics XPowerSet... but could not use it directly!
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XMEvaluation =
     XEvaluation<Self> &&
     requires(Self e, typename Self::objType m,
@@ -437,7 +437,7 @@ MOD_EXPORT template <class Self>
 concept XESSolution =
     XESolution<Self> && XSEvaluation<typename Self::second_type>;
 
-template <class Self>
+MOD_EXPORT template <class Self>
 concept XEMSolution =
     XESolution<Self> && XMEvaluation<typename Self::second_type>;
 

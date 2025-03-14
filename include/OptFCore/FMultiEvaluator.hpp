@@ -12,22 +12,18 @@
 #include <functional>
 #include <string>
 //
-#include <OptFrame/MultiEvaluator.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
 
 namespace optframe {
 
-enum MinOrMax {
-  MINIMIZE,
-  MAXIMIZE
-};
+enum MinOrMax { MINIMIZE, MAXIMIZE };
 
 template <XESolution XMES>
-class FMultiEvaluator final : public MultiEvaluator<typename XMES::first_type,
-                                                    typename XMES::second_type,
-                                                    XMES> {
+class FMultiEvaluator final
+    : public MultiEvaluator<typename XMES::first_type,
+                            typename XMES::second_type, XMES> {
   using super = MultiEvaluator<typename XMES::first_type,
-                               typename XMES::second_type,
-                               XMES>;
+                               typename XMES::second_type, XMES>;
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   using XMSH = XMES;  // for multi objective
@@ -45,12 +41,9 @@ class FMultiEvaluator final : public MultiEvaluator<typename XMES::first_type,
       : super((Minimizing == MinOrMax::MINIMIZE)
                   ? sref<Direction<XEv>>{new Minimization<XEv>()}
                   : sref<Direction<XEv>>{new Maximization<XEv>()}),
-        fEvaluate{_fEvaluate} {
-  }
+        fEvaluate{_fEvaluate} {}
 
-  virtual XEv evaluate(const S& s) {
-    return fEvaluate(s);
-  }
+  virtual XEv evaluate(const S& s) { return fEvaluate(s); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (super::compatible(s));
@@ -62,9 +55,7 @@ class FMultiEvaluator final : public MultiEvaluator<typename XMES::first_type,
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

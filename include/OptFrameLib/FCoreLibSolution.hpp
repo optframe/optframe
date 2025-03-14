@@ -8,7 +8,7 @@
 #include <utility>
 // OptFrame C++
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Core/MultiEvaluation.hpp>
 // OptFrameLib C base
 #include <OptFrameLib/LibCTypes.h>
 

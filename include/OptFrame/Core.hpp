@@ -46,6 +46,10 @@
 //
 #include <OptFrame/Core/InitialPopulation.hpp>
 //
+#include <OptFrame/Core/MultiEvaluator.hpp>
+//
+#include <OptFrame/Core/MultiEvaluation.hpp>  // Maybe not Core... some Helper!
+//
 // #include <OptFrame/Timer.hpp>  // NOT part of Core!
 
 #endif  // OPTFRAME_CORE_HPP

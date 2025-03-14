@@ -25,7 +25,7 @@
 
 #include <OptFrame/Search/LocalSearch.hpp>
 
-#include "../MultiObjSearch.hpp"
+#include "../Search/MultiObjSearch.hpp"
 #include "../Search/SingleObjSearch.hpp"
 
 namespace optframe {
@@ -94,7 +94,8 @@ class BuildCommand {
       \endportuguese
   */
 
-  string run(HeuristicFactory<XES>& factory, map<std::string, std::string>& dictionary,
+  string run(HeuristicFactory<XES>& factory,
+             map<std::string, std::string>& dictionary,
              map<string, vector<string>>& ldictionary, string input) {
     // std::cout << "build command: " << input << std::endl;
     Scanner scanner1(input);
@@ -163,8 +164,8 @@ class BuildCommand {
         new_id = factory.addComponent(*comp, base);
       }
     } else {
-      std::cout << "build_module: error '" << type << "' is not a known builder!"
-           << std::endl;
+      std::cout << "build_module: error '" << type
+                << "' is not a known builder!" << std::endl;
       return "";
     }
 
@@ -196,15 +197,16 @@ class BuildCommand {
     else
       pattern = "OptFrame:";
 
-    std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> builders =
-        factory.listBuilders(pattern);
+    std::vector<
+        std::pair<string, std::vector<std::pair<std::string, std::string>>>>
+        builders = factory.listBuilders(pattern);
 
     if (!scanner.hasNext()) {
       for (int i = 0; i < (int)builders.size(); i++) {
         std::cout << builders[i].first << "\t";
         for (unsigned j = 0; j < builders[i].second.size(); j++)
           std::cout << builders[i].second[j].first << "=>'"
-               << builders[i].second[j].second << "' ";
+                    << builders[i].second[j].second << "' ";
         std::cout << std::endl;
       }
 

@@ -28,7 +28,7 @@
 #include <OptFrame/Timer.hpp>
 
 #include "../../MOLocalSearch.hpp"
-#include "../../MultiObjSearch.hpp"
+#include "../../Search/MultiObjSearch.hpp"
 
 namespace optframe {
 

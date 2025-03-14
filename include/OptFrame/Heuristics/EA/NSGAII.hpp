@@ -15,8 +15,8 @@
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/MultiObjSearch.hpp>
-#include <OptFrame/ParetoDominance.hpp>
+#include <OptFrame/Pareto/ParetoDominance.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
 
 namespace optframe {
 

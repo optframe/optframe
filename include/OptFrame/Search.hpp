@@ -22,5 +22,7 @@
 #include <OptFrame/Search/IPopulational.hpp>
 //
 #include <OptFrame/Search/ILoop.hpp>
+//
+#include <OptFrame/Search/MultiObjSearch.hpp>
 
 #endif  // OPTFRAME_SEARCH_HPP

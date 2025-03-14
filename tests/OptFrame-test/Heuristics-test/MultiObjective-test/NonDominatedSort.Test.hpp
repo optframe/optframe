@@ -25,7 +25,7 @@
 // core includes
 #include <OptFCore/FDirection.hpp>
 #include <OptFCore/FEvaluator.hpp>
-#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Core/MultiEvaluation.hpp>
 #include <OptFrame/Heuristics/MultiObjective/NonDominatedSort.hpp>
 
 using namespace std;       // NOLINT

@@ -29,9 +29,9 @@
 
 #include "../../Evaluation.hpp"
 #include "../../Helper/Solution.hpp"
-#include "../../MultiObjSearch.hpp"
 #include "../../ParetoDominance.hpp"
 #include "../../Population.hpp"
+#include "../../Search/MultiObjSearch.hpp"
 #include "MOSIndividual.hpp"
 
 namespace optframe {
@@ -64,11 +64,12 @@ class MOSExtIndividual : public MOSIndividual<X, ADS, DS> {
 
   void print() const override {
     std::cout << "MOSExtIndividual: parent=" << &parent
-         << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
+              << " fitness=" << this->fitness
+              << "\t diversity=" << this->diversity;
     std::cout << "\t[ ";
     for (unsigned e = 0; e < this->mev->size(); e++)
       std::cout << this->mev->at(e).evaluation()
-           << (e == this->mev->size() - 1 ? " " : " ; ");
+                << (e == this->mev->size() - 1 ? " " : " ; ");
     std::cout << " ]";
     std::cout << std::endl;
   }

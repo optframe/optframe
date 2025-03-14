@@ -26,7 +26,7 @@
 #include <OptFrame/Search/LocalSearch.hpp>
 
 #include "../Command.hpp"
-#include "../MultiObjSearch.hpp"
+#include "../Search/MultiObjSearch.hpp"
 #include "../Search/SingleObjSearch.hpp"
 #include "SystemSilentDefineCommand.hpp"
 
@@ -170,8 +170,8 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
         new_id = factory.addComponent(*comp, base);
       }
     } else {
-      std::cout << "build_module: error '" << type << "' is not a known builder!"
-           << std::endl;
+      std::cout << "build_module: error '" << type
+                << "' is not a known builder!" << std::endl;
       return false;
     }
 
@@ -210,15 +210,16 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
     else
       pattern = "OptFrame:";
 
-    std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> builders =
-        factory.listBuilders(pattern);
+    std::vector<
+        std::pair<string, std::vector<std::pair<std::string, std::string>>>>
+        builders = factory.listBuilders(pattern);
 
     if (!scanner.hasNext()) {
       for (int i = 0; i < (int)builders.size(); i++) {
         std::cout << builders[i].first << "\t";
         for (unsigned j = 0; j < builders[i].second.size(); j++)
           std::cout << builders[i].second[j].first << "=>'"
-               << builders[i].second[j].second << "' ";
+                    << builders[i].second[j].second << "' ";
         std::cout << std::endl;
       }
 
@@ -249,7 +250,8 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const map<std::string, std::string>& dictionary,
       const map<string, vector<string>>& ldictionary, string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);

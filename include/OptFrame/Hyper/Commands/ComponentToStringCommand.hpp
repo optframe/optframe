@@ -26,7 +26,7 @@
 #include <OptFrame/Search/LocalSearch.hpp>
 
 #include "../Command.hpp"
-#include "../MultiObjSearch.hpp"
+#include "../Search/MultiObjSearch.hpp"
 #include "../Search/SingleObjSearch.hpp"
 #include "SystemSilentDefineCommand.hpp"
 
@@ -111,7 +111,8 @@ class ComponentToStringCommand : public Command<R, ADS, DS> {
       text = comp->toString();
     else {
       // text = "nullptr Component!";
-      std::cout << "component.to_string command: nullptr Component!" << std::endl;
+      std::cout << "component.to_string command: nullptr Component!"
+                << std::endl;
       return false;
     }
 
@@ -132,7 +133,8 @@ class ComponentToStringCommand : public Command<R, ADS, DS> {
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const map<std::string, std::string>& dictionary,
       const map<string, vector<string>>& ldictionary, string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);

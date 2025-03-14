@@ -32,7 +32,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Heuristics/MultiObjective/FitnessAssignment.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
-#include <OptFrame/Pareto.hpp>
+#include <OptFrame/Pareto/Pareto.hpp>
 
 namespace optframe {
 
@@ -162,7 +162,8 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       //
       F[i] = Q;  // Fi = Q
       if (Component::debug)
-        std::cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q.size() << std::endl;
+        std::cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q.size()
+                  << std::endl;
     }
 
     // =====================================

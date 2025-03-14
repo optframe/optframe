@@ -17,6 +17,7 @@
 #include <OptFrame/Heuristics/LocalSearches/VND.h>
 
 #include <OptFrame/Core/GeneralEvaluator.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
@@ -32,10 +33,9 @@
 #include <OptFrame/Heuristics/MOLocalSearches/GPLS.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MOBestImprovement.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MORandomImprovement.hpp>
-#include <OptFrame/MultiEvaluator.hpp>
-#include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/ParetoManager.hpp>
 #include <OptFrame/Search/InitialSearch.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 
 #include "./ConstructiveRandom.hpp"
@@ -673,7 +673,8 @@ class ForecastClass {
                                                problemParam.getStepsAhead());
   }
 
-  vector<double>* returnErrorsPersistance(std::vector<double> targetValues, int fH) {
+  vector<double>* returnErrorsPersistance(std::vector<double> targetValues,
+                                          int fH) {
     vector<double> estimatedValues;
     int nSamples = targetValues.size();
     for (int s = 1; s < nSamples; s += fH)

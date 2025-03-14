@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HELPER_MULTIEVALUATION_HPP_
 #define OPTFRAME_HELPER_MULTIEVALUATION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 #include <valarray>
@@ -12,14 +14,30 @@
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 // evtype is default (double?)
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <optframe::objval ObjType = evtype>
+MOD_EXPORT template <optframe::objval ObjType = evtype>
 #else
-template <typename ObjType = evtype>
+MOD_EXPORT template <typename ObjType = evtype>
 #endif
 class MultiEvaluation : public Component {
  public:
@@ -54,7 +72,7 @@ class MultiEvaluation : public Component {
 #endif
   }
 
-  explicit MultiEvaluation(const vector<ObjType>& vd) {
+  explicit MultiEvaluation(const std::vector<ObjType>& vd) {
     for (unsigned i = 0; i < vd.size(); i++) vev.push_back(XEv{vd[i]});
   }
 
@@ -90,7 +108,7 @@ class MultiEvaluation : public Component {
     return false;
   }
 
-  // this is 'valarray', not vector! needs to support operators +/-
+  // this is 'valarray', not std::vector! needs to support operators +/-
   std::valarray<XEv>& evaluation() { return vev; }
 
   void addEvaluation(Evaluation<ObjType>& ev) { vev.push_back(ev); }

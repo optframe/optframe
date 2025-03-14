@@ -10,9 +10,9 @@
 
 #include "../../../Hyper/ComponentBuilder.hpp"
 #include "../../../MultiEvaluator.hpp"
-#include "../../../MultiObjSearch.hpp"
 #include "../../../NS.hpp"
 #include "../../../RandGen.hpp"
+#include "../../../Search/MultiObjSearch.hpp"
 #include "MOILS.h"
 
 namespace optframe {
@@ -37,7 +37,7 @@ class BasicMOILSPerturbation : public MOILS, public Component {
       : mEval(_mEval), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg) {
     if (pMax < pMin) {
       std::cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both."
-           << std::endl;
+                << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
@@ -45,7 +45,7 @@ class BasicMOILSPerturbation : public MOILS, public Component {
 
     if (ns.size() == 0)
       std::cout << "BasicMOILSPerturbation warning: empty neighborhood list."
-           << std::endl;
+                << std::endl;
   }
 
   // BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int
@@ -56,7 +56,7 @@ class BasicMOILSPerturbation : public MOILS, public Component {
     ns.push_back(_ns);
     if (pMax < pMin) {
       std::cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both."
-           << std::endl;
+                << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
@@ -64,7 +64,7 @@ class BasicMOILSPerturbation : public MOILS, public Component {
 
     if (ns.size() == 0)
       std::cout << "BasicMOILSPerturbation warning: empty neighborhood list."
-           << std::endl;
+                << std::endl;
   }
 
   ~BasicMOILSPerturbation() override {}
@@ -82,8 +82,9 @@ class BasicMOILSPerturbation : public MOILS, public Component {
       uptr<Move<XMES>> mp = ns[nk]->validRandomMove(smev);
 
       if (!mp) {
-        std::cout << "BasicMOILSPerturbation warning: perturbation found no valid "
-                "move for neighborhood: ";
+        std::cout
+            << "BasicMOILSPerturbation warning: perturbation found no valid "
+               "move for neighborhood: ";
         ns[nk]->print();
       } else {
         // Move<XES, XSH>& m = *mp;

@@ -28,7 +28,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/MultiEvaluator.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
 //
 
 #include "./Evaluator.hpp"

@@ -8,9 +8,9 @@
 
 #include <vector>
 
-#include "../../../MultiObjSearch.hpp"
 #include "../../../NS.hpp"
 #include "../../../RandGen.hpp"
+#include "../../../Search/MultiObjSearch.hpp"
 #include "MOILS.h"
 
 namespace optframe {
@@ -80,8 +80,8 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
         // m->applyMEVUpdate(mev, se);
         m->applyUpdate(smev);
       } else if (Component::warning)
-        std::cout << "ILS Warning: perturbation had no effect in level " << a << "!"
-             << std::endl;
+        std::cout << "ILS Warning: perturbation had no effect in level " << a
+                  << "!" << std::endl;
 
       // delete m;
     }
@@ -148,10 +148,11 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
 
     for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
 
-    std::cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << std::endl;
+    std::cout << "Printing probabilities ILSLPerturbationLPlus2Prob:"
+              << std::endl;
     for (int i = 0; i < ns.size(); i++)
       std::cout << "pNS[i].first: " << pNS[i].first
-           << "\t pNS[i].second: " << pNS[i].second << std::endl;
+                << "\t pNS[i].second: " << pNS[i].second << std::endl;
     std::cout << std::endl;
   }
 
@@ -180,8 +181,8 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
         // Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
         m->applyUpdate(smev);
       } else if (Component::warning)
-        std::cout << "ILS Warning: perturbation had no effect in level " << a << "!"
-             << std::endl;
+        std::cout << "ILS Warning: perturbation had no effect in level " << a
+                  << "!" << std::endl;
 
       delete m;
     }

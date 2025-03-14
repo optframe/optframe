@@ -20,14 +20,14 @@
 #include <OptFrame/Hyper/Loader.hpp>
 
 #include "Evaluator.cpp"  // TODO: very strange!!
-//#include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
-//#include "../OptFrame/Heuristics/2PPLS.hpp"
-#include <OptFrame/MultiEvaluator.hpp>
-#include <OptFrame/MultiObjSearch.hpp>
-//#include "../OptFrame/Util/UnionNDSets.hpp"
+// #include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
+// #include "../OptFrame/Heuristics/2PPLS.hpp"
+#include <OptFrame/Core/MultiEvaluator.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
+// #include "../OptFrame/Util/UnionNDSets.hpp"
 
+#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Helper/ConstructiveToInitialSearch.hpp>
-#include <OptFrame/MultiEvaluator.hpp>
 
 #include "MODM/MODM.h"
 #include "OptFrame/Heuristics/GRASP/GRConstructive.hpp"
@@ -94,16 +94,17 @@ int main(int argc, char** argv) {
   int nOfArguments = 7;
   if (argc != (1 + nOfArguments)) {
     std::cout << "Parametros incorretos!" << std::endl;
-    std::cout << "Os parametros esperados sao: \n"
-            "1 - instancia \n"
-            "2 - saida - for saving solutions for each execution - type write\n"
-            "3 - saida geral -- general file for savings all results - type "
-            "append \n"
-            "4 - timeILS\n"
-            "5 - alpha Builder Int\n"
-            "6 - alpha NS Int \n"
-            "7 - initial population size \n"
-         << std::endl;
+    std::cout
+        << "Os parametros esperados sao: \n"
+           "1 - instancia \n"
+           "2 - saida - for saving solutions for each execution - type write\n"
+           "3 - saida geral -- general file for savings all results - type "
+           "append \n"
+           "4 - timeILS\n"
+           "5 - alpha Builder Int\n"
+           "6 - alpha NS Int \n"
+           "7 - initial population size \n"
+        << std::endl;
     exit(1);
   }
 
@@ -348,8 +349,8 @@ getchar();
         vector<vector<double> > paretoDoubleEval;
         vector<vector<double> > paretoDoubleEvalMin;
 
-        std::cout << "MO optimization finished! Printing Pareto Front!" << std::endl;
-        for (int i = 0; i < nObtainedParetoSol; i++)
+        std::cout << "MO optimization finished! Printing Pareto Front!" <<
+     std::endl; for (int i = 0; i < nObtainedParetoSol; i++)
         {
 
                 Solution<SolutionMODM>* sol = vSolPf[i];
@@ -367,7 +368,8 @@ getchar();
                 paretoDoubleEvalMin.push_back(solEvaluations);
 
                 vector<int> nPerCat =
-     evalRobustness.checkNClientsPerCategory(rep, ads); std::cout << foProfit << "\t"
+     evalRobustness.checkNClientsPerCategory(rep, ads); std::cout << foProfit <<
+     "\t"
      << foVolatility << "\t";
 
                 int nTotalClients = nPerCat[nPerCat.size() - 1];
@@ -392,9 +394,9 @@ getchar();
         std::cout << "Set Coverage to ref = " << sCToRef << std::endl;
         std::cout << "Set Coverage from ref  = " << sCFromRef << std::endl;
         std::cout << "delta  = " << delta << std::endl;
-        std::cout << "deltaRef  = " << US.deltaMetric(refMin, utopicSol) << std::endl;
-        std::cout << "hv  = " << hv << std::endl;
-        std::cout << "ref  = " << hipervolume(refMin) << std::endl;
+        std::cout << "deltaRef  = " << US.deltaMetric(refMin, utopicSol) <<
+     std::endl; std::cout << "hv  = " << hv << std::endl; std::cout << "ref  = "
+     << hipervolume(refMin) << std::endl;
 
         FILE* fGeral = fopen(outputGeral.c_str(), "a");
 

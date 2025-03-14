@@ -13,7 +13,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Core/MultiEvaluation.hpp>
 // included for Neighborhood Exploration
 #include <OptFrame/Core/GeneralEvaluator.hpp>
 

@@ -10,9 +10,9 @@
 #include "../../../InitialPareto.hpp"
 #include "../../../MOLocalSearch.hpp"
 #include "../../../MultiEvaluator.hpp"
-#include "../../../MultiObjSearch.hpp"
 #include "../../../NSSeq.hpp"
 #include "../../../Pareto.hpp"
+#include "../../../Search/MultiObjSearch.hpp"
 #include "MOILS.h"
 
 namespace optframe {
@@ -60,25 +60,28 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
     //
     Timer tnow;
     Pareto<XMES> x_e;
-    std::cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << std::endl;
+    std::cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")"
+              << std::endl;
 
     // if (_pf == nullptr) {
     if (p == nullopt) {
       if (Component::information)
-        std::cout << "Creating initial population using a initial pareto method:"
-             << init_pop_size << std::endl;
+        std::cout
+            << "Creating initial population using a initial pareto method:"
+            << init_pop_size << std::endl;
 
       if (tnow.now() < stopCriteria.timelimit)
         x_e = init_pareto->generatePareto(init_pop_size,
                                           stopCriteria.timelimit - tnow.now());
 
       if (Component::information)
-        std::cout << "Population generated with " << x_e.size() << " individuals!"
-             << std::endl;
+        std::cout << "Population generated with " << x_e.size()
+                  << " individuals!" << std::endl;
     } else {
       assert(p->size() > 0);
       if (Component::information)
-        std::cout << "Extracting Pareto Front given as parameter..." << std::endl;
+        std::cout << "Extracting Pareto Front given as parameter..."
+                  << std::endl;
 
       // x_e = std::move(*_pf); //check this move with AIIIGOR todo
       x_e = std::move(*p);  // Igor: VITORRRRR this is even worse now! hahaha
@@ -87,7 +90,7 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
 
       if (Component::information)
         std::cout << "Extracting PF contains " << x_e.size() << " individuals."
-             << std::endl;
+                  << std::endl;
     }
 
     //		vector<bool> visited;
@@ -156,8 +159,8 @@ class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
 
     // std::cout << "MOILS finished with " << pReturn->size() << " non-dominated
     // solutions." << std::endl;
-    std::cout << "MOILS finished with " << p->size() << " non-dominated solutions."
-         << std::endl;
+    std::cout << "MOILS finished with " << p->size()
+              << " non-dominated solutions." << std::endl;
 
     delete history;
     // return pReturn;

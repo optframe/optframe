@@ -23,6 +23,8 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
+#include <OptFrame/Core/MultiEvaluatorBuilder.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
@@ -54,7 +56,7 @@
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Hyper/RandGenBuilder.hpp>
 #include <OptFrame/Hyper/TimerBuilder.hpp>
-#include <OptFrame/MultiObjSearch.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 // base components

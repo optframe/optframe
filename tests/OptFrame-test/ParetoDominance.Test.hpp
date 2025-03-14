@@ -24,7 +24,7 @@
 
 // core includes
 #include <OptFCore/FEvaluator.hpp>
-#include <OptFrame/ParetoDominance.hpp>
+#include <OptFrame/Pareto/ParetoDominance.hpp>
 
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT

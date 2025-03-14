@@ -118,10 +118,16 @@ target_link_libraries(optframe_core PUBLIC optframe_concepts)
 target_link_libraries(optframe_core PUBLIC optframe_values)
 target_link_libraries(optframe_core PUBLIC optframe_timer)
 
+add_library(optframe_pareto)
+target_link_libraries(optframe_pareto PUBLIC OptFrameAll)
+target_sources(optframe_pareto  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/pareto.cppm)
+target_link_libraries(optframe_pareto PUBLIC optframe_core)
+
 add_library(optframe_search)
 target_link_libraries(optframe_search PUBLIC OptFrameAll)
 target_sources(optframe_search  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/search.cppm)
 target_link_libraries(optframe_search PUBLIC optframe_core)
+target_link_libraries(optframe_search PUBLIC optframe_pareto)
 
 
 add_library(optframe_heuristics)

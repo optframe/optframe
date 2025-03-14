@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_PARETO_HPP_
 #define OPTFRAME_PARETO_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <cstring>
 #include <iostream>
@@ -11,15 +13,31 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Direction.hpp>
-#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/MultiEvaluation.hpp>
 // #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solutions/ESolution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
-// #include <OptFrame/MultiEvaluator.hpp>
-#include <OptFrame/ParetoDominance.hpp>
-#include <OptFrame/ParetoDominanceWeak.hpp>
+// #include <OptFrame/Core/MultiEvaluator.hpp>
+#include <OptFrame/Pareto/ParetoDominance.hpp>
+#include <OptFrame/Pareto/ParetoDominanceWeak.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // using namespace std;
 
@@ -40,7 +58,7 @@ namespace optframe {
 
 #define DEFAULT_PARETO_XES std::pair<S, XEv>
 
-template <XEMSolution XMES>
+MOD_EXPORT template <XEMSolution XMES>
 class Pareto {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
@@ -60,10 +78,10 @@ class Pareto {
 
  private:
   // all individuals are safely stored here
-  vector<uptr<XMES>> paretoSetFront;
+  std::vector<uptr<XMES>> paretoSetFront;
   // these are just mirrors of stored set above
-  vector<S*> paretoSet;
-  vector<XMEv*> paretoFront;
+  std::vector<S*> paretoSet;
+  std::vector<XMEv*> paretoFront;
   //
   // mark if solution was added
   bool added;
@@ -135,18 +153,18 @@ class Pareto {
 
   void push_back(const XMES& se) {
     XMES* u_se_ptr = new XMES{se};
-    // data is divided into two auxiliary vectors (why?)
+    // data is divided into two auxiliary std::vectors (why?)
     paretoSet.push_back(&u_se_ptr->first);
     paretoFront.push_back(&u_se_ptr->second);
     // data is safely stored on paretoSetFront
     paretoSetFront.push_back(uptr<XMES>(u_se_ptr));
   }
 
-  //	void push_back(S* s, vector<Evaluation<>*>& v_e)
+  //	void push_back(S* s, std::vector<Evaluation<>*>& v_e)
   //	{
-  //		cout << "something is called inside strange push_back" << std::endl;
-  //		getchar();
-  //		paretoSet.push_back(&s->clone()); // clone, otherwise it is
+  //		cout << "something is called inside strange push_back" <<
+  // std::endl; 		getchar();
+  // paretoSet.push_back(&s->clone()); // clone, otherwise it is
   // deleted 		paretoFront.push_back(new MultiEvaluation(v_e));
   //	}
 
@@ -191,10 +209,10 @@ class Pareto {
   XMES& at(unsigned index) { return getP(index); }
 
   // return "observer pointers" mirroring internal pareto set / front
-  vector<XMES*> getParetoSetFrontPtr() {
+  std::vector<XMES*> getParetoSetFrontPtr() {
     // mirror raw pointers (observers)
     // not using observer_ptr now, or optr, just to keep it more 'friendly' :)
-    vector<XMES*> paretoSetFrontPtr(paretoSetFront.size(), nullptr);
+    std::vector<XMES*> paretoSetFrontPtr(paretoSetFront.size(), nullptr);
     for (unsigned i = 0; i < paretoSetFront.size(); i++)
       paretoSetFrontPtr[i] = paretoSetFront[i].get();
     //
@@ -202,10 +220,10 @@ class Pareto {
   }
 
   // return "observer pointers" mirroring internal pareto front
-  vector<XMEv*> getParetoFrontPtr() {
+  std::vector<XMEv*> getParetoFrontPtr() {
     // mirror raw pointers (observers)
     // not using observer_ptr now, or optr, just to keep it more 'friendly' :)
-    vector<XMEv*> paretoFrontPtr(paretoSetFront.size(), nullptr);
+    std::vector<XMEv*> paretoFrontPtr(paretoSetFront.size(), nullptr);
     for (unsigned i = 0; i < paretoSetFront.size(); i++)
       paretoFrontPtr[i] = &paretoSetFront[i]->second;
     //
@@ -213,12 +231,12 @@ class Pareto {
   }
 
   /*
-        vector<S*> getParetoSet()
+        std::vector<S*> getParetoSet()
         {
                 return paretoSet;
         }
 
-   vector<XMEv*> getParetoFront()
+   std::vector<XMEv*> getParetoFront()
         {
                 return paretoFront;
         }
@@ -300,7 +318,7 @@ class Pareto {
   }
 
   // TODO fix export with new evaluation type
-  void exportParetoFront(string output, const char* exportType) {
+  void exportParetoFront(std::string output, const char* exportType) {
     FILE* fPF = fopen(output.c_str(), exportType);
     assert(fPF);
     for (int i = 0; i < (int)paretoSetFront.size(); i++) {
@@ -316,9 +334,9 @@ class Pareto {
     fclose(fPF);
   }
 
-  static vector<XMEv> filterDominatedMEV(sref<IEvaluator<XMES>> mev,
-                                         const vector<XMEv>& candidates) {
-    vector<XMEv> nonDom;
+  static std::vector<XMEv> filterDominatedMEV(
+      sref<IEvaluator<XMES>> mev, const std::vector<XMEv>& candidates) {
+    std::vector<XMEv> nonDom;
 
     ParetoDominance<XES, XMES> pDom(mev);
     ParetoDominanceWeak<XES, XMES> pDomWeak(mev);
@@ -329,10 +347,11 @@ class Pareto {
     return nonDom;
   }
 
-  static vector<XMES> filterDominated(sref<MultiEvaluator<XES, XMES>> mev,
-                                      const vector<XMES>& candidates) {
+  static std::vector<XMES> filterDominated(
+      sref<MultiEvaluator<XES, XMES>> mev,
+      const std::vector<XMES>& candidates) {
     // store non dominated on 'nonDom'
-    vector<XMES> nonDom;
+    std::vector<XMES> nonDom;
     //
     ParetoDominance<XES, XMES> pDom(mev);
     ParetoDominanceWeak<XES, XMES> pDomWeak(mev);
@@ -349,10 +368,11 @@ class Pareto {
 
   // T. Lust et al (method addSolution)
   // class T must be handled by ParetoDominance operators (candidate:
-  // vector<double>, vector<Evaluation<>*>, MultiEvaluation<>*)
+  // std::vector<double>, std::vector<Evaluation<>*>, MultiEvaluation<>*)
 
   //	template<class T>
-  //	static bool addSolution(std::vector<Direction*>& vDir, vector<T*>& nonDom, T*
+  //	static bool addSolution(std::vector<Direction*>& vDir, std::vector<T*>&
+  // nonDom, T*
   // candidate)
   //	{
   //		ParetoDominance<XES, XMES> dom(vDir);
@@ -363,7 +383,7 @@ class Pareto {
   // template <class T>
   static bool addSolution(ParetoDominance<XES, XMES>& dom,
                           ParetoDominanceWeak<XES, XMES>& domWeak,
-                          vector<XMES>& nonDom, const XMES& candidate) {
+                          std::vector<XMES>& nonDom, const XMES& candidate) {
     for (int ind = 0; ind < (int)nonDom.size(); ind++) {
       if (domWeak.dominates(nonDom.at(ind).second, candidate.second))
         return false;
@@ -425,7 +445,7 @@ class Pareto {
 
   //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
   // ParetoDominanceWeak<XES, XMES>& domWeak, pair<Pareto<XMES>,
-  // vector<vector<bool>
+  // std::vector<vector<bool>
   // >
   //>& p, S* candidate, int neighboorsSize)
   //
@@ -487,7 +507,8 @@ class Pareto {
 
   //	template<class T>
   //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
-  // ParetoDominanceWeak<XES, XMES>& domWeak, vector<T>& nonDom, T candidate)
+  // ParetoDominanceWeak<XES, XMES>& domWeak, std::vector<T>& nonDom, T
+  // candidate)
   //	{
   //		for (int ind = 0; ind < nonDom.size(); ind++)
   //		{
@@ -549,7 +570,7 @@ class Pareto {
   // Special addSolution used in the 2PPLS speedUp
   //	static bool addSolution(ParetoDominance<XES, XMES>& dom,
   // ParetoDominanceWeak<XES, XMES>& domWeak, pair<Population<XES>,
-  // vector<vector<bool> > >& p, S& s, int neighboorsSize)
+  // std::vector<vector<bool> > >& p, S& s, int neighboorsSize)
   //	{
   //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
   //		vector<double> fitnessNewInd;

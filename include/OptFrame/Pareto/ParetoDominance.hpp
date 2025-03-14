@@ -4,22 +4,38 @@
 #ifndef OPTFRAME_PARETODOMINANCE_HPP_  // NOLINT
 #define OPTFRAME_PARETODOMINANCE_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <cmath>
 #include <iostream>
 #include <utility>
 //
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/Core/Direction.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/MultiEvaluator.hpp>
 
-// using namespace std;
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
-template <XESolution XES, XEMSolution XMES>
+MOD_EXPORT template <XESolution XES, XEMSolution XMES>
 class ParetoDominance {
   using S = typename XES::first_type;
   using XMEv = typename XMES::second_type;
@@ -61,8 +77,8 @@ class ParetoDominance {
         {
                 if (mev.size() == 0)
                 {
-                        std::cout << "ParetoDominance::error! not implemented for
-   direction only!" << std::endl; exit(1);
+                        std::cout << "ParetoDominance::error! not implemented
+   for direction only!" << std::endl; exit(1);
                 }
 
                 MultiEvaluation<> mev1(std::move(mev.evaluate(s1)));
@@ -81,20 +97,21 @@ class ParetoDominance {
 
   // true if 's1' dominates 's2'
   virtual bool dominates(const XMEv& mev1, const XMEv& mev2) {
-    pair<int, int> betterEquals = checkDominates(mev1, mev2);
+    std::pair<int, int> betterEquals = checkDominates(mev1, mev2);
     int better = betterEquals.first;
     int equals = betterEquals.second;
 
     return ((better + equals == (int)mev1.size()) && (better > 0));
   }
 
-  // return a pair of better and equals
-  pair<int, int> checkDominates(const XMEv& mev1, const XMEv& mev2) {
+  // return a std::pair of better and equals
+  std::pair<int, int> checkDominates(const XMEv& mev1, const XMEv& mev2) {
     if ((mev1.size() != mev2.size()) || (mev1.size() == 0) ||
         (mev2.size() == 0)) {
       // if (Component::warning)
-      std::cout << "WARNING in ParetoDominance: different sizes or empty!" << std::endl;
-      return make_pair(-1, -1);
+      std::cout << "WARNING in ParetoDominance: different sizes or empty!"
+                << std::endl;
+      return std::make_pair(-1, -1);
     }
 
     int better = 0;
@@ -109,20 +126,21 @@ class ParetoDominance {
       //
     }
 
-    return make_pair(better, equals);
+    return std::make_pair(better, equals);
   }
 
-  // returns pair: (true, if 's1' dominates 's2'; true, if 's2' dominates 's1')
-  virtual pair<bool, bool> birelation(const XMEv& v1, const XMEv& v2) {
+  // returns std::pair: (true, if 's1' dominates 's2'; true, if 's2' dominates
+  // 's1')
+  virtual std::pair<bool, bool> birelation(const XMEv& v1, const XMEv& v2) {
     bool b1 = dominates(v1, v2);
     bool b2 = dominates(v2, v1);
-    return make_pair(b1, b2);
+    return std::make_pair(b1, b2);
   }
 
   /*
-  virtual pair<bool, bool> birelation(const XMEv& mev1,
+  virtual std::pair<bool, bool> birelation(const XMEv& mev1,
                                       const XMEv& mev2) {
-    pair<int, int> betterEquals = checkDominates(mev1, mev2);
+    std::pair<int, int> betterEquals = checkDominates(mev1, mev2);
     int better = betterEquals.first;
     int equals = betterEquals.second;
 
@@ -133,7 +151,7 @@ class ParetoDominance {
     // 'v2' dominates 'v1'?
     bool b2 = (better2 + equals == N) && (better2 > 0);
 
-    return make_pair(b1, b2);
+    return std::make_pair(b1, b2);
   }
   */
 };

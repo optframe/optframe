@@ -25,7 +25,7 @@
 
 #include <OptFrame/Timer.hpp>
 
-#include "../../MultiObjSearch.hpp"
+#include "../../Search/MultiObjSearch.hpp"
 
 // EXTENDED PARETO
 #include "../../ExtendedMultiObjSearch.hpp"
@@ -210,7 +210,8 @@ class DecodedPopulationMultiObjSearch
       ExtendedPareto<R, X, ADS, DS>* _pf = nullptr) {
     Timer timer;
 
-    std::cout << "Population Based Multi Objective Search search()" << std::endl;
+    std::cout << "Population Based Multi Objective Search search()"
+              << std::endl;
 
     vector<double> best = this->initializeBounds();
 
@@ -295,12 +296,12 @@ class DecodedPopulationMultiObjSearch
  PopulationBasedMultiObjSearch<R, ADS, DS>
  {
  public:
- DecoderClassicNSGAII(std::vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>&
- muev, InitialPopulation<XES>& initPop, vector<NS<RepCARP>*> mutations, double
- mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate,
- RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
- DecoderPopulationBasedMultiObjSearch<R, ADS, DS>(vDir, (vDir.size() == 2 ? *new
- BiObjNonDominatedSort<R, ADS, DS>(vDir) : *new NonDominatedSort<R, ADS,
+ DecoderClassicNSGAII(std::vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS,
+ DS>& muev, InitialPopulation<XES>& initPop, vector<NS<RepCARP>*> mutations,
+ double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double
+ renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000)
+ : DecoderPopulationBasedMultiObjSearch<R, ADS, DS>(vDir, (vDir.size() == 2 ?
+ *new BiObjNonDominatedSort<R, ADS, DS>(vDir) : *new NonDominatedSort<R, ADS,
  DS>(vDir)), *new CrowdingDistance<R, ADS, DS>(vDir), *new NSGAIISelection<R,
  ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(muev, initPop, mutations,
  mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)

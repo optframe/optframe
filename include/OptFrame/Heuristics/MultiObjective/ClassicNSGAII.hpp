@@ -11,7 +11,7 @@
 #include <OptFrame/Heuristics/MultiObjective/BiObjNonDominatedSort.hpp>
 #include <OptFrame/Heuristics/MultiObjective/NonDominatedSort.hpp>
 
-#include "OptFrame/Pareto.hpp"
+#include "OptFrame/Pareto/Pareto.hpp"
 
 namespace optframe {
 

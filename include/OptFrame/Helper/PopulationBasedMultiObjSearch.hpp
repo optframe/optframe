@@ -14,10 +14,10 @@
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSSelection.hpp>
 #include <OptFrame/MultiDirection.hpp>
-#include <OptFrame/MultiObjSearch.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
-#include "OptFrame/Pareto.hpp"
+#include "OptFrame/Pareto/Pareto.hpp"
 
 namespace optframe {
 

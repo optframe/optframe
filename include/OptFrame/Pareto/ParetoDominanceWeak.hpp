@@ -4,18 +4,36 @@
 #ifndef OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 #define OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <cmath>
 #include <iostream>
 #include <utility>
 //
-#include <OptFrame/Helper/MultiEvaluation.hpp>
-#include <OptFrame/ParetoDominance.hpp>
+#include <OptFrame/Core/MultiEvaluation.hpp>
+#include <OptFrame/Pareto/ParetoDominance.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // using namespace std;
 
 namespace optframe {
 
-template <XESolution XES, XEMSolution XMES>
+MOD_EXPORT template <XESolution XES, XEMSolution XMES>
 class ParetoDominanceWeak : public ParetoDominance<XES, XMES> {
  public:
   using S = typename XMES::first_type;

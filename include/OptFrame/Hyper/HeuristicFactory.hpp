@@ -20,9 +20,9 @@
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Hyper/ComponentHelper.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
-#include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 // Hyper
@@ -406,7 +406,8 @@ class HeuristicFactory {
 
     int idx = components[id].size() - 1;
 
-    // std::cout << "HeuristicFactory: added component '" << id << " " << idx << "'"
+    // std::cout << "HeuristicFactory: added component '" << id << " " << idx <<
+    // "'"
     // << std::endl;
 
     return idx;
@@ -444,7 +445,8 @@ class HeuristicFactory {
     return addComponentList(sptrList, _listId);
   }
 
-  int addComponentList(std::vector<sptr<Component>>& cList, std::string _listId) {
+  int addComponentList(std::vector<sptr<Component>>& cList,
+                       std::string _listId) {
     // type checking for safety!
     string noList = ComponentHelper::typeOfList(_listId);
     string listId = noList;
@@ -554,13 +556,17 @@ class HeuristicFactory {
                  \sa listComponents(string)
          */
 
-  std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> listBuilders(
-      string pattern) {
-    std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> list;
+  std::vector<
+      std::pair<string, std::vector<std::pair<std::string, std::string>>>>
+  listBuilders(string pattern) {
+    std::vector<
+        std::pair<string, std::vector<std::pair<std::string, std::string>>>>
+        list;
 
     for (unsigned i = 0; i < builders.size(); i++)
       if (ComponentHelper::compareBase(pattern, builders[i]->id()))
-        list.push_back(std::make_pair(builders[i]->id(), builders[i]->parameters()));
+        list.push_back(
+            std::make_pair(builders[i]->id(), builders[i]->parameters()));
 
     return list;
   }

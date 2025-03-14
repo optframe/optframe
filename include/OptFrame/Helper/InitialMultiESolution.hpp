@@ -13,9 +13,9 @@
 #include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
-#include <OptFrame/MultiEvaluator.hpp>
 
 // #include "EA.hpp"
 

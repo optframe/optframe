@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_MULTIOBJSEARCH_HPP_
 #define OPTFRAME_MULTIOBJSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <cstring>
 #include <iostream>
@@ -14,14 +16,30 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Core/MultiEvaluation.hpp>
+#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
-#include <OptFrame/MultiEvaluator.hpp>
-#include <OptFrame/Pareto.hpp>
-#include <OptFrame/ParetoDominance.hpp>
-#include <OptFrame/ParetoDominanceWeak.hpp>
+#include <OptFrame/Pareto/Pareto.hpp>
+#include <OptFrame/Pareto/ParetoDominance.hpp>
+#include <OptFrame/Pareto/ParetoDominanceWeak.hpp>
 #include <OptFrame/Search/GlobalSearch.hpp>  // Base class
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // using namespace std;
 
@@ -39,10 +57,11 @@ concept XMultiObjSearch = requires(Self a) {
 // MUST FIX IndividualNSGAII and other problematic implementations...
 // BASE TYPE XMES IS NOW FINALLY REQUIRED TO BE XEMSolution!
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XEMSolution XMES, XESolution XMES2 = XMES,
-          XSearch<XMES2> XMSH2 = XMES2>
+MOD_EXPORT template <XEMSolution XMES, XESolution XMES2 = XMES,
+                     XSearch<XMES2> XMSH2 = XMES2>
 #else
-template <typename XMES, typename XMES2 = XMES, typename XMSH2 = XMES2>
+MOD_EXPORT template <typename XMES, typename XMES2 = XMES,
+                     typename XMSH2 = XMES2>
 #endif
 class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
   using XMSH = Pareto<XMES>;  // PRIMARY/BEST search space
@@ -84,38 +103,6 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
     ss << Component::idComponent() << "MultiObjSearch"
        << Domain::getAlternativeDomain<XMSH>("<X2MESf64>") << ":";
     // NOTE THAT: PRIMARY/BEST IS ALWAYS X2MESf64 FOR MULTI-OBJ-SEARCH
-    return ss.str();
-  }
-
-  std::string id() const override { return idComponent(); }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
-#else
-template <typename XES>
-#endif
-class MultiObjSearchBuilder : public ComponentBuilder<XES> {
- public:
-  virtual ~MultiObjSearchBuilder() = default;
-
-  // NOLINTNEXTLINE
-  virtual MultiObjSearch<XES>* build(Scanner& scanner,
-                                     HeuristicFactory<XES>& hf,
-                                     string family = "") = 0;
-  // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    return build(scanner, hf, family);
-  }
-
-  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
-
-  bool canBuild(string) override = 0;
-
-  static std::string idComponent() {
-    std::stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << "MultiObjSearch:";
     return ss.str();
   }
 
