@@ -19,6 +19,8 @@
 //
 #include <OptFrame/Search/ITrajectory.hpp>
 //
+#include <OptFrame/Search/IPopulational.hpp>
+//
 #include <OptFrame/Search/ILoop.hpp>
 
 #endif  // OPTFRAME_SEARCH_HPP

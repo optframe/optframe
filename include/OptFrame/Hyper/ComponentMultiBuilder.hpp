@@ -30,11 +30,11 @@
 //
 
 #include <OptFrame/Component.hpp>
-//#include "Evaluation.hpp"
+// #include "Evaluation.hpp"
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
-//#include "Solution.hpp"
-//#include "Solutions/CopySolution.hpp"
+// #include "Solution.hpp"
+// #include "Solutions/CopySolution.hpp"
 #include <OptFrame/Scanner++/Scanner.hpp>
 
 using scannerpp::Scanner;

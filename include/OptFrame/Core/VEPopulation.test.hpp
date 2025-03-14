@@ -4,8 +4,8 @@
 #include <utility>
 //
 #include <OptFrame/Core/Evaluation.hpp>  // JUST FOR TESTING!
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Helper/Solution.hpp>  // JUST FOR TESTING!
-#include <OptFrame/Helper/VEPopulation.hpp>
 
 namespace optframe {
 

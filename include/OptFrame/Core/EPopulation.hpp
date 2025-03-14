@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_EPOPULATION_HPP_
 #define OPTFRAME_EPOPULATION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <string>
 #include <utility>
@@ -14,13 +16,29 @@
 // #include <OptFrame/Core/Evaluator.hpp>
 // #include <OptFrame/Helper/Solution.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 //
 // EPopulation class is 'final' (WHY??? NOT ANYMORE...)
 //
 // REQUIRES ostream on XES
-template <XESolution XES>  // XES only for evaluation purposes!
+MOD_EXPORT template <XESolution XES>  // XES only for evaluation purposes!
 class EPopulation : public Component {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;

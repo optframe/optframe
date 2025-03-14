@@ -123,6 +123,7 @@ target_link_libraries(optframe_search PUBLIC OptFrameAll)
 target_sources(optframe_search  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/search.cppm)
 target_link_libraries(optframe_search PUBLIC optframe_core)
 
+
 add_library(optframe_heuristics)
 target_link_libraries(optframe_heuristics PUBLIC OptFrameAll)
 target_sources(optframe_heuristics  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/heuristics.cppm)

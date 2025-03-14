@@ -4,23 +4,41 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
 #define OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <algorithm>
 #include <utility>
 #include <vector>
 //
 
-#include <OptFrame/IPopulational.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
+#include <OptFrame/Search/IPopulational.hpp>
+#include <OptFrame/Search/InitialPopulation.hpp>
+#include <OptFrame/Search/SearchStatus.hpp>
 
-#include "../../../InitialPopulation.hpp"
 #include "../../../Search/SingleObjSearch.hpp"
 #include "../Crossover.hpp"
 #include "../Elitism.hpp"
 #include "../Mutation.hpp"
 #include "../Selection.hpp"
 #include "DecoderRandomKeys.hpp"
-#include "OptFrame/Concepts/MyConcepts.hpp"
-#include "OptFrame/Search/SearchStatus.hpp"
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // RKGA - Random Key Genetic Algorithms
 // Bean, J.C.: Genetic algorithms and random keys for
@@ -32,8 +50,8 @@ namespace optframe {
 // template<XRSolution<random_keys> RSK = RSolution<random_keys>, XEvaluation
 // XEv = Evaluation<>>
 //
-template <XEvaluation XEv = Evaluation<>,
-          ConceptsComparability KeyType = double>
+MOD_EXPORT template <XEvaluation XEv = Evaluation<>,
+                     ConceptsComparability KeyType = double>
 class RandomKeysInitEPop
     : public InitialEPopulation<std::pair<std::vector<KeyType>, XEv>> {
   using RSK = std::vector<KeyType>;
@@ -154,7 +172,7 @@ class RKGA : public Populational<XES, XES, XES2> {
     for (unsigned i = 0; i < p.size(); ++i) {
       // random_keys& rk = p.at(i).getR();
       random_keys& rk = p.at(i).first;
-      pair<XEv, op<S>> pe = decoder->decode(rk, false);
+      std::pair<XEv, op<S>> pe = decoder->decode(rk, false);
       //
       // p.setFitness(i, pe.first.evaluation());
       p.at(i).second = pe.first.evaluation();
@@ -300,7 +318,8 @@ class RKGA : public Populational<XES, XES, XES2> {
 
     if (Component::information)
       (*Component::logdata)
-          << "RKGA: best fitness at initial population: " << best_f << std::endl;
+          << "RKGA: best fitness at initial population: " << best_f
+          << std::endl;
 
     // stop by number of generations.
     // other stopping criteria? TIME, GAP, ...
@@ -394,8 +413,9 @@ class RKGA : public Populational<XES, XES, XES2> {
           (!decoder->isMinimization() && pop_best > best_f)) {
         best_f = pop_best;
         if (Component::debug)
-          (*Component::logdata) << "RKGA: best fitness " << best_f
-                                << " at generation " << ctx.count_gen << std::endl;
+          (*Component::logdata)
+              << "RKGA: best fitness " << best_f << " at generation "
+              << ctx.count_gen << std::endl;
 
         // send machine logs (TODO: check which format... txt, json... suppose
         // 'txt')
@@ -407,7 +427,7 @@ class RKGA : public Populational<XES, XES, XES2> {
 
         // TODO: do we need to decode this all the time, or only when exiting?
         RSK best_rkeys = p.at(0).first;
-        pair<XEv, op<S>> pe = decoder->decode(best_rkeys, true);
+        std::pair<XEv, op<S>> pe = decoder->decode(best_rkeys, true);
         if (pe.second) {
           star = op<XES>(XES{*pe.second, pe.first});
           // check update callback
@@ -436,7 +456,7 @@ class RKGA : public Populational<XES, XES, XES2> {
 
     // TODO: we should enfoce a boolean here (NEEDS SOLUTION = TRUE!!)
     // pair<XEv, op<S>> pe = decoder.decode(best.getR(), true);
-    pair<XEv, op<S>> pe = decoder->decode(best, true);
+    std::pair<XEv, op<S>> pe = decoder->decode(best, true);
     XEv& e = pe.first;
 
     // WARNING: something VERY strange here... why returning random_keys and not
@@ -456,11 +476,12 @@ class RKGA : public Populational<XES, XES, XES2> {
       std::cout << "RKGA print sol: optional(" << ((bool)pe.second) << ") -> ";
       if (!pe.second) {
         std::cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: "
-             << pe.first.evaluation() << std::endl;
-        std::cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO "
-                "AT "
-                "LEAST PROVIDE A SOLUTION?"
-             << std::endl;
+                  << pe.first.evaluation() << std::endl;
+        std::cout
+            << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO "
+               "AT "
+               "LEAST PROVIDE A SOLUTION?"
+            << std::endl;
         assert(false);
       }
     }

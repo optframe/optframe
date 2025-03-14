@@ -20,6 +20,7 @@ int main() {
   sptr<LocalSearch<MyESolution>> ls;
   sptr<BestImprovement<MyESolution>> bi;
   sptr<IteratedLocalSearchLevels<MyESolution>> ils;
+  sptr<BRKGA<MyESolution>> brkga;
   std::print("now {}", t.now());
   return 0;
 }

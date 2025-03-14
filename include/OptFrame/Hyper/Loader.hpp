@@ -27,8 +27,8 @@
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Search/InitialPopulation.hpp>
 #include <OptFrame/Timer.hpp>
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/printable/printable.hpp>
@@ -100,6 +100,7 @@
 // #include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
+#include <OptFrame/Heuristics/EA/RK/BRKGABuilder.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicInitialEPopulationRK.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOPopulationManagement.hpp>

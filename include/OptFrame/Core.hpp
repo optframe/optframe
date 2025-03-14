@@ -40,6 +40,12 @@
 //
 #include <OptFrame/Core/NSEnum.hpp>
 //
+#include <OptFrame/Core/EPopulation.hpp>
+//
+#include <OptFrame/Core/VEPopulation.hpp>
+//
+#include <OptFrame/Core/InitialPopulation.hpp>
+//
 // #include <OptFrame/Timer.hpp>  // NOT part of Core!
 
 #endif  // OPTFRAME_CORE_HPP

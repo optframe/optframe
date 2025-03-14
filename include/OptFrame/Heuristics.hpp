@@ -19,5 +19,16 @@
 //
 #include "Heuristics/ILS//ILSLPerturbation.hpp"
 #include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
+//
+// EA family
+#include "Heuristics/EA/EA.hpp"
+// RK family
+#include "Heuristics/EA/RK/RK.hpp"
+//
+#include "Heuristics/EA/RK/DecoderRandomKeys.hpp"
+//
+#include "Heuristics/EA/RK/RKGA.hpp"
+//
+#include "Heuristics/EA/RK/BRKGA.hpp"
 
 #endif  // OPTFRAME_HEURISTICS_HPP

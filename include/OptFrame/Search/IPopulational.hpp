@@ -4,11 +4,29 @@
 #ifndef OPTFRAME_IPOPULATIONAL_HPP_
 #define OPTFRAME_IPOPULATIONAL_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 //
-#include <OptFrame/Helper/EPopulation.hpp>
+#include <OptFrame/Core/EPopulation.hpp>
 #include <OptFrame/Search/GlobalSearch.hpp>
 #include <OptFrame/Search/StopCriteria.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // IMPORTANT: This file has IPopulational and Populational
 // Populational inherits from GlobalSearch, while IPopulational does not
@@ -20,9 +38,10 @@ namespace optframe {
 // 'XES2' is the "base concept" for the secondary search component.
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES,
+                     XESolution XES2 = XES>
 #else
-template <typename XES, typename XSH = XES, typename XES2 = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES, typename XES2 = XES>
 #endif
 class IPopulational {  // do not inherit here!
   using XEv = typename XES::second_type;
@@ -45,11 +64,11 @@ class IPopulational {  // do not inherit here!
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
-          XSearch<XES> XSH2 = XSH>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES,
+                     XESolution XES2 = XES, XSearch<XES> XSH2 = XSH>
 #else
-template <typename XES, typename XSH = XES, typename XES2 = XES,
-          typename XSH2 = XSH>
+MOD_EXPORT template <typename XES, typename XSH = XES, typename XES2 = XES,
+                     typename XSH2 = XSH>
 #endif
 class Populational : public GlobalSearch<XES, XSH> {
   using XEv = typename XES::second_type;

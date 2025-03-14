@@ -20,7 +20,7 @@
 #include <OptFrame/Core/Evaluation.hpp>
 // for testing
 #include <OptFrame/BasicPareto.hpp>
-#include <OptFrame/Helper/EPopulation.hpp>
+#include <OptFrame/Core/EPopulation.hpp>
 // #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 

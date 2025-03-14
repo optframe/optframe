@@ -16,10 +16,10 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/RK/InitialEPopulationRK.hpp>
-#include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 #include <OptFrame/Pareto.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Search/InitialPopulation.hpp>
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/printable/printable.hpp>
 

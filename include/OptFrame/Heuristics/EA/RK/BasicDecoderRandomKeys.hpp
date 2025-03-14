@@ -9,7 +9,7 @@
 #include <vector>
 //
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 
 #include "DecoderRandomKeysNoEvaluation.hpp"

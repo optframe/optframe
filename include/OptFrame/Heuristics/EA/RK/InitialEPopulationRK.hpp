@@ -8,8 +8,8 @@
 //
 
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
-#include <OptFrame/InitialPopulation.hpp>
+#include <OptFrame/Core/VEPopulation.hpp>
+#include <OptFrame/Search/InitialPopulation.hpp>
 
 #include "ConstructiveRK.hpp"
 

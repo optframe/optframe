@@ -15,7 +15,7 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Search/InitialSearch.hpp>
 #include <OptFrame/Search/SearchOutput.hpp>
 #include <OptFrame/Search/StopCriteria.hpp>

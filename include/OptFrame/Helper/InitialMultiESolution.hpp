@@ -13,8 +13,8 @@
 #include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 
 // #include "EA.hpp"
@@ -150,7 +150,8 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
-    params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive"));
+    params.push_back(
+        std::make_pair(Constructive<S>::idComponent(), "constructive"));
     params.push_back(
         make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
 
@@ -219,7 +220,8 @@ class BasicInitialMultiESolutionMultiBuilder
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
-    params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive"));
+    params.push_back(
+        std::make_pair(Constructive<S>::idComponent(), "constructive"));
     params.push_back(
         make_pair(MultiEvaluator<XES, XMES>::idComponent(), "multi evaluator"));
 

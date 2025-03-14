@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_INITIALPOPULATION_HPP_
 #define OPTFRAME_INITIALPOPULATION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // #include <chrono>
 #include <random>
 #include <string>
@@ -13,9 +15,25 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Helper/Population.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -128,54 +146,6 @@ class BasicInitialPopulation : public InitialPopulation<S, X2S> {
   static std::string idComponent() {
     std::stringstream ss;
     ss << InitialPopulation<S, X2S>::idComponent() << ":BasicInitialPopulation";
-    return ss.str();
-  }
-
-  std::string toString() const override { return id(); }
-
-  std::string id() const override { return idComponent(); }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, X2Solution<S> X2S = VPopulation<S>>
-#else
-template <typename S, typename X2S = VPopulation<S>>
-#endif
-class GRInitialPopulation : public InitialPopulation<S, X2S> {
- public:
-  GRConstructive<S>& constructive;
-  RandGen& rg;
-  double maxAlpha;  // limit the solution to be not so random
-
-  GRInitialPopulation(GRConstructive<S>& _constructive, RandGen& _rg,
-                      double _maxAlpha)
-      : constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha) {}
-
-  virtual ~GRInitialPopulation() = default;
-
-  // Population<XES>
-  X2S generatePopulation(unsigned populationSize, double timelimit) override {
-    // Population<XES> pop;
-    X2S pop;
-    for (unsigned i = 0; i < populationSize; i++) {
-      float alpha = rg.rand01();
-      while (alpha > maxAlpha) {
-        alpha = rg.rand01();
-      }
-
-      if (alpha == 0) alpha = 0.00001;
-
-      std::optional<S> s = constructive.generateGRSolution(alpha, timelimit);
-      // XES se = { *s, Evaluation<>{} };
-      S sol = (*s);
-      pop.push_back(sol);  // the end of solution
-    }
-    return pop;
-  }
-
-  static std::string idComponent() {
-    std::stringstream ss;
-    ss << InitialPopulation<S, X2S>::idComponent() << ":GRInitialPopulation";
     return ss.str();
   }
 

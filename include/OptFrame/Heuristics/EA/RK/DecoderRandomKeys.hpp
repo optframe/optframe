@@ -4,21 +4,39 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_DECODERRANDOMKEYS_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_EA_RK_DECODERRANDOMKEYS_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <algorithm>
 // #include "../../../Evaluation.hpp"
 // #include "../../../Evaluator.hpp"
 // #include "../../../Solution.hpp"
 // #include "../../../Solutions/CopySolution.hpp"
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/Helper/VEPopulation.hpp>
+#include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Heuristics/EA/EA.hpp>
 #include <OptFrame/Heuristics/EA/RK/RK.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-typedef vector<double> random_keys;
+MOD_EXPORT using random_keys = std::vector<double>;
 
-template <XESolution XES, ConceptsComparability KeyType>
+MOD_EXPORT template <XESolution XES, ConceptsComparability KeyType>
 class DecoderRandomKeys : public Component {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -185,7 +203,7 @@ class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<XES, KeyType> {
 
   virtual pair<XEv, op<std::vector<bool>>> decode(const RSK& rk,
                                                   bool needsSolution) override {
-    vector<bool> v(b - a + 1);
+    std::vector<bool> v(b - a + 1);
     for (unsigned i = 0; i < v.size(); i++) v[i] = rk[i] >= limit;
 
     // ----
