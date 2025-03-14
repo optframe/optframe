@@ -14,7 +14,7 @@
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/InitialPopulation.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 
 // import everything on main()
 using namespace std;        // NOLINT

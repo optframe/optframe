@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_LOCALSEARCH_HPP_
 #define OPTFRAME_LOCALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <iostream>
 #include <string>
 #include <utility>
@@ -13,8 +15,23 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/NSIterator.hpp>
-#include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 // using namespace std;
 
@@ -25,9 +42,9 @@ namespace optframe {
 // some secondary/incumbent types.
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES2, XSearch<XES2> XSH2 = XES2>
+MOD_EXPORT template <XESolution XES2, XSearch<XES2> XSH2 = XES2>
 #else
-template <typename XES2, typename XSH2 = XES2>
+MOD_EXPORT template <typename XES2, typename XSH2 = XES2>
 #endif
 class LocalSearch : public Component {
  public:
@@ -54,10 +71,10 @@ class LocalSearch : public Component {
                                   const StopCriteria<XEv>& stopCriteria) = 0;
 
   // optional: set local optimum status (LOS)
-  virtual void setLOS(LOS los, string nsid, XSH2& se) {}
+  virtual void setLOS(LOS los, std::string nsid, XSH2& se) {}
 
   // optional: get local optimum status (LOS)
-  virtual LOS getLOS(string nsid, XSH2& se) { return los_unknown; }
+  virtual LOS getLOS(std::string nsid, XSH2& se) { return los_unknown; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -77,43 +94,6 @@ class LocalSearch : public Component {
     this->setMessageLevel(ll);
     return true;
   }
-};
-
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
-#else
-template <typename XES>
-#endif
-class LocalSearchBuilder : public ComponentBuilder<XES> {
-  using XSH = XES;
-
- public:
-  virtual ~LocalSearchBuilder() = default;
-
-  // NOLINTNEXTLINE
-  virtual LocalSearch<XES, XSH>* build(Scanner& scanner,
-                                       HeuristicFactory<XES>& hf,
-                                       string family = "") = 0;
-
-  // NOLINTNEXTLINE
-  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
-    return build(scanner, hf, family);
-  }
-
-  std::vector<std::pair<std::string, std::string>> parameters() override = 0;
-
-  bool canBuild(string) override = 0;
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << "LocalSearch";
-    return ss.str();
-  }
-
-  std::string toString() const override { return id(); }
-
-  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

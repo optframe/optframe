@@ -13,7 +13,7 @@
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 namespace optframe {

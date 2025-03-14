@@ -133,6 +133,7 @@ target_link_libraries(optframe_heuristics PUBLIC optframe_search)
 add_executable(trymod demo/07_Try_Modules/trymod.cpp)
 
 target_link_libraries(trymod PRIVATE optframe_core)
+target_link_libraries(trymod PRIVATE optframe_heuristics)
 #endif()
 
 if (OPTFRAME_BUILD_TESTING AND NOT IS_SUBPROJECT)

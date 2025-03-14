@@ -62,9 +62,9 @@
 #include <OptFrame/Helper/CloneConstructive.hpp>
 
 // local search
-#include <OptFrame/Heuristics/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
+#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
 #include <OptFrame/Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp>

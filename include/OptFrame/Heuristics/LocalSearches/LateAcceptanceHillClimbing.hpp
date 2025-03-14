@@ -10,7 +10,7 @@
 //
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 
 #define BRAND_NEW
 

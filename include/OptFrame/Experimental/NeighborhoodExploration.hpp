@@ -33,7 +33,7 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 // using namespace std;

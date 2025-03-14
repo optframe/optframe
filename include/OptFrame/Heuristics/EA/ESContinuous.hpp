@@ -25,7 +25,7 @@
 
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 #include <vector>

@@ -12,7 +12,7 @@
 #include <vector>
 //
 
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 
 #include "../Search/ITrajectory.hpp"
 #include "../Search/SingleObjSearch.hpp"

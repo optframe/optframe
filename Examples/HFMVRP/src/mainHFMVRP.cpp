@@ -21,11 +21,11 @@
 #include <OptFrame/Helper/CloneConstructive.hpp>
 #include <OptFrame/Heuristics/EA/ESContinuous.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
-#include <OptFrame/Heuristics/Empty.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>

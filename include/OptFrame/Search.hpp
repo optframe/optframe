@@ -11,6 +11,8 @@
 //
 #include <OptFrame/Search/InitialSearch.hpp>
 //
+#include <OptFrame/Search/LocalSearch.hpp>
+//
 #include <OptFrame/Search/GlobalSearch.hpp>
 //
 #include <OptFrame/Search/SingleObjSearch.hpp>

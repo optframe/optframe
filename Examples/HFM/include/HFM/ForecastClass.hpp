@@ -19,13 +19,13 @@
 #include <OptFrame/Core/GeneralEvaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
-#include <OptFrame/Heuristics/Empty.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/ILS/MO/BasicMOILS.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLevels.hpp>
+#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>

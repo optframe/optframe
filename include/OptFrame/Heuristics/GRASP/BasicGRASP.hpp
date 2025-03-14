@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 

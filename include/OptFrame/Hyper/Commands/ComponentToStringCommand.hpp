@@ -23,7 +23,7 @@
 #ifndef OPTFRAME_COMPONENT_TOSTRING_MODULE_HPP_
 #define OPTFRAME_COMPONENT_TOSTRING_MODULE_HPP_
 
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 
 #include "../Command.hpp"
 #include "../MultiObjSearch.hpp"

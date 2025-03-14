@@ -26,7 +26,7 @@
 
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Timer.hpp>
 #include <string>
 #include <utility>

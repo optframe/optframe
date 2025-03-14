@@ -28,7 +28,7 @@ import optframe.concepts;
 namespace optframe {
 
 // Local Optimum Status
-enum LOS { los_yes, los_no, los_unknown, los_partial };
+MOD_EXPORT enum LOS { los_yes, los_no, los_unknown, los_partial };
 
 // exemplo: mochila NSSeq de incrementos (+1).
 // Comeca 'unknown'.

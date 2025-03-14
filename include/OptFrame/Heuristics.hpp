@@ -3,6 +3,8 @@
 
 // Heuristics Module: inclusion of common heuristic strategies
 
+#include "Heuristics/LocalSearches/BestImprovement.hpp"
+
 // SA family
 #include "Heuristics/SA/SA.hpp"
 //

@@ -11,7 +11,7 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
 //
 #include "TSP-fcore.hpp"  // NOLINT

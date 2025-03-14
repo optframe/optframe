@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "BasicILSPerturbation.hpp"

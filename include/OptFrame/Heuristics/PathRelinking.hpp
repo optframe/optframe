@@ -25,7 +25,7 @@
 
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 
 #include "../Component.hpp"
 #include "../Solution.hpp"

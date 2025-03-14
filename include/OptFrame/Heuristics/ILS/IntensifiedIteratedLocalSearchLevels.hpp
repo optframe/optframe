@@ -25,7 +25,7 @@
 
 #include <math.h>
 
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <vector>
 
 #include "ILSLPerturbation.hpp"

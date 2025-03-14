@@ -23,7 +23,7 @@
 #ifndef INTENSIFICATION_HPP_
 #define INTENSIFICATION_HPP_
 
-#include <OptFrame/LocalSearch.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 
 namespace optframe {
 

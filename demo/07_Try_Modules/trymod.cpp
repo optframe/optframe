@@ -2,20 +2,23 @@
 
 import std;
 import optframe.core;
+import optframe.heuristics;
 
-using MyESolution = std::pair<std::vector<int>, optframe::Evaluation<int>>;
+using namespace optframe;
+
+using MyESolution = std::pair<std::vector<int>, Evaluation<int>>;
 
 int main() {
   A<int> a;
   a.f(10);
 
-  sptr<optframe::Move<MyESolution>> m;
-  sptr<optframe::NS<MyESolution>> ns;
-  sptr<optframe::NSSeq<MyESolution>> nsseq;
+  sptr<Move<MyESolution>> m;
+  sptr<NS<MyESolution>> ns;
+  sptr<NSSeq<MyESolution>> nsseq;
   optframe::Timer t;
-  sptr<optframe::Evaluator<std::vector<int>, optframe::Evaluation<int>,
-                           MyESolution>>
-      ev;
+  sptr<Evaluator<std::vector<int>, Evaluation<int>, MyESolution>> ev;
+  sptr<LocalSearch<MyESolution>> ls;
+  sptr<BestImprovement<MyESolution>> bi;
   std::print("now {}", t.now());
   return 0;
 }

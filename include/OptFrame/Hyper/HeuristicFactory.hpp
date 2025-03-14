@@ -16,23 +16,36 @@
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/MultiSolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/Heuristics/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Hyper/ComponentHelper.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
-#include <OptFrame/LocalSearch.hpp>
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
+
+// Hyper
+#include <OptFrame/Search/LocalSearchBuilder.hpp>
+#include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 // Heuristics
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BestImprovementBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
+#include <OptFrame/Heuristics/LocalSearches/CircularSearchBuilder.hpp>
+#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FirstImprovementBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
+#include <OptFrame/Heuristics/LocalSearches/HillClimbingBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
+#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethodBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADSBuilder.hpp>
 // #include "Heuristics/LocalSearches/RVND.hpp"
 
 // Metaheuristics
