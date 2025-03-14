@@ -24,76 +24,85 @@
 #define OPTFRAME_COMPONENT_LIST_MODULE_HPP_
 
 #include "../Command.hpp"
-
 #include "SystemDefineCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentListCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ComponentListCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ComponentListCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ComponentListCommand() {}
 
-   string id()
-   {
-      return "component.list";
-   }
+  string id() { return "component.list"; }
 
-   string usage()
-   {
-      return "component.list pattern [store_list]\nWhere: store_list is an optional variable to store the components.";
-   }
+  string usage() {
+    return "component.list pattern [store_list]\nWhere: store_list is an "
+           "optional variable to store the components.";
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      string pattern = "OptFrame:";
+    string pattern = "OptFrame:";
 
-      if (scanner.hasNext()) {
-         pattern = scanner.next();
-      }
+    if (scanner.hasNext()) {
+      pattern = scanner.next();
+    }
 
-      vector<string> components = factory.listComponents(pattern);
-      vector<string> componentLists = factory.listComponentLists(pattern);
+    vector<string> components = factory.listComponents(pattern);
+    vector<string> componentLists = factory.listComponentLists(pattern);
 
-      components.insert(components.end(), componentLists.begin(), componentLists.end());
+    components.insert(components.end(), componentLists.begin(),
+                      componentLists.end());
 
-      //cout << "component.list command: NUM. COMPONENTS IS " << components.size() << std::endl;
+    // cout << "component.list command: NUM. COMPONENTS IS " <<
+    // components.size() << std::endl;
 
-      if (!scanner.hasNext()) {
-         for (int i = 0; i < (int)components.size(); i++)
-            std::cout << components[i] << std::endl;
+    if (!scanner.hasNext()) {
+      for (int i = 0; i < (int)components.size(); i++)
+        std::cout << components[i] << std::endl;
 
-         return true;
-      } else {
-         string new_name = scanner.next();
+      return true;
+    } else {
+      string new_name = scanner.next();
 
-         //cout << "component.list command: NEW_NAME = '" << new_name << "'" << std::endl;
+      // cout << "component.list command: NEW_NAME = '" << new_name << "'" <<
+      // std::endl;
 
-         std::stringstream ss;
+      std::stringstream ss;
 
-         //cout << "components.list command: COMPONENTS '" << components << "'" << std::endl;
+      // cout << "components.list command: COMPONENTS '" << components << "'" <<
+      // std::endl;
 
-         ss << new_name << " " << OptFrameList::listToString(components);
+      ss << new_name << " " << OptFrameList::listToString(components);
 
-         //cout << "component.list command: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << std::endl;
+      // cout << "component.list command: CREATING LIST OF COMPONENTS '" <<
+      // ss.str() << "'" << std::endl;
 
-         return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
-      }
-   }
+      return Command<R, ADS, DS>::run_module("list.silent_define", all_modules,
+                                             allFunctions, factory, dictionary,
+                                             ldictionary, ss.str());
+    }
+  }
 
-   // disable preprocess to don't destroy type!
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      // disable preprocess!!
-      return new string(input);
-   }
+  // disable preprocess to don't destroy type!
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    // disable preprocess!!
+    return new string(input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_COMPONENT_LIST_MODULE_HPP_ */

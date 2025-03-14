@@ -150,7 +150,7 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
   ~BasicGRASPBuilder() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                              string family = "") override {
+                              std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -161,7 +161,7 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
     int id2 = *scanner.nextInt();
     hf.assign(constructive, id2, comp_id2);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
     pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
@@ -186,12 +186,14 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    params.push_back(std::make_pair(GRConstructive<S>::idComponent(),
-                               "greedy randomized constructive heuristic"));
+    params.push_back(
+        std::make_pair(GRConstructive<S>::idComponent(),
+                       "greedy randomized constructive heuristic"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
     params.push_back(std::make_pair("OptFrame:float", "alpha parameter [0,1]"));
-    params.push_back(std::make_pair("OptFrame:int", "max number of iterations"));
+    params.push_back(
+        std::make_pair("OptFrame:int", "max number of iterations"));
 
     return params;
   }

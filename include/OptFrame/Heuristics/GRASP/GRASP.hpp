@@ -102,7 +102,7 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     int id2 = *scanner.nextInt();
     hf.assign(constructive, id2, comp_id2);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
     pair<LocalSearch<R, ADS, DS>*, std::string> method;
     method = hf.createLocalSearch(rest);
@@ -122,8 +122,8 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
+    // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(

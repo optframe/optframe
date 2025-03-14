@@ -24,79 +24,83 @@
 #define OPTFRAME_COMPONENT_CAST_HPP_
 
 #include "../Command.hpp"
-
 #include "SystemSilentDefineCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentCastCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ComponentCastCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ComponentCastCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ComponentCastCommand() {}
 
-   string id()
-   {
-      return "component.cast";
-   }
+  string id() { return "component.cast"; }
 
-   string usage()
-   {
-      string u = "component.cast   Component id   new_type  [variable]";
-      return u;
-   }
+  string usage() {
+    string u = "component.cast   Component id   new_type  [variable]";
+    return u;
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      //cout << "component.cast: " << input << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    // cout << "component.cast: " << input << std::endl;
 
-      Scanner scanner(input);
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-
-      string comp = scanner.next();
-
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-
-      int number = *scanner.nextInt();
-
-      if (!scanner.hasNext()) {
-         std::cout << "module " << id() << " error: missing type name!" << std::endl;
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-
-      string type = scanner.next();
-
-      string variable = "";
-      if (scanner.hasNext())
-         variable = scanner.next();
-
-      //cout << "will look for action: '" << type << "'" << std::endl;
-
-      for (unsigned a = 0; a < factory.actions.size(); a++)
-         if (factory.actions[a]->handleComponent(type)) {
-            return factory.actions[a]->doCast(comp, number, type, variable, factory, dictionary);
-         }
-
-      std::cout << "component.cast error: action with cast handle for type '" << type << "' not found!" << std::endl;
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
-   }
+    }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+    string comp = scanner.next();
+
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+
+    int number = *scanner.nextInt();
+
+    if (!scanner.hasNext()) {
+      std::cout << "module " << id() << " error: missing type name!"
+                << std::endl;
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+
+    string type = scanner.next();
+
+    string variable = "";
+    if (scanner.hasNext()) variable = scanner.next();
+
+    // cout << "will look for action: '" << type << "'" << std::endl;
+
+    for (unsigned a = 0; a < factory.actions.size(); a++)
+      if (factory.actions[a]->handleComponent(type)) {
+        return factory.actions[a]->doCast(comp, number, type, variable, factory,
+                                          dictionary);
+      }
+
+    std::cout << "component.cast error: action with cast handle for type '"
+              << type << "' not found!" << std::endl;
+    return false;
+  }
+
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_COMPONENT_CAST_HPP_ */

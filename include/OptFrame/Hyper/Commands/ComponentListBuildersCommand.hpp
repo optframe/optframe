@@ -24,82 +24,88 @@
 #define LIST_BUILDERS_MODULE_HPP_
 
 #include "../Command.hpp"
-
 #include "SystemSilentDefineCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentListBuildersCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ComponentListBuildersCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ComponentListBuildersCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ComponentListBuildersCommand() {}
 
-   string id()
-   {
-      return "component.list_builders";
-   }
+  string id() { return "component.list_builders"; }
 
-   string usage()
-   {
-      return "component.list_builders pattern [store_list]\nWhere: store_list is an optional variable to store the builders.";
-   }
+  string usage() {
+    return "component.list_builders pattern [store_list]\nWhere: store_list is "
+           "an optional variable to store the builders.";
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      string pattern;
+    string pattern;
 
-      if (scanner.hasNext())
-         pattern = scanner.next();
-      else
-         pattern = "OptFrame:";
+    if (scanner.hasNext())
+      pattern = scanner.next();
+    else
+      pattern = "OptFrame:";
 
-      std::vector<std::pair<string, std::vector<std::pair<std::string, std::string>>>> builders = factory.listBuilders(pattern);
+    std::vector<
+        std::pair<string, std::vector<std::pair<std::string, std::string>>>>
+        builders = factory.listBuilders(pattern);
 
-      if (!scanner.hasNext()) {
-         for (int i = 0; i < (int)builders.size(); i++) {
-            std::cout << builders[i].first << "\t";
-            for (unsigned j = 0; j < builders[i].second.size(); j++)
-               std::cout << builders[i].second[j].first << "=>'" << builders[i].second[j].second << "' ";
-            std::cout << std::endl;
-         }
-
-         return true;
-      } else {
-         string new_name = scanner.next();
-         std::stringstream ss;
-
-         ss << new_name << " [";
-         for (unsigned i = 0; i < builders.size(); i++) {
-            ss << " [ " << builders[i].first << " , [ ";
-            for (unsigned j = 0; j < builders[i].second.size(); j++) {
-               ss << "[ " << builders[i].second[j].first << " , " << builders[i].second[j].second << "] ";
-               if (j != builders[i].second.size() - 1)
-                  ss << ",";
-            }
-            ss << " ] ] ";
-
-            if (i != builders.size() - 1)
-               ss << ",";
-         }
-         ss << " ]";
-
-         return Command<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+    if (!scanner.hasNext()) {
+      for (int i = 0; i < (int)builders.size(); i++) {
+        std::cout << builders[i].first << "\t";
+        for (unsigned j = 0; j < builders[i].second.size(); j++)
+          std::cout << builders[i].second[j].first << "=>'"
+                    << builders[i].second[j].second << "' ";
+        std::cout << std::endl;
       }
-   }
 
-   // disable preprocess to don't destroy type!
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      // disable preprocess!!
-      return new string(input);
-   }
+      return true;
+    } else {
+      string new_name = scanner.next();
+      std::stringstream ss;
+
+      ss << new_name << " [";
+      for (unsigned i = 0; i < builders.size(); i++) {
+        ss << " [ " << builders[i].first << " , [ ";
+        for (unsigned j = 0; j < builders[i].second.size(); j++) {
+          ss << "[ " << builders[i].second[j].first << " , "
+             << builders[i].second[j].second << "] ";
+          if (j != builders[i].second.size() - 1) ss << ",";
+        }
+        ss << " ] ] ";
+
+        if (i != builders.size() - 1) ss << ",";
+      }
+      ss << " ]";
+
+      return Command<R, ADS, DS>::run_module("system.silent_define",
+                                             all_modules, allFunctions, factory,
+                                             dictionary, ldictionary, ss.str());
+    }
+  }
+
+  // disable preprocess to don't destroy type!
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    // disable preprocess!!
+    return new string(input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* LIST_BUILDERS_MODULE_HPP_ */

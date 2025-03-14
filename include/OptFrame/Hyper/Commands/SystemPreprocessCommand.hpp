@@ -24,87 +24,89 @@
 #define OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_
 
 #include "../Command.hpp"
-
 #include "SystemUnsafeDefineCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemPreprocessCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemPreprocessCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemPreprocessCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemPreprocessCommand() {}
 
-   string id()
-   {
-      return "system.preprocess";
-   }
+  string id() { return "system.preprocess"; }
 
-   string usage()
-   {
-      return "system.preprocess return_value module_name input";
-   }
+  string usage() { return "system.preprocess return_value module_name input"; }
 
-   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
-   {
-      for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
-         if (modules[i]->canHandle(module, rest))
-            return modules[i];
-      }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
-      return nullptr;
-   }
+  Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules,
+                                  string module, string rest) {
+    for (unsigned int i = 0; i < modules.size(); i++) {
+      // cout << "run: testing module '" << modules[i]->id() << "'" <<
+      // std::endl;
+      if (modules[i]->canHandle(module, rest)) return modules[i];
+    }
+    // cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest
+    // << "'" << std::endl;
+    return nullptr;
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string name = scanner.next();
+    string name = scanner.next();
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string module = scanner.next();
+    string module = scanner.next();
 
-      string inp = scanner.rest();
+    string inp = scanner.rest();
 
-      Command<R, ADS, DS>* m = getCommand(all_modules, module, "");
+    Command<R, ADS, DS>* m = getCommand(all_modules, module, "");
 
-      if (!m) {
-         std::cout << "preprocess command: nullptr module!" << std::endl;
-         return false;
-      }
+    if (!m) {
+      std::cout << "preprocess command: nullptr module!" << std::endl;
+      return false;
+    }
 
-      string* final = m->preprocess(allFunctions, factory, dictionary, ldictionary, inp);
+    string* final =
+        m->preprocess(allFunctions, factory, dictionary, ldictionary, inp);
 
-      if (!final)
-         return false;
+    if (!final) return false;
 
-      std::stringstream ss;
-      ss << name << " " << (*final);
+    std::stringstream ss;
+    ss << name << " " << (*final);
 
-      delete final;
+    delete final;
 
-      return Command<R, ADS, DS>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
-   }
+    return Command<R, ADS, DS>::run_module("system.unsafe_define", all_modules,
+                                           allFunctions, factory, dictionary,
+                                           ldictionary, ss.str());
+  }
 
-   // runs raw module without preprocessing
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return new string(input); // disable pre-processing
-   }
+  // runs raw module without preprocessing
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return new string(input);  // disable pre-processing
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_ */

@@ -96,7 +96,7 @@ class BasicMutationBuilder : public ComponentBuilder<XES> {
   virtual ~BasicMutationBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     int n = *scanner.nextInt();
 
     vector<NS<XES, XSH>*> ns_list;
@@ -113,7 +113,8 @@ class BasicMutationBuilder : public ComponentBuilder<XES> {
     params.push_back(std::make_pair("OptFrame:int", "number of moves"));
     std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(std::make_pair(ss.str(), "list of neighborhood structures"));
+    params.push_back(
+        std::make_pair(ss.str(), "list of neighborhood structures"));
 
     return params;
   }

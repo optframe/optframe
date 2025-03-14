@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
-// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_ACTION_HPP_
 #define OPTFRAME_ACTION_HPP_
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 #include <cstdlib>
 #include <iostream>
@@ -17,6 +19,22 @@
 #include <OptFrame/Hyper/ComponentHelper.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 // #include "Command.hpp"
 
 // using namespace std;
@@ -27,49 +45,50 @@ namespace optframe {
 using scannerpp::Scanner;
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class HeuristicFactory;
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 class HeuristicFactory;
 #endif
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class Action {
  public:
   virtual ~Action() {}
 
-  virtual string usage() = 0;
+  virtual std::string usage() = 0;
 
-  virtual bool handleComponent(string type) = 0;
+  virtual bool handleComponent(std::string type) = 0;
 
   virtual bool handleComponent(Component& component) = 0;
 
-  virtual bool handleAction(string action) = 0;
+  virtual bool handleAction(std::string action) = 0;
 
-  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<std::string, std::string>& dictionary,
-                        map<string, vector<string>>& ldictionary) = 0;
+  virtual bool doAction(
+      std::string content, HeuristicFactory<XES>& hf,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary) = 0;
 
-  virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf,
-                      map<std::string, std::string>& d) = 0;
+  virtual bool doCast(std::string component, int id, std::string type,
+                      std::string variable, HeuristicFactory<XES>& hf,
+                      std::map<std::string, std::string>& d) = 0;
 
   static bool addAndRegister(Scanner& scanner, Component& comp,
                              HeuristicFactory<XES>& hf,
-                             map<std::string, std::string>& d) {
+                             std::map<std::string, std::string>& d) {
     int index = hf.addComponent(comp);
 
     if (index == -1) return false;
 
     if (scanner.hasNext()) {
-      string varName = scanner.next();
+      std::string varName = scanner.next();
 
-      stringstream sscomp;
+      std::stringstream sscomp;
       sscomp << comp.id() << " " << index;
 
       d[varName] = sscomp.str();  // TODO: fix!!
@@ -81,10 +100,10 @@ class Action {
     return true;
   }
 
-  static bool registerText(Scanner& scanner, string value,
-                           map<std::string, std::string>& d) {
+  static bool registerText(Scanner& scanner, std::string value,
+                           std::map<std::string, std::string>& d) {
     if (scanner.hasNext()) {
-      string varName = scanner.next();
+      std::string varName = scanner.next();
 
       d[varName] = value;  // TODO: fix!!
 
@@ -97,20 +116,20 @@ class Action {
     }
   }
 
-  static string formatDouble(double d) {
+  static std::string formatDouble(double d) {
     std::stringstream ss;
-    ss << fixed;
+    ss << std::fixed;
     ss << d;
     return ss.str();
   }
 
-  static string formatInt(int i) {
+  static std::string formatInt(int i) {
     std::stringstream ss;
     ss << i;
     return ss.str();
   }
 
-  static string formatBool(bool b) {
+  static std::string formatBool(bool b) {
     if (b)
       return "true";
     else
@@ -127,11 +146,11 @@ class ComponentAction : public Action<XES> {
  public:
   virtual ~ComponentAction() {}
 
-  virtual string usage() {
+  virtual std::string usage() {
     return "OptFrame: idx  log  output_variable\nOptFrame: idx  print";
   }
 
-  virtual bool handleComponent(string type) {
+  virtual bool handleComponent(std::string type) {
     return ComponentHelper::compareBase(Component::idComponent(), type);
   }
 
@@ -139,14 +158,14 @@ class ComponentAction : public Action<XES> {
     return component.compatible(Component::idComponent());
   }
 
-  virtual bool handleAction(string action) {
+  virtual bool handleAction(std::string action) {
     return (action == "log") || (action == "print") ||
            (action == "setVerboseLevel") || (action == "getVerboseLevel");
   }
 
-  virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf,
-                      map<std::string, std::string>& d) {
+  virtual bool doCast(std::string component, int id, std::string type,
+                      std::string variable, HeuristicFactory<XES>& hf,
+                      std::map<std::string, std::string>& d) {
     if (!handleComponent(type)) {
       std::cout
           << "ComponentAction::doCast error: can't handle component type '"
@@ -181,9 +200,10 @@ class ComponentAction : public Action<XES> {
     return ComponentAction<XES>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<std::string, std::string>& dictionary,
-                        map<string, vector<string>>& ldictionary) {
+  virtual bool doAction(
+      std::string content, HeuristicFactory<XES>& hf,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary) {
     // std::cout << "Evaluation::doAction '" << content << "'" << std::endl;
 
     Scanner scanner(content);
@@ -197,19 +217,20 @@ class ComponentAction : public Action<XES> {
 
     if (!scanner.hasNext()) return false;
 
-    string action = scanner.next();
+    std::string action = scanner.next();
 
     if (!handleAction(action)) return false;
 
-    // TODO: log must be implemented in other manner... maybe store as string
-    // somewhere else.. maybe, just support this in specific scenarios
+    // TODO: log must be implemented in other manner... maybe store as
+    // std::string somewhere else.. maybe, just support this in specific
+    // scenarios
     /*
                 if (action == "log")
                 {
                         if (!scanner.hasNext())
                                 return false;
 
-                        string var = scanner.next();
+                        std::string var = scanner.next();
 
                         std::stringstream ss;
                         ss << c->log();
@@ -239,7 +260,7 @@ class ComponentAction : public Action<XES> {
     if (action == "getVerboseLevel") {
       if (!scanner.hasNext()) return false;
 
-      string var = scanner.next();
+      std::string var = scanner.next();
 
       std::stringstream ss;
       ss << c->getVerboseLevel();

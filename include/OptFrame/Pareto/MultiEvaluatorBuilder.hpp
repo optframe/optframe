@@ -1,11 +1,29 @@
 #pragma once
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
@@ -17,7 +35,7 @@ class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
   virtual ~MultiEvaluatorBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     //
     vsptr<Evaluator<S, XEv, XES>> _evlist;
     std::string sid_0 = scanner.next();
@@ -60,25 +78,24 @@ class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
-          XESolution XMES = pair<S, XMEv>,
+          XESolution XMES = std::pair<S, XMEv>,
           X2ESolution<XMES> X2MES = VEPopulation<XMES>>
 #else
 template <typename S, typename XMEv = MultiEvaluation<>,
-          typename XMES = pair<S, XMEv>, typename X2MES = VEPopulation<XMES>>
+          typename XMES = std::pair<S, XMEv>,
+          typename X2MES = VEPopulation<XMES>>
 #endif
 class MultiEvaluatorMultiBuilder
     : public ComponentMultiBuilder<S, XMEv, XMES, X2MES> {
-  // using XMEv = MultiEvaluation<typename XEv::objType>;
-  // using XMES = std::pair<S, XMEv>;
   using XEv = typename XMEv::XEv;
   using XES = std::pair<S, XEv>;
-  using X2ES = MultiESolution<XES>;  // TODO: is this right??
+  using X2ES = MultiESolution<XES>;
 
  public:
   virtual ~MultiEvaluatorMultiBuilder() {}
 
   Component* buildMultiComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                                 string family = "") override {
+                                 std::string family = "") override {
     vsptr<Evaluator<S, XEv, XES>> _evlist;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -101,7 +118,7 @@ class MultiEvaluatorMultiBuilder
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component == MultiEvaluator<XES, XMES>::idComponent();
   }
 
@@ -129,12 +146,12 @@ class MultiEvaluatorAction : public Action<XES> {
  public:
   virtual ~MultiEvaluatorAction() {}
 
-  virtual string usage() {
+  virtual std::string usage() {
     return ":MultiEvaluator idx  evaluate   :Solution idx  [output_variable] "
            "=> OptFrame:Evaluation";
   }
 
-  virtual bool handleComponent(string type) {
+  virtual bool handleComponent(std::string type) {
     return ComponentHelper::compareBase(
         MultiEvaluator<XES, XMES>::idComponent(), type);
   }
@@ -143,11 +160,13 @@ class MultiEvaluatorAction : public Action<XES> {
     return component.compatible(MultiEvaluator<XES, XMES>::idComponent());
   }
 
-  virtual bool handleAction(string action) { return (action == "evaluate"); }
+  virtual bool handleAction(std::string action) {
+    return (action == "evaluate");
+  }
 
-  virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf,
-                      map<std::string, std::string>& d) {
+  virtual bool doCast(std::string component, int id, std::string type,
+                      std::string variable, HeuristicFactory<XES>& hf,
+                      std::map<std::string, std::string>& d) {
     std::cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << std::endl;
     return false;
 
@@ -191,9 +210,10 @@ class MultiEvaluatorAction : public Action<XES> {
     return ComponentAction<XES>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<std::string, std::string>& dictionary,
-                        map<string, vector<string>>& ldictionary) {
+  virtual bool doAction(
+      std::string content, HeuristicFactory<XES>& hf,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary) {
     std::cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << std::endl;
     return false;
 
@@ -210,7 +230,7 @@ class MultiEvaluatorAction : public Action<XES> {
 
     if (!scanner.hasNext()) return false;
 
-    string action = scanner.next();
+    std::string action = scanner.next();
 
     if (!handleAction(action)) return false;
 

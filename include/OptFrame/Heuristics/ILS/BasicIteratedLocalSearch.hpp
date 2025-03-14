@@ -122,7 +122,7 @@ class BasicIteratedLocalSearchBuilder : public ILS,
   ~BasicIteratedLocalSearchBuilder() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                              string family = "") override {
+                              std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -133,7 +133,7 @@ class BasicIteratedLocalSearchBuilder : public ILS,
     int id2 = *scanner.nextInt();
     hf.assign(constructive, id2, comp_id2);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
     pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
@@ -163,9 +163,9 @@ class BasicIteratedLocalSearchBuilder : public ILS,
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
     params.push_back(std::make_pair(BasicILSPerturbation<XES>::idComponent(),
-                               "ils perturbation"));
-    params.push_back(std::make_pair("OptFrame:int",
-                               "max number of iterations without improvement"));
+                                    "ils perturbation"));
+    params.push_back(std::make_pair(
+        "OptFrame:int", "max number of iterations without improvement"));
 
     return params;
   }

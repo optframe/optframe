@@ -95,8 +95,9 @@ class BuildCommand {
   */
 
   string run(HeuristicFactory<XES>& factory,
-             map<std::string, std::string>& dictionary,
-             map<string, vector<string>>& ldictionary, string input) {
+             std::map<std::string, std::string>& dictionary,
+             std::map<std::string, std::vector<std::string>>& ldictionary,
+             string input) {
     // std::cout << "build command: " << input << std::endl;
     Scanner scanner1(input);
 
@@ -185,9 +186,11 @@ class BuildCommand {
     return new_name + " " + s_new_id;
   }
 
-  string listBuilders(HeuristicFactory<XES>& factory,
-                      map<std::string, std::string>& dictionary,
-                      map<string, vector<string>>& ldictionary, string input) {
+  string listBuilders(
+      HeuristicFactory<XES>& factory,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
     Scanner scanner(input);
 
     string pattern;

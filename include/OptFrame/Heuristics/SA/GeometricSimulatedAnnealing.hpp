@@ -84,8 +84,9 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
 
         if (!move) {
           if (Component::warning)
-            std::cout << "SA warning: no move in iter=" << iterT << " T=" << T << "!"
-                 << "cannot continue..." << std::endl;
+            std::cout << "SA warning: no move in iter=" << iterT << " T=" << T
+                      << "!"
+                      << "cannot continue..." << std::endl;
           // This is not normal... but not catastrophic stop either.
           return {SearchStatus::EARLY_STOP, star};
         }
@@ -173,7 +174,7 @@ class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
   // has sptr instead of sref, is that on purpose or legacy class?
   GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                           string family = "") override {
+                           std::string family = "") override {
     if (Component::debug)
       std::cout << "GeometricSA Builder Loading Parameter #0" << std::endl;
     if (!scanner.hasNext()) {

@@ -38,22 +38,22 @@
 #include "Scanner++/Scanner.h"
 #include "Solution.hpp"
 #include "Util/Matrix.hpp"
-//#include "Util/TestSolution.hpp"
+// #include "Util/TestSolution.hpp"
 
 #include "ADSManager.hpp"
 #include "InitialPopulation.hpp"
 #include "Move.hpp"
 #include "Population.hpp"
-//#include "Util/TestMove.hpp"
+// #include "Util/TestMove.hpp"
 
 #include "Evaluation.hpp"
-//#include "Util/TestEvaluation.hpp"
+// #include "Util/TestEvaluation.hpp"
 #include "Evaluator.hpp"
 #include "MultiObjectiveEvaluator.hpp"
 
-//#include "Util/TestEvaluation.hpp"
+// #include "Util/TestEvaluation.hpp"
 
-//#include "RandGen.hpp"
+// #include "RandGen.hpp"
 #include "Timer.hpp"
 
 // ==================================
@@ -159,8 +159,8 @@
 
 #include "Commands/CreateNumericListCommand.hpp"
 #include "Commands/EmpiricalCommand.hpp"
-//#include "Commands/TestCommand.hpp"
-//#include "Commands/TestLocalSearchCommand.hpp"
+// #include "Commands/TestCommand.hpp"
+// #include "Commands/TestLocalSearchCommand.hpp"
 
 // component
 
@@ -235,7 +235,7 @@
 //            Serializer
 // ==================================
 
-//#include "Serializer/Serializer.hpp"
+// #include "Serializer/Serializer.hpp"
 
 // ==================================
 
@@ -248,7 +248,7 @@ class Interactive {
  private:
   vector<Command<R, ADS>*> modules;
   vector<PreprocessFunction<R, ADS>*> functions;
-  map<std::string, std::string> dictionary;
+  std::map<std::string, std::string> dictionary;
   map<string, vector<string>> ldictionary;
 
  public:
@@ -635,9 +635,10 @@ class Interactive {
         }
 
       if (notfound) {
-        std::cout << "Sorry, i couldn't understand the command '" << command << "'."
-             << std::endl
-             << "Please, type 'system.help' or type the command again." << std::endl;
+        std::cout << "Sorry, i couldn't understand the command '" << command
+                  << "'." << std::endl
+                  << "Please, type 'system.help' or type the command again."
+                  << std::endl;
         printOptions(command, modules);
       }
     }
@@ -656,7 +657,8 @@ class Interactive {
           break;
         }
 
-      if (found) std::cout << "option is: '" << allCommands[i]->id() << "'" << std::endl;
+      if (found)
+        std::cout << "option is: '" << allCommands[i]->id() << "'" << std::endl;
     }
   }
 
@@ -706,7 +708,8 @@ class Interactive {
 
         if (!modules[i]->run(modules, functions, factory, dictionary,
                              ldictionary, *r, command))
-          std::cout << "error in command: '" << modules[i]->id() << "'" << std::endl;
+          std::cout << "error in command: '" << modules[i]->id() << "'"
+                    << std::endl;
 
         delete r;
 
@@ -715,9 +718,10 @@ class Interactive {
       }
 
     if (notfound)
-      std::cout << "Sorry, i couldn't understand the command '" << command << "'."
-           << std::endl
-           << "Please, type 'system.help' or type the command again." << std::endl;
+      std::cout << "Sorry, i couldn't understand the command '" << command
+                << "'." << std::endl
+                << "Please, type 'system.help' or type the command again."
+                << std::endl;
 
     // std::cout << "Goodbye." << std::endl;
   }

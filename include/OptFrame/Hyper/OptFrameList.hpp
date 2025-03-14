@@ -43,16 +43,19 @@ class OptFrameList {
     return ss.str();
   }
 
-  static vector<std::string>* readList(const map<string, vector<string>>& ldictionary, string list) {
+  static vector<std::string>* readList(
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string list) {
     Scanner scanner(list);
     return readList(ldictionary, scanner);
   }
 
-  static vector<std::string>* readList(const map<string, vector<string>>& ldictionary, Scanner& scanner) {
+  static vector<std::string>* readList(
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      Scanner& scanner) {
     scanner.trimInput();
 
-    if (!scanner.hasNextChar())
-      return nullptr;
+    if (!scanner.hasNextChar()) return nullptr;
 
     char character = *scanner.nextChar();
     int numberOfBrackets;
@@ -63,8 +66,7 @@ class OptFrameList {
       while (character != ' ')  // or... there is no next char!
       {
         ssword << character;
-        if (!scanner.hasNextChar())
-          break;
+        if (!scanner.hasNextChar()) break;
         character = *scanner.nextChar();
       }
 
@@ -75,22 +77,20 @@ class OptFrameList {
         auto obegin = Scanner::parseInt(word);
 
         if (!obegin) {
-          std::cout << "OptFrameList error: variable '" << word << "' not found in list dictionary!" << std::endl;
+          std::cout << "OptFrameList error: variable '" << word
+                    << "' not found in list dictionary!" << std::endl;
           return nullptr;
         }
 
         int begin = *obegin;
 
-        if (!scanner.hasNext())
-          return nullptr;
+        if (!scanner.hasNext()) return nullptr;
 
         string doubledots = scanner.next();
 
-        if (doubledots != "..")
-          return nullptr;
+        if (doubledots != "..") return nullptr;
 
-        if (!scanner.hasNext())
-          return nullptr;
+        if (!scanner.hasNext()) return nullptr;
 
         string send = scanner.next();
 
@@ -112,7 +112,8 @@ class OptFrameList {
 
         return numeric_list;
       } else {
-        vector<string>* list = new vector<string>(ldictionary.find(word)->second);
+        vector<string>* list =
+            new vector<string>(ldictionary.find(word)->second);
         return list;
       }
     }
@@ -122,17 +123,14 @@ class OptFrameList {
 
     numberOfBrackets = 0;
 
-    if (!scanner.hasNextChar())
-      return nullptr;
+    if (!scanner.hasNextChar()) return nullptr;
 
     character = *scanner.nextChar();
 
     word = "";
     while ((character != ']') || ((character == ']') && numberOfBrackets > 0)) {
-      if (character == '[')
-        numberOfBrackets++;
-      if (character == ']')
-        numberOfBrackets--;
+      if (character == '[') numberOfBrackets++;
+      if (character == ']') numberOfBrackets--;
 
       if ((character == ',') && (numberOfBrackets == 0)) {
         list->push_back(word);
@@ -141,8 +139,7 @@ class OptFrameList {
         word += character;
       }
 
-      if (!scanner.hasNextChar())
-        return nullptr;
+      if (!scanner.hasNextChar()) return nullptr;
 
       character = *scanner.nextChar();
     }
@@ -160,16 +157,14 @@ class OptFrameList {
   }
 
   static vector<std::string>* readBlock(Scanner& scanner) {
-    if (!scanner.hasNextChar())
-      return nullptr;
+    if (!scanner.hasNextChar()) return nullptr;
 
     char character = *scanner.nextChar();
     int numberOfBrackets;
 
     // trim input
     while (character == ' ') {
-      if (!scanner.hasNextChar())
-        return nullptr;
+      if (!scanner.hasNextChar()) return nullptr;
 
       character = *scanner.nextChar();
     }
@@ -177,7 +172,9 @@ class OptFrameList {
     if (character != '{')  // can't read block from dictionary
     {
       if (character == '[')
-        std::cout << "OptFrameList::readBlock() error: trying to read block from a possible list structure!" << std::endl;
+        std::cout << "OptFrameList::readBlock() error: trying to read block "
+                     "from a possible list structure!"
+                  << std::endl;
       return nullptr;
     }
 
@@ -186,17 +183,14 @@ class OptFrameList {
 
     numberOfBrackets = 0;
 
-    if (!scanner.hasNextChar())
-      return nullptr;
+    if (!scanner.hasNextChar()) return nullptr;
 
     character = *scanner.nextChar();
 
     word = "";
     while ((character != '}') || ((character == '}') && numberOfBrackets > 0)) {
-      if (character == '{')
-        numberOfBrackets++;
-      if (character == '}')
-        numberOfBrackets--;
+      if (character == '{') numberOfBrackets++;
+      if (character == '}') numberOfBrackets--;
 
       if ((character == ';') && (numberOfBrackets == 0)) {
         block->push_back(word);
@@ -205,8 +199,7 @@ class OptFrameList {
         word += character;
       }
 
-      if (!scanner.hasNextChar())
-        return nullptr;
+      if (!scanner.hasNextChar()) return nullptr;
 
       character = *scanner.nextChar();
     }
@@ -229,8 +222,7 @@ class OptFrameList {
     ss << "[";
     for (unsigned i = 0; i < list.size(); i++) {
       ss << list.at(i);
-      if (i != list.size() - 1)
-        ss << ",";
+      if (i != list.size() - 1) ss << ",";
     }
     ss << "]";
 
@@ -243,8 +235,7 @@ class OptFrameList {
     ss << "{";
     for (unsigned i = 0; i < block.size(); i++) {
       ss << block.at(i);
-      if (i != block.size() - 1)
-        ss << ";";
+      if (i != block.size() - 1) ss << ";";
     }
     ss << "}";
 

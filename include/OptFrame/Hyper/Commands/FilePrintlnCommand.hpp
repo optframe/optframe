@@ -27,57 +27,57 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class FilePrintlnCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~FilePrintlnCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class FilePrintlnCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~FilePrintlnCommand() {}
 
-   string id()
-   {
-      return "file.println";
-   }
+  string id() { return "file.println"; }
 
-   string usage()
-   {
-      return "file.println filename text";
-   }
+  string usage() { return "file.println filename text"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>&, string input)
-   {
-      Scanner scanner(input);
-      if (!scanner.hasNext()) // no file
-      {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>&,
+           HeuristicFactory<R, ADS, DS>&, std::map<std::string, std::string>&,
+           map<string, vector<string>>&, string input) {
+    Scanner scanner(input);
+    if (!scanner.hasNext())  // no file
+    {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string filename = scanner.next();
+    string filename = scanner.next();
 
-      FILE* file = fopen(filename.c_str(), "a");
+    FILE* file = fopen(filename.c_str(), "a");
 
-      if (!file) {
-         std::cout << "file.println command: couldn't open file: '" << filename << "'" << std::endl;
-         return false;
-      }
+    if (!file) {
+      std::cout << "file.println command: couldn't open file: '" << filename
+                << "'" << std::endl;
+      return false;
+    }
 
-      string text = Scanner::trim(scanner.nextLine());
+    string text = Scanner::trim(scanner.nextLine());
 
-      fprintf(file, "%s\r\n", text.c_str());
+    fprintf(file, "%s\r\n", text.c_str());
 
-      fclose(file);
+    fclose(file);
 
-      return true;
-   }
+    return true;
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_FILE_PRINTLN_MODULE_HPP_ */

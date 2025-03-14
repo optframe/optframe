@@ -4,6 +4,7 @@ import std;
 import optframe.core;
 import optframe.heuristics;
 import optframe.scannerpp;
+import optframe.hyper;
 
 using namespace optframe;
 
@@ -24,6 +25,8 @@ int main() {
   sptr<BRKGA<MyESolution>> brkga;
   scannerpp::Scanner s{"10"};
   std::println("int -> {}", *s.nextInt());
+
+  HeuristicFactory<MyESolution>* hf;
   std::print("now {}", t.now());
   return 0;
 }

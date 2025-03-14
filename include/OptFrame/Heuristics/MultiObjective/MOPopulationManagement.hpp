@@ -3,7 +3,9 @@
 
 #ifndef OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
 #define OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
-//
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <algorithm>
 #include <optional>
 #include <string>
@@ -16,9 +18,25 @@
 #include <OptFrame/Heuristics/EA/GeneralCrossover.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOSIndividual.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XMES2>
+MOD_EXPORT template <XESolution XMES2>
 class MOPopulationManagement : public Component {
  public:
   MOPopulationManagement() {}
@@ -26,11 +44,11 @@ class MOPopulationManagement : public Component {
   virtual ~MOPopulationManagement() {}
 
   // create a new population
-  virtual vector<MOSIndividual<XMES2>> initialize(unsigned pSize) = 0;
+  virtual std::vector<MOSIndividual<XMES2>> initialize(unsigned pSize) = 0;
 
   // create next population
-  virtual vector<MOSIndividual<XMES2>> createNext(
-      unsigned target_size, const vector<MOSIndividual<XMES2>>& P) = 0;
+  virtual std::vector<MOSIndividual<XMES2>> createNext(
+      unsigned target_size, const std::vector<MOSIndividual<XMES2>>& P) = 0;
 
   void print() const override { std::cout << toString() << std::endl; }
 
@@ -50,7 +68,7 @@ class MOPopulationManagement : public Component {
   std::string toString() const override { return id(); }
 };
 
-template <XESolution XMES2>
+MOD_EXPORT template <XESolution XMES2>
 class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   using S = typename XMES2::first_type;
   using XMEv = typename XMES2::second_type;
@@ -92,11 +110,11 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return mosind;  // new MOSIndividual<XMES2>(s, mev);
   }
 
-  vector<MOSIndividual<XMES2>> initialize(unsigned pSize) override {
+  std::vector<MOSIndividual<XMES2>> initialize(unsigned pSize) override {
     // Population<XES>* p = &initPop.generatePopulation(pSize);
     VEPopulation<XMES2> mes = initEPop->generateEPopulation(pSize);
 
-    vector<MOSIndividual<XMES2>> r;
+    std::vector<MOSIndividual<XMES2>> r;
     for (unsigned i = 0; i < mes.size(); i++)
       r.push_back(createIndividual(std::move(mes.at(i))));
 
@@ -106,8 +124,9 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   }
 
   // multiple crossovers in a binary tournament and apply many mutations
-  vector<MOSIndividual<XMES2>> createNext(
-      unsigned target_size, const vector<MOSIndividual<XMES2>>& P) override {
+  std::vector<MOSIndividual<XMES2>> createNext(
+      unsigned target_size,
+      const std::vector<MOSIndividual<XMES2>>& P) override {
     //
     unsigned size_renew = renewRate * target_size;
     if (Component::verbose) {
@@ -117,7 +136,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
       std::cout << "(" << renewRate << "*" << target_size << ")" << std::endl;
     }
 
-    vector<MOSIndividual<XMES2>> children;
+    std::vector<MOSIndividual<XMES2>> children;
     //
     if (size_renew > 0) {
       children = initialize(size_renew);
@@ -140,7 +159,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
       std::cout << std::endl;
       std::cout << "will run binaryTournment(rest=" << rest << ")" << std::endl;
     }
-    vector<MOSIndividual<XMES2>> pool_best = binaryTournment(rest, P);
+    std::vector<MOSIndividual<XMES2>> pool_best = binaryTournment(rest, P);
     if (Component::verbose)
       std::cout << "pool_best.size() = " << pool_best.size() << std::endl;
 
@@ -149,7 +168,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
       std::cout << "will run basicCrossoverMutation(|pool|=";
       std::cout << pool_best.size() << ")" << std::endl;
     }
-    vector<MOSIndividual<XMES2>> crossMut =
+    std::vector<MOSIndividual<XMES2>> crossMut =
         basicCrossoverMutation(rest, pool_best);
     if (Component::verbose)
       std::cout << "crossMut.size() = " << crossMut.size() << std::endl;
@@ -172,9 +191,9 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return children;
   }
 
-  vector<MOSIndividual<XMES2>> binaryTournment(
-      unsigned poolSize, const vector<MOSIndividual<XMES2>>& P) {
-    vector<MOSIndividual<XMES2>> pool;
+  std::vector<MOSIndividual<XMES2>> binaryTournment(
+      unsigned poolSize, const std::vector<MOSIndividual<XMES2>>& P) {
+    std::vector<MOSIndividual<XMES2>> pool;
 
     for (unsigned t = 1; t <= poolSize; t++) {
       int i = rg->rand(P.size());
@@ -190,8 +209,8 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return pool;
   }
 
-  vector<MOSIndividual<XMES2>> basicCrossoverMutation(
-      unsigned targetSize, const vector<MOSIndividual<XMES2>>& pool) {
+  std::vector<MOSIndividual<XMES2>> basicCrossoverMutation(
+      unsigned targetSize, const std::vector<MOSIndividual<XMES2>>& pool) {
     //
     if (Component::verbose)
       std::cout << "DEBUG: |pool| = " << pool.size() << std::endl;
@@ -203,11 +222,11 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
           std::cout << " targetSize=" << targetSize << std::endl;
         }
       }
-      return vector<MOSIndividual<XMES2>>{};
+      return std::vector<MOSIndividual<XMES2>>{};
     }
 
     // perform many crossovers and mutations, then choose
-    vector<MOSIndividual<XMES2>> childrenPool;
+    std::vector<MOSIndividual<XMES2>> childrenPool;
 
     for (unsigned i = 0; i < pool.size(); i++) {
       unsigned j = i + 1;
@@ -224,8 +243,8 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
         crossChildren = make_pair(pool[i].first, pool[j].first);
       }
 
-      // vector<Solution<R, ADS>*> vChildren(2, nullptr);
-      vector<op<S>> vChildren(2, std::nullopt);
+      // std::vector<Solution<R, ADS>*> vChildren(2, nullptr);
+      std::vector<op<S>> vChildren(2, std::nullopt);
       vChildren[0] = crossChildren.first;
       vChildren[1] = crossChildren.second;
 
@@ -249,7 +268,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     }
 
     // will select 'targetSize' children from childrenPool
-    vector<MOSIndividual<XMES2>> children;
+    std::vector<MOSIndividual<XMES2>> children;
     //
     if (Component::verbose)
       std::cout << "DEBUG: |childrenPool|=" << childrenPool.size() << std::endl;
@@ -305,9 +324,9 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class BasicMOPopulationManagementBuilder : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
@@ -320,7 +339,7 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<XES> {
 
   // has sptr instead of sref, is that on purpose or legacy class?
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     if (Component::debug)
       std::cout << "BasicMOPopulationBuilder Loading Parameter #0" << std::endl;
 
@@ -373,12 +392,12 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(InitialMultiESolution<XMES>::idComponent(),
-                               "initial epopulation"));
+                                    "initial epopulation"));
     std::stringstream ss;
     ss << NS<XMES>::idComponent() << "[]";
     params.push_back(std::make_pair(ss.str(), "list of NS"));
     params.push_back(std::make_pair("OptFrame:double", "mutation rate"));
-    stringstream ss2;
+    std::stringstream ss2;
     ss2 << GeneralCrossover<S>::idComponent() << "[]";
     params.push_back(std::make_pair(ss2.str(), "list of crossover"));
     params.push_back(std::make_pair("OptFrame:double", "renew rate"));

@@ -563,7 +563,7 @@ MOD_EXPORT class Scanner final {
 
  public:
   // XML method: it can segfault! beware!
-  pair<string, map<std::string, std::string>> nextXMLTag() {
+  pair<string, std::map<std::string, std::string>> nextXMLTag() {
     string x = "";
 
     while (hasNextChar()) {
@@ -585,13 +585,13 @@ MOD_EXPORT class Scanner final {
     std::cout << "base: " << x << std::endl;
 
     if (x.size() < 2 || x.at(0) != '<' || x.at(x.size() - 1) != '>')
-      return make_pair("", map<std::string, std::string>());
+      return make_pair("", std::map<std::string, std::string>());
 
     Scanner scanner(x);
     scanner.useSeparators("<>");
 
     string tagname = "";
-    map<std::string, std::string> attr;
+    std::map<std::string, std::string> attr;
 
     if (scanner.hasNext()) {
       string tag = scanner.next();

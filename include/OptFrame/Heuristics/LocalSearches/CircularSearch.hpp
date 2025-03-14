@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_CIRCULARSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_CIRCULARSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,9 +14,25 @@
 #include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class CircularSearch : public LocalSearch<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
   using XEv = typename XES::second_type;
@@ -69,8 +87,8 @@ class CircularSearch : public LocalSearch<XES> {
           m->applyUpdate(se);
           eval->reevaluate(se);  // updates 'e'
 
-          // std::cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << "
-          // (antiga fo="<< old_f << ")" << std::endl << std::endl;
+          // std::cout << "CS improvement! w:" << w << " fo=" << e.evaluation()
+          // << " (antiga fo="<< old_f << ")" << std::endl << std::endl;
 
           initial_w = w + 1;
 

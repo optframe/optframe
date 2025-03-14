@@ -17,7 +17,7 @@ class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
 
   // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -35,7 +35,7 @@ class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     params.push_back(
         make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
 
@@ -112,4 +112,4 @@ class ILSLPerturbationLPlus2ProbBuilder : public ComponentBuilder<XES> {
   std::string id() const override { return idComponent(); }
 };
 
-}
+}  // namespace optframe

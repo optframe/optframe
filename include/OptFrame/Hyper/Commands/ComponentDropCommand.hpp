@@ -27,54 +27,57 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentDropCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ComponentDropCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ComponentDropCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ComponentDropCommand() {}
 
-   string id()
-   {
-      return "component.drop";
-   }
+  string id() { return "component.drop"; }
 
-   string usage()
-   {
-      string u = id();
-      u += "component id\n";
-      return u;
-   }
+  string usage() {
+    string u = id();
+    u += "component id\n";
+    return u;
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      //cout << "component.drop command: " << input << std::endl;
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    // cout << "component.drop command: " << input << std::endl;
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string type = scanner.next();
+    string type = scanner.next();
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      int id = *scanner.nextInt();
+    int id = *scanner.nextInt();
 
-      return factory.drop(type, id);
-   }
+    return factory.drop(type, id);
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_DROP_MODULE_HPP_ */

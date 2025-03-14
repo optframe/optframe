@@ -5,9 +5,10 @@
 
 using namespace PN;
 
-bool PNProblemCommand::load(string filename, HeuristicFactory<ESolutionPN>& hf,
-                            map<std::string, std::string>& dictionary,
-                            map<string, vector<string>>& ldictionary) {
+bool PNProblemCommand::load(
+    string filename, HeuristicFactory<ESolutionPN>& hf,
+    std::map<std::string, std::string>& dictionary,
+    std::map<std::string, std::vector<std::string>>& ldictionary) {
   // File* file = new File(filename);
   /*
   try {
@@ -76,15 +77,17 @@ bool PNProblemCommand::load(string filename, HeuristicFactory<ESolutionPN>& hf,
   return true;
 }
 
-bool PNProblemCommand::unload(HeuristicFactory<ESolutionPN>& factory,
-                              map<std::string, std::string>& dictionary,
-                              map<string, vector<string>>& ldictionary) {
+bool PNProblemCommand::unload(
+    HeuristicFactory<ESolutionPN>& factory,
+    std::map<std::string, std::string>& dictionary,
+    std::map<std::string, std::vector<std::string>>& ldictionary) {
   if (p) delete p;
   p = NULL;
 
-  std::cout << "problem instance for PN unloaded successfully (use 'drop_all' if "
-          "you want to remove all components)"
-       << std::endl;
+  std::cout
+      << "problem instance for PN unloaded successfully (use 'drop_all' if "
+         "you want to remove all components)"
+      << std::endl;
 
   return true;
 }

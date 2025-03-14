@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,9 +14,25 @@
 #include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class RandomDescentMethod : public LocalSearch<XES> {
  private:
   using XEv = typename XES::second_type;
@@ -44,7 +62,7 @@ class RandomDescentMethod : public LocalSearch<XES> {
       // uptr<Move<XES, XSH>> move = ns.randomMove(s);
       uptr<Move<XES, XSH>> move = ns->randomMove(se);
 
-      op<XEv> cost = nullopt;
+      op<XEv> cost = std::nullopt;
 
       // if (move && move->canBeApplied(s))
       if (move && move->canBeApplied(se)) {

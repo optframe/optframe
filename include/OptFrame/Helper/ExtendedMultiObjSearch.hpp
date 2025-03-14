@@ -157,7 +157,7 @@ class ExtendedMultiObjSearchBuilder : public ComponentBuilder<R, ADS> {
                                                    string family = "") = 0;
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     return build(scanner, hf, family);
   }
 

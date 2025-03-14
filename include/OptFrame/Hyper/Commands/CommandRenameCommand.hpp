@@ -27,75 +27,77 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class CommandRenameCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~CommandRenameCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class CommandRenameCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~CommandRenameCommand() {}
 
-   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
-   {
-      for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
-         if (modules[i]->canHandle(module, rest))
-            return modules[i];
-      }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
-      return nullptr;
-   }
+  Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules,
+                                  string module, string rest) {
+    for (unsigned int i = 0; i < modules.size(); i++) {
+      // cout << "run: testing module '" << modules[i]->id() << "'" <<
+      // std::endl;
+      if (modules[i]->canHandle(module, rest)) return modules[i];
+    }
+    // cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest
+    // << "'" << std::endl;
+    return nullptr;
+  }
 
-   string id()
-   {
-      return "command.rename";
-   }
+  string id() { return "command.rename"; }
 
-   string usage()
-   {
-      return "command.rename command_name new_name";
-   }
+  string usage() { return "command.rename command_name new_name"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) // no module
-      {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext())  // no module
+    {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string command_name = scanner.next();
+    string command_name = scanner.next();
 
-      if (!scanner.hasNext()) // no module
-      {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext())  // no module
+    {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string new_name = scanner.next();
+    string new_name = scanner.next();
 
-      Command<R, ADS, DS>* m = getCommand(allCommands, command_name, "");
+    Command<R, ADS, DS>* m = getCommand(allCommands, command_name, "");
 
-      if (!m) {
-         std::cout << "command " << id() << " error: command '" << command_name << "' not found!" << std::endl;
-         return false;
-      }
+    if (!m) {
+      std::cout << "command " << id() << " error: command '" << command_name
+                << "' not found!" << std::endl;
+      return false;
+    }
 
-      m->handles.push_back(new_name);
+    m->handles.push_back(new_name);
 
-      return true;
-   }
+    return true;
+  }
 
-   // disable preprocess, only need module prefix
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      // disable preprocess!!
-      return new string(input);
-   }
+  // disable preprocess, only need module prefix
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    // disable preprocess!!
+    return new string(input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_COMMAND_RENAME_MODULE_HPP_ */

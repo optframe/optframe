@@ -17,7 +17,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -43,7 +43,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
 
     params.push_back(
         make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));

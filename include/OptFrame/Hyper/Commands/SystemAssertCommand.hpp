@@ -27,51 +27,51 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemAssertCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemAssertCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemAssertCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemAssertCommand() {}
 
-   string id()
-   {
-      return "system.assert";
-   }
+  string id() { return "system.assert"; }
 
-   string usage()
-   {
-      return "system.assert boolean";
-   }
+  string usage() { return "system.assert boolean"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>&, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>&,
+           HeuristicFactory<R, ADS, DS>&, std::map<std::string, std::string>&,
+           map<string, vector<string>>&, string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "module " << id() << " usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "module " << id() << " usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string boolean = scanner.next();
+    string boolean = scanner.next();
 
-      if (boolean == "true")
-         return true;
-      else if (boolean == "false")
-         return false;
-      else {
-         std::cout << "module " << id() << " error: no such boolean value '" << boolean << "'" << std::endl;
-         return false;
-      }
-   }
+    if (boolean == "true")
+      return true;
+    else if (boolean == "false")
+      return false;
+    else {
+      std::cout << "module " << id() << " error: no such boolean value '"
+                << boolean << "'" << std::endl;
+      return false;
+    }
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_SYSTEM_ASSERT_MODULE_HPP_ */

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HELPER_INITIALMULTIESOLUTION_HPP_
 #define OPTFRAME_HELPER_INITIALMULTIESOLUTION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <string>
 #include <utility>
@@ -17,9 +19,21 @@
 #include <OptFrame/Core/VEPopulation.hpp>
 #include <OptFrame/Pareto/MultiEvaluator.hpp>
 
-// #include "EA.hpp"
+#define MOD_EXPORT
+#else
 
-// using namespace std;
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -27,9 +41,9 @@ namespace optframe {
 // Because MultiESolution class is currently broken... Too bad!
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
+MOD_EXPORT template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
 #else
-template <XESolution XES, typename X2ES = VEPopulation<XES>>
+MOD_EXPORT template <XESolution XES, typename X2ES = VEPopulation<XES>>
 #endif
 class InitialMultiESolution : public Component {
  public:
@@ -65,7 +79,7 @@ class InitialMultiESolution : public Component {
 //  But this overcomplicates things with builders...
 //  so, we need some specific type anyway.
 //
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class BasicInitialMultiESolution : public InitialMultiESolution<XES> {
   using XEv = typename XES::second_type;
 
@@ -113,9 +127,9 @@ class BasicInitialMultiESolution : public InitialMultiESolution<XES> {
 // This has nothing to do with MultiObjective stuff...
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>  // XEMSolution XMES
+MOD_EXPORT template <XESolution XES>  // XEMSolution XMES
 #else
-template <typename XES>  // TODO: make MultiBuilder for XMES ?
+MOD_EXPORT template <typename XES>  // TODO: make MultiBuilder for XMES ?
 #endif
 class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
@@ -125,7 +139,7 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
   virtual ~BasicInitialMultiESolutionBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     //
     sptr<Constructive<S>> c;
     std::string sid_0 = scanner.next();
@@ -158,7 +172,7 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component == BasicInitialMultiESolution<XES>::idComponent();
   }
 
@@ -181,9 +195,9 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
 // ===================================================================
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XEMSolution XMES>
+MOD_EXPORT template <XESolution XES, XEMSolution XMES>
 #else
-template <typename XES, typename XMES>
+MOD_EXPORT template <typename XES, typename XMES>
 #endif
 class BasicInitialMultiESolutionMultiBuilder
     : public ComponentMultiBuilder<XMES> {
@@ -195,7 +209,7 @@ class BasicInitialMultiESolutionMultiBuilder
   virtual ~BasicInitialMultiESolutionMultiBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     //
     sptr<Constructive<S>> c;
     std::string sid_0 = scanner.next();
@@ -228,7 +242,7 @@ class BasicInitialMultiESolutionMultiBuilder
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component == BasicInitialMultiESolution<XES>::idComponent();
   }
 

@@ -17,13 +17,13 @@ class MultiObjSearchBuilder : public ComponentBuilder<XES> {
                                      string family = "") = 0;
   // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     return build(scanner, hf, family);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override = 0;
 
-  bool canBuild(string) override = 0;
+  bool canBuild(std::string) override = 0;
 
   static std::string idComponent() {
     std::stringstream ss;

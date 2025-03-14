@@ -27,52 +27,51 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemRequireCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemRequireCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemRequireCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemRequireCommand() {}
 
-   string id()
-   {
-      return "system.require";
-   }
+  string id() { return "system.require"; }
 
-   string usage()
-   {
-      return "system.require module_name";
-   }
+  string usage() { return "system.require module_name"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
-      if (!scanner.hasNext()) // no module
-      {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-
-      scanner.useSeparators(" \t\r\n;"); // prevent errors with semicolon
-
-      string module_name = scanner.next();
-
-      for (unsigned i = 0; i < allCommands.size(); i++)
-         if (allCommands[i]->id() == module_name)
-            return true;
-
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
+    if (!scanner.hasNext())  // no module
+    {
+      std::cout << "Usage: " << usage() << std::endl;
       return false;
-   }
+    }
 
-   // disable preprocess, only need module name
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      // disable preprocess!!
-      return new string(input);
-   }
+    scanner.useSeparators(" \t\r\n;");  // prevent errors with semicolon
+
+    string module_name = scanner.next();
+
+    for (unsigned i = 0; i < allCommands.size(); i++)
+      if (allCommands[i]->id() == module_name) return true;
+
+    return false;
+  }
+
+  // disable preprocess, only need module name
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    // disable preprocess!!
+    return new string(input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_SYSTEM_REQUIRE_MODULE_HPP_ */

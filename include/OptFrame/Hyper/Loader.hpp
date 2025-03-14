@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HYPER_LOADER_HPP_
 #define OPTFRAME_HYPER_LOADER_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 /*! \mainpage OptFrame
  * This is the OptFrame documentation.
  */
@@ -113,6 +115,22 @@
 #include <OptFrame/Heuristics/CompareLocalSearch.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 // using namespace std;
 
 namespace optframe {
@@ -123,10 +141,11 @@ namespace optframe {
 //
 //
 #ifdef OPTFRAME_LEGACY_R_ADS
-template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
-          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
-          XSearch<XES> XSH = XES, XESolution XES2 = XES,
-          X2ESolution<XES> X2ES = MultiESolution<XES>>
+MOD_EXPORT template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
+                     XEvaluation XEv = Evaluation<>,
+                     XESolution XES = pair<S, XEv>, XSearch<XES> XSH = XES,
+                     XESolution XES2 = XES,
+                     X2ESolution<XES> X2ES = MultiESolution<XES>>
 #else
 
 // ==============================================
@@ -135,11 +154,12 @@ template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
 // ==============================================
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
-          X2ESolution<XES2> X2ES = VEPopulation<XES2>>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES,
+                     XESolution XES2 = XES,
+                     X2ESolution<XES2> X2ES = VEPopulation<XES2>>
 #else
-template <typename XES, typename XSH = XES, typename XES2 = XES,
-          typename X2ES = VEPopulation<XES2>>
+MOD_EXPORT template <typename XES, typename XSH = XES, typename XES2 = XES,
+                     typename X2ES = VEPopulation<XES2>>
 
 #endif  // cpp_concepts
 
@@ -159,8 +179,8 @@ class Loader {
 
  public:
   HeuristicFactory<XES> factory;
-  map<std::string, std::string> dictionary;
-  map<string, vector<string>> ldictionary;
+  std::map<std::string, std::string> dictionary;
+  std::map<std::string, std::vector<std::string>> ldictionary;
 
   Loader() { loadComponentBuilders(); }
 

@@ -27,77 +27,84 @@
 
 namespace optframe {
 
-//! \english The CallCommand class is a Command that enables the user to do a system call to external software \endenglish \portuguese A classe CallCommand é o Módulo que permite o usuário fazer uma chamada de sistema, executando um programa externo. \endportuguese
+//! \english The CallCommand class is a Command that enables the user to do a
+//! system call to external software \endenglish \portuguese A classe
+//! CallCommand é o Módulo que permite o usuário fazer uma chamada de sistema,
+//! executando um programa externo. \endportuguese
 /*!
  \sa run()
  */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemCallCommand : public Command<R, ADS, DS>
-{
-public:
-   //! \english Command id \endenglish \portuguese Identificação do módulo \endportuguese
-   /*! \english
-	 \return string with the id of this module
-	 \endenglish
-	 \portuguese
-	 \return string com a identificação deste módulo
-	 \endportuguese
-	 */
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemCallCommand : public Command<R, ADS, DS> {
+ public:
+  //! \english Command id \endenglish \portuguese Identificação do módulo
+  //! \endportuguese
+  /*! \english
+        \return string with the id of this module
+        \endenglish
+        \portuguese
+        \return string com a identificação deste módulo
+        \endportuguese
+        */
 
-   virtual ~SystemCallCommand()
-   {
-   }
+  virtual ~SystemCallCommand() {}
 
-   string id()
-   {
-      return "system.call";
-   }
+  string id() { return "system.call"; }
 
-   //! \english Help for this module \endenglish \portuguese Ajuda para este módulo \endportuguese
-   /*! \english
-	 \return string with the help for this module
-	 \endenglish
-	 \portuguese
-	 \return string com a ajuda para este módulo
-	 \endportuguese
-	 */
+  //! \english Help for this module \endenglish \portuguese Ajuda para este
+  //! módulo \endportuguese
+  /*! \english
+        \return string with the help for this module
+        \endenglish
+        \portuguese
+        \return string com a ajuda para este módulo
+        \endportuguese
+        */
 
-   string usage()
-   {
-      return "system.call external_software";
-   }
+  string usage() { return "system.call external_software"; }
 
-   //! \english Execution of the module \endenglish \portuguese Execução do módulo \endportuguese
-   /*! \english
-	 The CallCommand receives as parameter the desired system call.
+  //! \english Execution of the module \endenglish \portuguese Execução do
+  //! módulo \endportuguese
+  /*! \english
+        The CallCommand receives as parameter the desired system call.
 
-	 For more information type 'usage call' in OptFrame Command Line Interface
+        For more information type 'usage call' in OptFrame Command Line
+     Interface
 
-	 \sa OptFrame::execute()
-	 \endenglish
+        \sa OptFrame::execute()
+        \endenglish
 
-	 \portuguese
-	 O CallCommand recebe como parâmetro a chamada de sistema desejada.
+        \portuguese
+        O CallCommand recebe como parâmetro a chamada de sistema desejada.
 
-	 Para mais informações digite 'usage call' na Interface de Linha de Comando do OptFrame
+        Para mais informações digite 'usage call' na Interface de Linha de
+     Comando do OptFrame
 
-	 \sa OptFrame::execute()
-	 \endportuguese
-	 */
+        \sa OptFrame::execute()
+        \endportuguese
+        */
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>&, string command)
-   {
-      int c = system(command.c_str());
-      return c == 0; // TODO: get return value from external command!
-   }
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>&, std::map<std::string, std::string>&,
+           map<string, vector<string>>&, string command) {
+    int c = system(command.c_str());
+    return c == 0;  // TODO: get return value from external command!
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_CALLMODULE_HPP_ */

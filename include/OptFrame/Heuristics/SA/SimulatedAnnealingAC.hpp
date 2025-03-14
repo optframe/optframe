@@ -198,8 +198,8 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
 
       if (!move) {
         if (Component::warning)
-          std::cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T
-               << "! continue..." << std::endl;
+          std::cout << "SA warning: no move in iter=" << ctx.iterT
+                    << " T=" << ctx.T << "! continue..." << std::endl;
         // TODO: return FAIL?
         // continue;
         return {SearchStatus::NO_REPORT, star};
@@ -463,7 +463,7 @@ class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
 
   // has sptr instead of sref, is that on purpose or legacy class?
   GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                           string family = "") override {
+                           std::string family = "") override {
     if (Component::debug)
       std::cout << "BasicSA Builder Loading Parameter #0" << std::endl;
     if (!scanner.hasNext()) {
@@ -568,8 +568,8 @@ class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
                             XES>::idComponent(),
                   "evaluation function"));
     //
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
+    // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     std::stringstream ss;

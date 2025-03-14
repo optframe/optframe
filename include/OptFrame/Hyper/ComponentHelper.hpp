@@ -1,78 +1,79 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_COMPONENT_HELPER_HPP_
 #define OPTFRAME_COMPONENT_HELPER_HPP_
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 #include <cstdlib>
 #include <iostream>
 #include <vector>
 //
 #include <OptFrame/Scanner++/Scanner.hpp>
-//
-// using namespace scannerpp;
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 using scannerpp::Scanner;
 
-class ComponentHelper {
+MOD_EXPORT class ComponentHelper {
  public:
   // taken from HeuristicFactory
 
-  //! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
+  //! \english compareBase is an auxiliar method to compare a pattern to a
+  //! component id. Check if 'component' inherits from 'base'. \endenglish
+  //! \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um
+  //! id de componente. Testa se 'component' herda de 'base'. \endportuguese
   /*!
-	 \sa compareBase(string, string)
-	 */
+         \sa compareBase(std::string, std::string)
+         */
 
   // Check if 'base' is inherited by 'component'
   // EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
-  static bool compareBase(string _base, string _component) {
+  static bool compareBase(std::string _base, std::string _component) {
     if ((_base.length() < 3) || (_component.length() < 3)) {
-      std::cout << "ComponentHelper::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << std::endl;
+      std::cout << "ComponentHelper::compareBase warning: comparing less than "
+                   "3 characters! with base='"
+                << _base << "' component='" << _component << "'" << std::endl;
       return false;
     }
 
-    bool baseIsList = (_base.at(_base.length() - 2) == '[') && (_base.at(_base.length() - 1) == ']');
-    bool componentIsList = (_component.at(_component.length() - 2) == '[') && (_component.at(_component.length() - 1) == ']');
+    bool baseIsList = (_base.at(_base.length() - 2) == '[') &&
+                      (_base.at(_base.length() - 1) == ']');
+    bool componentIsList = (_component.at(_component.length() - 2) == '[') &&
+                           (_component.at(_component.length() - 1) == ']');
 
-    if (baseIsList != componentIsList)
-      return false;
+    if (baseIsList != componentIsList) return false;
 
     // remove list (if exists)
-    string base = typeOfList(_base);
-    string component = typeOfList(_component);
+    std::string base = typeOfList(_base);
+    std::string component = typeOfList(_component);
 
     bool sameBase = true;
 
     if (base.length() <= component.length()) {
       for (unsigned i = 0; i < base.length(); i++)
-        if (base.at(i) != component.at(i))
-          sameBase = false;
+        if (base.at(i) != component.at(i)) sameBase = false;
     } else
       sameBase = false;
 
-    if (sameBase)
-      return true;
+    if (sameBase) return true;
 
     // ------------------
     // check last family
@@ -81,23 +82,21 @@ class ComponentHelper {
     Scanner scanner(base);
     scanner.useSeparators(":");
 
-    string family = scanner.next();
-    while (scanner.hasNext())
-      family = scanner.next();
+    std::string family = scanner.next();
+    while (scanner.hasNext()) family = scanner.next();
 
     Scanner scanComponent(component);
     scanComponent.useSeparators(":");
-    string part;
+    std::string part;
     while (scanComponent.hasNext()) {
       part = scanComponent.next();
-      if (part == family)
-        sameBase = true;
+      if (part == family) sameBase = true;
     }
 
     return sameBase;
   }
 
-  static string typeOfList(string listId) {
+  static std::string typeOfList(std::string listId) {
     Scanner scanner(listId);
     scanner.useSeparators(" \t\n[]");
 

@@ -4,13 +4,32 @@
 #ifndef OPTFRAME_FI_HPP_
 #define OPTFRAME_FI_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>,
+                     XESolution XSH = XES>
 class FirstImprovement : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES, XSH>> eval;
@@ -48,7 +67,7 @@ class FirstImprovement : public LocalSearch<XES> {
       return SearchStatus::FAILED;  // poor implementation
     }
     //
-    string bestMoveId = "";
+    std::string bestMoveId = "";
     if (Component::verbose) std::cout << "FI: it->first()" << std::endl;
     it->first();
 

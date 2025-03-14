@@ -43,9 +43,9 @@ namespace optframe {
 // 'XSH' is the primary search type ('best' has type XSH)
 //
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
 class GlobalSearch : public Component {
   // not necessarily mono objective XEv... remember this!

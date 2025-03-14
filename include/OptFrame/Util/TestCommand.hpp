@@ -62,8 +62,9 @@ class TestCommand {
   }
 
   bool run(HeuristicFactory<R, ADS, DS>& factory,
-           map<std::string, std::string>& dictionary,
-           map<string, vector<string>>& ldictionary, string input) {
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
     Scanner scanner(input);
 
     if (!scanner.hasNext()) {

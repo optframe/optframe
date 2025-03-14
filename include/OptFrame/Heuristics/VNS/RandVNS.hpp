@@ -60,7 +60,7 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
 
   SingleObjSearch<R, ADS, DS>* build(Scanner& scanner,
                                      HeuristicFactory<R, ADS, DS>& hf,
-                                     string family = "") override {
+                                     std::string family = "") override {
     Evaluator<R, ADS, DS>* eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -89,8 +89,8 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
+    // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 

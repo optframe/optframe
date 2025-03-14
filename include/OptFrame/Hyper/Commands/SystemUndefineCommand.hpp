@@ -27,63 +27,63 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemUndefineCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemUndefineCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemUndefineCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemUndefineCommand() {}
 
-   string id()
-   {
-      return "system.undefine";
-   }
+  string id() { return "system.undefine"; }
 
-   string usage()
-   {
-      return "system.undefine word or list";
-   }
+  string usage() { return "system.undefine word or list"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
-   {
-      //cout << "undefine command: '" << rest << "'" << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>&,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string rest) {
+    // cout << "undefine command: '" << rest << "'" << std::endl;
 
-      Scanner scanner(rest);
+    Scanner scanner(rest);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      while (scanner.hasNext()) {
-         string word = scanner.next();
-         Command<R, ADS, DS>::undefine(word, dictionary, ldictionary);
-      }
+    while (scanner.hasNext()) {
+      string word = scanner.next();
+      Command<R, ADS, DS>::undefine(word, dictionary, ldictionary);
+    }
 
-      return true;
-   }
+    return true;
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    Scanner scanner(input);
 
-      // First, remove the comments '%'
+    // First, remove the comments '%'
 
-      string input2 = "";
+    string input2 = "";
 
-      while (scanner.hasNextChar()) {
-         char c = *scanner.nextChar();
-         if (c != '%')
-            input2 += c;
-         else
-            break;
-      }
+    while (scanner.hasNextChar()) {
+      char c = *scanner.nextChar();
+      if (c != '%')
+        input2 += c;
+      else
+        break;
+    }
 
-      return new string(input2);
-   }
+    return new string(input2);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* UNDEFINEMODULE_HPP_ */

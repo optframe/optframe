@@ -14,7 +14,7 @@ class IteratedLocalSearchLevelsBuilder : public ILS,
   ~IteratedLocalSearchLevelsBuilder() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                              string family = "") override {
+                              std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval = nullptr;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -28,7 +28,7 @@ class IteratedLocalSearchLevelsBuilder : public ILS,
     hf.assign(constructive, id_1, sid_1);
     if (!constructive) return nullptr;
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
     pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);

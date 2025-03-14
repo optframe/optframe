@@ -5,8 +5,8 @@
 #include <iostream>
 
 #include "Representation.h"
-//#include "Memory.h"
-//#include "Solution.h"
+// #include "Memory.h"
+// #include "Solution.h"
 #include "../../OptFrame/HeuristicFactory.hpp"
 #include "../../OptFrame/Util/NSAdapter/NSSeqTSP2Opt.hpp"
 #include "../../OptFrame/Util/NSAdapter/NSSeqTSPOrOpt.hpp"
@@ -43,7 +43,7 @@ class TSPProblemCommand {
   bool registerComponent(
       Component& component, string type, string name,
       HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf,
-      map<std::string, std::string>& dictionary) {
+      std::map<std::string, std::string>& dictionary) {
     int idx = hf.addComponent(component, type);
     std::stringstream ss;
     ss << type << " " << idx;
@@ -52,8 +52,8 @@ class TSPProblemCommand {
 
   bool load(string filename,
             HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf,
-            map<std::string, std::string>& dictionary,
-            map<string, vector<string>>& ldictionary) {
+            std::map<std::string, std::string>& dictionary,
+            std::map<std::string, std::vector<std::string>>& ldictionary) {
     File* file;
 
     try {
@@ -116,20 +116,22 @@ class TSPProblemCommand {
 
     hf.addComponent(*ilsl_pert);
 
-    std::cout << "problem '" << filename << "' loaded successfully" << std::endl;
+    std::cout << "problem '" << filename << "' loaded successfully"
+              << std::endl;
 
     return true;
   }
 
   bool unload(HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& factory,
-              map<std::string, std::string>& dictionary,
-              map<string, vector<string>>& ldictionary) {
+              std::map<std::string, std::string>& dictionary,
+              std::map<std::string, std::vector<std::string>>& ldictionary) {
     if (p) delete p;
     p = NULL;
 
-    std::cout << "problem instance for TSP unloaded successfully (use 'drop_all' if "
-            "you want to remove all components)"
-         << std::endl;
+    std::cout
+        << "problem instance for TSP unloaded successfully (use 'drop_all' if "
+           "you want to remove all components)"
+        << std::endl;
 
     return true;
   }

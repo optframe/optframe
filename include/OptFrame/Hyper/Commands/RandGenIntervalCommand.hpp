@@ -47,10 +47,12 @@ class RandGenIntervalCommand : public Command<R, ADS, DS> {
   bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
            vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
            HeuristicFactory<R, ADS, DS>& factory,
-           map<std::string, std::string>& dictionary,
-           map<string, vector<string>>& ldictionary, string input) {
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
     Scanner scanner(input);
-    // std::cout << "random_number_interval command: '" << input << "'" << std::endl;
+    // std::cout << "random_number_interval command: '" << input << "'" <<
+    // std::endl;
 
     if (!scanner.hasNext()) {
       std::cout << "Usage: " << usage() << std::endl;
@@ -87,15 +89,17 @@ class RandGenIntervalCommand : public Command<R, ADS, DS> {
                                              dictionary, ldictionary, ss.str());
     } else {
       std::cout << "random_number_interval command: random number is " << value
-           << std::endl;
+                << std::endl;
       return true;
     }
   }
 
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-      HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary,
-      const map<string, vector<string>>& ldictionary, string input) {
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);
   }

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_SIMPLELOCALSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_SIMPLELOCALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <math.h>
 // C++
@@ -17,6 +19,22 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -50,7 +68,8 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
     // op<XES>& star = this->best;
     //
     op<XES> star;  // TODO: get best from 'searchBy'
-    // std::cout << "SimpleLocalSearch search(" << target_f << "," << timelimit <<
+    // std::cout << "SimpleLocalSearch search(" << target_f << "," << timelimit
+    // <<
     // ")" << std::endl;
 
     Timer tnow;
@@ -105,7 +124,7 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
   virtual ~SimpleLocalSearchBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                              string family = "") override {
+                              std::string family = "") override {
     sptr<Evaluator<_S, _XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -116,9 +135,9 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
     int id2 = *scanner.nextInt();
     hf.assign(constructive, id2, comp_id2);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES>>, std::string> method;
+    std::pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
     sptr<LocalSearch<XES>> h = method.first;
@@ -132,9 +151,9 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
-                               "evaluation function"));
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
+                                    "evaluation function"));
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
+    // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(

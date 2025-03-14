@@ -1,10 +1,18 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef OPTFRAME_HEURISTICS_HPP
 #define OPTFRAME_HEURISTICS_HPP
 
 // Heuristics Module: inclusion of common heuristic strategies
 
 // LocalSearches
+#include "Heuristics/LocalSearches/Empty.hpp"
+//
 #include "Heuristics/LocalSearches/BestImprovement.hpp"
+
+// Global Search
+#include "Heuristics/EmptySingleObjSearch.hpp"
 
 // SA family
 #include "Heuristics/SA/SA.hpp"

@@ -27,48 +27,47 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemUnsafeDefineCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemUnsafeDefineCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemUnsafeDefineCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemUnsafeDefineCommand() {}
 
-   string id()
-   {
-      return "system.unsafe_define";
-   }
-   string usage()
-   {
-      return "system.unsafe_define new_name text";
-   }
+  string id() { return "system.unsafe_define"; }
+  string usage() { return "system.unsafe_define new_name text"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
-   {
-      Scanner scanner(rest);
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>&,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string rest) {
+    Scanner scanner(rest);
 
-      if (!scanner.hasNext())
-         return false;
+    if (!scanner.hasNext()) return false;
 
-      string new_name = scanner.next();
+    string new_name = scanner.next();
 
-      if (new_name != "") {
-         string second_word = scanner.rest();
-         return Command<R, ADS, DS>::defineText(new_name, second_word, dictionary);
-      } else {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-   }
+    if (new_name != "") {
+      string second_word = scanner.rest();
+      return Command<R, ADS, DS>::defineText(new_name, second_word, dictionary);
+    } else {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+  }
 
-   // FAITH ON USER!! NO PREPROCESSING :D
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return new string(input);
-   }
+  // FAITH ON USER!! NO PREPROCESSING :D
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return new string(input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* UNSAFE_DEFINE_MODULE_HPP_ */

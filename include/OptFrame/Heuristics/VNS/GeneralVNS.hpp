@@ -66,7 +66,7 @@ class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
   virtual ~GeneralVNSBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                              string family = "") override {
+                              std::string family = "") override {
     std::shared_ptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -98,8 +98,8 @@ class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
+    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
+    // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 

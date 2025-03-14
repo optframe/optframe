@@ -124,7 +124,7 @@ class MultiStartBuilder : public GlobalSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                           string family = "") override {
+                           std::string family = "") override {
     if (Component::debug)
       std::cout << "MultiStart Builder Loading Parameter #0" << std::endl;
     if (!scanner.hasNext()) {

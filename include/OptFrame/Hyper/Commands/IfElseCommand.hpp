@@ -26,123 +26,127 @@
 #include <string>
 
 #include "../Command.hpp"
-
 #include "SystemRunCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class IfElseCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~IfElseCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class IfElseCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~IfElseCommand() {}
 
-   string id()
-   {
-      return "if";
-   }
+  string id() { return "if"; }
 
-   string usage()
-   {
-      return "if boolean block_of_if_commands [else block_of_else_commands]";
-   }
+  string usage() {
+    return "if boolean block_of_if_commands [else block_of_else_commands]";
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+
+    string sbool = scanner.next();
+
+    bool condition;
+    if (sbool == "true")
+      condition = true;
+    else if (sbool == "false")
+      condition = false;
+    else {
+      std::cout << "if command: no such boolean '" << sbool << "'" << std::endl;
+      return false;
+    }
+
+    vector<string> lif;
+    vector<string>* p_lif = OptFrameList::readBlock(scanner);
+    if (p_lif) {
+      lif = vector<string>(*p_lif);
+      delete p_lif;
+    } else
+      return false;
+
+    vector<string> lelse;
+    if (scanner.hasNext()) {
+      string text_else = scanner.next();  // drop 'else'
+
+      if (text_else != "else") {
+        std::cout << "if command: expected else and found '" << text_else << "'"
+                  << std::endl;
+        return false;
       }
 
-      string sbool = scanner.next();
-
-      bool condition;
-      if (sbool == "true")
-         condition = true;
-      else if (sbool == "false")
-         condition = false;
-      else {
-         std::cout << "if command: no such boolean '" << sbool << "'" << std::endl;
-         return false;
-      }
-
-      vector<string> lif;
-      vector<string>* p_lif = OptFrameList::readBlock(scanner);
-      if (p_lif) {
-         lif = vector<string>(*p_lif);
-         delete p_lif;
+      vector<string>* p_lelse = OptFrameList::readBlock(scanner);
+      if (p_lelse) {
+        lelse = vector<string>(*p_lelse);
+        delete p_lelse;
       } else
-         return false;
+        return false;
+    }
 
-      vector<string> lelse;
-      if (scanner.hasNext()) {
-         string text_else = scanner.next(); // drop 'else'
+    // check if all the text was used!
+    if (!Command<R, ADS, DS>::testUnused(id(), scanner)) return false;
 
-         if (text_else != "else") {
-            std::cout << "if command: expected else and found '" << text_else << "'" << std::endl;
-            return false;
-         }
+    if (condition) {
+      if (!Command<R, ADS, DS>::run_module(
+              "system.run", all_modules, allFunctions, factory, dictionary,
+              ldictionary, OptFrameList::blockToString(lif))) {
+        std::cout << "if command: error in IF command!" << std::endl;
+        return false;
+      } else
+        return true;
+    } else {
+      if (!Command<R, ADS, DS>::run_module(
+              "system.run", all_modules, allFunctions, factory, dictionary,
+              ldictionary, OptFrameList::blockToString(lelse))) {
+        std::cout << "if command: error in ELSE command!" << std::endl;
+        return false;
+      } else
+        return true;
+    }
+  }
 
-         vector<string>* p_lelse = OptFrameList::readBlock(scanner);
-         if (p_lelse) {
-            lelse = vector<string>(*p_lelse);
-            delete p_lelse;
-         } else
-            return false;
-      }
+  // should preprocess only until list of commands
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    string ibegin = "";
+    string iend = "";
+    unsigned j = 0;
+    for (unsigned i = 0; i < input.length(); i++) {
+      if (input.at(i) == '{')
+        break;
+      else
+        ibegin += input.at(i);
+      j++;
+    }
 
-      // check if all the text was used!
-      if (!Command<R, ADS, DS>::testUnused(id(), scanner))
-         return false;
+    for (unsigned k = j; k < input.length(); k++) iend += input.at(k);
 
-      if (condition) {
-         if (!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif))) {
-            std::cout << "if command: error in IF command!" << std::endl;
-            return false;
-         } else
-            return true;
-      } else {
-         if (!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lelse))) {
-            std::cout << "if command: error in ELSE command!" << std::endl;
-            return false;
-         } else
-            return true;
-      }
-   }
+    string* ninput = Command<R, ADS, DS>::defaultPreprocess(
+        allFunctions, hf, dictionary, ldictionary, ibegin);
 
-   // should preprocess only until list of commands
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      string ibegin = "";
-      string iend = "";
-      unsigned j = 0;
-      for (unsigned i = 0; i < input.length(); i++) {
-         if (input.at(i) == '{')
-            break;
-         else
-            ibegin += input.at(i);
-         j++;
-      }
+    if (!ninput) return nullptr;
 
-      for (unsigned k = j; k < input.length(); k++)
-         iend += input.at(k);
+    ninput->append(" ");  // after boolean value
+    ninput->append(iend);
 
-      string* ninput = Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, ibegin);
-
-      if (!ninput)
-         return nullptr;
-
-      ninput->append(" "); // after boolean value
-      ninput->append(iend);
-
-      return ninput;
-   }
+    return ninput;
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* IFELSE_MODULE_HPP_ */

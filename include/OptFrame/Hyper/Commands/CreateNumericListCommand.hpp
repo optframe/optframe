@@ -27,49 +27,50 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class CreateNumericListCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~CreateNumericListCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class CreateNumericListCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~CreateNumericListCommand() {}
 
-   string id()
-   {
-      return "create_numeric_list";
-   }
-   string usage()
-   {
-      return "create_numeric_list begin end list_name";
-   }
+  string id() { return "create_numeric_list"; }
+  string usage() { return "create_numeric_list begin end list_name"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      int begin = *scanner.nextInt();
-      int end = *scanner.nextInt();
-      string lname = scanner.next();
+    int begin = *scanner.nextInt();
+    int end = *scanner.nextInt();
+    string lname = scanner.next();
 
-      std::stringstream ss;
+    std::stringstream ss;
 
-      ss << lname << " [";
-      for (int i = begin; i < end; i++)
-         ss << i << ",";
-      if ((end - begin) >= 0)
-         ss << end;
-      ss << " ]";
+    ss << lname << " [";
+    for (int i = begin; i < end; i++) ss << i << ",";
+    if ((end - begin) >= 0) ss << end;
+    ss << " ]";
 
-      return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
-   }
+    return Command<R, ADS, DS>::run_module("list.silent_define", all_modules,
+                                           allFunctions, factory, dictionary,
+                                           ldictionary, ss.str());
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */

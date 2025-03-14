@@ -1,11 +1,32 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
+
 #pragma once
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class HillClimbingBuilder : public LocalSearchBuilder<XES> {
   using S = typename XES::first_type;
@@ -16,15 +37,15 @@ class HillClimbingBuilder : public LocalSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES>>, std::string> method;
+    std::pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
     sptr<LocalSearch<XES>> h = method.first;
@@ -38,7 +59,7 @@ class HillClimbingBuilder : public LocalSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search"));
 

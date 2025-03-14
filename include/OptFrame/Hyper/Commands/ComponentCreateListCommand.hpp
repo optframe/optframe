@@ -24,84 +24,93 @@
 #define CREATE_LIST_OF_COMPONENTS_MODULE_HPP_
 
 #include "../Command.hpp"
-
 #include "SystemSilentDefineCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentCreateListCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ComponentCreateListCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ComponentCreateListCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ComponentCreateListCommand() {}
 
-   string id()
-   {
-      return "component.create_list";
-   }
+  string id() { return "component.create_list"; }
 
-   string usage()
-   {
-      return "component.create_list list type list_name";
-   }
+  string usage() { return "component.create_list list type list_name"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
-      vector<string> list;
-      if (plist) {
-         list = vector<string>(*plist);
-         delete plist;
-      } else {
-         std::cout << "module " << id() << " failed to read list!" << std::endl;
-         return false;
+    vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+    vector<string> list;
+    if (plist) {
+      list = vector<string>(*plist);
+      delete plist;
+    } else {
+      std::cout << "module " << id() << " failed to read list!" << std::endl;
+      return false;
+    }
+
+    string type = scanner.next();
+    string name = scanner.next();
+
+    vector<Component*> componentList;
+    for (unsigned i = 0; i < list.size(); i++) {
+      Scanner scan(list[i]);
+      Component* comp = factory.getNextComponent(scan);
+      string rest = Scanner::trim(scan.rest());
+      if (rest != "") {
+        std::cout << "command " << id()
+                  << " error: extra text after component name '" << rest << "'!"
+                  << std::endl;
+        std::cout << "PROBABLY MISSING A COLON ',' IN THE LIST!" << std::endl;
+        return false;
       }
 
-      string type = scanner.next();
-      string name = scanner.next();
+      if (!comp) {
+        std::cout << "create_list_of_components: error, component #" << i
+                  << " is nullptr! " << std::endl;
+        return false;
+      } else if (!comp->compatible(ComponentHelper::typeOfList(type))) {
+        std::cout << "create_list_of_components: error, component #" << i
+                  << " ('" << comp->id()
+                  << "') in list incompatible with type '"
+                  << ComponentHelper::typeOfList(type) << "'" << std::endl;
+        return false;
+      } else
+        componentList.push_back(comp);
+    }
 
-      vector<Component*> componentList;
-      for (unsigned i = 0; i < list.size(); i++) {
-         Scanner scan(list[i]);
-         Component* comp = factory.getNextComponent(scan);
-         string rest = Scanner::trim(scan.rest());
-         if (rest != "") {
-            std::cout << "command " << id() << " error: extra text after component name '" << rest << "'!" << std::endl;
-            std::cout << "PROBABLY MISSING A COLON ',' IN THE LIST!" << std::endl;
-            return false;
-         }
+    int idx = factory.addComponentList(componentList, type);
 
-         if (!comp) {
-            std::cout << "create_list_of_components: error, component #" << i << " is nullptr! " << std::endl;
-            return false;
-         } else if (!comp->compatible(ComponentHelper::typeOfList(type))) {
-            std::cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() << "') in list incompatible with type '" << ComponentHelper::typeOfList(type) << "'" << std::endl;
-            return false;
-         } else
-            componentList.push_back(comp);
-      }
+    std::stringstream ss;
 
-      int idx = factory.addComponentList(componentList, type);
+    ss << name << " " << ComponentHelper::typeOfList(type) << "[] " << idx;
 
-      std::stringstream ss;
+    std::cout << "'" << ComponentHelper::typeOfList(type) << "[] " << idx
+              << "' added." << std::endl;
 
-      ss << name << " " << ComponentHelper::typeOfList(type) << "[] " << idx;
+    return Command<R, ADS, DS>::run_module("system.silent_define", all_modules,
+                                           allFunctions, factory, dictionary,
+                                           ldictionary, ss.str());
+  }
 
-      std::cout << "'" << ComponentHelper::typeOfList(type) << "[] " << idx << "' added." << std::endl;
-
-      return Command<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
-   }
-
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* CREATE_LIST_OF_COMPONENTS_MODULE_HPP_ */

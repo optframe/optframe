@@ -27,60 +27,61 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemDictionaryCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemDictionaryCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemDictionaryCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemDictionaryCommand() {}
 
-   string id()
-   {
-      return "system.dictionary";
-   }
-   string usage()
-   {
-      return "system.dictionary";
-   }
+  string id() { return "system.dictionary"; }
+  string usage() { return "system.dictionary"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string)
-   {
-      std::cout << "Text dictionary: " << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>&,
+           HeuristicFactory<R, ADS, DS>&,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string) {
+    std::cout << "Text dictionary: " << std::endl;
 
-      map<std::string, std::string>::iterator iter;
-      int size1 = 0;
-      for (iter = dictionary.begin(); iter != dictionary.end(); iter++) {
-         string d = iter->first;
-         string v = iter->second;
-         std::cout << "'" << d << "' => '" << v << "'" << std::endl;
-         size1++;
-      }
-      std::cout << size1 << " entries." << std::endl;
+    std::map<std::string, std::string>::iterator iter;
+    int size1 = 0;
+    for (iter = dictionary.begin(); iter != dictionary.end(); iter++) {
+      string d = iter->first;
+      string v = iter->second;
+      std::cout << "'" << d << "' => '" << v << "'" << std::endl;
+      size1++;
+    }
+    std::cout << size1 << " entries." << std::endl;
 
-      // --------------------------------
+    // --------------------------------
 
-      std::cout << "List dictionary: " << std::endl;
+    std::cout << "List dictionary: " << std::endl;
 
-      map<string, vector<string>>::iterator iter2;
-      int size2 = 0;
-      for (iter2 = ldictionary.begin(); iter2 != ldictionary.end(); iter2++) {
-         string d = iter2->first;
-         vector<string>& v = iter2->second;
-         std::cout << "'" << d << "' => '" << v << "'" << std::endl;
-         size2++;
-      }
-      std::cout << size2 << " entries." << std::endl;
+    map<string, vector<string>>::iterator iter2;
+    int size2 = 0;
+    for (iter2 = ldictionary.begin(); iter2 != ldictionary.end(); iter2++) {
+      string d = iter2->first;
+      vector<string>& v = iter2->second;
+      std::cout << "'" << d << "' => '" << v << "'" << std::endl;
+      size2++;
+    }
+    std::cout << size2 << " entries." << std::endl;
 
-      return true;
-   }
+    return true;
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* DICTIONARYMODULE_HPP_ */

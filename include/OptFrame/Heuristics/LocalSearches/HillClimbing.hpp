@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,9 +14,25 @@
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
+MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>>
 class HillClimbing : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES>> evaluator;

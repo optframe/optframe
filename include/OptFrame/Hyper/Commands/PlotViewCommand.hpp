@@ -23,68 +23,69 @@
 #ifndef OPTFRAME_PLOT_VIEW_MODULE_HPP_
 #define OPTFRAME_PLOT_VIEW_MODULE_HPP_
 
-#include <string>
-
 #include <algorithm>
+#include <string>
 
 #include "../Command.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class PlotViewCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~PlotViewCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class PlotViewCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~PlotViewCommand() {}
 
-   string id()
-   {
-      return "plot.view";
-   }
+  string id() { return "plot.view"; }
 
-   string usage()
-   {
-      return "plot.view file";
-   }
+  string usage() { return "plot.view file"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      //cout << "plot.view module input: '" << input << "'" << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    // cout << "plot.view module input: '" << input << "'" << std::endl;
 
-      // Software: Eye of Gnome
-      string view_software = "eog";
+    // Software: Eye of Gnome
+    string view_software = "eog";
 
-      Scanner scanner(input);
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "plot.view command: no filename!" << std::endl;
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "plot.view command: no filename!" << std::endl;
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string filename = scanner.rest();
+    string filename = scanner.rest();
 
-      stringstream ssdisp;
-      ssdisp << view_software << " " << filename << " &"; // detach application
+    stringstream ssdisp;
+    ssdisp << view_software << " " << filename << " &";  // detach application
 
-      int c = system(ssdisp.str().c_str());
+    int c = system(ssdisp.str().c_str());
 
-      if (c < 0) {
-         std::cout << "plot.view error: return is less than zero '" << c << "'" << std::endl;
-         return false;
-      }
+    if (c < 0) {
+      std::cout << "plot.view error: return is less than zero '" << c << "'"
+                << std::endl;
+      return false;
+    }
 
-      return true;
-   }
+    return true;
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_PLOT_VIEW_MODULE_HPP_ */

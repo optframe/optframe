@@ -27,98 +27,96 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ListSilentDefineCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ListSilentDefineCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ListSilentDefineCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ListSilentDefineCommand() {}
 
-   string id()
-   {
-      return "list.silent_define";
-   }
-   string usage()
-   {
-      return "list.silent_define name list";
-   }
+  string id() { return "list.silent_define"; }
+  string usage() { return "list.silent_define name list"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>& ldictionary, string rest)
-   {
-      Scanner scanner(rest);
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>&,
+           HeuristicFactory<R, ADS, DS>&, std::map<std::string, std::string>&,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string rest) {
+    Scanner scanner(rest);
 
-      if (!scanner.hasNext())
-         return false;
+    if (!scanner.hasNext()) return false;
 
-      string list_name = scanner.next();
+    string list_name = scanner.next();
 
-      if (list_name != "") {
-         vector<string> list;
-         vector<string>* p_list = OptFrameList::readList(ldictionary, scanner);
-         if (p_list) {
-            list = vector<string>(*p_list);
-            delete p_list;
-         } else {
-            std::cout << "list.silent_define command: couldn't load list!" << std::endl;
-            return false;
-         }
-
-         return Command<R, ADS, DS>::defineList(list_name, list, ldictionary);
+    if (list_name != "") {
+      vector<string> list;
+      vector<string>* p_list = OptFrameList::readList(ldictionary, scanner);
+      if (p_list) {
+        list = vector<string>(*p_list);
+        delete p_list;
       } else {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-   }
-
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
-
-      // First, remove the comments '%'
-
-      string input2 = "";
-
-      while (scanner.hasNextChar()) {
-         char c = *scanner.nextChar();
-         if (c != '%')
-            input2 += c;
-         else
-            break;
+        std::cout << "list.silent_define command: couldn't load list!"
+                  << std::endl;
+        return false;
       }
 
-      scanner = Scanner(input2);
+      return Command<R, ADS, DS>::defineList(list_name, list, ldictionary);
+    } else {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+  }
 
-      // Second, use the dictionary, but before...
-      // WAIT! Save the definition name!
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext())
-         return new string(input2);
+    // First, remove the comments '%'
 
-      string name = scanner.next();
-      string discarded = scanner.getDiscarded();
+    string input2 = "";
 
-      // now proceed as usual
+    while (scanner.hasNextChar()) {
+      char c = *scanner.nextChar();
+      if (c != '%')
+        input2 += c;
+      else
+        break;
+    }
 
-      string* input3 = Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, scanner.rest());
+    scanner = Scanner(input2);
 
-      if (!input3)
-         return nullptr;
+    // Second, use the dictionary, but before...
+    // WAIT! Save the definition name!
 
-      string input4;
-      input4.append(discarded);
-      input4.append(name);
-      input4.append(" ");
-      input4.append(*input3);
+    if (!scanner.hasNext()) return new string(input2);
 
-      delete input3;
+    string name = scanner.next();
+    string discarded = scanner.getDiscarded();
 
-      string input5 = Scanner::trim(input4);
+    // now proceed as usual
 
-      return new string(input5);
-   }
+    string* input3 = Command<R, ADS, DS>::defaultPreprocess(
+        allFunctions, hf, dictionary, ldictionary, scanner.rest());
+
+    if (!input3) return nullptr;
+
+    string input4;
+    input4.append(discarded);
+    input4.append(name);
+    input4.append(" ");
+    input4.append(*input3);
+
+    delete input3;
+
+    string input5 = Scanner::trim(input4);
+
+    return new string(input5);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_LIST_DEFINE_MODULE_HPP_ */

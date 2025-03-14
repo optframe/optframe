@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 #define OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <vector>
 //
 #include <OptFrame/Core/Evaluator.hpp>
@@ -13,10 +15,30 @@
 
 #include "VND.h"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-// When RandGen is given as parameter it performs RVND
-template <XESolution XES, XEvaluation XEv = typename XES::second_type>
+//
+// OBS: When RandGen is given as parameter it performs RVND
+//
+
+MOD_EXPORT template <XESolution XES,
+                     XEvaluation XEv = typename XES::second_type>
 class VariableNeighborhoodDescent : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES>> ev;

@@ -49,12 +49,12 @@ class PNProblemCommand {
   // Implement 'load' and 'unload' methods in .cpp file
 
   bool load(string filename, HeuristicFactory<ESolutionPN>& hf,
-            map<std::string, std::string>& dictionary,
-            map<string, vector<string>>& ldictionary);
+            std::map<std::string, std::string>& dictionary,
+            std::map<std::string, std::vector<std::string>>& ldictionary);
 
   bool unload(HeuristicFactory<ESolutionPN>& factory,
-              map<std::string, std::string>& dictionary,
-              map<string, vector<string>>& ldictionary);
+              std::map<std::string, std::string>& dictionary,
+              std::map<std::string, std::vector<std::string>>& ldictionary);
 };
 
 }  // namespace PN

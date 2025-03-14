@@ -29,72 +29,77 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ListPushBackCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ListPushBackCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ListPushBackCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ListPushBackCommand() {}
 
-   string id()
-   {
-      return "list.push_back";
-   }
+  string id() { return "list.push_back"; }
 
-   string usage()
-   {
-      return "list.push_back list_name value";
-   }
+  string usage() { return "list.push_back list_name value"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      //cout << "list.push_back command: '" << input << "'" << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    // cout << "list.push_back command: '" << input << "'" << std::endl;
 
-      Scanner scanner(input);
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string list_name = scanner.next();
+    string list_name = scanner.next();
 
-      if (list_name.at(0) == '[') {
-         std::cout << "module " << id() << " error: cannot be used with explicit list! use list.add instead." << std::endl;
-         return false;
-      }
+    if (list_name.at(0) == '[') {
+      std::cout
+          << "module " << id()
+          << " error: cannot be used with explicit list! use list.add instead."
+          << std::endl;
+      return false;
+    }
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string element = Scanner::trim(scanner.rest());
+    string element = Scanner::trim(scanner.rest());
 
-      Scanner scanList(list_name);
+    Scanner scanList(list_name);
 
-      vector<string> list;
-      vector<string>* p_list = OptFrameList::readList(ldictionary, scanList);
-      if (p_list) {
-         list = vector<string>(*p_list);
-         delete p_list;
-      } else {
-         std::cout << "list.push_back error reading list '" << list_name << "'" << std::endl;
-         return false;
-      }
+    vector<string> list;
+    vector<string>* p_list = OptFrameList::readList(ldictionary, scanList);
+    if (p_list) {
+      list = vector<string>(*p_list);
+      delete p_list;
+    } else {
+      std::cout << "list.push_back error reading list '" << list_name << "'"
+                << std::endl;
+      return false;
+    }
 
-      list.push_back(element);
+    list.push_back(element);
 
-      return Command<R, ADS, DS>::defineList(list_name, list, ldictionary);
-   }
+    return Command<R, ADS, DS>::defineList(list_name, list, ldictionary);
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_LIST_PUSH_BACK_MODULE_HPP_ */

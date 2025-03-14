@@ -154,7 +154,7 @@ class FirstImprovingNeighborBuilder
   // NOLINTNEXTLINE
   NeighborhoodExploration<XES>* build(Scanner& scanner,
                                       HeuristicFactory<XES>& hf,
-                                      string family = "") override {
+                                      std::string family = "") override {
     //
     GeneralEvaluator<XES>* eval;
     std::string comp_id1 = scanner.next();

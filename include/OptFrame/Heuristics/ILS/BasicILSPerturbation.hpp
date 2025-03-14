@@ -35,14 +35,15 @@ class BasicILSPerturbation : public ILS, public Component {
       : evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg) {
     if (pMax < pMin) {
       std::cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
-           << std::endl;
+                << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
     }
 
     if (ns.size() == 0)
-      std::cout << "BasicILSPerturbation warning: empty neighborhood list." << std::endl;
+      std::cout << "BasicILSPerturbation warning: empty neighborhood list."
+                << std::endl;
   }
 
   BasicILSPerturbation(sref<GeneralEvaluator<XES>> e, int _pMin, int _pMax,
@@ -51,14 +52,15 @@ class BasicILSPerturbation : public ILS, public Component {
     ns.push_back(&_ns);
     if (pMax < pMin) {
       std::cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both."
-           << std::endl;
+                << std::endl;
       int aux = pMax;
       pMax = pMin;
       pMin = aux;
     }
 
     if (ns.size() == 0)
-      std::cout << "BasicILSPerturbation warning: empty neighborhood list." << std::endl;
+      std::cout << "BasicILSPerturbation warning: empty neighborhood list."
+                << std::endl;
   }
 
   virtual ~BasicILSPerturbation() {}
@@ -77,8 +79,9 @@ class BasicILSPerturbation : public ILS, public Component {
       uptr<Move<XES, XSH>> mp = ns[nk]->validRandomMove(se);
 
       if (!mp) {
-        std::cout << "BasicILSPerturbation warning: perturbation found no valid "
-                "move for neighborhood: ";
+        std::cout
+            << "BasicILSPerturbation warning: perturbation found no valid "
+               "move for neighborhood: ";
         ns[nk]->print();
       } else {
         mp->applyUpdate(se);
@@ -111,7 +114,7 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
   virtual ~BasicILSPerturbationBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -136,11 +139,14 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    params.push_back(std::make_pair("OptFrame:int", "pMin: min number of moves"));
-    params.push_back(std::make_pair("OptFrame:int", "pMax: max number of moves"));
+    params.push_back(
+        std::make_pair("OptFrame:int", "pMin: min number of moves"));
+    params.push_back(
+        std::make_pair("OptFrame:int", "pMax: max number of moves"));
     std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
-    params.push_back(std::make_pair(ss.str(), "list of neighborhood structures"));
+    params.push_back(
+        std::make_pair(ss.str(), "list of neighborhood structures"));
 
     return params;
   }

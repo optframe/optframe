@@ -55,7 +55,7 @@ class TSPProblemCommand {
 
   bool registerComponent(sref<Component> component, string type, string name,
                          HeuristicFactoryTSP& hf,
-                         map<std::string, std::string>& dictionary) {
+                         std::map<std::string, std::string>& dictionary) {
     int idx = hf.addComponent(component, type);
     std::stringstream ss;
     ss << type << " " << idx;
@@ -63,8 +63,8 @@ class TSPProblemCommand {
   }
 
   bool load(Scanner& scanner, HeuristicFactoryTSP& hf,
-            map<std::string, std::string>& dictionary,
-            map<string, vector<string>>& ldictionary) {
+            std::map<std::string, std::string>& dictionary,
+            std::map<std::string, std::vector<std::string>>& ldictionary) {
     p = std::shared_ptr<ProblemInstance>(new ProblemInstance(scanner));
 
     // add everything to the HeuristicFactory 'hf'
@@ -145,15 +145,17 @@ class TSPProblemCommand {
     return true;
   }
 
-  bool unload(HeuristicFactoryTSP& factory, map<std::string, std::string>& dictionary,
-              map<string, vector<string>>& ldictionary) {
+  bool unload(HeuristicFactoryTSP& factory,
+              std::map<std::string, std::string>& dictionary,
+              std::map<std::string, std::vector<std::string>>& ldictionary) {
     // if(p)
     //    delete p;
     // p = NULL;
 
-    std::cout << "problem instance for TSP unloaded successfully (use 'drop_all' if "
-            "you want to remove all components)"
-         << std::endl;
+    std::cout
+        << "problem instance for TSP unloaded successfully (use 'drop_all' if "
+           "you want to remove all components)"
+        << std::endl;
 
     return true;
   }

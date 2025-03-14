@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_SINGLEOBJSEARCHTOLOCALSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_SINGLEOBJSEARCHTOLOCALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <math.h>
 
 #include <string>
@@ -15,6 +17,22 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -101,15 +119,15 @@ class SingleObjSearchToLocalSearchBuilder : public LocalSearchBuilder<XES> {
   virtual ~SingleObjSearchToLocalSearchBuilder() {}
 
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     sptr<Evaluator<S, XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
-    pair<sptr<SingleObjSearch<XES>>, std::string> method;
+    std::pair<sptr<SingleObjSearch<XES>>, std::string> method;
     method = hf.createSingleObjSearch(rest);
 
     sptr<SingleObjSearch<XES>> h = method.first;
@@ -123,7 +141,7 @@ class SingleObjSearchToLocalSearchBuilder : public LocalSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     params.push_back(
         make_pair(SingleObjSearch<XES>::idComponent(), "single obj search"));
 

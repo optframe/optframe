@@ -27,48 +27,46 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class InitServersCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~InitServersCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class InitServersCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~InitServersCommand() {}
 
-   string id()
-   {
-      return "initservers";
-   }
-   string usage()
-   {
-      return "initservers";
-   }
+  string id() { return "initservers"; }
+  string usage() { return "initservers"; }
 
-   void run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
-   {
-      factory->mapReduce->initServers(factory->argc, factory->argv);
-   }
+  void run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string rest) {
+    factory->mapReduce->initServers(factory->argc, factory->argv);
+  }
 
-   virtual string preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, map<std::string, std::string>&, map<string, vector<string>>&, string input)
-   {
-      Scanner scanner(input);
+  virtual string preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      std::map<std::string, std::string>&, map<string, vector<string>>&,
+      string input) {
+    Scanner scanner(input);
 
-      // First, remove the comments '%'
+    // First, remove the comments '%'
 
-      string input2 = "";
+    string input2 = "";
 
-      while (scanner.hasNextChar()) {
-         char c = *scanner.nextChar();
-         if (c != '%')
-            input2 += c;
-         else
-            break;
-      }
+    while (scanner.hasNextChar()) {
+      char c = *scanner.nextChar();
+      if (c != '%')
+        input2 += c;
+      else
+        break;
+    }
 
-      return input2;
-   }
+    return input2;
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* InitServersMODULE_HPP_ */

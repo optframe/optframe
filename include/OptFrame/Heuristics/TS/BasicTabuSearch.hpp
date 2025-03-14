@@ -337,7 +337,7 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                              string family = "") override {
+                              std::string family = "") override {
     if (Component::debug)
       std::cout << "BasicTabuSearch Builder Loading Parameter #0" << std::endl;
     if (!scanner.hasNext()) {
@@ -397,7 +397,7 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<_S, _XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     // params.push_back(std::make_pair(Constructive<S>::idComponent(),
     // "constructive heuristic"));
     params.push_back(
@@ -405,7 +405,8 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
     params.push_back(
         make_pair(NSSeq<XES>::idComponent(), "neighborhood structure"));
     params.push_back(std::make_pair("OptFrame:int", "tabu list size"));
-    params.push_back(std::make_pair("OptFrame:int", "max number of iterations"));
+    params.push_back(
+        std::make_pair("OptFrame:int", "max number of iterations"));
 
     return params;
   }

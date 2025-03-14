@@ -88,7 +88,7 @@ class BasicInitialEPopulationRKBuilder : public ComponentBuilder<XES> {
 
   // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     sptr<ConstructiveRK<KeyType>> crk;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -105,7 +105,7 @@ class BasicInitialEPopulationRKBuilder : public ComponentBuilder<XES> {
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component ==
            BasicInitialEPopulationRK<RealXES, double>::idComponent();
   }

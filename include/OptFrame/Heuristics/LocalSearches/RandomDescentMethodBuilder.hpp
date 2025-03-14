@@ -1,11 +1,32 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
+
 #pragma once
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class RandomDescentMethodBuilder : public LocalSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
@@ -15,7 +36,7 @@ class RandomDescentMethodBuilder : public LocalSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -38,8 +59,8 @@ class RandomDescentMethodBuilder : public LocalSearchBuilder<XES> {
         make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     params.push_back(
         make_pair(NS<XES, XSH>::idComponent(), "neighborhood structure"));
-    params.push_back(std::make_pair("OptFrame:int",
-                               "max number of iterations without improvement"));
+    params.push_back(std::make_pair(
+        "OptFrame:int", "max number of iterations without improvement"));
 
     return params;
   }

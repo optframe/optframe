@@ -30,7 +30,7 @@ class BRKGABuilder : public GlobalSearchBuilder<XES> {
   virtual ~BRKGABuilder() {}
 
   virtual GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                                   string family = "") override {
+                                   std::string family = "") override {
     sptr<DecoderRandomKeys<XES, KeyType>> decoder;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -70,7 +70,7 @@ class BRKGABuilder : public GlobalSearchBuilder<XES> {
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component == BRKGA<XES, double>::idComponent();
   }
 

@@ -21,286 +21,236 @@
 #ifndef SCANNERPP_H_
 #define SCANNERPP_H_
 
-#include<iostream>
-#include<istream>
-#include<string>
-#include<sstream>
-#include<algorithm>
-
-#include<vector>
-#include<map>
-
 #include <stdlib.h>
+
+#include <algorithm>
+#include <iostream>
+#include <istream>
+#include <map>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "File.h"
 
-namespace scannerpp
-{
+namespace scannerpp {
 
-class ConversionError
-{
-private:
-	bool whatInfo;
-	std::string what;
-	std::string type;
+class ConversionError {
+ private:
+  bool whatInfo;
+  std::string what;
+  std::string type;
 
-public:
-	ConversionError(std::string _type) :
-		whatInfo(false), what(""), type(_type)
-	{
-	}
+ public:
+  ConversionError(std::string _type) : whatInfo(false), what(""), type(_type) {}
 
-	ConversionError(std::string _what, std::string _type) :
-		whatInfo(true), what(_what), type(_type)
-	{
-	}
+  ConversionError(std::string _what, std::string _type)
+      : whatInfo(true), what(_what), type(_type) {}
 
-	std::string getType() const
-	{
-		return type;
-	}
+  std::string getType() const { return type; }
 
-	std::string getWhat() const
-	{
-		return what;
-	}
+  std::string getWhat() const { return what; }
 
-	std::string getMessage() const
-	{
-		stringstream ss;
-		if(whatInfo)
-			ss << "value '" << what << "' is not of '" << type << "' type";
-		else
-			ss << "conversion error for '" << type << "' type";
-		return ss.str();
-	}
+  std::string getMessage() const {
+    stringstream ss;
+    if (whatInfo)
+      ss << "value '" << what << "' is not of '" << type << "' type";
+    else
+      ss << "conversion error for '" << type << "' type";
+    return ss.str();
+  }
 };
 
-class Scanner
-{
-private:
-	istream *input;
-	File* inputfile;
-	string sep;
-	bool isString;
+class Scanner {
+ private:
+  istream* input;
+  File* inputfile;
+  string sep;
+  bool isString;
 
-	string discarded;
+  string discarded;
 
-	string contentString;
+  string contentString;
 
-private:
-	char nextChar(istream& _input) const
-	{
-		int x = _input.get();
+ private:
+  char nextChar(istream& _input) const {
+    int x = _input.get();
 
-		if (x <= 0)
-			throw ConversionError("char");
+    if (x <= 0) throw ConversionError("char");
 
-		return x;
-	}
+    return x;
+  }
 
-	void put_back(istream** input, string back) const
-	{
-		if((*input)->eof())
-		{
-			// change internal pointer to a renewed istream
-			delete (*input);
-			(*input) = new istringstream(back);
-		}
-		else
-		{
-			// just return everything back!
+  void put_back(istream** input, string back) const {
+    if ((*input)->eof()) {
+      // change internal pointer to a renewed istream
+      delete (*input);
+      (*input) = new istringstream(back);
+    } else {
+      // just return everything back!
 
-			for(int i = ((int) back.length()) - 1; i >= 0; i--)
-			{
-				(*input)->putback(back[i]);
-				if((*input)->fail())
-				{
-					cout << "SCANNER ERROR PUTTING BACK CHAR '" << back[i] << "'" << std::endl;
-					cout << "eof bit: '" << (*input)->eof() << "'" << std::endl;
-					cout << "bad bit: '" << (*input)->bad() << "'" << std::endl;
-					cout << "fail bit: '" << (*input)->fail() << "'" << std::endl;
-					exit(1);
-				}
-			}
-		}
-	}
+      for (int i = ((int)back.length()) - 1; i >= 0; i--) {
+        (*input)->putback(back[i]);
+        if ((*input)->fail()) {
+          cout << "SCANNER ERROR PUTTING BACK CHAR '" << back[i] << "'"
+               << std::endl;
+          cout << "eof bit: '" << (*input)->eof() << "'" << std::endl;
+          cout << "bad bit: '" << (*input)->bad() << "'" << std::endl;
+          cout << "fail bit: '" << (*input)->fail() << "'" << std::endl;
+          exit(1);
+        }
+      }
+    }
+  }
 
-public:
+ public:
+  string getDiscarded() const { return discarded; }
 
-	string getDiscarded() const
-	{
-		return discarded;
-	}
+  bool hasNextChar() const;
+  char nextChar();
 
-	bool hasNextChar() const;
-	char nextChar();
+  bool nextCharIs(char c) const;
+  bool nextCharIn(string s) const;
 
-    bool nextCharIs(char c) const;
-    bool nextCharIn(string s) const;
+  void trimInput();
 
-    void trimInput();
+  Scanner(File* inputfile);
+  Scanner(istream* input);
+  Scanner(string input);
 
-	Scanner(File* inputfile);
-	Scanner(istream* input);
-	Scanner(string input);
+  Scanner(const Scanner& scanner);
 
-	Scanner(const Scanner& scanner);
+  virtual ~Scanner();
 
-	virtual ~Scanner();
+  virtual Scanner& operator=(const Scanner& scanner);
 
-	virtual Scanner& operator=(const Scanner& scanner);
+  // useDefaultSeparators: chama o useSeparators para os caracteres:
+  // espaco, quebra de linha (\n), tabulacao (\t) e retorno de carro (\r)
 
-	// useDefaultSeparators: chama o useSeparators para os caracteres:
-	// espaco, quebra de linha (\n), tabulacao (\t) e retorno de carro (\r)
+  void useDefaultSeparators();
 
-	void useDefaultSeparators();
+  // useSeparators: equivalente ao useDelimiter de Java
+  // a diferenca e que Java trata a string como uma
+  // expressao regular, e neste caso o useSeparators
+  // apenas considera cada caractere da string separadamente
+  // como um separador.
 
-	// useSeparators: equivalente ao useDelimiter de Java
-	// a diferenca e que Java trata a string como uma
-	// expressao regular, e neste caso o useSeparators
-	// apenas considera cada caractere da string separadamente
-	// como um separador.
+  void useSeparators(string s);
+  bool inSeparators(char c) const;
 
-	void useSeparators(string s);
-	bool inSeparators(char c) const;
+  std::string peekNext() const;
+  std::string next();
+  std::string nextLine();
 
-	std::string peekNext() const;
-	std::string next();
-	std::string nextLine();
+  int nextInt();
+  long nextLong();
+  float nextFloat();
+  double nextDouble();
 
-	int nextInt();
-	long nextLong();
-	float nextFloat();
-	double nextDouble();
+  static int parseInt(string s) {
+    Scanner scanner(s);
+    return scanner.nextInt();
+  }
 
-	static int parseInt(string s)
-	{
-		Scanner scanner(s);
-		return scanner.nextInt();
-	}
+  static double parseDouble(string s) {
+    Scanner scanner(s);
+    return scanner.nextDouble();
+  }
 
-	static double parseDouble(string s)
-	{
-		Scanner scanner(s);
-		return scanner.nextDouble();
-	}
+  static bool trimChar(char c) {
+    return (c == ' ') || (c == '\t') || (c == '\n');
+  }
 
-	static bool trimChar(char c)
-	{
-		return (c==' ') || (c=='\t') || (c=='\n');
-	}
+  static string trim(string word) {
+    if (word.length() == 0) return "";
 
-	static string trim(string word)
-	{
-		if(word.length()==0)
-			return "";
+    int i = 0;
+    char c = word.at(i);
+    string aux_word = "";
 
-		int i = 0;
-		char c = word.at(i);
-		string aux_word = "";
+    // removing initial spaces
+    while (trimChar(c) && (i < ((int)word.length()) - 1)) {
+      i++;
+      c = word.at(i);
+    }
 
-		//removing initial spaces
-		while( trimChar(c) && (i < ((int) word.length())-1) )
-		{
-			i++;
-			c = word.at(i);
-		}
+    if (trimChar(c))  // last char
+      i++;
 
-		if(trimChar(c)) // last char
-			i++;
+    while (i < ((int)word.length())) {
+      aux_word += word.at(i);
+      i++;
+    }
 
-		while (i < ((int) word.length()))
-		{
-			aux_word += word.at(i);
-			i++;
-		}
+    word = aux_word;
 
-		word = aux_word;
+    // may be empty at this point
+    if (word.length() == 0) return "";
 
-		// may be empty at this point
-		if(word.length()==0)
-			return "";
+    // removing final spaces
+    i = ((int)word.length()) - 1;
+    c = word.at(i);
 
-		//removing final spaces
-		i = ((int)word.length()) - 1;
-		c = word.at(i);
+    while (trimChar(c) && (i > 0)) {
+      i--;
+      c = word.at(i);
+    }
 
-		while (trimChar(c) && (i > 0))
-		{
-			i--;
-			c = word.at(i);
-		}
+    aux_word = "";
 
-		aux_word = "";
+    for (int j = 0; j <= i; j++) aux_word += word.at(j);
 
-		for(int j=0; j<=i; j++)
-			aux_word += word.at(j);
+    return aux_word;
+  }
 
-		return aux_word;
-	}
+  pair<string, std::map<std::string, std::string> > nextXMLTag();
 
-	pair<string, map<std::string, std::string> > nextXMLTag();
+  bool hasNext() const;
 
-	bool hasNext() const;
+  bool hasNextLine() const { return hasNext(); }
 
-	bool hasNextLine() const
-	{
-		return hasNext();
-	}
+  bool hasNextInt() const {
+    int x;
+    if (hasNextX(x)) {
+      double d;
+      if (hasNextX(d)) return (x == d);
+    }
+    return false;
+  }
 
-	bool hasNextInt() const
-	{
-		int x;
-		if(hasNextX(x))
-		{
-			double d;
-			if(hasNextX(d))
-				return (x == d);
-		}
-		return false;
-	}
+  bool hasNextLong() const {
+    long x;
+    if (hasNextX(x)) {
+      double d;
+      if (hasNextX(d)) return (x == d);
+    }
+    return false;
+  }
 
-	bool hasNextLong() const
-	{
-		long x;
-		if(hasNextX(x))
-		{
-			double d;
-			if(hasNextX(d))
-				return (x == d);
-		}
-		return false;
-	}
+  bool hasNextFloat() const {
+    float x;
+    return hasNextX(x);
+  }
 
-	bool hasNextFloat() const
-	{
-		float x;
-		return hasNextX(x);
-	}
+  bool hasNextDouble() const {
+    double x;
+    return hasNextX(x);
+  }
 
-	bool hasNextDouble() const
-	{
-		double x;
-		return hasNextX(x);
-	}
+  template <class X>
+  inline bool hasNextX(X& x) const {
+    string s = peekNext();
 
-	template<class X>
-	inline bool hasNextX(X& x) const
-	{
-		string s = peekNext();
+    if (s == "") return false;
 
-		if(s == "")
-			return false;
+    std::istringstream ss(s);
 
-		std::istringstream ss(s);
+    return bool(ss >> x);
+  }
 
-		return bool(ss >> x);
-	}
-
-	string rest(); // Returns the rest of the input as string
+  string rest();  // Returns the rest of the input as string
 };
 
-} // end namespace scannerpp
+}  // end namespace scannerpp
 
 #endif /*SCANNERPP_H_*/

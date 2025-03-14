@@ -54,7 +54,7 @@ class OptHSProblemCommand {
 
   bool registerComponent(sref<Component> component, string type, string name,
                          HeuristicFactory<ESolutionOptHS>& hf,
-                         map<std::string, std::string>& dictionary) {
+                         std::map<std::string, std::string>& dictionary) {
     int idx = hf.addComponent(component, type);
     std::stringstream ss;
     ss << type << " " << idx;
@@ -62,8 +62,8 @@ class OptHSProblemCommand {
   }
 
   bool load(string members, HeuristicFactory<ESolutionOptHS>& hf,
-            map<std::string, std::string>& dictionary,
-            map<string, vector<string>>& ldictionary) {
+            std::map<std::string, std::string>& dictionary,
+            std::map<std::string, std::vector<std::string>>& ldictionary) {
     Scanner scanner(members);
 
     // NOLINTNEXTLINE
@@ -87,14 +87,15 @@ class OptHSProblemCommand {
   }
 
   bool unload(HeuristicFactory<ESolutionOptHS>& factory,
-              map<std::string, std::string>& dictionary,
-              map<string, vector<string>>& ldictionary) {
+              std::map<std::string, std::string>& dictionary,
+              std::map<std::string, std::vector<std::string>>& ldictionary) {
     if (p) delete p;
     p = NULL;
 
-    std::cout << "problem instance for OptHS unloaded successfully (use 'drop_all' "
-            "if you want to remove all components)"
-         << std::endl;
+    std::cout
+        << "problem instance for OptHS unloaded successfully (use 'drop_all' "
+           "if you want to remove all components)"
+        << std::endl;
 
     return true;
   }

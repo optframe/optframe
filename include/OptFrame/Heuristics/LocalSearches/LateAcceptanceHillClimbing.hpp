@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_LATEACCEPTANCEHILLCLIMBING_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_LATEACCEPTANCEHILLCLIMBING_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,14 +14,30 @@
 #include <OptFrame/Core/NS.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 #define BRAND_NEW
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
 class LateAcceptanceHillClimbing : public LocalSearch<XES> {
   using XEv = typename XES::second_type;
@@ -60,13 +78,14 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
 
     // XEv target_f(sosc.target_f); // 'target_f' will break... removing
 
-    long tini = time(nullptr);
+    // TODO: fix time!!!!
+    long tini = 0;  //::time(nullptr);
 
 #ifdef BRAND_NEW
-    vector<Evaluation<>*> eList;
+    std::vector<Evaluation<>*> eList;
     for (int i = 0; i < L; i++) eList.push_back(&eStar.clone());
 #else
-    vector<double> eList(L, eStar.evaluation());
+    std::vector<double> eList(L, eStar.evaluation());
 #endif
 
     int iter = 1;
@@ -75,19 +94,24 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
     S s = sStar;    // copy
     XEv e = eStar;  // copy
 
-    long tnow = time(nullptr);
+    // TODO: FIX TIME!!!!
+    long tnow = 0;  // time(nullptr);
 
     while ((iter <= iterMax) &&
            ((tnow - tini) < timelimit))  //&& ev->betterThan(target_f, eStar))
     {
+      // TODO: FIX!! SEED MUST COME ELSEWHERE!!!
+      RandGen rg;
+
       // choose random neighborhood
-      int ns_k = rand() % lns.size();
+      // int ns_k = rand() % lns.size();
+      int ns_k = rg.rand() % lns.size();
 
       uptr<Move<XES, XSH>> move = lns[ns_k]->validRandomMove(seBest);
 
       if (!move) {
         std::cout << "Warning in LAHC: cannot find an appliable move for "
-                "neighborhood ";
+                     "neighborhood ";
         lns[ns_k]->print();
         // TODO: return FAIL here
       }
@@ -132,7 +156,8 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
       index++;
       if (index == eList.size()) index = 0;
 
-      tnow = time(nullptr);
+      // TODO: FIX TIMER!!!!!
+      tnow = 0;  // time(nullptr);
     }
 
     // delete &e;
@@ -187,7 +212,7 @@ class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
@@ -212,13 +237,13 @@ class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     std::stringstream ss;
     ss << NS<XES>::idComponent() << "[]";
     params.push_back(std::make_pair(ss.str(), "list of NS"));
     params.push_back(std::make_pair("OptFrame:int", "list size L"));
-    params.push_back(
-        make_pair("OptFrame:int", "iterMax iterations without improvement"));
+    params.push_back(std::make_pair("OptFrame:int",
+                                    "iterMax iterations without improvement"));
 
     return params;
   }

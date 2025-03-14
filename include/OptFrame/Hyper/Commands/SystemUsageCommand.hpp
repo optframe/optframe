@@ -29,61 +29,63 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemUsageCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemUsageCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemUsageCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemUsageCommand() {}
 
-   string id()
-   {
-      return "system.usage";
-   }
+  string id() { return "system.usage"; }
 
-   string usage()
-   {
-      return "system.usage module_or_function";
-   }
+  string usage() { return "system.usage module_or_function"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& all_functions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
-   {
-      Scanner scanner(rest);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& all_functions,
+           HeuristicFactory<R, ADS, DS>&,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string rest) {
+    Scanner scanner(rest);
 
-      string command = scanner.next();
+    string command = scanner.next();
 
-      bool notfound = true;
+    bool notfound = true;
 
-      for (unsigned int i = 0; i < all_modules.size(); i++)
-         if (all_modules[i]->canHandle(command, "")) {
-            std::cout << "Usage: " << all_modules[i]->usage() << std::endl;
-            notfound = false;
-            break;
-         }
-
-      if (notfound)
-         for (unsigned int i = 0; i < all_functions.size(); i++)
-            if (command == all_functions[i]->id()) {
-               std::cout << "Usage: " << all_functions[i]->usage() << std::endl;
-               notfound = false;
-               break;
-            }
-
-      if (notfound) {
-         std::cout << "Command or function '" << command << "' not found!" << std::endl;
-         return false;
+    for (unsigned int i = 0; i < all_modules.size(); i++)
+      if (all_modules[i]->canHandle(command, "")) {
+        std::cout << "Usage: " << all_modules[i]->usage() << std::endl;
+        notfound = false;
+        break;
       }
 
-      return true;
-   }
+    if (notfound)
+      for (unsigned int i = 0; i < all_functions.size(); i++)
+        if (command == all_functions[i]->id()) {
+          std::cout << "Usage: " << all_functions[i]->usage() << std::endl;
+          notfound = false;
+          break;
+        }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+    if (notfound) {
+      std::cout << "Command or function '" << command << "' not found!"
+                << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* USAGEMODULE_HPP_ */

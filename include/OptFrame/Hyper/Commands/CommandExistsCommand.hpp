@@ -27,88 +27,88 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class CommandExistsCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~CommandExistsCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class CommandExistsCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~CommandExistsCommand() {}
 
-   string id()
-   {
-      return "command.exists";
-   }
+  string id() { return "command.exists"; }
 
-   string usage()
-   {
-      string u = id();
-      u += " module_name result_variable\n";
-      return u;
-   }
+  string usage() {
+    string u = id();
+    u += " module_name result_variable\n";
+    return u;
+  }
 
-   string formatBool(bool b)
-   {
-      if (b)
-         return "true";
-      else
-         return "false";
-   }
+  string formatBool(bool b) {
+    if (b)
+      return "true";
+    else
+      return "false";
+  }
 
-   bool parseBool(string b)
-   {
-      return b == "true";
-   }
+  bool parseBool(string b) { return b == "true"; }
 
-   Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules, string module, string rest)
-   {
-      for (unsigned int i = 0; i < modules.size(); i++) {
-         //cout << "run: testing module '" << modules[i]->id() << "'" << std::endl;
-         if (modules[i]->canHandle(module, rest))
-            return modules[i];
-      }
-      //cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << std::endl;
-      return nullptr;
-   }
+  Command<R, ADS, DS>* getCommand(std::vector<Command<R, ADS, DS>*>& modules,
+                                  string module, string rest) {
+    for (unsigned int i = 0; i < modules.size(); i++) {
+      // cout << "run: testing module '" << modules[i]->id() << "'" <<
+      // std::endl;
+      if (modules[i]->canHandle(module, rest)) return modules[i];
+    }
+    // cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest
+    // << "'" << std::endl;
+    return nullptr;
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      //cout << "command.exists command: " << input << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    // cout << "command.exists command: " << input << std::endl;
 
-      Scanner scanner(input);
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string module_name = scanner.next();
+    string module_name = scanner.next();
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
 
-      string variable = scanner.next();
+    string variable = scanner.next();
 
-      Command<R, ADS, DS>* m = getCommand(allCommands, module_name, "");
+    Command<R, ADS, DS>* m = getCommand(allCommands, module_name, "");
 
-      //if(m)
-      //   std::cout << "command.exists real id is: " << m->id() << std::endl;
+    // if(m)
+    //    std::cout << "command.exists real id is: " << m->id() << std::endl;
 
-      string result = formatBool(m != nullptr);
+    string result = formatBool(m != nullptr);
 
-      //cout << "command.exists result is: " << result << std::endl;
+    // cout << "command.exists result is: " << result << std::endl;
 
-      return Command<R, ADS, DS>::defineText(variable, result, dictionary);
-   }
+    return Command<R, ADS, DS>::defineText(variable, result, dictionary);
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_MODULE_EXISTS_MODULE_HPP_ */

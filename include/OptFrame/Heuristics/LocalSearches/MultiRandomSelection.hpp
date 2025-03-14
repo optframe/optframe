@@ -218,7 +218,7 @@ class MultiRandomSelectionBuilder : public LocalSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     if (!scanner.hasNext()) return nullptr;
 
     sptr<GeneralEvaluator<XES>> eval;

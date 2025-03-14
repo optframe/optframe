@@ -27,116 +27,124 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EmpiricalCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~EmpiricalCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class EmpiricalCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~EmpiricalCommand() {}
 
-   string id()
-   {
-      return "empirical";
-   }
-   string usage()
-   {
-      string u = "empirical N T TF BF EVAL METHOD OUTPUTFILE\n WHERE:\n";
-      u += "N is the number of tests to be executed;\n";
-      u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
-      u += "TF is the target evaluation function value;\n";
-      u += "BF is the best known evaluation function value;\n";
-      u += "METHOD is the method to be tested with its own parameters;\n";
-      u += "OUTPUTFILE is the output file.\n";
+  string id() { return "empirical"; }
+  string usage() {
+    string u = "empirical N T TF BF EVAL METHOD OUTPUTFILE\n WHERE:\n";
+    u += "N is the number of tests to be executed;\n";
+    u +=
+        "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
+    u += "TF is the target evaluation function value;\n";
+    u += "BF is the best known evaluation function value;\n";
+    u += "METHOD is the method to be tested with its own parameters;\n";
+    u += "OUTPUTFILE is the output file.\n";
 
-      return u;
-   }
+    return u;
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return true;
-      }
-
-      int n = *scanner.nextInt();
-      int t = *scanner.nextDouble();
-      double tf = *scanner.nextDouble();
-      double bf = *scanner.nextDouble();
-
-      pair<SingleObjSearch<R, ADS, DS>*, string> method = factory.createSingleObjSearch(scanner.rest());
-
-      SingleObjSearch<R, ADS, DS>* h = method.first;
-
-      string filename = method.second;
-
-      if (t == 0) // if no timelimit
-         t = 1000000000;
-
-      long timelimit = t;
-
-      if (bf == 0) // if best is zero
-         bf = 0.00001;
-
-      FILE* file = fopen(filename.c_str(), "a");
-      if (!file) {
-         std::cout << "Error creating file '" << filename << "'" << std::endl;
-         return true;
-      }
-
-      double t_now = 0;
-      double fo_now = 0;
-
-      vector<double> time_spent;
-
-      for (int i = 0; i < n; i++) {
-         long seed = time(nullptr) + i;
-         fprintf(file, "%ld\t", seed);
-
-         std::cout << "Test " << i << " {seed=" << seed << "}... Running";
-         Timer t(false);
-
-         pair<Solution<R, ADS>&, Evaluation<DS>&>* result = h->search(timelimit, tf);
-
-         if (!result) {
-            std::cout << "EMPIRICAL ERROR!" << std::endl;
-            return false;
-         }
-
-         Solution<R, ADS>* s2 = &result->first;
-
-         t_now = t.now();
-         fo_now = result->second.evaluation();
-         fprintf(file, "%f\t%.3f\t", fo_now, t_now);
-         time_spent.push_back(t_now);
-
-         std::cout << "... Finished! (" << t.now() << "secs.)" << std::endl;
-
-         delete s2;
-
-         fprintf(file, "\n");
-      }
-
-      sort(time_spent.begin(), time_spent.end());
-
-      fprintf(file, "EMPIRICAL PROBABILITY DISTRIBUTION:\ni\ttime(i)\tp(i)=(i-0.5)/N\n0\t0\t0\n");
-      for (int i = 1; i <= n; i++)
-         fprintf(file, "%i\t%.3f\t%.3f\n", i, time_spent[i - 1], (i - 0.5) / n);
-
-      fprintf(file, "PARAMETERS:%s\n", input.c_str());
-
-      fclose(file);
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
       return true;
-   }
+    }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+    int n = *scanner.nextInt();
+    int t = *scanner.nextDouble();
+    double tf = *scanner.nextDouble();
+    double bf = *scanner.nextDouble();
+
+    pair<SingleObjSearch<R, ADS, DS>*, string> method =
+        factory.createSingleObjSearch(scanner.rest());
+
+    SingleObjSearch<R, ADS, DS>* h = method.first;
+
+    string filename = method.second;
+
+    if (t == 0)  // if no timelimit
+      t = 1000000000;
+
+    long timelimit = t;
+
+    if (bf == 0)  // if best is zero
+      bf = 0.00001;
+
+    FILE* file = fopen(filename.c_str(), "a");
+    if (!file) {
+      std::cout << "Error creating file '" << filename << "'" << std::endl;
+      return true;
+    }
+
+    double t_now = 0;
+    double fo_now = 0;
+
+    vector<double> time_spent;
+
+    for (int i = 0; i < n; i++) {
+      long seed = time(nullptr) + i;
+      fprintf(file, "%ld\t", seed);
+
+      std::cout << "Test " << i << " {seed=" << seed << "}... Running";
+      Timer t(false);
+
+      pair<Solution<R, ADS>&, Evaluation<DS>&>* result =
+          h->search(timelimit, tf);
+
+      if (!result) {
+        std::cout << "EMPIRICAL ERROR!" << std::endl;
+        return false;
+      }
+
+      Solution<R, ADS>* s2 = &result->first;
+
+      t_now = t.now();
+      fo_now = result->second.evaluation();
+      fprintf(file, "%f\t%.3f\t", fo_now, t_now);
+      time_spent.push_back(t_now);
+
+      std::cout << "... Finished! (" << t.now() << "secs.)" << std::endl;
+
+      delete s2;
+
+      fprintf(file, "\n");
+    }
+
+    sort(time_spent.begin(), time_spent.end());
+
+    fprintf(file,
+            "EMPIRICAL PROBABILITY "
+            "DISTRIBUTION:\ni\ttime(i)\tp(i)=(i-0.5)/N\n0\t0\t0\n");
+    for (int i = 1; i <= n; i++)
+      fprintf(file, "%i\t%.3f\t%.3f\n", i, time_spent[i - 1], (i - 0.5) / n);
+
+    fprintf(file, "PARAMETERS:%s\n", input.c_str());
+
+    fclose(file);
+    return true;
+  }
+
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* EMPIRICALMODULE_HPP_ */

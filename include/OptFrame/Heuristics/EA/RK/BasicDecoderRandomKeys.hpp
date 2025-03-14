@@ -81,7 +81,7 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<XES> {
   virtual ~BasicDecoderRandomKeysBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     sptr<Evaluator<S, XEv, XES>> evaluator;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -106,7 +106,7 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<XES> {
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component == BasicDecoderRandomKeys<RealXES, double>::idComponent();
   }
 

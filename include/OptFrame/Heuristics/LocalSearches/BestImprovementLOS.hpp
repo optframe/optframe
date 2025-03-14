@@ -181,7 +181,7 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     if (!scanner.hasNext()) return nullptr;
     Evaluator<XES, XEv>* eval;
     std::string comp_id1 = scanner.next();
@@ -201,7 +201,7 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     params.push_back(
         make_pair(NSSeq<XES, XSH>::idComponent(), "neighborhood structure"));
 

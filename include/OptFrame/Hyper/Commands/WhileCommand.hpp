@@ -26,114 +26,110 @@
 #include <string>
 
 #include "../Command.hpp"
-
 #include "SystemRunCommand.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class WhileCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~WhileCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class WhileCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~WhileCommand() {}
 
-   string id()
-   {
-      return "while";
-   }
+  string id() { return "while"; }
 
-   string usage()
-   {
-      return "while boolean list_of_commands";
-   }
+  string usage() { return "while boolean list_of_commands"; }
 
-   string formatBool(bool b)
-   {
-      if (b)
-         return "true";
-      else
-         return "false";
-   }
+  string formatBool(bool b) {
+    if (b)
+      return "true";
+    else
+      return "false";
+  }
 
-   bool parseBool(string b)
-   {
-      return b == "true";
-   }
+  bool parseBool(string b) { return b == "true"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      //cout << "INPUT: '" << input << "'" << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    // cout << "INPUT: '" << input << "'" << std::endl;
 
-      stringstream boolean_expr;
-      unsigned j = 0;
-      for (unsigned i = 0; i < input.size(); i++)
-         if (input.at(i) != '{') {
-            boolean_expr << input.at(i);
-            j++;
-         } else
-            break;
-
-      //cout << "'" << input.at(j) << "'" << std::endl; // should be a '['
-
-      //cout << "BOOLEAN EXPRESSION: '" << Scanner::trim(boolean_expr.str()) << "'" << std::endl;
-
-      stringstream sscommands;
-      for (unsigned k = j; k < input.size(); k++)
-         sscommands << input.at(k);
-
-      //cout << "COMMANDS: '" << sscommands.str() << "'" << std::endl;
-
-      Scanner scanner(sscommands.str());
-
-      vector<string> commands;
-      vector<string>* p_commands = OptFrameList::readBlock(scanner);
-      if (p_commands) {
-         commands = vector<string>(*p_commands);
-         delete p_commands;
+    stringstream boolean_expr;
+    unsigned j = 0;
+    for (unsigned i = 0; i < input.size(); i++)
+      if (input.at(i) != '{') {
+        boolean_expr << input.at(i);
+        j++;
       } else
-         return false;
+        break;
 
-      // check if all the text was used!
-      if (!Command<R, ADS, DS>::testUnused(id(), scanner))
-         return false;
+    // cout << "'" << input.at(j) << "'" << std::endl; // should be a '['
 
-      string* scond1 = Command<R, ADS, DS>::defaultPreprocess(allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
+    // cout << "BOOLEAN EXPRESSION: '" << Scanner::trim(boolean_expr.str()) <<
+    // "'" << std::endl;
 
-      if (!scond1)
-         return nullptr;
+    stringstream sscommands;
+    for (unsigned k = j; k < input.size(); k++) sscommands << input.at(k);
 
-      string scondition = *scond1;
+    // cout << "COMMANDS: '" << sscommands.str() << "'" << std::endl;
 
-      delete scond1;
+    Scanner scanner(sscommands.str());
 
-      while (parseBool(scondition)) {
-         if (!Command<R, ADS, DS>::run_module("system.run", allCommands, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands))) {
-            std::cout << "while command: error in command!" << std::endl;
-            return false;
-         }
+    vector<string> commands;
+    vector<string>* p_commands = OptFrameList::readBlock(scanner);
+    if (p_commands) {
+      commands = vector<string>(*p_commands);
+      delete p_commands;
+    } else
+      return false;
 
-         string* scond = Command<R, ADS, DS>::defaultPreprocess(allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
+    // check if all the text was used!
+    if (!Command<R, ADS, DS>::testUnused(id(), scanner)) return false;
 
-         if (!scond)
-            return false;
+    string* scond1 = Command<R, ADS, DS>::defaultPreprocess(
+        allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
 
-         scondition = *scond;
-         delete scond;
+    if (!scond1) return nullptr;
+
+    string scondition = *scond1;
+
+    delete scond1;
+
+    while (parseBool(scondition)) {
+      if (!Command<R, ADS, DS>::run_module(
+              "system.run", allCommands, allFunctions, factory, dictionary,
+              ldictionary, OptFrameList::blockToString(commands))) {
+        std::cout << "while command: error in command!" << std::endl;
+        return false;
       }
 
-      return true;
-   }
+      string* scond = Command<R, ADS, DS>::defaultPreprocess(
+          allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
 
-   // should preprocess only until list of commands
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      // disable preprocess!!
-      return new string(input);
-   }
+      if (!scond) return false;
+
+      scondition = *scond;
+      delete scond;
+    }
+
+    return true;
+  }
+
+  // should preprocess only until list of commands
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    // disable preprocess!!
+    return new string(input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_WHILE_MODULE_HPP_ */

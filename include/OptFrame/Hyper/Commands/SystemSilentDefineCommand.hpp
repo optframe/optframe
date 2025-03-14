@@ -27,89 +27,90 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemSilentDefineCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemSilentDefineCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemSilentDefineCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemSilentDefineCommand() {}
 
-   string id()
-   {
-      return "system.silent_define";
-   }
-   string usage()
-   {
-      return "system.silent_define new_name text_to_be_substituted_from_the_new_name";
-   }
+  string id() { return "system.silent_define"; }
+  string usage() {
+    return "system.silent_define new_name "
+           "text_to_be_substituted_from_the_new_name";
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string rest)
-   {
-      Scanner scanner(rest);
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>&,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string rest) {
+    Scanner scanner(rest);
 
-      if (!scanner.hasNext())
-         return false;
+    if (!scanner.hasNext()) return false;
 
-      string new_name = scanner.next();
+    string new_name = scanner.next();
 
-      if (new_name != "") {
-         string second_word = scanner.rest();
-         return Command<R, ADS, DS>::defineText(new_name, second_word, dictionary);
-      } else {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
-      }
-   }
+    if (new_name != "") {
+      string second_word = scanner.rest();
+      return Command<R, ADS, DS>::defineText(new_name, second_word, dictionary);
+    } else {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    Scanner scanner(input);
 
-      // First, remove the comments '%'
+    // First, remove the comments '%'
 
-      string input2 = "";
+    string input2 = "";
 
-      while (scanner.hasNextChar()) {
-         char c = *scanner.nextChar();
-         if (c != '%')
-            input2 += c;
-         else
-            break;
-      }
+    while (scanner.hasNextChar()) {
+      char c = *scanner.nextChar();
+      if (c != '%')
+        input2 += c;
+      else
+        break;
+    }
 
-      scanner = Scanner(input2);
+    scanner = Scanner(input2);
 
-      // Second, use the dictionary, but before...
-      // WAIT! Save the definition name!
+    // Second, use the dictionary, but before...
+    // WAIT! Save the definition name!
 
-      if (!scanner.hasNext())
-         return new string(input2);
+    if (!scanner.hasNext()) return new string(input2);
 
-      string name = scanner.next();
-      string discarded = scanner.getDiscarded();
+    string name = scanner.next();
+    string discarded = scanner.getDiscarded();
 
-      // now proceed as usual
+    // now proceed as usual
 
-      string* input3 = Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, scanner.rest());
+    string* input3 = Command<R, ADS, DS>::defaultPreprocess(
+        allFunctions, hf, dictionary, ldictionary, scanner.rest());
 
-      if (!input3)
-         return nullptr;
+    if (!input3) return nullptr;
 
-      string input4;
-      input4.append(discarded);
-      input4.append(name);
-      input4.append(" ");
-      input4.append(*input3);
+    string input4;
+    input4.append(discarded);
+    input4.append(name);
+    input4.append(" ");
+    input4.append(*input3);
 
-      delete input3;
+    delete input3;
 
-      string input5 = Scanner::trim(input4);
+    string input5 = Scanner::trim(input4);
 
-      return new string(input5);
-   }
+    return new string(input5);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_SYSTEM_SILENT_DEFINE_MODULE_HPP_ */

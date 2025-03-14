@@ -53,8 +53,8 @@ class CompareLocalSearch : public LocalSearch<XES> {
     ls2->searchFrom(p2, sosc);
 
     if (!eval->equals(e, e2)) {
-      std::cout << "CompareLocalSearch error: difference between " << e.evaluation()
-           << " and " << e2.evaluation() << std::endl;
+      std::cout << "CompareLocalSearch error: difference between "
+                << e.evaluation() << " and " << e2.evaluation() << std::endl;
       std::cout << "LocalSearch 1: ";
       ls1->print();
       std::cout << "LocalSearch 2: ";
@@ -99,13 +99,13 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
   virtual ~CompareLocalSearchBuilder() {}
 
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                          string family = "") override {
+                          std::string family = "") override {
     std::shared_ptr<Evaluator<S, XEv, XES>> eval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
     hf.assign(eval, id1, comp_id1);
 
-    string rest = scanner.rest();
+    std::string rest = scanner.rest();
 
     pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
@@ -130,7 +130,7 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(std::make_pair(Evaluator<S, XEv, XES>::idComponent(),
-                               "evaluation function"));
+                                    "evaluation function"));
     params.push_back(
         make_pair(LocalSearch<XES>::idComponent(), "local search 1"));
     params.push_back(
@@ -139,7 +139,7 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
     return params;
   }
 
-  bool canBuild(string component) override {
+  bool canBuild(std::string component) override {
     return component == CompareLocalSearch<XES>::idComponent();
   }
 

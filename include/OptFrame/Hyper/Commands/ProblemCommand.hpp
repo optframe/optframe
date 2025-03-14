@@ -27,72 +27,85 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ProblemCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ProblemCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ProblemCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ProblemCommand() {}
 
-   virtual string id()
-   {
-      return "problem."; // leave dot to implement next module in heritage
-   }
+  virtual string id() {
+    return "problem.";  // leave dot to implement next module in heritage
+  }
 
-   virtual string usage()
-   {
-      string usage = id();
-      usage.append(" [load instance_path | unload]");
-      return usage;
-   }
+  virtual string usage() {
+    string usage = id();
+    usage.append(" [load instance_path | unload]");
+    return usage;
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
-      if (!scanner.hasNext()) {
-         std::cout << "USAGE: " << usage() << std::endl;
-         return false;
-      }
-
-      string mode = scanner.next();
-      if (mode == "load")
-         return load(Scanner::trim(scanner.rest()), factory, dictionary, ldictionary);
-
-      if (mode == "unload")
-         return unload(factory, dictionary, ldictionary);
-
-      std::cout << "problem command: unknown mode '" << mode << "'! (should be 'load instance_path' or 'unload')";
-
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
+    if (!scanner.hasNext()) {
+      std::cout << "USAGE: " << usage() << std::endl;
       return false;
-   }
+    }
 
-   bool registerComponent(Component& component, string name, string type, HeuristicFactory<R, ADS, DS>& hf, map<std::string, std::string>& dictionary)
-   {
-      int idx = hf.addComponent(component, type);
-      if (idx < 0)
-         return false;
-      std::stringstream ss;
-      ss << type << " " << idx;
-      return Command<R, ADS, DS>::defineText(name, ss.str(), dictionary);
-   }
+    string mode = scanner.next();
+    if (mode == "load")
+      return load(Scanner::trim(scanner.rest()), factory, dictionary,
+                  ldictionary);
 
-   bool registerComponent(Component& component, string name, HeuristicFactory<R, ADS, DS>& hf, map<std::string, std::string>& dictionary)
-   {
-      string type = component.id();
-      return registerComponent(component, name, type, hf, dictionary);
-   }
+    if (mode == "unload") return unload(factory, dictionary, ldictionary);
 
-   virtual bool load(string filename, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
+    std::cout << "problem command: unknown mode '" << mode
+              << "'! (should be 'load instance_path' or 'unload')";
 
-   virtual bool unload(HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary) = 0;
+    return false;
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  bool registerComponent(Component& component, string name, string type,
+                         HeuristicFactory<R, ADS, DS>& hf,
+                         std::map<std::string, std::string>& dictionary) {
+    int idx = hf.addComponent(component, type);
+    if (idx < 0) return false;
+    std::stringstream ss;
+    ss << type << " " << idx;
+    return Command<R, ADS, DS>::defineText(name, ss.str(), dictionary);
+  }
+
+  bool registerComponent(Component& component, string name,
+                         HeuristicFactory<R, ADS, DS>& hf,
+                         std::map<std::string, std::string>& dictionary) {
+    string type = component.id();
+    return registerComponent(component, name, type, hf, dictionary);
+  }
+
+  virtual bool load(
+      string filename, HeuristicFactory<R, ADS, DS>& factory,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary) = 0;
+
+  virtual bool unload(
+      HeuristicFactory<R, ADS, DS>& factory,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary) = 0;
+
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* PROBLEMMODULE_HPP_ */

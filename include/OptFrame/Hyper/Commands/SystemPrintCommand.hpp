@@ -27,36 +27,35 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemPrintCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~SystemPrintCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class SystemPrintCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~SystemPrintCommand() {}
 
-   string id()
-   {
-      return "system.print";
-   }
+  string id() { return "system.print"; }
 
-   string usage()
-   {
-      return "system.print text";
-   }
+  string usage() { return "system.print text"; }
 
-   bool run(std::vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<std::string, std::string>&, map<string, vector<string>>&, string text)
-   {
-      printf("%s", text.c_str());
-      return true;
-   }
+  bool run(std::vector<Command<R, ADS, DS>*>&,
+           vector<PreprocessFunction<R, ADS, DS>*>&,
+           HeuristicFactory<R, ADS, DS>&, std::map<std::string, std::string>&,
+           map<string, vector<string>>&, string text) {
+    printf("%s", text.c_str());
+    return true;
+  }
 
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-   }
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
+                                                  ldictionary, input);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_SYSTEM_PRINT_MODULE_HPP_ */

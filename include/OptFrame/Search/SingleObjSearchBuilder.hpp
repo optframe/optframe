@@ -1,11 +1,32 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
+
 #pragma once
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESSolution XESS>  // single objective type XESSOlution
+MOD_EXPORT template <XESSolution XESS>  // single objective type XESSOlution
 #else
-template <typename XESS>
+MOD_EXPORT template <typename XESS>
 #endif
 class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
   using _XES = XESS;  // single objective type XESSOlution
@@ -16,17 +37,17 @@ class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
   // NOLINTNEXTLINE
   virtual SingleObjSearch<_XES>* build(Scanner& scanner,
                                        HeuristicFactory<_XES>& hf,
-                                       string family = "") = 0;
+                                       std::string family = "") = 0;
 
   // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner, HeuristicFactory<_XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     return build(scanner, hf, family);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override = 0;
 
-  bool canBuild(string) override = 0;
+  bool canBuild(std::string) override = 0;
 
   static std::string idComponent() {
     std::stringstream ss;
@@ -55,13 +76,13 @@ class SingleObjSearchAction : public Action<XES> {
  public:
   virtual ~SingleObjSearchAction() = default;
 
-  virtual string usage() {
+  virtual std::string usage() {
     return "OptFrame:SingleObjSearch idx   search    timelimit  target_f  "
            "OptFrame:Solution idx|-1   OptFrame:Evaluation idx|-1   "
            "[output_variable] => OptFrame:Solution|nullptr";
   }
 
-  virtual bool handleComponent(string type) {
+  virtual bool handleComponent(std::string type) {
     return ComponentHelper::compareBase(SingleObjSearch<XES>::idComponent(),
                                         type);
   }
@@ -70,14 +91,16 @@ class SingleObjSearchAction : public Action<XES> {
     return component.compatible(SingleObjSearch<XES>::idComponent());
   }
 
-  virtual bool handleAction(string action) { return (action == "search"); }
+  virtual bool handleAction(std::string action) { return (action == "search"); }
 
-  virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) {
+  virtual bool doCast(std::string component, int id, std::string type,
+                      std::string variable, HeuristicFactory<XES>& hf,
+                      std::map<std::string, std::string>& d) {
     if (!handleComponent(type)) {
-      std::cout << "SingleObjSearchAction::doCast error: can't handle component "
-              "type '"
-           << type << " " << id << "'" << std::endl;
+      std::cout
+          << "SingleObjSearchAction::doCast error: can't handle component "
+             "type '"
+          << type << " " << id << "'" << std::endl;
       return false;
     }
 
@@ -85,13 +108,13 @@ class SingleObjSearchAction : public Action<XES> {
 
     if (!comp) {
       std::cout << "SingleObjSearchAction::doCast error: nullptr component '"
-           << component << " " << id << "'" << std::endl;
+                << component << " " << id << "'" << std::endl;
       return false;
     }
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
-      std::cout << "SingleObjSearchAction::doCast error: component '" << comp->id()
-           << " is not base of " << type << "'" << std::endl;
+      std::cout << "SingleObjSearchAction::doCast error: component '"
+                << comp->id() << " is not base of " << type << "'" << std::endl;
       return false;
     }
 
@@ -104,8 +127,8 @@ class SingleObjSearchAction : public Action<XES> {
     if (type == SingleObjSearch<XES>::idComponent()) {
       final = (SingleObjSearch<XES>*)comp;
     } else {
-      std::cout << "SingleObjSearchAction::doCast error: no cast for type '" << type
-           << "'" << std::endl;
+      std::cout << "SingleObjSearchAction::doCast error: no cast for type '"
+                << type << "'" << std::endl;
       return false;
     }
 
@@ -114,9 +137,10 @@ class SingleObjSearchAction : public Action<XES> {
     return ComponentAction<XES>::addAndRegister(scanner, *final, hf, d);
   }
 
-  virtual bool doAction(string content, HeuristicFactory<XES>& hf,
-                        map<std::string, std::string>& dictionary,
-                        map<string, vector<string>>& ldictionary) {
+  virtual bool doAction(
+      std::string content, HeuristicFactory<XES>& hf,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary) {
     // std::cout << "LocalSearch::doAction '" << content << "'" << std::endl;
 
     Scanner scanner(content);
@@ -130,7 +154,7 @@ class SingleObjSearchAction : public Action<XES> {
 
     if (!scanner.hasNext()) return false;
 
-    string action = scanner.next();
+    std::string action = scanner.next();
 
     if (!handleAction(action)) return false;
 

@@ -29,127 +29,134 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ForEachCommand : public Command<R, ADS, DS>
-{
-public:
-   virtual ~ForEachCommand()
-   {
-   }
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
+class ForEachCommand : public Command<R, ADS, DS> {
+ public:
+  virtual ~ForEachCommand() {}
 
-   string id()
-   {
-      return "for_each";
-   }
+  string id() { return "for_each"; }
 
-   string usage()
-   {
-      return "for_each variable list_of_values block_of_commands";
-   }
+  string usage() {
+    return "for_each variable list_of_values block_of_commands";
+  }
 
-   bool run(std::vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<std::string, std::string>& dictionary, map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
-      //cout << "for_each run: '" << input << "'" << std::endl;
+  bool run(std::vector<Command<R, ADS, DS>*>& allCommands,
+           vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+           HeuristicFactory<R, ADS, DS>& factory,
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
+    Scanner scanner(input);
+    // cout << "for_each run: '" << input << "'" << std::endl;
 
-      if (!scanner.hasNext()) {
-         std::cout << "Usage: " << usage() << std::endl;
-         return false;
+    if (!scanner.hasNext()) {
+      std::cout << "Usage: " << usage() << std::endl;
+      return false;
+    }
+
+    string var = scanner.next();
+
+    if (var[0] == '$') {
+      std::cout << "for_each error: operator $ in variable '" << var << "'"
+                << std::endl;
+      return false;
+    }
+
+    bool initialStatusVar =
+        Command<R, ADS, DS>::isInDictionary(var, dictionary, ldictionary);
+
+    vector<string>* pvalues = OptFrameList::readList(ldictionary, scanner);
+    vector<string> values;
+    if (pvalues) {
+      values = vector<string>(*pvalues);
+      delete pvalues;
+    } else {
+      std::cout << "for_each error: couldn't read input list!" << std::endl;
+      return false;
+    }
+
+    vector<string>* pcommands = OptFrameList::readBlock(scanner);
+    vector<string> commands;
+    if (pcommands) {
+      commands = vector<string>(*pcommands);
+      delete pcommands;
+    } else {
+      std::cout << "for_each error: couldn't read block of commands!"
+                << std::endl;
+      return false;
+    }
+
+    if (!Command<R, ADS, DS>::testUnused(id(), scanner)) return false;
+
+    for (unsigned int v = 0; v < values.size(); v++) {
+      Command<R, ADS, DS>::undefine(var, dictionary, ldictionary);
+
+      if (!Command<R, ADS, DS>::define(var, values[v], dictionary,
+                                       ldictionary)) {
+        std::cout << "for_each error: failed to define variable '" << var
+                  << "' to value '" << values[v] << "'" << std::endl;
+        return false;
       }
 
-      string var = scanner.next();
-
-      if (var[0] == '$') {
-         std::cout << "for_each error: operator $ in variable '" << var << "'" << std::endl;
-         return false;
+      if (!Command<R, ADS, DS>::run_module(
+              "system.run", allCommands, allFunctions, factory, dictionary,
+              ldictionary, OptFrameList::blockToString(commands))) {
+        std::cout << "for_each command: error in command!" << std::endl;
+        return false;
       }
+    }
 
-      bool initialStatusVar = Command<R, ADS, DS>::isInDictionary(var, dictionary, ldictionary);
+    if (!initialStatusVar)
+      Command<R, ADS, DS>::undefine(var, dictionary, ldictionary);
 
-      vector<string>* pvalues = OptFrameList::readList(ldictionary, scanner);
-      vector<string> values;
-      if (pvalues) {
-         values = vector<string>(*pvalues);
-         delete pvalues;
-      } else {
-         std::cout << "for_each error: couldn't read input list!" << std::endl;
-         return false;
-      }
+    return true;
+  }
 
-      vector<string>* pcommands = OptFrameList::readBlock(scanner);
-      vector<string> commands;
-      if (pcommands) {
-         commands = vector<string>(*pcommands);
-         delete pcommands;
-      } else {
-         std::cout << "for_each error: couldn't read block of commands!" << std::endl;
-         return false;
-      }
+  // should preprocess only until list of commands
+  virtual string* preprocess(
+      std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& hf,
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
+    Scanner scanner(input);
 
-      if (!Command<R, ADS, DS>::testUnused(id(), scanner))
-         return false;
+    // should skip the removal of comments '%' and variable definitions,
+    // otherwise it destroys the commands!
 
-      for (unsigned int v = 0; v < values.size(); v++) {
-         Command<R, ADS, DS>::undefine(var, dictionary, ldictionary);
+    string input2 = "";
 
-         if (!Command<R, ADS, DS>::define(var, values[v], dictionary, ldictionary)) {
-            std::cout << "for_each error: failed to define variable '" << var << "' to value '" << values[v] << "'" << std::endl;
-            return false;
-         }
+    if (!scanner.hasNext()) return new string(input2);
 
-         if (!Command<R, ADS, DS>::run_module("system.run", allCommands, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands))) {
-            std::cout << "for_each command: error in command!" << std::endl;
-            return false;
-         }
-      }
+    string variable = scanner.next();
+    string discarded1 = scanner.getDiscarded();
+    input2.append(discarded1);
+    input2.append(variable);
 
-      if (!initialStatusVar)
-         Command<R, ADS, DS>::undefine(var, dictionary, ldictionary);
+    if (!scanner.hasNext()) return new string(input2);
 
-      return true;
-   }
+    string possibleDefinition = scanner.next();
+    string discarded2 = scanner.getDiscarded();
 
-   // should preprocess only until list of commands
-   virtual string* preprocess(std::vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<std::string, std::string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
-   {
-      Scanner scanner(input);
+    if (dictionary.count(possibleDefinition) == 0)  // Not found in dictionary
+    {
+      input2.append(discarded2);
+      input2.append(possibleDefinition);  // EXPLICIT LIST
+    } else                                // definition found in dictionary
+    {
+      string found = dictionary.find(possibleDefinition)->second;
 
-      // should skip the removal of comments '%' and variable definitions, otherwise it destroys the commands!
+      input2.append(discarded2);
+      input2.append(found);
+    }
 
-      string input2 = "";
+    input2.append(scanner.rest());
 
-      if (!scanner.hasNext())
-         return new string(input2);
-
-      string variable = scanner.next();
-      string discarded1 = scanner.getDiscarded();
-      input2.append(discarded1);
-      input2.append(variable);
-
-      if (!scanner.hasNext())
-         return new string(input2);
-
-      string possibleDefinition = scanner.next();
-      string discarded2 = scanner.getDiscarded();
-
-      if (dictionary.count(possibleDefinition) == 0) // Not found in dictionary
-      {
-         input2.append(discarded2);
-         input2.append(possibleDefinition); // EXPLICIT LIST
-      } else                                // definition found in dictionary
-      {
-         string found = dictionary.find(possibleDefinition)->second;
-
-         input2.append(discarded2);
-         input2.append(found);
-      }
-
-      input2.append(scanner.rest());
-
-      return new string(input2);
-   }
+    return new string(input2);
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* FOREACHMODULE_HPP_ */

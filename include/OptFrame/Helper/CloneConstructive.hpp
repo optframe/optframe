@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HELPER_CLONECONSTRUCTIVE_HPP_
 #define OPTFRAME_HELPER_CLONECONSTRUCTIVE_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,9 +14,25 @@
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XSolution S>
+MOD_EXPORT template <XSolution S>
 class CloneConstructive : public Constructive<S> {
   // sptr<S> base;
   S base;
@@ -53,9 +71,9 @@ class CloneConstructive : public Constructive<S> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class CloneConstructiveBuilder : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
@@ -64,7 +82,7 @@ class CloneConstructiveBuilder : public ComponentBuilder<XES> {
   virtual ~CloneConstructiveBuilder() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                            string family = "") override {
+                            std::string family = "") override {
     std::cout << "CloneConstructive NOT AVAILABLE... TODO!" << std::endl;
     assert(false);
     return nullptr;

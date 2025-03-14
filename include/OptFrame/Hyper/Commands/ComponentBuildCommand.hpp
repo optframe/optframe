@@ -100,8 +100,9 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
   bool run(std::vector<Command<R, ADS, DS>*>& all_modules,
            vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
            HeuristicFactory<R, ADS, DS>& factory,
-           map<std::string, std::string>& dictionary,
-           map<string, vector<string>>& ldictionary, string input) {
+           std::map<std::string, std::string>& dictionary,
+           std::map<std::string, std::vector<std::string>>& ldictionary,
+           string input) {
     // std::cout << "build command: " << input << std::endl;
     Scanner scanner1(input);
 
@@ -196,11 +197,13 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
     return true;
   }
 
-  bool listBuilders(std::vector<Command<R, ADS, DS>*>& all_modules,
-                    vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
-                    HeuristicFactory<R, ADS, DS>& factory,
-                    map<std::string, std::string>& dictionary,
-                    map<string, vector<string>>& ldictionary, string input) {
+  bool listBuilders(
+      std::vector<Command<R, ADS, DS>*>& all_modules,
+      vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
+      HeuristicFactory<R, ADS, DS>& factory,
+      std::map<std::string, std::string>& dictionary,
+      std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
     Scanner scanner(input);
 
     string pattern;
@@ -251,8 +254,9 @@ class ComponentBuildCommand : public Command<R, ADS, DS> {
   virtual string* preprocess(
       vector<PreprocessFunction<R, ADS, DS>*>& allFunctions,
       HeuristicFactory<R, ADS, DS>& hf,
-      const map<std::string, std::string>& dictionary,
-      const map<string, vector<string>>& ldictionary, string input) {
+      const std::map<std::string, std::string>& dictionary,
+      const std::map<std::string, std::vector<std::string>>& ldictionary,
+      string input) {
     return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary,
                                                   ldictionary, input);
   }
