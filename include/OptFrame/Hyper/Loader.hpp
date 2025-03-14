@@ -23,12 +23,12 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Core/MultiEvaluator.hpp>
-#include <OptFrame/Core/MultiEvaluatorBuilder.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
+#include <OptFrame/Pareto/MultiEvaluatorBuilder.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Search/InitialPopulation.hpp>
 #include <OptFrame/Timer.hpp>

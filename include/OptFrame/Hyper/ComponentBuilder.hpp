@@ -23,6 +23,8 @@
 #ifndef OPTFRAME_HYPER_COMPONENTBUILDER_HPP_
 #define OPTFRAME_HYPER_COMPONENTBUILDER_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <string>
 #include <utility>
@@ -30,21 +32,37 @@
 //
 
 #include <OptFrame/Component.hpp>
-//#include "Evaluation.hpp"
-#include <OptFrame/Helper/MultiESolution.hpp>
-//#include "Solution.hpp"
-//#include "Solutions/CopySolution.hpp"
+// #include "Evaluation.hpp"
+#include <OptFrame/Core/MultiESolution.hpp>
+// #include "Solution.hpp"
+// #include "Solutions/CopySolution.hpp"
 #include <OptFrame/Scanner++/Scanner.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 using scannerpp::Scanner;
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class HeuristicFactory;
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 class HeuristicFactory;
 #endif
 
@@ -56,16 +74,16 @@ class HeuristicFactory;
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class ComponentBuilder : public Component {
  public:
   ~ComponentBuilder() override = default;
 
   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
-                                    string family = "") = 0;
+                                    std::string family = "") = 0;
 
   virtual std::vector<std::pair<std::string, std::string>> parameters() = 0;
 

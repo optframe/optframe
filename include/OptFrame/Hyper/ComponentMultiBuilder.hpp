@@ -23,6 +23,8 @@
 #ifndef OPTFRAME_HYPER_COMPONENTMULTIBUILDER_HPP_
 #define OPTFRAME_HYPER_COMPONENTMULTIBUILDER_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <string>
 #include <utility>
@@ -31,31 +33,48 @@
 
 #include <OptFrame/Component.hpp>
 // #include "Evaluation.hpp"
+#include <OptFrame/Core/MultiESolution.hpp>
 #include <OptFrame/Core/VEPopulation.hpp>
-#include <OptFrame/Helper/MultiESolution.hpp>
 // #include "Solution.hpp"
 // #include "Solutions/CopySolution.hpp"
 #include <OptFrame/Scanner++/Scanner.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 using scannerpp::Scanner;
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class HeuristicFactory;
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 class HeuristicFactory;
 #endif
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
-          XESolution XMES = pair<S, XMEv>,
-          X2ESolution<XMES> X2MES = VEPopulation<XMES>>
+MOD_EXPORT template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
+                     XESolution XMES = std::pair<S, XMEv>,
+                     X2ESolution<XMES> X2MES = VEPopulation<XMES>>
 #else
-template <typename S, typename XMEv = MultiEvaluation<>,
-          typename XMES = pair<S, XMEv>, typename X2MES = VEPopulation<XMES>>
+MOD_EXPORT template <typename S, typename XMEv = MultiEvaluation<>,
+                     typename XMES = std::pair<S, XMEv>,
+                     typename X2MES = VEPopulation<XMES>>
 #endif
 class ComponentMultiBuilder : public Component {
   // TODO: pass these as templates as well
@@ -68,11 +87,11 @@ class ComponentMultiBuilder : public Component {
 
   virtual Component* buildMultiComponent(Scanner& scanner,
                                          HeuristicFactory<XES>& hf,
-                                         string family = "") = 0;
+                                         std::string family = "") = 0;
 
   virtual std::vector<std::pair<std::string, std::string>> parameters() = 0;
 
-  virtual bool canBuild(string) = 0;
+  virtual bool canBuild(std::string) = 0;
 
   static std::string idComponent() {
     std::stringstream ss;

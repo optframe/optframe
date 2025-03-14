@@ -16,7 +16,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 // #include <OptFrame/Hyper/ComponentBuilder.hpp>
 
 namespace optframe {

@@ -21,8 +21,8 @@
 // for testing
 #include <OptFrame/BasicPareto.hpp>
 #include <OptFrame/Core/EPopulation.hpp>
-// #include <OptFrame/Helper/MultiESolution.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
+// #include <OptFrame/Core/MultiESolution.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 
 // IMPORTANT STUFF TO TEST!
 

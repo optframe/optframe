@@ -42,13 +42,13 @@
 //
 #include <OptFrame/Core/EPopulation.hpp>
 //
+#include <OptFrame/Core/MultiSolution.hpp>
+//
+#include <OptFrame/Core/MultiESolution.hpp>
+//
 #include <OptFrame/Core/VEPopulation.hpp>
 //
 #include <OptFrame/Core/InitialPopulation.hpp>
-//
-#include <OptFrame/Core/MultiEvaluator.hpp>
-//
-#include <OptFrame/Core/MultiEvaluation.hpp>  // Maybe not Core... some Helper!
 //
 // #include <OptFrame/Timer.hpp>  // NOT part of Core!
 

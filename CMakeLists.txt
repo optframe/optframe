@@ -72,6 +72,10 @@ endif()
 
 #if(USE_CXX_MODULES)
 
+add_library(optframe_scannerpp)
+target_link_libraries(optframe_scannerpp PUBLIC OptFrameAll) # too much...
+target_sources(optframe_scannerpp PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/scannerpp.cppm)
+
 add_library(optframe_nnptr)
 target_link_libraries(optframe_nnptr PUBLIC OptFrameAll) # too much...
 target_sources(optframe_nnptr PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/nnptr.cppm)
@@ -136,11 +140,19 @@ target_sources(optframe_heuristics  PUBLIC  FILE_SET CXX_MODULES FILES src/optfr
 target_link_libraries(optframe_heuristics PUBLIC optframe_core)
 target_link_libraries(optframe_heuristics PUBLIC optframe_search)
 
+add_library(optframe_hyper)
+target_link_libraries(optframe_hyper PUBLIC OptFrameAll)
+target_sources(optframe_hyper  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/hyper.cppm)
+target_link_libraries(optframe_hyper PUBLIC optframe_heuristics)
+target_link_libraries(optframe_hyper PUBLIC optframe_scannerpp)
+
 
 add_executable(trymod demo/07_Try_Modules/trymod.cpp)
 
 target_link_libraries(trymod PRIVATE optframe_core)
 target_link_libraries(trymod PRIVATE optframe_heuristics)
+target_link_libraries(trymod PRIVATE optframe_hyper)
+target_link_libraries(trymod PRIVATE optframe_scannerpp)
 #endif()
 
 if (OPTFRAME_BUILD_TESTING AND NOT IS_SUBPROJECT)

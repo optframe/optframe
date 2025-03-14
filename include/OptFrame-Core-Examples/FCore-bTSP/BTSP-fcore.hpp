@@ -14,9 +14,9 @@
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Concepts/Domain.hpp>
 #include <OptFrame/Core.hpp>
-#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/RK/InitialEPopulationRK.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
 #include <OptFrame/Pareto/Pareto.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Search/InitialPopulation.hpp>

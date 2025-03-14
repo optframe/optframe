@@ -12,9 +12,9 @@
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Core/MultiESolution.hpp>
+#include <OptFrame/Core/MultiSolution.hpp>
 #include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/Helper/MultiESolution.hpp>
-#include <OptFrame/Helper/MultiSolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Hyper/Action.hpp>

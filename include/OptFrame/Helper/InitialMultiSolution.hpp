@@ -29,7 +29,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Helper/MultiSolution.hpp>
+#include <OptFrame/Core/MultiSolution.hpp>
 
 // #include "EA.hpp"
 

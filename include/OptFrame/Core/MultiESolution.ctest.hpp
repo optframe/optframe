@@ -24,7 +24,7 @@
 #define OPTFRAME_MULTIESOLUTION_CTEST_HPP_
 
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
-#include <OptFrame/Helper/MultiESolution.hpp>
+#include <OptFrame/Core/MultiESolution.hpp>
 
 #ifndef NDEBUG
 

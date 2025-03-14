@@ -30,10 +30,10 @@
 //
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 #include <OptFrame/Pareto/ParetoDominance.hpp>
 #include <OptFrame/Search/MultiObjSearch.hpp>
 

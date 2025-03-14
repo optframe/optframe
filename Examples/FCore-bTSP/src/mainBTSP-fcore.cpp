@@ -92,14 +92,14 @@ q.push_back(indiv);
 int indMissing = indMutation - q.size();
 if (indMissing > 0) {
   std::cout << "MISSING " << indMissing << std::endl;
-  std::cout << "|P|=" << p.size() << " indMutation=" << indMutation << " |q|=" <<
-q.size() << " |NS|=" << neighbors.size() << std::endl; exit(1);
+  std::cout << "|P|=" << p.size() << " indMutation=" << indMutation << " |q|="
+<< q.size() << " |NS|=" << neighbors.size() << std::endl; exit(1);
 }
 
 for (int n = 1; n <= indMissing; n++) {
   std::cout << "Warning: n=" << n << "/" << indMissing << " MISSING MUTATION =>
-CLONING ELEMENT!" << std::endl; int ind = rg.rand(p.size()); Solution<RepCARP>& s_ind
-= p.at(ind)->s.clone(); IndividualNSGAII<RepCARP>* indiv = new
+CLONING ELEMENT!" << std::endl; int ind = rg.rand(p.size()); Solution<RepCARP>&
+s_ind = p.at(ind)->s.clone(); IndividualNSGAII<RepCARP>* indiv = new
 IndividualNSGAII<RepCARP>(s_ind); q.push_back(indiv);
 }
 

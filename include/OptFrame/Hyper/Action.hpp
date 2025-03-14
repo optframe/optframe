@@ -11,7 +11,7 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Helper/MultiESolution.hpp>
+#include <OptFrame/Core/MultiESolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 #include <OptFrame/Hyper/ComponentHelper.hpp>
@@ -56,7 +56,8 @@ class Action {
                         map<string, vector<string>>& ldictionary) = 0;
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) = 0;
+                      HeuristicFactory<XES>& hf,
+                      map<std::string, std::string>& d) = 0;
 
   static bool addAndRegister(Scanner& scanner, Component& comp,
                              HeuristicFactory<XES>& hf,
@@ -91,7 +92,7 @@ class Action {
       // return Command<S, XEv>::defineText(varName, sscomp.str(), d);
     } else {
       std::cout << "Action error: no variable to store value '" << value << "'"
-           << std::endl;
+                << std::endl;
       return false;
     }
   }
@@ -144,18 +145,20 @@ class ComponentAction : public Action<XES> {
   }
 
   virtual bool doCast(string component, int id, string type, string variable,
-                      HeuristicFactory<XES>& hf, map<std::string, std::string>& d) {
+                      HeuristicFactory<XES>& hf,
+                      map<std::string, std::string>& d) {
     if (!handleComponent(type)) {
-      std::cout << "ComponentAction::doCast error: can't handle component type '"
-           << type << " " << id << "'" << std::endl;
+      std::cout
+          << "ComponentAction::doCast error: can't handle component type '"
+          << type << " " << id << "'" << std::endl;
       return false;
     }
 
     Component* comp = hf.components[component].at(id);
 
     if (!comp) {
-      std::cout << "ComponentAction::doCast error: nullptr component '" << component
-           << " " << id << "'" << std::endl;
+      std::cout << "ComponentAction::doCast error: nullptr component '"
+                << component << " " << id << "'" << std::endl;
       return false;
     }
 
@@ -163,7 +166,7 @@ class ComponentAction : public Action<XES> {
 
     if (!ComponentHelper::compareBase(comp->id(), type)) {
       std::cout << "ComponentAction::doCast error: component '" << comp->id()
-           << " is not base of " << type << "'" << std::endl;
+                << " is not base of " << type << "'" << std::endl;
       return false;
     }
 

@@ -15,11 +15,11 @@
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 // #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solutions/ESolution.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
-// #include <OptFrame/Core/MultiEvaluator.hpp>
+// #include <OptFrame/Pareto/MultiEvaluator.hpp>
 #include <OptFrame/Pareto/ParetoDominance.hpp>
 #include <OptFrame/Pareto/ParetoDominanceWeak.hpp>
 

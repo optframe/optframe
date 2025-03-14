@@ -15,10 +15,10 @@
 #include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/IEvaluator.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 
 #define MOD_EXPORT
 #else

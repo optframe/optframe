@@ -3,6 +3,7 @@
 import std;
 import optframe.core;
 import optframe.heuristics;
+import optframe.scannerpp;
 
 using namespace optframe;
 
@@ -21,6 +22,8 @@ int main() {
   sptr<BestImprovement<MyESolution>> bi;
   sptr<IteratedLocalSearchLevels<MyESolution>> ils;
   sptr<BRKGA<MyESolution>> brkga;
+  scannerpp::Scanner s{"10"};
+  std::println("int -> {}", *s.nextInt());
   std::print("now {}", t.now());
   return 0;
 }

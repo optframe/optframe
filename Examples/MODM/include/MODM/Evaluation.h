@@ -5,7 +5,7 @@
 #define MODM_EVALUATION_H_
 
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 
 using namespace optframe;
 

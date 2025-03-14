@@ -14,8 +14,8 @@
 #include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
 
 #define MOD_EXPORT
 #else

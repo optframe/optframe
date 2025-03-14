@@ -10,7 +10,7 @@
 #include <iostream>
 #include <utility>
 //
-#include <OptFrame/Core/MultiEvaluation.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 #include <OptFrame/Pareto/ParetoDominance.hpp>
 
 #define MOD_EXPORT

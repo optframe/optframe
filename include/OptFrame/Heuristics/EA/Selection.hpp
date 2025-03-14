@@ -28,8 +28,8 @@
 #include <vector>
 //
 #include <OptFrame/Core/Evaluator.hpp>
-#include <OptFrame/Core/MultiEvaluation.hpp>
-#include <OptFrame/Helper/MultiSolution.hpp>
+#include <OptFrame/Core/MultiSolution.hpp>
+#include <OptFrame/Pareto/MultiEvaluation.hpp>
 
 #include "EA.hpp"
 

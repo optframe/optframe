@@ -22,12 +22,12 @@
 #include "Evaluator.cpp"  // TODO: very strange!!
 // #include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
 // #include "../OptFrame/Heuristics/2PPLS.hpp"
-#include <OptFrame/Core/MultiEvaluator.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
 #include <OptFrame/Search/MultiObjSearch.hpp>
 // #include "../OptFrame/Util/UnionNDSets.hpp"
 
-#include <OptFrame/Core/MultiEvaluator.hpp>
 #include <OptFrame/Helper/ConstructiveToInitialSearch.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
 
 #include "MODM/MODM.h"
 #include "OptFrame/Heuristics/GRASP/GRConstructive.hpp"

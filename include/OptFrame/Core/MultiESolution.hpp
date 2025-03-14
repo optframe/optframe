@@ -1,20 +1,38 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
-// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HELPER_MULTIESOLUTION_HPP_
 #define OPTFRAME_HELPER_MULTIESOLUTION_HPP_
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
-#include <OptFrame/Helper/MultiSolution.hpp>
+#include <OptFrame/Core/MultiSolution.hpp>
 #include <OptFrame/Helper/Solution.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 // Pointer-based "EPopulation" structure (DEPRECATED!)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class MultiESolution : public Component {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -157,10 +175,14 @@ class MultiESolution : public Component {
 
 }  // namespace optframe
 
+// DO NOT DO THESE TESTS INSIDE MODULES!
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 // TODO: only in unit tests (or somehow prevent #include "printable.h")
 #include "MultiESolution.ctest.hpp"
 
 #endif  // cpp_concepts
+#endif  // NO_CXX_MODULES
 
 #endif  // OPTFRAME_HELPER_MULTIESOLUTION_HPP_

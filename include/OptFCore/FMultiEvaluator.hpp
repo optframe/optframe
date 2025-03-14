@@ -12,7 +12,7 @@
 #include <functional>
 #include <string>
 //
-#include <OptFrame/Core/MultiEvaluator.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
 
 namespace optframe {
 
