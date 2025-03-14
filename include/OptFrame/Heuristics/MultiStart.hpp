@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_MULTISTART_HPP_
 #define OPTFRAME_HEURISTICS_MULTISTART_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <math.h>
 // C++
@@ -17,6 +19,22 @@
 #include "../Search/ITrajectory.hpp"
 #include "../Search/SingleObjSearch.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 // Current MultiStart is a trajectory-based method and SingleObjSearch(SoS).
 // This means:
 // 1) Primary and secondary spaces are the same (XES=XES2)
@@ -27,7 +45,7 @@
 // in a near future
 
 namespace optframe {
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
  public:
   using XEv = typename XES::second_type;
@@ -110,10 +128,11 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XESolution XES2,
-          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+MOD_EXPORT template <XESolution XES, XESolution XES2,
+                     X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #else
-template <typename XES, XESolution XES2, typename X2ES = MultiESolution<XES2>>
+MOD_EXPORT template <typename XES, XESolution XES2,
+                     typename X2ES = MultiESolution<XES2>>
 #endif
 class MultiStartBuilder : public GlobalSearchBuilder<XES> {
   using S = typename XES::first_type;

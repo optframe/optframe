@@ -375,8 +375,8 @@ class NNShared {
   }
 };
 
-template <class X, typename = typename std::enable_if<
-                       std::is_copy_constructible<X>::value>::type>
+MOD_EXPORT template <class X, typename = typename std::enable_if<
+                                  std::is_copy_constructible<X>::value>::type>
 NNShared<X> copy(const X& other) {
   return NNShared(std::shared_ptr<X>{new X(other)});
 }

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_SA_GEOMETRICSIMULATEDANNEALING_HPP_
 #define OPTFRAME_HEURISTICS_SA_GEOMETRICSIMULATEDANNEALING_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // ==== Classic Geometric Cooling Simulated Annealing ====
 // This is a simplified version of BasicSimulatedAnnealing,
 // without complex callbacks and avoiding generic structures:
@@ -28,9 +30,25 @@
 #include "./HelperSA.hpp"
 #include "./SA.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESSolution XES>
+MOD_EXPORT template <XESSolution XES>
 class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
  public:
   using S = typename XES::first_type;
@@ -156,10 +174,11 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XESolution XES2,
-          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+MOD_EXPORT template <XESolution XES, XESolution XES2,
+                     X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #else
-template <typename XES, typename XES2, typename X2ES = MultiESolution<XES2>>
+MOD_EXPORT template <typename XES, typename XES2,
+                     typename X2ES = MultiESolution<XES2>>
 #endif
 class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
                                            public SA {
@@ -267,16 +286,16 @@ class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
     // params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
     // "evaluation function"));
     params.push_back(
-        make_pair(Evaluator<typename XES::first_type, typename XES::second_type,
-                            XES>::idComponent(),
-                  "evaluation function"));
+        std::make_pair(Evaluator<typename XES::first_type,
+                                 typename XES::second_type, XES>::idComponent(),
+                       "evaluation function"));
 
-    params.push_back(
-        make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+    params.push_back(std::make_pair(Constructive<S>::idComponent(),
+                                    "constructive heuristic"));
     params.push_back(std::make_pair(NS<XES, XSH>::idComponent(), "NS"));
     params.push_back(std::make_pair("OptFrame:double", "cooling factor"));
-    params.push_back(
-        make_pair("OptFrame:int", "number of iterations for each temperature"));
+    params.push_back(std::make_pair(
+        "OptFrame:int", "number of iterations for each temperature"));
     params.push_back(std::make_pair("OptFrame:double", "initial temperature"));
 
     return params;

@@ -37,7 +37,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type>
+MOD_EXPORT template <XESolution XES,
+                     XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbation : public Component, public ILS {
  public:
   ~ILSLPerturbation() override = default;
@@ -60,7 +61,8 @@ class ILSLPerturbation : public Component, public ILS {
   }
 };
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type>
+MOD_EXPORT template <XESolution XES,
+                     XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
   using XSH = XES;  // primary-based search type only (BestType)
 
@@ -101,7 +103,7 @@ class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
       } else {
         if (Component::warning)
           std::cout << "ILS Warning: perturbation had no effect in level " << a
-               << "!" << std::endl;
+                    << "!" << std::endl;
       }
     }
 
@@ -123,7 +125,8 @@ class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv> {
   std::string id() const override { return idComponent(); }
 };
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type>
+MOD_EXPORT template <XESolution XES,
+                     XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
   using XSH = XES;  // primary-based search type only (BestType)
 
@@ -167,10 +170,11 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
 
     for (int i = 0; i < ns.size(); i++) pNS[i].second = pNS[i].first / soma;
 
-    std::cout << "Printing probabilities ILSLPerturbationLPlus2Prob:" << std::endl;
+    std::cout << "Printing probabilities ILSLPerturbationLPlus2Prob:"
+              << std::endl;
     for (int i = 0; i < ns.size(); i++)
       std::cout << "pNS[i].first: " << pNS[i].first
-           << "\t pNS[i].second: " << pNS[i].second << std::endl;
+                << "\t pNS[i].second: " << pNS[i].second << std::endl;
     std::cout << std::endl;
   }
 
@@ -201,7 +205,7 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
       } else {
         if (Component::warning)
           std::cout << "ILS Warning: perturbation had no effect in level " << a
-               << "!" << std::endl;
+                    << "!" << std::endl;
       }
     }
 
@@ -218,7 +222,6 @@ class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv> {
 
   std::string id() const override { return idComponent(); }
 };
-
 
 }  // namespace optframe
 

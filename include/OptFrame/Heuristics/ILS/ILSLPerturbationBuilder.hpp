@@ -1,11 +1,32 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
 #pragma once
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
@@ -59,9 +80,9 @@ class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class ILSLPerturbationLPlus2ProbBuilder : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)

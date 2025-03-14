@@ -5,6 +5,8 @@
 #ifndef OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <string>
 #include <utility>
@@ -17,9 +19,25 @@
 
 #include "TS.h"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -88,7 +106,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     int BestIter = 0;
 
     // initialize empty tabu list
-    vector<Move<XES, XSH>*> tabuList;
+    std::vector<Move<XES, XSH>*> tabuList;
 
     int estimative_BTmax = 0;
 
@@ -196,7 +214,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   // =====================================
 
   uptr<Move<XES, XSH>> tabuBestMoveWithAspiration(
-      XES& se, const vector<Move<XES, XSH>*>& tabuList,
+      XES& se, const std::vector<Move<XES, XSH>*>& tabuList,
       std::function<bool(const XEv&, const XEv&)> cmp) {
     // auto& s = se.first;
     //
@@ -308,7 +326,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     return bestMove;
   }
 
-  bool inList(uptr<Move<XES, XSH>>& m, const vector<Move<XES, XSH>*>& v) {
+  bool inList(uptr<Move<XES, XSH>>& m, const std::vector<Move<XES, XSH>*>& v) {
     for (unsigned int i = 0; i < v.size(); i++)
       if ((*m) == (*v[i])) return true;
     return false;
@@ -324,9 +342,9 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
   using _S = typename XES::first_type;

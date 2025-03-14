@@ -1,47 +1,40 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_GRASPH_H_
 #define OPTFRAME_GRASPH_H_
 
-#include <string.h>
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
-using namespace std;
-//GRASPH ? TODO FIX THE NAME
+#include <string>
 
-namespace optframe
-{
+#define MOD_EXPORT
+#else
 
-class GRASPH
-{
-public:
-	static string family()
-	{
-		return "GRASPH:";
-	}
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
 
-	virtual ~GRASPH()
-	{
-	}
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
+// GRASPH ? TODO FIX THE NAME
+
+namespace optframe {
+
+class GRASPH {
+ public:
+  static std::string family() { return "GRASPH:"; }
+
+  virtual ~GRASPH() {}
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_GRASPH_H_*/

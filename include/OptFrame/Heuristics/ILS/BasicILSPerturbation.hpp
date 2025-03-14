@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_ILS_BASICILSPERTURBATION_HPP_
 #define OPTFRAME_HEURISTICS_ILS_BASICILSPERTURBATION_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <math.h>
 
 #include <string>
@@ -16,9 +18,25 @@
 
 #include "ILS.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
+MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicILSPerturbation : public ILS, public Component {
   using XSH = XES;  // primary-based search type only (BestType)
 
@@ -103,9 +121,9 @@ class BasicILSPerturbation : public ILS, public Component {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)

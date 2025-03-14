@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <math.h>
 
 #include <string>
@@ -17,11 +19,27 @@
 #include "ILS.hpp"
 #include "IteratedLocalSearch.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-typedef int BasicHistory;
+MOD_EXPORT using BasicHistory = int;
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
   using XEv = typename XES::second_type;
 
@@ -112,9 +130,9 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class BasicIteratedLocalSearchBuilder : public ILS,
                                         public SingleObjSearchBuilder<XES> {
@@ -135,7 +153,7 @@ class BasicIteratedLocalSearchBuilder : public ILS,
 
     std::string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES>>, std::string> method;
+    std::pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
     sptr<LocalSearch<XES>> h = method.first;

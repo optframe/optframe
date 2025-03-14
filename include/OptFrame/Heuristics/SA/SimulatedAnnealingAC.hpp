@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <math.h>
 // C++
@@ -21,13 +23,29 @@
 #include "./HelperSA.hpp"
 #include "./SA.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 // forward declaration
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class SimulatedAnnealingAC;
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 struct SearchContextSA_AC {
   SimulatedAnnealingAC<XES>& self;
   std::optional<XES>& best;
@@ -37,7 +55,7 @@ struct SearchContextSA_AC {
   int iterT;
 };
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class SimulatedAnnealingAC : public SingleObjSearch<XES>,
                              public SA,
                              public ILoop<SearchContextSA_AC<XES>, XES>,
@@ -446,10 +464,11 @@ XSH::first_type::typeR>);
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XESolution XES2,
-          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+MOD_EXPORT template <XESolution XES, XESolution XES2,
+                     X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #else
-template <typename XES, XESolution XES2, typename X2ES = MultiESolution<XES2>>
+MOD_EXPORT template <typename XES, XESolution XES2,
+                     typename X2ES = MultiESolution<XES2>>
 #endif
 class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
@@ -570,14 +589,14 @@ class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
     //
     // params.push_back(std::make_pair(Constructive<S>::idComponent(),
     // "constructive heuristic"));
-    params.push_back(
-        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(std::make_pair(InitialSearch<XES>::idComponent(),
+                                    "constructive heuristic"));
     std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
     params.push_back(std::make_pair(ss.str(), "list of NS"));
     params.push_back(std::make_pair("OptFrame:double", "cooling factor"));
-    params.push_back(
-        make_pair("OptFrame:int", "number of iterations for each temperature"));
+    params.push_back(std::make_pair(
+        "OptFrame:int", "number of iterations for each temperature"));
     params.push_back(std::make_pair("OptFrame:double", "initial temperature"));
 
     return params;

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 #include <math.h>
 // C++
@@ -21,9 +23,26 @@
 
 #include "VNS.h"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>,
+                     XESolution XSH = XES>
 class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
  protected:
   sref<GeneralEvaluator<XES>> evaluator;
@@ -60,9 +79,9 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     }
   }
 
-  virtual pair<XES, unsigned int> neighborhoodChange(const XES& star,
-                                                     const XES& p2,
-                                                     unsigned int k) {
+  virtual std::pair<XES, unsigned int> neighborhoodChange(const XES& star,
+                                                          const XES& p2,
+                                                          unsigned int k) {
     // const XSolution AUTO_CONCEPTS& s2 = p2.first;
     const XEv& e2 = p2.second;
     // const XSolution AUTO_CONCEPTS& sStar = star.first;
@@ -77,7 +96,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
 
       if (Component::information) {
         std::cout << "VNS: improvement at NS " << k << " => " << e2.evaluation()
-             << std::endl;
+                  << std::endl;
         // e2.print();
         // eStar.print();
       }
@@ -116,8 +135,8 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     // std::cout << id() << " search(target=" << target_f << ", timelimit=" <<
     // timelimit << ")" << std::endl;
     std::cout << id() << " search("
-         << "timelimit=" << timelimit << ")"
-         << std::endl;  // TODO: 'stop'.toString()
+              << "timelimit=" << timelimit << ")"
+              << std::endl;  // TODO: 'stop'.toString()
 
     Timer tnow;
 
@@ -140,10 +159,11 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
         (tnow.now() < timelimit))  //  && evaluator.betterThan(target_f, eStar))
     {
       unsigned k = 0;
-      // std::cout << "VNS k=0 initial target = " << target_f << " timelimit = " <<
-      // timelimit << std::endl; std::cout << eStar.evaluation() << std::endl; std::cout <<
-      // evaluator.betterThan(target_f, eStar) << std::endl; std::cout <<
-      // evaluator.betterThan(8000, 7962.15) << std::endl;
+      // std::cout << "VNS k=0 initial target = " << target_f << " timelimit = "
+      // << timelimit << std::endl; std::cout << eStar.evaluation() <<
+      // std::endl; std::cout << evaluator.betterThan(target_f, eStar) <<
+      // std::endl; std::cout << evaluator.betterThan(8000, 7962.15) <<
+      // std::endl;
 
       while (k < vshake.size()) {
         XES p1 = *star;  // copy (how to automatically invoke clone?)
@@ -158,7 +178,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
 
         delete &improve;  // save trajectory history?
 
-        pair<XES, unsigned int> nc = neighborhoodChange(*star, p1, k);
+        std::pair<XES, unsigned int> nc = neighborhoodChange(*star, p1, k);
 
         sStar = nc.first.first;   // TODO: move?
         eStar = nc.first.second;  // TODO: move?
@@ -170,7 +190,8 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
         // delete& e; // drop automatically?
 
         if (k != nc.second) {
-          // std::cout << "VNS k change from " << k << " to " << nc.second << std::endl;
+          // std::cout << "VNS k change from " << k << " to " << nc.second <<
+          // std::endl;
         }
         k = nc.second;
       }
@@ -180,7 +201,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     // sosc.target->second)) if (star->second.betterStrict(sosc.target_f))
     if (evaluator->betterStrict(star->second, sosc.target_f)) {
       std::cout << "VNS exit by target_f: " << star->second.evaluation()
-           << " better than " << sosc.target_f.evaluation() << std::endl;
+                << " better than " << sosc.target_f.evaluation() << std::endl;
       // std::cout << "isMin: " << evaluator.isMinimization() << std::endl;
       //  std::cout << "isMin: " << star->second.isMini << std::endl;
     }

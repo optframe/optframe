@@ -39,6 +39,11 @@
 //
 #include "Heuristics/EA/RK/BRKGA.hpp"
 //
+// GRASP
+//
+#include "Heuristics/GRASP/GRASPFamily.h"
+#include "Heuristics/GRASP/GRConstructive.hpp"
+//
 // MO
 //
 #include "Heuristics/EmptyMultiObjSearch.hpp"

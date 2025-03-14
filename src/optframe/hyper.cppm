@@ -1,6 +1,7 @@
 module;
 
 #include <assert.h>
+#include <math.h>  // ::fabs
 #include <stdio.h>
 
 #include <string>
@@ -8,6 +9,7 @@ module;
 export module optframe.hyper;
 export import optframe.heuristics;
 export import optframe.scannerpp;
+export import optframe.nnptr;
 
 export import std;
 
@@ -26,6 +28,8 @@ export import std;
 //
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 // general unordered
+#include <OptFrame/Heuristics/VNS/VNS.h>
+
 #include <OptFrame/Helper/CloneConstructive.hpp>
 #include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovementBuilder.hpp>
@@ -44,11 +48,26 @@ export import std;
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealingBuilder.hpp>
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>
 #include <OptFrame/Heuristics/SingleObjSearchToLocalSearch.hpp>
+#include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
 #include <OptFrame/Hyper/RandGenBuilder.hpp>
 #include <OptFrame/Hyper/TimerBuilder.hpp>
 #include <OptFrame/Pareto/MultiEvaluatorBuilder.hpp>
 //
 // metaheuristics unordered
+//
+#include <OptFrame/Heuristics/TS/TS.h>
+
+#include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
+#include <OptFrame/Heuristics/ILS/BasicILSPerturbation.hpp>
+#include <OptFrame/Heuristics/ILS/BasicIteratedLocalSearch.hpp>
+#include <OptFrame/Heuristics/ILS/ILSLPerturbationBuilder.hpp>
+#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevelsBuilder.hpp>
+#include <OptFrame/Heuristics/MultiStart.hpp>
+#include <OptFrame/Heuristics/SA/GeometricSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/SimulatedAnnealingAC.hpp>
+#include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
+#include <OptFrame/Heuristics/VNS/BasicVNS.hpp>
+
 //
 // order-specific
 //
@@ -58,5 +77,5 @@ export import std;
 //
 #include <OptFrame/Heuristics/MultiObjective/MOPopulationManagement.hpp>
 
-// ALMOST DONE...
+// ALMOST DONE (IIP)...
 // #include <OptFrame/Hyper/Loader.hpp>

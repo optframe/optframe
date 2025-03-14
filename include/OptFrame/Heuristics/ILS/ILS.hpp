@@ -26,7 +26,7 @@ import optframe.concepts;
 
 namespace optframe {
 
-class ILS {
+MOD_EXPORT class ILS {
  public:
   static std::string family() { return "ILS:"; }
 

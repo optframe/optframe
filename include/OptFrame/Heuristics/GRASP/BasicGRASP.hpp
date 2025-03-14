@@ -3,6 +3,9 @@
 
 #ifndef OPTFRAME_HEURISTICS_GRASP_BASICGRASP_HPP_
 #define OPTFRAME_HEURISTICS_GRASP_BASICGRASP_HPP_
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C
 // C++
 #include <string>
@@ -15,6 +18,22 @@
 
 #include "GRASPFamily.h"
 #include "GRConstructive.hpp"
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
@@ -163,7 +182,7 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
 
     std::string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES>>, std::string> method;
+    std::pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
     sptr<LocalSearch<XES>> h = method.first;
@@ -184,13 +203,13 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
-    params.push_back(
-        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
+                                    "evaluation function"));
     params.push_back(
         std::make_pair(GRConstructive<S>::idComponent(),
                        "greedy randomized constructive heuristic"));
     params.push_back(
-        make_pair(LocalSearch<XES>::idComponent(), "local search"));
+        std::make_pair(LocalSearch<XES>::idComponent(), "local search"));
     params.push_back(std::make_pair("OptFrame:float", "alpha parameter [0,1]"));
     params.push_back(
         std::make_pair("OptFrame:int", "max number of iterations"));
