@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_COMPARELOCALSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_COMPARELOCALSEARCH_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <memory>
 #include <string>
 #include <utility>
@@ -14,9 +16,25 @@
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 class CompareLocalSearch : public LocalSearch<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -59,7 +77,7 @@ class CompareLocalSearch : public LocalSearch<XES> {
       ls1->print();
       std::cout << "LocalSearch 2: ";
       ls2->print();
-      exit(1);
+      // exit(1);
     }
 
     // delete &s2;
@@ -79,7 +97,7 @@ class CompareLocalSearch : public LocalSearch<XES> {
 
   std::string id() const override { return idComponent(); }
 
-  string toString() const override {
+  std::string toString() const override {
     std::stringstream ss;
     ss << "CLS: (" << ls1->toString() << "," << ls2->toString() << ")";
     return ss.str();
@@ -107,16 +125,16 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<XES> {
 
     std::string rest = scanner.rest();
 
-    pair<sptr<LocalSearch<XES>>, std::string> method;
+    std::pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
 
     sptr<LocalSearch<XES>> h = method.first;
 
     scanner = Scanner(method.second);
 
-    string rest2 = scanner.rest();
+    std::string rest2 = scanner.rest();
 
-    pair<sptr<LocalSearch<XES>>, std::string> method2;
+    std::pair<sptr<LocalSearch<XES>>, std::string> method2;
     method2 = hf.createLocalSearch(rest2);
 
     sptr<LocalSearch<XES>> h2 = method2.first;

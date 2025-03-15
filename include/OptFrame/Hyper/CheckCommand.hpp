@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
-// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_UTIL_CHECKCOMMAND_HPP_  // NOLINT
 #define OPTFRAME_UTIL_CHECKCOMMAND_HPP_
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 #include <string>
 #include <vector>
@@ -15,11 +17,32 @@
 #include <OptFrame/Hyper/OptFrameList.hpp>
 #include <OptFrame/Search/InitialSearch.hpp>
 #include <OptFrame/Timer.hpp>
+#include <OptFrame/Util/KahanSummation.hpp>
+#include <OptFrame/Util/Matrix.hpp>
 
-#include "KahanSummation.hpp"
-#include "Matrix.hpp"
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
+
+namespace hyper {
+
+// TOO MUCH TROUBLE INSIDE HYPER!
+// BEST TO INCLUDE std::vector and std::string!
+using namespace std;
 
 // Time Data - CheckCommand
 
@@ -383,7 +406,8 @@ class CheckCommand : public Component {  // NOLINT
   }
 
   void error_text(string text) {
-    if (this->error) (*this->logdata) << "checkcommand error: " << text << std::endl;
+    if (this->error)
+      (*this->logdata) << "checkcommand error: " << text << std::endl;
   }
 
   void errormsg(string component, int code, string scode, int iter,
@@ -845,7 +869,8 @@ class CheckCommand : public Component {  // NOLINT
                    "difference between expected cost and cost()");
           (*this->logdata) << "move: ";
           move.print();
-          (*this->logdata) << "expected cost: (e' - e) =\t" << revCost << std::endl;
+          (*this->logdata) << "expected cost: (e' - e) =\t" << revCost
+                           << std::endl;
           (*this->logdata) << "cost() =\t" << cValue << std::endl;
           (*this->logdata) << "_e: \t obj:" << _e.getObjFunction()
                            << "\t inf: " << _e.getInfMeasure()
@@ -945,10 +970,12 @@ class CheckCommand : public Component {  // NOLINT
     // ======================================
 
     if (this->information) {
-      (*this->logdata) << "---------------------------------------" << std::endl;
+      (*this->logdata) << "---------------------------------------"
+                       << std::endl;
       (*this->logdata) << "tests/(nSolutions*|constructives|)=" << iterMax
                        << " tests(NSSeq)=" << nSolNSSeq << std::endl;
-      (*this->logdata) << "---------------------------------------" << std::endl;
+      (*this->logdata) << "---------------------------------------"
+                       << std::endl;
       (*this->logdata) << "evaluators=" << lEvaluator.size() << std::endl;
       (*this->logdata) << "constructives=" << lConstructive.size() << std::endl;
       (*this->logdata) << "moves=" << lMove.size() << std::endl;
@@ -1104,7 +1131,8 @@ class CheckCommand : public Component {  // NOLINT
 
       if (this->information)
         (*this->logdata) << "checkcommand: Constructive " << c << " => "
-                         << lConstructive.at(c)->id() << " finished." << std::endl;
+                         << lConstructive.at(c)->id() << " finished."
+                         << std::endl;
       if (verbose) (*this->logdata) << std::endl << std::endl;
     }
 
@@ -1210,7 +1238,8 @@ class CheckCommand : public Component {  // NOLINT
       if (this->information)
         (*this->logdata) << "checkcommand  will test " << lNS.size()
                          << " NS components (iterMax=" << iterMax
-                         << " Solutions=" << solutions.size() << ")" << std::endl;
+                         << " Solutions=" << solutions.size() << ")"
+                         << std::endl;
 
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
       std::shared_ptr<NS<XES, XSH>> ns = lNS.at(id_ns);
@@ -1251,8 +1280,9 @@ class CheckCommand : public Component {  // NOLINT
           // bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns,
           // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
           // vector<vector<Evaluation<>*> >& evaluations, pair<int, double>&
-          // timeCloneSolution, std::vector<std::pair<int, double> >& timeInitializeADS,
-          // std::vector<std::pair<int, double> >& fullTimeEval, std::vector<std::pair<int, double>
+          // timeCloneSolution, std::vector<std::pair<int, double> >&
+          // timeInitializeADS, std::vector<std::pair<int, double> >&
+          // fullTimeEval, std::vector<std::pair<int, double>
           // >& timeReeval, TimeNS& timeNS) bool testMoveGeneral(int iter,
           // NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s,
           // Move<XES>& move, vector<vector<Evaluation<>*> >&
@@ -1350,10 +1380,10 @@ class CheckCommand : public Component {  // NOLINT
           // id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES>&
           // move, vector<vector<Evaluation<>*> >& evaluations, pair<int,
           // double>& timeCloneSolution, std::vector<std::pair<int, double> >&
-          // timeInitializeADS, std::vector<std::pair<int, double> >& fullTimeEval,
-          // std::vector<std::pair<int, double> >& timeReeval, TimeNS& timeNS)
-          // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns,
-          // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
+          // timeInitializeADS, std::vector<std::pair<int, double> >&
+          // fullTimeEval, std::vector<std::pair<int, double> >& timeReeval,
+          // TimeNS& timeNS) 	bool testMoveGeneral(int iter, NS<R,ADS>* ns,
+          // int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
           // vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol,
           // TimeNS& timeNS)
 
@@ -1455,10 +1485,10 @@ class CheckCommand : public Component {  // NOLINT
           // id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES>&
           // move, vector<vector<Evaluation<>*> >& evaluations, pair<int,
           // double>& timeCloneSolution, std::vector<std::pair<int, double> >&
-          // timeInitializeADS, std::vector<std::pair<int, double> >& fullTimeEval,
-          // std::vector<std::pair<int, double> >& timeReeval, TimeNS& timeNS)
-          // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns,
-          // CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
+          // timeInitializeADS, std::vector<std::pair<int, double> >&
+          // fullTimeEval, std::vector<std::pair<int, double> >& timeReeval,
+          // TimeNS& timeNS) 	bool testMoveGeneral(int iter, NS<R,ADS>* ns,
+          // int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES>& move,
           // vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol,
           // TimeNS& timeNS)
 
@@ -1495,8 +1525,8 @@ class CheckCommand : public Component {  // NOLINT
             for (int m1 = 0; m1 < (int)nsenum->size(); m1++) {
                // slow...
                (*this->logdata) <<  "checkcommand: independence test for move #"
-         << m1 << " / " << nsenum->size() << std::endl; int count_ind_m1 = 0; for
-         (int m2 = m1 + 1; m2 < int(nsenum->size()); m2++) { bool conflict =
+         << m1 << " / " << nsenum->size() << std::endl; int count_ind_m1 = 0;
+         for (int m2 = m1 + 1; m2 < int(nsenum->size()); m2++) { bool conflict =
          false;
                   // compute another move pair
                   countMovePairsEnum++;
@@ -1992,8 +2022,8 @@ class CheckCommand : public Component {  // NOLINT
                 countMoveIndependent++;
                 count_ind_m1++;
                 if (verbose) {
-                  (*this->logdata)
-                      << "independent(m1=" << m1 << ";m2=" << m2 << ")" << std::endl;
+                  (*this->logdata) << "independent(m1=" << m1 << ";m2=" << m2
+                                   << ")" << std::endl;
                   allMoves.at(m1)->print();  // TODO: fix leak
                   allMoves.at(m2)->print();  // TODO: fix leak
                   (*this->logdata) << std::endl;
@@ -2067,7 +2097,8 @@ class CheckCommand : public Component {  // NOLINT
                       const CountDataCheckCommand<XES>& countData) {
     (*this->logdata) << "===============================" << std::endl;
     (*this->logdata) << "           SUMMARY             " << std::endl;
-    (*this->logdata) << "===============================" << std::endl << std::endl;
+    (*this->logdata) << "===============================" << std::endl
+                     << std::endl;
 
     printSingleSummarySamples("Solution", timeSamples.timeCloneSolution,
                               "Time to clone a solution");
@@ -2083,7 +2114,9 @@ class CheckCommand : public Component {  // NOLINT
                           "ADSManager::initializeADS()",
                           "testing lazy initializeADS in solutions");
     else
-      (*this->logdata) << std::endl << "No ADSManager was tested." << std::endl << std::endl;
+      (*this->logdata) << std::endl
+                       << "No ADSManager was tested." << std::endl
+                       << std::endl;
 #endif
 
     printSummarySamples(convertVector(lEvaluator), timeSamples.fullTimeEval,
@@ -2278,8 +2311,9 @@ class CheckCommand : public Component {  // NOLINT
         KahanAccumulation init = {0};
         KahanAccumulation kahanSum =
             accumulate(vMoveSamplesIDDouble.begin(), vMoveSamplesIDDouble.end(),
-                       init, KahanSum);
-        pair<double, double> avgStd = calculateAvgStd(vMoveSamplesIDDouble);
+                       init, KahanSummation::KahanSum);
+        pair<double, double> avgStd =
+            KahanSummation::calculateAvgStd(vMoveSamplesIDDouble);
         printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\n", ((int)id),
                vcomp[id]->toString().c_str(), nSamples, kahanSum.sum,
                avgStd.first, avgStd.second);
@@ -2305,7 +2339,8 @@ class CheckCommand : public Component {  // NOLINT
     int validValues = 0;
     int nSamples = vTimeSamples.size();
     if (nSamples > 0) {
-      pair<double, double> avgStd = calculateAvgStd(vTimeSamples);
+      pair<double, double> avgStd =
+          KahanSummation::calculateAvgStd(vTimeSamples);
       printf("%s\t%d\t%.4f\t%.4f\n", component.c_str(), nSamples, avgStd.first,
              avgStd.second);
       avg += avgStd.first;
@@ -2322,7 +2357,8 @@ class CheckCommand : public Component {  // NOLINT
                            string type, string title) {
     unsigned nTests = vTimeSamples.size();
     printf("---------------------------------\n");
-    (*this->logdata) << "|" << type << "|=" << nTests << "\t" << title << std::endl;
+    (*this->logdata) << "|" << type << "|=" << nTests << "\t" << title
+                     << std::endl;
     printf("---------------------------------\n");
     printf("#id\ttitle\t#tests\tavg(ms)\tstd(ms)\n");
     double avg = 0;
@@ -2330,7 +2366,8 @@ class CheckCommand : public Component {  // NOLINT
     for (unsigned id = 0; id < nTests; id++) {
       int nSamples = vTimeSamples[id].size();
       if (nSamples > 0) {
-        pair<double, double> avgStd = calculateAvgStd(vTimeSamples[id]);
+        pair<double, double> avgStd =
+            KahanSummation::calculateAvgStd(vTimeSamples[id]);
         printf("#%d\t%s\t%d\t%.4f\t%.4f\n", ((int)id),
                vcomp[id]->toString().c_str(), nSamples, avgStd.first,
                avgStd.second);
@@ -2345,6 +2382,8 @@ class CheckCommand : public Component {  // NOLINT
     (*this->logdata) << std::endl;
   }
 };
+
+}  // namespace hyper
 
 }  // namespace optframe
 

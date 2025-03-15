@@ -14,7 +14,7 @@
 #include "ProblemInstance.h"
 #include "Representation.h"
 #include "Solution.h"
-// #include "../../OptFrame/Util/CheckCommand.hpp"
+// #include "../../OptFrame/Hyper/CheckCommand.hpp"
 
 // Problem adding KahanSummation twice on binary...
 // it shouln't be on pure .hpp... or require a class at least (with static

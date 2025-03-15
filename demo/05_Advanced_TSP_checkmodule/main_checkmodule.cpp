@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
+#define NO_CXX_MODULES 1
+
+#include <cstdint>
 #include <iostream>
 //
 // must come first...
@@ -11,8 +14,8 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
-#include <OptFrame/Util/CheckCommand.hpp>
 //
 #include "TSP-fcore.hpp"  // NOLINT
 // implementation of TSP
@@ -20,6 +23,7 @@
 // import everything on main()
 using namespace std;
 using namespace optframe;
+using namespace optframe::hyper;
 using namespace scannerpp;
 // using namespace TSP_fcore;
 int main() {

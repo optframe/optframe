@@ -10,4 +10,6 @@ export module optframe.scannerpp;
 
 export import std;
 
-#include <OptFrame/Scanner++/Scanner.hpp>
+// #include <OptFrame/Scanner++/Scanner.hpp>
+// // -Winclude-angled-in-module-purview
+#include "OptFrame/Scanner++/Scanner.hpp"

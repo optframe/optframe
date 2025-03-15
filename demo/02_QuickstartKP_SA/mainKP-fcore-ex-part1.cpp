@@ -1,5 +1,7 @@
 // mainKP-fcore-ex.cpp
 
+#define NO_CXX_MODULES 1
+
 // C++
 #include <iostream>
 

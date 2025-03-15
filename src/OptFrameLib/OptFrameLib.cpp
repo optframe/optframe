@@ -21,11 +21,11 @@
 #include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicInitialEPopulationRK.hpp>
 #include <OptFrame/Heuristics/MultiObjective/ClassicNSGAII.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Hyper/Loader.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
 #include <OptFrame/Timer.hpp>
-#include <OptFrame/Util/CheckCommand.hpp>
 // C/C++ Library implementation
 #include <OptFrameLib/FCoreLibSolution.hpp>
 
@@ -107,7 +107,7 @@ class FCoreApi1Engine {
                    >
       loader;
 
-  optframe::CheckCommand<FCoreLibESolution> check;  // no verbose
+  optframe::hyper::CheckCommand<FCoreLibESolution> check;  // no verbose
 };
 
 // IMPORTANT: OptFrame FMove does not require Copy on M (aka,

@@ -10,4 +10,6 @@ export module optframe.nnptr;
 
 export import std;
 
-#include <OptFrame/nnptr/nnshared.hpp>
+// #include <OptFrame/nnptr/nnshared.hpp>
+// -Winclude-angled-in-module-purview
+#include "OptFrame/nnptr/nnshared.hpp"

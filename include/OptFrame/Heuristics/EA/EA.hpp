@@ -1,46 +1,40 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// UEA.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_EA_FAMILY_H_
 #define OPTFRAME_EA_FAMILY_H_
 
-#include <string.h>
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
+#include <string>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 using namespace std;
 
-namespace optframe
-{
+namespace optframe {
 
-class EA
-{
-public:
-	static string family()
-	{
-		return "EA";
-	}
+MOD_EXPORT class EA {
+ public:
+  static string family() { return "EA"; }
 
-	virtual ~EA()
-	{
-	}
+  virtual ~EA() {}
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_EA_FAMILY_H_*/

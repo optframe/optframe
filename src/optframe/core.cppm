@@ -16,7 +16,9 @@ export import optframe.timer;
 
 export import std;
 
-#include <OptFrame/Core.hpp>
+// #include <OptFrame/Core.hpp>
+// -Winclude-angled-in-module-purview
+#include "OptFrame/Core.hpp"
 
 // BASIC TESTS BELOW....
 

@@ -26,7 +26,7 @@ import optframe.concepts;
 
 namespace optframe {
 
-class TS {
+MOD_EXPORT class TS {
  public:
   static std::string family() { return "TS"; }
 

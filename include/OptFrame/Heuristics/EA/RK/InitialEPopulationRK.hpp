@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_INITIALEPOPULATIONRK_HPP_
 #define OPTFRAME_HEURISTICS_EA_RK_INITIALEPOPULATIONRK_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 //
 
@@ -13,14 +15,30 @@
 
 #include "ConstructiveRK.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, class KeyType = double,
-          X2ESolution<XES> X2ES = VEPopulation<XES>>
+MOD_EXPORT template <XESolution XES, class KeyType = double,
+                     X2ESolution<XES> X2ES = VEPopulation<XES>>
 #else
-template <typename XES, class KeyType = double,
-          typename X2ES = VEPopulation<XES>>
+MOD_EXPORT template <typename XES, class KeyType = double,
+                     typename X2ES = VEPopulation<XES>>
 #endif
 class InitialEPopulationRK : public InitialEPopulation<XES, X2ES> {
   using S = typename XES::first_type;

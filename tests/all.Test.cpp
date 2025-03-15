@@ -12,10 +12,10 @@
 #include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicInitialEPopulationRK.hpp>
 #include <OptFrame/Heuristics/MultiObjective/ClassicNSGAII.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Hyper/Loader.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
-#include <OptFrame/Util/CheckCommand.hpp>
 // =============================================
 
 // collection of 'OptFrame' tests

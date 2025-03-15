@@ -29,8 +29,8 @@
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Timer.hpp>
-#include <OptFrame/Util/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 //
@@ -56,10 +56,12 @@ int main(int argc, char** argv) {
   // srand(seed);
 
   if (argc != 7) {
-    std::cout << "Parametros incorretos! esperado 7 e recebeu " << argc << std::endl;
-    std::cout << "Os parametros esperados sao: nome tempo fo_alvo mutationRate mi "
-            "batch"
-         << std::endl;
+    std::cout << "Parametros incorretos! esperado 7 e recebeu " << argc
+              << std::endl;
+    std::cout
+        << "Os parametros esperados sao: nome tempo fo_alvo mutationRate mi "
+           "batch"
+        << std::endl;
     exit(1);
   }
 
@@ -340,7 +342,8 @@ int main(int argc, char** argv) {
   string instanceName = nome.substr(found + 1);
   FILE* arquivo = fopen("./MyProjects/Results/log.txt", "a");
   if (!arquivo) {
-    std::cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\"" << std::endl;
+    std::cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\""
+              << std::endl;
   } else {
     fprintf(arquivo, "%s\t%f\t%f\t%d\t%d\t%ld\n", instanceName.c_str(),
             mutationRate, objFuncES, mi, batch, seed);

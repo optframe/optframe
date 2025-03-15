@@ -6,7 +6,7 @@
 
 // core includes
 #include <OptFCore/FMove.hpp>
-#include <OptFrame/Util/CheckCommand.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 
 // local src
 #include "TSP-fcore.hpp"
@@ -18,71 +18,68 @@ using namespace TSP_fcore;
 /*
                   ...                           2
                   ...
-       1 
+       1
             4
        0                                        3
    */
-constexpr std::string_view instance5 = "5\n0 100 100\n1 100 200\n2 2000 2000\n3 2000 100\n4 150 150";
+constexpr std::string_view instance5 =
+    "5\n0 100 100\n1 100 200\n2 2000 2000\n3 2000 100\n4 150 150";
 
-TEST_CASE("FCore-Examples TSP fcore: Test Problem load")
-{
-   Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
-   pTSP.load(scanner);
+TEST_CASE("FCore-Examples TSP fcore: Test Problem load") {
+  Scanner scanner{"3\n1 10 10\n2 20 20\n3 30 30\n"};
+  pTSP.load(scanner);
 
-   REQUIRE(pTSP.n == 3);
+  REQUIRE(pTSP.n == 3);
 }
 
-TEST_CASE("FCore-Examples TSP fcore: Test Constructive")
-{
-   Scanner scanner{ std::string(instance5) };
-   pTSP.load(scanner);
+TEST_CASE("FCore-Examples TSP fcore: Test Constructive") {
+  Scanner scanner{std::string(instance5)};
+  pTSP.load(scanner);
 
-   REQUIRE(pTSP.n == 5);
+  REQUIRE(pTSP.n == 5);
 
-   // set random seed for std::random_shuffle
-   srand(1000000);
+  // set random seed for std::random_shuffle
+  srand(1000000);
 
-   BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
-   ESolutionTSP esol = *initRand.initialSearch({ 1.0 }).first; // 1.0 second max
+  BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
+  ESolutionTSP esol = *initRand.initialSearch({1.0}).first;  // 1.0 second max
 
-   // check evaluation
-   REQUIRE(esol.second.evaluation() == 9107);
-   // check solution
-   REQUIRE(esol.first.size() == 5);
-   REQUIRE(esol.first == std::vector<int>{ 0, 3, 1, 2, 4 });
+  // check evaluation
+  REQUIRE(esol.second.evaluation() == 9107);
+  // check solution
+  REQUIRE(esol.first.size() == 5);
+  REQUIRE(esol.first == std::vector<int>{0, 3, 1, 2, 4});
 }
 
-TEST_CASE("FCore-Examples TSP fcore: Test Check Command")
-{
-   std::stringstream ss;
-   srand(1000000);
-   int N = 50;
-   ss << N << std::endl;
-   for (unsigned i = 0; i < N; i++)
-      ss << i << "\t" << rand() % 1000 << "\t" << rand() % 1000 << std::endl;
-   //Scanner scanner{ std::string(instance5) };
-   Scanner scanner{ ss.str() };
-   pTSP.load(scanner);
+TEST_CASE("FCore-Examples TSP fcore: Test Check Command") {
+  std::stringstream ss;
+  srand(1000000);
+  int N = 50;
+  ss << N << std::endl;
+  for (unsigned i = 0; i < N; i++)
+    ss << i << "\t" << rand() % 1000 << "\t" << rand() % 1000 << std::endl;
+  // Scanner scanner{ std::string(instance5) };
+  Scanner scanner{ss.str()};
+  pTSP.load(scanner);
 
-   //REQUIRE(pTSP.n == 5);
-   REQUIRE(pTSP.n == 50);
+  // REQUIRE(pTSP.n == 5);
+  REQUIRE(pTSP.n == 50);
 
-   // set random seed for std::random_shuffle
-   srand(1000000);
+  // set random seed for std::random_shuffle
+  srand(1000000);
 
-   sref<InitialSearch<ESolutionTSP>> initRand{
-      new BasicInitialSearch<ESolutionTSP>(crand, ev)
-   };
+  sref<InitialSearch<ESolutionTSP>> initRand{
+      new BasicInitialSearch<ESolutionTSP>(crand, ev)};
 
-   CheckCommand<ESolutionTSP> check(false); // verbose
-   //
-   check.addEvaluator(ev);
-   check.add(initRand);
-   check.addNS(nsswap);    // NS
-   check.addNSSeq(nsseq2); // NSSeq
+  CheckCommand<ESolutionTSP> check(false);  // verbose
+  //
+  check.addEvaluator(ev);
+  check.add(initRand);
+  check.addNS(nsswap);     // NS
+  check.addNSSeq(nsseq2);  // NSSeq
 
-   // bool run(int iterMax, int nSolNSSeq)
-   check.run(100, 10);
-   //
-   REQUIRE(0);
+  // bool run(int iterMax, int nSolNSSeq)
+  check.run(100, 10);
+  //
+  REQUIRE(0);
 }

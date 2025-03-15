@@ -9,7 +9,7 @@
 
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
-#include <OptFrame/Util/CheckCommand.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 
 #include "$project.h"
 

@@ -1,5 +1,7 @@
 // mainKP-fcore-ex.cpp
 
+#define NO_CXX_MODULES 1
+
 // C++
 #include <iostream>
 
@@ -12,7 +14,8 @@ using namespace optframe;   // NOLINT
 using namespace scannerpp;  // NOLINT
 // using namespace KP_fcore;
 
-int main(int argc, char** argv) {std::cout << "======== Carregando Problema ========" << std::endl;
+int main(int argc, char** argv) {
+std::cout << "======== Carregando Problema ========" << std::endl;
 // semente pseudo-aleatória fixa em zero
 srand(time(NULL));
 

@@ -10,6 +10,9 @@ export module optframe.concepts;
 export import :my;
 export import std;
 
-#include <OptFrame/Concepts/BaseConcepts.hpp>
-// TODO: move Domain to concepts
-#include <OptFrame/Concepts/Domain.hpp>
+// #include <OptFrame/Concepts/BaseConcepts.hpp>
+// -Winclude-angled-in-module-purview
+#include "OptFrame/Concepts/BaseConcepts.hpp"
+// #include <OptFrame/Concepts/Domain.hpp>
+// -Winclude-angled-in-module-purview
+#include "OptFrame/Concepts/Domain.hpp"

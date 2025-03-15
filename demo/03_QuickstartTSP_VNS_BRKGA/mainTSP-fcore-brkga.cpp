@@ -5,6 +5,7 @@
 // OptFrame Demo TSP - BRKGA
 
 // C++
+#include <cstdint>
 #include <iostream>
 //
 #include "TSP-fcore.hpp"
@@ -57,6 +58,7 @@ class MyRandomKeysInitEPop
     return pop;
   }
 };
+
 
 pair<Evaluation<int>, vector<int>> fDecodeEval(
     sref<Evaluator<typename ESolutionTSP::first_type,

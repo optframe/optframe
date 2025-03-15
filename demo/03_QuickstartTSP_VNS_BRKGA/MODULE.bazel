@@ -9,6 +9,6 @@ bazel_dep(name = "optframe", dev_dependency = True)
 git_override(
     module_name = "optframe",
     remote = "https://github.com/optframe/optframe.git",
-    branch='master'
-    # commit = "334b8901584aa0d33621c0acd1497589c59d2ed7"
+    #branch='master'
+    commit = "5321f7ce0d110a5bd59dbe3294e9de9f6012ba6a"
 )

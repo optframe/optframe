@@ -6,12 +6,17 @@
 // File: KP-fcore-ex.hpp
 #pragma once
 
+#define NO_CXX_MODULES 1
+
 // C++
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <utility>
 #include <vector>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
 //
 #include <OptFCore/FCore.hpp>
 #include <OptFrame/Core.hpp>

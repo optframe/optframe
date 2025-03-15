@@ -5,6 +5,7 @@
 // OptFrame Demo TSP - Iterated Local Search
 
 // C++
+#include <cstdint>
 #include <iostream>
 //
 #include "TSP-fcore.hpp"

@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_RK_HPP_
 #define OPTFRAME_CONSTRUCTIVE_RK_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <vector>
 //
@@ -12,9 +14,25 @@
 #include "../EA.hpp"
 #include "RK.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <class KeyType>
+MOD_EXPORT template <class KeyType>
 class ConstructiveRK : public Constructive<std::vector<KeyType>> {
   using S = std::vector<KeyType>;
 

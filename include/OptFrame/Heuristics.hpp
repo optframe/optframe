@@ -6,46 +6,52 @@
 
 // Heuristics Module: inclusion of common heuristic strategies
 
+// families
+#include "OptFrame/Heuristics/EA/EA.hpp"
+#include "OptFrame/Heuristics/EA/RK/RK.hpp"
+#include "OptFrame/Heuristics/TS/TS.h"
+#include "OptFrame/Heuristics/VNS/VNS.h"
+
 // LocalSearches
-#include "Heuristics/LocalSearches/Empty.hpp"
+#include "OptFrame/Heuristics/LocalSearches/Empty.hpp"
 //
-#include "Heuristics/LocalSearches/BestImprovement.hpp"
+#include "OptFrame/Heuristics/LocalSearches/BestImprovement.hpp"
 
 // Global Search
-#include "Heuristics/EmptySingleObjSearch.hpp"
+#include "OptFrame/Heuristics/EmptySingleObjSearch.hpp"
 
 // SA family
-#include "Heuristics/SA/SA.hpp"
+#include "OptFrame/Heuristics/SA/SA.hpp"
 //
-#include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
+#include "OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp"
 //
 // ILS family
-#include "Heuristics/ILS/ILS.hpp"
+#include "OptFrame/Heuristics/ILS/ILS.hpp"
 //
 
-#include "Heuristics/ILS/IteratedLocalSearch.hpp"
+#include "OptFrame/Heuristics/ILS/IteratedLocalSearch.hpp"
 //
-#include "Heuristics/ILS/ILSLPerturbation.hpp"
-#include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
+#include "OptFrame/Heuristics/ILS/ILSLPerturbation.hpp"
+#include "OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 //
 // EA family
-#include "Heuristics/EA/EA.hpp"
+#include "OptFrame/Heuristics/EA/EA.hpp"
 // RK family
-#include "Heuristics/EA/RK/RK.hpp"
+#include "OptFrame/Heuristics/EA/RK/RK.hpp"
 //
-#include "Heuristics/EA/RK/DecoderRandomKeys.hpp"
+#include "OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp"
 //
-#include "Heuristics/EA/RK/RKGA.hpp"
+#include "OptFrame/Heuristics/EA/RK/RKGA.hpp"
 //
-#include "Heuristics/EA/RK/BRKGA.hpp"
+#include "OptFrame/Heuristics/EA/RK/BRKGA.hpp"
 //
 // GRASP
 //
-#include "Heuristics/GRASP/GRASPFamily.h"
-#include "Heuristics/GRASP/GRConstructive.hpp"
+#include "OptFrame/Heuristics/GRASP/GRASPFamily.h"
+#include "OptFrame/Heuristics/GRASP/GRConstructive.hpp"
 //
 // MO
 //
-#include "Heuristics/EmptyMultiObjSearch.hpp"
+#include "OptFrame/Heuristics/EmptyMultiObjSearch.hpp"
 
 #endif  // OPTFRAME_HEURISTICS_HPP

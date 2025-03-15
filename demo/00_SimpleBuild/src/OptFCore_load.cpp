@@ -4,7 +4,8 @@
 #define NO_CXX_MODULES 1  // disable CXX_MODULES for optframe
 
 // C++
-#include <iostream>
+// #include <iostream>
+#include <cstdint>
 #include <vector>
 //
 // #include <OptFCore/FCore.hpp> // included src

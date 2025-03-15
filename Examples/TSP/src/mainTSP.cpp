@@ -39,7 +39,7 @@
 #include <OptFrame/Hyper/Loader.hpp>
 //// #include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after
 /// Concepts OptFrame v4
-#include <OptFrame/Util/CheckCommand.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 //
 #include "TSP.h"
 
@@ -327,8 +327,8 @@ std::endl; #endif
       std::stringstream ss;
       ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0
    OptFrame:NS:NSSeq " << i; string name = build.run(optframe.factory,
-   optframe.dictionary, optframe.ldictionary, ss.str()); std::cout << "BUILT: '" <<
-   name << "'" << std::endl;
+   optframe.dictionary, optframe.ldictionary, ss.str()); std::cout << "BUILT: '"
+   << name << "'" << std::endl;
    }
    */
 

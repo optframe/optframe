@@ -28,7 +28,7 @@ namespace optframe {
 
 // Random Keys family
 
-class RK {
+MOD_EXPORT class RK {
  public:
   static std::string family() { return "RK:"; }
 

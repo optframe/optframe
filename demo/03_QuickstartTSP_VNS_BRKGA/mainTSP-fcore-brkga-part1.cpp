@@ -5,6 +5,7 @@
 // OptFrame Demo TSP - BRKGA
 
 // C++
+#include <cstdint>
 #include <iostream>
 //
 #include "TSP-fcore.hpp"

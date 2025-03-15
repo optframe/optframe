@@ -44,9 +44,9 @@
 // adopting 'void' type would cause troubles in constructor/copy/move operations
 // if not used, it can be ignored with few impacts (hoping compiler will help
 // us!)
-typedef std::nullptr_t OPTFRAME_DEFAULT_ADS;
-typedef OPTFRAME_DEFAULT_ADS OptFrameADS;  // more beautiful :)
-typedef OPTFRAME_DEFAULT_ADS _ADS;         // more beautiful :)
+MOD_EXPORT using OPTFRAME_DEFAULT_ADS = std::nullptr_t;
+MOD_EXPORT using OptFrameADS = OPTFRAME_DEFAULT_ADS;  // more beautiful :)
+MOD_EXPORT using _ADS = OPTFRAME_DEFAULT_ADS;         // more beautiful :)
 
 // Check if C++20 Concepts is supported
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)

@@ -17,7 +17,7 @@
 #include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
-#include <OptFrame/Util/CheckCommand.hpp>
+#include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <OptFrame/Values/MultiObjValue.hpp>  // just for testing
 #include <OptFrame/printable/printable.hpp>

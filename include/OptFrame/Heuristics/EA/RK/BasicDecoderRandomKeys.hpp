@@ -4,7 +4,9 @@
 
 #ifndef OPTFRAME_HEURISTICS_EA_RK_BASICDECODERRANDOMKEYS_HPP_
 #define OPTFRAME_HEURISTICS_EA_RK_BASICDECODERRANDOMKEYS_HPP_
-//
+
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 #include <vector>
 //
@@ -15,11 +17,27 @@
 #include "DecoderRandomKeysNoEvaluation.hpp"
 #include "OptFrame/Concepts/MyConcepts.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 // this is an adapter based on Evaluator and DecoderRandomKeysNoEvaluation
 
-template <XESolution XES, ConceptsComparability KeyType>
+MOD_EXPORT template <XESolution XES, ConceptsComparability KeyType>
 class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -38,14 +56,14 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
 
   virtual ~BasicDecoderRandomKeys() {}
 
-  pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
+  std::pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
     if (!needsSolution) {
       if (Component::debug)
         std::cout << "DEBUG: cannot disable solution decoding!" << std::endl;
     }
     S s = decoderSol->decodeSolution(rk);
     XEv e = evaluator->evaluate(s);
-    return pair<XEv, op<S>>{e, op<S>{s}};
+    return std::pair<XEv, op<S>>{e, op<S>{s}};
   }
 
   bool isMinimization() const override { return evaluator->isMinimization(); }
@@ -98,10 +116,10 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<XES> {
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
     params.push_back(
-        make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
+        std::make_pair(Evaluator<S, XEv, XES>::idComponent(), "evaluator"));
     params.push_back(
-        make_pair(DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent(),
-                  "decoder_no_eval"));
+        std::make_pair(DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent(),
+                       "decoder_no_eval"));
 
     return params;
   }

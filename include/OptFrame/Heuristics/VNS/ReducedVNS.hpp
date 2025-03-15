@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_VNS_REDUCEDVNS_HPP_
 #define OPTFRAME_HEURISTICS_VNS_REDUCEDVNS_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <math.h>
 //
 #include <string>
@@ -13,12 +15,28 @@
 #include "VNS.h"
 #include "VariableNeighborhoodSearch.hpp"
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES, XSearch<XES> XSH = XES>
+MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
-template <typename XES, typename XSH = XES>
+MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
 class ReducedVNS : public VariableNeighborhoodSearch<XES> {
   using XEv = typename XES::second_type;
@@ -48,9 +66,9 @@ class ReducedVNS : public VariableNeighborhoodSearch<XES> {
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
-template <XESolution XES>
+MOD_EXPORT template <XESolution XES>
 #else
-template <typename XES>
+MOD_EXPORT template <typename XES>
 #endif
 class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
  public:
@@ -98,7 +116,7 @@ class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
     ss << NS<XES>::idComponent() << "[]";
     params.push_back(std::make_pair(ss.str(), "list of NS"));
 
-    stringstream ss2;
+    std::stringstream ss2;
     ss2 << NSSeq<XES>::idComponent() << "[]";
     params.push_back(std::make_pair(ss2.str(), "list of NSSeq"));
 
