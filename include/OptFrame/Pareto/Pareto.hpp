@@ -336,8 +336,9 @@ class Pareto {
     fclose(fPF);
     */
     // NEWER C++ VERSION
+    std::string sExp{exportType};
     std::ios_base::openmode mode =
-        (exportType == "w") ? std::ios::out : std::ios::app;
+        (sExp == "w") ? std::ios::out : std::ios::app;
     std::ofstream fPF(output, mode);
 
     if (!fPF.is_open()) {

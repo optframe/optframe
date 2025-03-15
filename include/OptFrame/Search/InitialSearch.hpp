@@ -113,7 +113,8 @@ class BasicInitialSearch : public InitialSearch<XES, XSH> {
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
     if constexpr (XOStreamable<XES>)
       if (Component::verbose)
-        std::cout << "BasicInitialSearch: se => " << se << std::endl;
+        std::cout << "BasicInitialSearch: se => " << se.first << ";"
+                  << se.second.toString() << std::endl;
 #endif
     return make_pair(se, SearchStatus::NO_REPORT);
   }
