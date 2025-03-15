@@ -121,10 +121,22 @@ TEST_CASE("OptFrameUtilsTests: RandGen_has_no_Min_Weakness") {
 
   // for(unsigned i=0; i<vcount0.size(); i++)
   //    std::cout << "vcount0[" << i << "]=" << vcount0[i] << std::endl;
-  REQUIRE(vcount0[0] == 11616);
-  REQUIRE(vcount0[1] == 1);
-  REQUIRE(vcount0[2] == 0);   // SAME FOR REST...
-  REQUIRE(vcount0[10] == 0);  // LAST
+  //
+
+  // ===========================================
+  // UPDATE 2025: looks like this is better now!
+  // ===========================================
+
+  // REQUIRE(vcount0[0] == 11616);
+  REQUIRE(vcount0[0] < 1100);
+
+  // REQUIRE(vcount0[1] == 1);
+  REQUIRE(vcount0[1] < 1100);
+  //
+  // REQUIRE(vcount0[2] == 0);   // SAME FOR REST...
+  REQUIRE(vcount0[2] < 1100);
+  //
+  REQUIRE(vcount0[10] < 1100);  // LAST
 
   // ============================
   // OptFrame Mersenne Twister

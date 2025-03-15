@@ -1,12 +1,17 @@
-# cmake_minimum_required(VERSION 3.27)
+option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" OFF)
+if(USE_CXX_MODULES)
 cmake_minimum_required(VERSION 4.0)
+else()
+cmake_minimum_required(VERSION 3.27)
+endif()
+
 
 # set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
 set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ ")
 
-option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" ON)
-option(USE_CXX_CONCEPTS "Use concepts (default OFF unless -DUSE_CXX_CONCEPTS=ON)" OFF)
+
+option(USE_CXX_CONCEPTS "Use concepts (default OFF unless -DUSE_CXX_CONCEPTS=ON)" ON)
 
 # detect if OptFrame is being used,
 # disable testsuite, demos and C library in that case
@@ -70,7 +75,7 @@ set_target_properties(optframe_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(optframe_lib PRIVATE _HAS_STD_BYTE=0)
 endif()
 
-#if(USE_CXX_MODULES)
+if(USE_CXX_MODULES)
 
 add_library(optframe_scannerpp)
 target_link_libraries(optframe_scannerpp PUBLIC OptFrameAll) # too much...
@@ -154,7 +159,7 @@ target_link_libraries(trymod PRIVATE optframe_core)
 target_link_libraries(trymod PRIVATE optframe_heuristics)
 target_link_libraries(trymod PRIVATE optframe_hyper)
 target_link_libraries(trymod PRIVATE optframe_scannerpp)
-#endif()
+endif() # USE_CXX_MODULES
 
 if (OPTFRAME_BUILD_TESTING AND NOT IS_SUBPROJECT)
 
@@ -175,6 +180,6 @@ target_link_libraries(my_test PRIVATE OptFrameAll Catch2::Catch2WithMain) #catch
 # https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
 target_compile_definitions(my_test PRIVATE _HAS_STD_BYTE=0)
 
-#catch_discover_tests(my_test)
-#enable_testing()
+catch_discover_tests(my_test)
+enable_testing()
 endif()
