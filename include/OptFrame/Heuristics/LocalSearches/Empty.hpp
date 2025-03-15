@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_EMPTY_HPP_
-#define OPTFRAME_EMPTY_HPP_
+#ifndef OPTFRAME_EMPTY_LOCALSEARCH_HPP_
+#define OPTFRAME_EMPTY_LOCALSEARCH_HPP_
 
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
@@ -21,7 +21,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -29,8 +29,10 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>>
+MOD_EXPORT template <XESolution XES>
 class EmptyLocalSearch : public LocalSearch<XES> {
+  using XEv = typename XES::second_type;
+
  public:
   EmptyLocalSearch() {}
 
@@ -59,4 +61,4 @@ class EmptyLocalSearch : public LocalSearch<XES> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_EMPTY_HPP_*/
+#endif /*OPTFRAME_EMPTY_LOCALSEARCH_HPP_*/

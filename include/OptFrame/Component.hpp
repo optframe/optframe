@@ -19,13 +19,10 @@
 #define MOD_EXPORT
 #else
 
-// import optframe.component;
-import std;
+// ERROR: post-module-declaration imports must not be from header inclusion
+// import std;
 
-import optframe.semstream;
-
-// maybe do not export here? leave it to .cppm only...
-// export module optframe.core.move;
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 

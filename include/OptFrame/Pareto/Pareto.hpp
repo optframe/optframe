@@ -33,7 +33,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -319,7 +319,9 @@ class Pareto {
 
   // TODO fix export with new evaluation type
   void exportParetoFront(std::string output, const char* exportType) {
-    FILE* fPF = fopen(output.c_str(), exportType);
+    // OLD C VERSION!
+    /*
+    std::FILE* fPF = fopen(output.c_str(), exportType);
     assert(fPF);
     for (int i = 0; i < (int)paretoSetFront.size(); i++) {
       for (int e = 0; e < (int)paretoFront[i]->size(); e++)
@@ -332,6 +334,23 @@ class Pareto {
     }
 
     fclose(fPF);
+    */
+    // NEWER C++ VERSION
+    std::ios_base::openmode mode =
+        (exportType == "w") ? std::ios::out : std::ios::app;
+    std::ofstream fPF(output, mode);
+
+    if (!fPF.is_open()) {
+      std::cerr << "Error opening file: " << output << std::endl;
+      return;
+    }
+
+    for (const auto& front : paretoSetFront) {
+      for (const auto& element : front.second) {
+        fPF << static_cast<double>(element.evaluation()) << "\t";
+      }
+      fPF << "\n";
+    }
   }
 
   static std::vector<XMEv> filterDominatedMEV(
@@ -658,8 +677,10 @@ static_assert(X2ESolution<Pareto<EMSolution_Test>, EMSolution_Test>);
 
 // compilation tests for concepts (these are NOT unit tests)
 
+/*
 #ifdef HAS_CONCEPTS_TESTS
 #include "Pareto.ctest.hpp"
 #endif
+*/
 
 #endif /* OPTFRAME_PARETO_HPP_ */

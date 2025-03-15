@@ -1,9 +1,9 @@
 # cmake_minimum_required(VERSION 3.27)
 cmake_minimum_required(VERSION 4.0)
 
-# set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
-set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
+# set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 
 option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" ON)
 option(USE_CXX_CONCEPTS "Use concepts (default OFF unless -DUSE_CXX_CONCEPTS=ON)" OFF)
@@ -139,6 +139,7 @@ target_link_libraries(optframe_heuristics PUBLIC OptFrameAll)
 target_sources(optframe_heuristics  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/heuristics.cppm)
 target_link_libraries(optframe_heuristics PUBLIC optframe_core)
 target_link_libraries(optframe_heuristics PUBLIC optframe_search)
+target_link_libraries(optframe_heuristics PUBLIC optframe_concepts)
 
 add_library(optframe_hyper)
 target_link_libraries(optframe_hyper PUBLIC OptFrameAll)

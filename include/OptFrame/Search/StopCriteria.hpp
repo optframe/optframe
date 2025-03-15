@@ -27,7 +27,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -55,19 +55,19 @@ class StopCriteria final : public Component {
   double timelimit = {0};  // disabled -> 0.0
 
   // maximum number of evaluations
-  uint64_t maxEvCount = {0};  // disabled -> 0
+  std::uint64_t maxEvCount = {0};  // disabled -> 0
 
   // target objective function
   XEv target_f;
 
   // expected number of Search Space elements
-  uint64_t xshCount = {0};  // disabled -> 0
+  std::uint64_t xshCount = {0};  // disabled -> 0
 
   // evaluation counter (starts with zero)
-  uint64_t evCount = {0};
+  std::uint64_t evCount = {0};
 
   // increment evCount
-  void incEvaluationCount(int64_t v = 1) { evCount += v; }
+  void incEvaluationCount(std::int64_t v = 1) { evCount += v; }
 
   // general stopping criteria (method independent)
   std::function<bool(const cop_view<XEv>&)> stopBy{

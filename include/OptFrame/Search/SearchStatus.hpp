@@ -1,4 +1,8 @@
-#pragma once
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef OPTFRAME_SEARCH_SEARCHSTATUS_HPP_
+#define OPTFRAME_SEARCH_SEARCHSTATUS_HPP_
 
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
@@ -15,7 +19,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -26,7 +30,8 @@ namespace optframe {
 // ADOPTING ENUM TO THINK ABOUT THE FUTURE...
 // ONLY FEW FLAGS NOW BUT WHO KNOWS!!
 // ONLY ENABLE FLAGS THAT ARE REALLY USED!!!
-MOD_EXPORT enum class SearchStatus : uint32_t {
+//
+MOD_EXPORT enum class SearchStatus : std::uint32_t {
   // ----------------------
   // General Method Reports
   // ----------------------
@@ -153,13 +158,13 @@ constexpr T operator|(T lhs, T rhs)
 // manual solution
 
 inline constexpr SearchStatus operator|(SearchStatus a, SearchStatus b) {
-  return static_cast<SearchStatus>(static_cast<uint8_t>(a) |
-                                   static_cast<uint8_t>(b));
+  return static_cast<SearchStatus>(static_cast<std::uint8_t>(a) |
+                                   static_cast<std::uint8_t>(b));
 }
 
 inline constexpr SearchStatus operator&(SearchStatus a, SearchStatus b) {
-  return static_cast<SearchStatus>(static_cast<uint8_t>(a) &
-                                   static_cast<uint8_t>(b));
+  return static_cast<SearchStatus>(static_cast<std::uint8_t>(a) &
+                                   static_cast<std::uint8_t>(b));
 }
 
 inline bool operator!(SearchStatus e) {
@@ -167,3 +172,5 @@ inline bool operator!(SearchStatus e) {
 }
 
 }  // namespace optframe
+
+#endif  // OPTFRAME_SEARCH_SEARCHSTATUS_HPP_

@@ -17,9 +17,10 @@
 #define MOD_EXPORT
 #else
 
-import std;
+// ERROR: post-module-declaration imports must not be from header inclusion
+// import std;
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 

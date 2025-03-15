@@ -24,7 +24,7 @@ import optframe.concepts;
 import std;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 

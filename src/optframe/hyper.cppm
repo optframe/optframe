@@ -1,10 +1,10 @@
 module;
 
 #include <assert.h>
-#include <math.h>  // ::fabs
-#include <stdio.h>
+// #include <math.h>  // ::fabs
+// #include <stdio.h>
 
-#include <string>
+// #include <string>
 
 export module optframe.hyper;
 export import optframe.heuristics;

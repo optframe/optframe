@@ -1,9 +1,11 @@
 module;
 
 #include <assert.h>
-#include <stdio.h>
+// #include <stdio.h>
 
-#include <string>
+// /usr/include/c++/15/type_traits:808:11: error: conflicting global module
+// declaration
+// #include <string>
 
 export module optframe.core;
 export import optframe.semstream;
@@ -23,5 +25,5 @@ export void func(std::string s) { std::print("s = {}\n", s); }
 export template <class X>
 class A {
  public:
-  void f(X x) { printf("old C...\n"); }
+  void f(X x) { std::print("old C...\n"); }
 };

@@ -30,10 +30,11 @@
 #define MOD_EXPORT
 #else
 
-import std;
-// NO NEED TO IMPORT concepts:my module partition... already imported!
+// ERROR: post-module-declaration imports must not be from header inclusion
+// import std;
+// do NOT import/export modules on .hpp... only on .cppm
 
-// do NOT export modules on .hpp... only on .cppm
+// NO NEED TO IMPORT concepts:my module partition... already imported!
 
 #define MOD_EXPORT export
 
@@ -282,10 +283,11 @@ concept XESolution = XSolution<Self> && requires(Self p) {
 // general one:
 template <class Self, class P>
 // concept bool XPowerSet = true;
-concept XPowerSet = requires(Self a, size_t idx) {
+concept XPowerSet = requires(Self a, std::size_t idx) {
   {
     a.size()
-  } -> my_convertible_to<size_t>;  // could this be 'int' as well? TODO: test
+  }
+  -> my_convertible_to<std::size_t>;  // could this be 'int' as well? TODO: test
 
   {
     // a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
@@ -427,8 +429,8 @@ concept XMEvaluation =
     XEvaluation<Self> &&
     requires(Self e, typename Self::objType m,
              typename Self::objType::value_type v,
-             typename Self::objType::value_type::objType vm, size_t idx) {
-      { m.size() } -> std::convertible_to<size_t>;
+             typename Self::objType::value_type::objType vm, std::size_t idx) {
+      { m.size() } -> std::convertible_to<std::size_t>;
       { m[idx] } -> std::convertible_to<typename Self::objType::value_type>;
     } &&
     comparability<typename Self::objType::value_type::objType>;  // TOTAL ORDER

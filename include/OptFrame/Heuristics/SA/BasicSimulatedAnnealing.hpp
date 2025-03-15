@@ -33,7 +33,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -286,9 +286,9 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
         // 'current' didn't improve, but may accept it anyway
         double x = rg->rand01();
         double delta =
-            ::fabs(current.second.evaluation() - se.second.evaluation());
+            std::fabs(current.second.evaluation() - se.second.evaluation());
 
-        if (x < ::exp(-delta / ctx.T)) {
+        if (x < std::exp(-delta / ctx.T)) {
           se = current;
           this->onIncumbentCtx(ctx, se);
         }

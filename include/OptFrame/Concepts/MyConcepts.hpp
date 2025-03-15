@@ -34,11 +34,10 @@
 #define MOD_EXPORT
 #else
 
-import std;
-import optframe.nnptr;
-import optframe.opview;
+// ERROR: post-module-declaration imports must not be from header inclusion
+// import std;
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -247,10 +246,10 @@ concept extended_arithmetics =
 
 // capability to move to ostream&
 MOD_EXPORT template <class Self>
-concept ostreamable = requires(std::ostream& os,
-                               // const std::remove_reference_t<Self>& obj) {
-                               const Self& obj) {
+concept ostreamable = requires(std::ostream& os, const Self& obj) {
   { os << obj };
+} || requires(std::ostream& os, const Self& obj) {
+  { os << obj.toString() };
 };
 
 #endif  // cpp_concepts

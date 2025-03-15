@@ -28,7 +28,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -92,7 +92,7 @@ class BasicILSPerturbation : public ILS, public Component {
     // XEv& e = se.second;
     //
     for (int i = pMin; i < pMax; i++) {
-      int nk = rand() % ns.size();
+      int nk = rg->rand() % ns.size();
 
       uptr<Move<XES, XSH>> mp = ns[nk]->validRandomMove(se);
 

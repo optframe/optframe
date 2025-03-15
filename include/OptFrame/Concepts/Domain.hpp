@@ -24,7 +24,7 @@
 // Cannot IMPORT here... already done on .cppm of 'concepts'
 // import std;
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -48,11 +48,13 @@ MOD_EXPORT class Domain {
 
   template <typename T>
   struct is_i32
-      : std::bool_constant<std::is_same_v<T, int32_t> && sizeof(T) == 4> {};
+      : std::bool_constant<std::is_same_v<T, std::int32_t> && sizeof(T) == 4> {
+  };
 
   template <typename T>
   struct is_i64
-      : std::bool_constant<std::is_same_v<T, int64_t> && sizeof(T) == 8> {};
+      : std::bool_constant<std::is_same_v<T, std::int64_t> && sizeof(T) == 8> {
+  };
 
   // =========================================
   // also checking that type is vector<double>

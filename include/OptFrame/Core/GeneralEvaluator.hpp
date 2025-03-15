@@ -10,9 +10,9 @@
 #include <string>
 //
 #include <OptFrame/Concepts/Domain.hpp>
+#include <OptFrame/Core/Direction.hpp>
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Move.hpp>
-#include <OptFrame/Core/Direction.hpp>
 // #include "MoveCost.hpp"
 
 #define MOD_EXPORT
@@ -25,7 +25,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 

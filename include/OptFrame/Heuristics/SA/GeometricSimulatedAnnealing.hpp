@@ -40,7 +40,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -93,7 +93,7 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
     double T = Ti;
 
     while (T >= 0.0001) {
-      for (int64_t iterT = 0; iterT < SAmax; iterT++) {
+      for (std::int64_t iterT = 0; iterT < SAmax; iterT++) {
         if (stop.shouldStop(star.second)) {
           // return best solution so far
           return {SearchStatus::NO_REPORT, star};
@@ -128,9 +128,9 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
         } else {
           // 'se' didn't improve, but may accept it anyway
           double x = rg->rand01();
-          double delta = ::fabs(se.second.evaluation() - eOld.evaluation());
+          double delta = std::fabs(se.second.evaluation() - eOld.evaluation());
 
-          if (x < ::exp(-delta / T)) {
+          if (x < std::exp(-delta / T)) {
             // ok, accepted already
           } else {
             // revert!

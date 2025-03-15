@@ -1,4 +1,8 @@
-#pragma once
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef OPTFRAME_SEARCH_SEARCHOUTPUT_HPP_
+#define OPTFRAME_SEARCH_SEARCHOUTPUT_HPP_
 
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
@@ -16,7 +20,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -45,3 +49,5 @@ class SearchOutput {
 };  // SearchOutput
 
 }  // namespace optframe
+
+#endif  // OPTFRAME_SEARCH_SEARCHOUTPUT_HPP_

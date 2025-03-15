@@ -23,7 +23,7 @@ import optframe.component;
 import optframe.concepts;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -59,21 +59,21 @@ class MultiESolution : public Component {
   unsigned size() const { return p.size(); }
 
   // todo: implement
-  XES& getP(size_t i) {
+  XES& getP(std::size_t i) {
     // return make_pair(uptr<S>(),uptr<XEv>());
     XES* p;
     return *p;
   }
 
   // CANNOT IMPLEMENT THIS!
-  XES& at(size_t i) {
+  XES& at(std::size_t i) {
     XES* p = nullptr;
     assert(false);
     return *p;
   }
 
   // CANNOT IMPLEMENT THIS!
-  const XES& at(size_t i) const {
+  const XES& at(std::size_t i) const {
     XES* p = nullptr;
     assert(false);
     return *p;
@@ -175,6 +175,7 @@ class MultiESolution : public Component {
 
 }  // namespace optframe
 
+/*
 // DO NOT DO THESE TESTS INSIDE MODULES!
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
@@ -184,5 +185,6 @@ class MultiESolution : public Component {
 
 #endif  // cpp_concepts
 #endif  // NO_CXX_MODULES
+*/
 
 #endif  // OPTFRAME_HELPER_MULTIESOLUTION_HPP_

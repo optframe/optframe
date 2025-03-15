@@ -30,7 +30,7 @@ import optframe.concepts;
 import std;
 */
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -356,10 +356,13 @@ class Evaluation final : public Component {
 
   bool toStream(std::ostream& os) const override {
     // forward to operator<<
-    os << (*this);
+    // os << (*this);
+    os << this->toString();
     return true;
   }
 
+// GCC 15: multiple definition of 'optframe::operator<<@optframe.core(...)'
+#ifdef NO_CXX_MODULES
   friend std::ostream& operator<<(std::ostream& os, const Evaluation& me) {
     if (&os == &optframe::cjson) {
       os << "{";
@@ -372,6 +375,7 @@ class Evaluation final : public Component {
     }
     return os;
   }
+#endif
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)

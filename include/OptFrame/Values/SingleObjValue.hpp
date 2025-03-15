@@ -18,9 +18,9 @@
 // SORRY! EVEN IN MODULE! MOVE THIS TO optframe.values!
 // #include <math.h> /* fabs */
 
-import std;
-
-// do NOT export modules on .hpp... only on .cppm
+// ERROR: post-module-declaration imports must not be from header inclusion
+// import std;
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
@@ -71,16 +71,16 @@ class NumericBasics {
 // =========== num_zero ============
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-constexpr inline
-    typename std::enable_if<std::is_same<T, int32_t>::value, int32_t>::type
-    num_zero() {
+constexpr inline typename std::enable_if<std::is_same<T, std::int32_t>::value,
+                                         std::int32_t>::type
+num_zero() {
   return 0;
 }
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-constexpr inline
-    typename std::enable_if<std::is_same<T, int64_t>::value, int64_t>::type
-    num_zero() {
+constexpr inline typename std::enable_if<std::is_same<T, std::int64_t>::value,
+                                         std::int64_t>::type
+num_zero() {
   return 0;
 }
 
@@ -103,13 +103,13 @@ constexpr inline
 
 // stores numeric_zero value on 't'
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-inline typename std::enable_if<std::is_same<T, int32_t>::value, void>::type
+inline typename std::enable_if<std::is_same<T, std::int32_t>::value, void>::type
 numeric_zero(T& t) {
   t = 0;
 }
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-inline typename std::enable_if<std::is_same<T, int64_t>::value, void>::type
+inline typename std::enable_if<std::is_same<T, std::int64_t>::value, void>::type
 numeric_zero(T& t) {
   t = 0;
 }
@@ -130,16 +130,16 @@ numeric_zero(T& t) {
 // =========== num_zero ============
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-constexpr inline
-    typename std::enable_if<std::is_same<T, int32_t>::value, int32_t>::type
-    num_zero_precision() {
+constexpr inline typename std::enable_if<std::is_same<T, std::int32_t>::value,
+                                         std::int32_t>::type
+num_zero_precision() {
   return 0;
 }
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-constexpr inline
-    typename std::enable_if<std::is_same<T, int64_t>::value, int64_t>::type
-    num_zero_precision() {
+constexpr inline typename std::enable_if<std::is_same<T, std::int64_t>::value,
+                                         std::int64_t>::type
+num_zero_precision() {
   return 0;
 }
 
@@ -165,13 +165,13 @@ constexpr inline
 // define limits where value of type is to considered zero
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-inline typename std::enable_if<std::is_same<T, int32_t>::value, bool>::type
+inline typename std::enable_if<std::is_same<T, std::int32_t>::value, bool>::type
 numeric_is_zero(const T& t) {
   return t == 0;
 }
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
-inline typename std::enable_if<std::is_same<T, int64_t>::value, bool>::type
+inline typename std::enable_if<std::is_same<T, std::int64_t>::value, bool>::type
 numeric_is_zero(const T& t) {
   return t == 0;
 }
@@ -179,13 +179,13 @@ numeric_is_zero(const T& t) {
 MOD_EXPORT template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, bool>::type
 numeric_is_zero(const T& t) {
-  return ::fabs(t) <= num_zero_precision<T>();
+  return std::fabs(t) <= num_zero_precision<T>();
 }
 
 MOD_EXPORT template <ConceptsBasicArithmetics T>
 inline typename std::enable_if<std::is_same<T, float>::value, bool>::type
 numeric_is_zero(const T& t) {
-  return ::fabs(t) <= num_zero_precision<T>();
+  return std::fabs(t) <= num_zero_precision<T>();
 }
 
 }  // namespace optframe

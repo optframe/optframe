@@ -80,9 +80,10 @@ Fri Jun 18 20:10:45 2021 -0300 fix link
 #define MOD_EXPORT
 #else
 
-import std;
+// ERROR: post-module-declaration imports must not be from header inclusion
+// import std;
 
-// do NOT export modules on .hpp... only on .cppm
+// do NOT import/export modules on .hpp... only on .cppm
 
 #define MOD_EXPORT export
 
