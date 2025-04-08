@@ -1,15 +1,13 @@
-option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" OFF)
-if(USE_CXX_MODULES)
 cmake_minimum_required(VERSION 4.0)
-else()
-cmake_minimum_required(VERSION 3.27)
-endif()
 
+option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" OFF)
 
 # set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
-set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ ")
 
+if(USE_CXX_MODULES)
+  set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ ")
+endif()
 
 option(USE_CXX_CONCEPTS "Use concepts (default OFF unless -DUSE_CXX_CONCEPTS=ON)" ON)
 
