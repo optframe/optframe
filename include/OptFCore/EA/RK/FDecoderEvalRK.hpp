@@ -4,6 +4,8 @@
 #ifndef OPTFCORE_EA_RK_FDECODEREVALRK_HPP_
 #define OPTFCORE_EA_RK_FDECODEREVALRK_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // c++
 #include <functional>
 #include <string>
@@ -13,9 +15,25 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES, ConceptsComparability KeyType>
+MOD_EXPORT template <XESolution XES, ConceptsComparability KeyType>
 class FDecoderEvalRK final : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -30,10 +48,9 @@ class FDecoderEvalRK final : public DecoderRandomKeys<XES, KeyType> {
   typedef pair<XEv, S> (*FuncTypeDecodeEval)(sref<Evaluator<XES>> eval,
                                              const RSK& rk);
 #else
-  typedef std::function<pair<XEv, S>(
-      sref<Evaluator<typename XES::first_type, typename XES::second_type, XES>>
-          eval,
-      const RSK&)>
+  using EvalType =
+      Evaluator<typename XES::first_type, typename XES::second_type, XES>;
+  typedef std::function<std::pair<XEv, S>(sref<EvalType>, const RSK&)>
       FuncTypeDecodeEval;
 #endif
 
@@ -47,7 +64,7 @@ class FDecoderEvalRK final : public DecoderRandomKeys<XES, KeyType> {
 
   virtual ~FDecoderEvalRK() = default;
 
-  pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
+  std::pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
     auto p = fDecodeEval(this->eval, rk);
     return make_pair(p.first, make_optional(p.second));
   }

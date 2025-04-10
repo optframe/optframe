@@ -4,6 +4,8 @@
 #ifndef OPTFCORE_EA_RK_FDECODERNOEVALUATIONRK_HPP_
 #define OPTFCORE_EA_RK_FDECODERNOEVALUATIONRK_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <functional>
 #include <string>
 #include <vector>
@@ -12,9 +14,25 @@
 #include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeysNoEvaluation.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XSolution S, ConceptsComparability KeyType>
+MOD_EXPORT template <XSolution S, ConceptsComparability KeyType>
 class FDecoderNoEvaluationRK final
     : public DecoderRandomKeysNoEvaluation<S, KeyType> {
  public:

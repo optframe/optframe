@@ -15,6 +15,7 @@
 //
 #include <OptFCore/EA/RK/FDecoderOpRK.hpp>
 #include <OptFCore/FCore.hpp>
+#include <OptFCore/FCoreAll.hpp>
 // #include <OptFCore/FxCore.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>  // XESolution
 #include <OptFrame/Concepts/MyConcepts.hpp>    // sref

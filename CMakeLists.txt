@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.0)
 
-option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" OFF)
+option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" ON)
 
 # set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
 
@@ -21,6 +21,7 @@ endif()
 
 # OptFrame default should be C++17 here, unless for advanced features
 if(USE_CXX_MODULES)
+add_definitions(-DUSE_CXX_MODULES)
 set (CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "a9e1cf81-9932-4810-974b-6eccaf14e457")
 set(CMAKE_CXX_MODULE_STD 1)
@@ -151,12 +152,27 @@ target_link_libraries(optframe_hyper PUBLIC optframe_heuristics)
 target_link_libraries(optframe_hyper PUBLIC optframe_scannerpp)
 
 
-add_executable(trymod demo/07_Try_Modules/trymod.cpp)
+add_library(optframe_functional)
+target_sources(optframe_functional  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/functional.cppm)
+target_link_libraries(optframe_functional PUBLIC optframe_core optframe_hyper optframe_scannerpp)
 
-target_link_libraries(trymod PRIVATE optframe_core)
-target_link_libraries(trymod PRIVATE optframe_heuristics)
-target_link_libraries(trymod PRIVATE optframe_hyper)
-target_link_libraries(trymod PRIVATE optframe_scannerpp)
+add_library(optframe_util)
+target_sources(optframe_util  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/util.cppm)
+target_link_libraries(optframe_util PUBLIC optframe_core optframe_scannerpp)
+
+#add_library(optframe_examples)
+#target_sources(optframe_examples  PUBLIC  FILE_SET CXX_MODULES FILES  src/optframe/examples/kp.cppm src/optframe/examples/btsp.cppm src/optframe/examples.cppm)
+#target_link_libraries(optframe_examples PUBLIC optframe_core optframe_heuristics optframe_scannerpp optframe_functional optframe_util)
+
+
+add_library(optframe_module)
+target_sources(optframe_module  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe.cppm)
+target_link_libraries(optframe_module PUBLIC optframe_core optframe_hyper optframe_scannerpp optframe_functional)
+
+# ===========================
+add_executable(trymod demo/07_Try_Modules/trymod.cpp)
+target_link_libraries(trymod PRIVATE optframe_module)
+#target_link_libraries(trymod PRIVATE optframe_core optframe_heuristics optframe_hyper optframe_scannerpp)
 endif() # USE_CXX_MODULES
 
 if (OPTFRAME_BUILD_TESTING AND NOT IS_SUBPROJECT)
@@ -170,14 +186,26 @@ FetchContent_MakeAvailable(Catch2)
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(CTest)
 include(Catch)
+
+
+#if(USE_CXX_MODULES)
+#add_executable(my_test_module tests/all_module.Test.cpp)
+#target_link_libraries(my_test_module PRIVATE OptFrameAll Catch2::Catch2WithMain optframe_module optframe_examples)
+## https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
+#target_compile_definitions(my_test_module PRIVATE _HAS_STD_BYTE=0)
+#catch_discover_tests(my_test_module)
+#endif()
+
+
+
 #
 #add_executable(my_test tests/all.Test.cpp  tests/thirdparty/catch2/catch_amalgamated.cpp)
 add_executable(my_test tests/all.Test.cpp)
-target_link_libraries(my_test PRIVATE OptFrameAll Catch2::Catch2WithMain) #catch2)
-
+target_link_libraries(my_test PRIVATE OptFrameAll Catch2::Catch2WithMain)
 # https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
 target_compile_definitions(my_test PRIVATE _HAS_STD_BYTE=0)
-
 catch_discover_tests(my_test)
+
 enable_testing()
-endif()
+
+endif() # testing

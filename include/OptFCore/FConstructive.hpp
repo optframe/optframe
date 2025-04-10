@@ -4,6 +4,8 @@
 #ifndef OPTFCORE_FCONSTRUCTIVE_HPP_
 #define OPTFCORE_FCONSTRUCTIVE_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // c++
 #include <functional>
 #include <string>
@@ -12,7 +14,24 @@
 #include <OptFrame/Core/Constructive.hpp>
 //
 
-namespace optframe {
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
+
+MOD_EXPORT namespace optframe {
 
 template <XSolution S, typename ProblemType = void>
 class FConstructive final : public Constructive<S> {

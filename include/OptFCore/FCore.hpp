@@ -4,28 +4,30 @@
 #ifndef OPTFCORE_FCORE_HPP_
 #define OPTFCORE_FCORE_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <string>
 
-// Functional Core Module: inclusion of "Functional OptFrame Core" components
+#define MOD_EXPORT
+#else
 
-#include <OptFCore/FConstructive.hpp>
-#include <OptFCore/FDirection.hpp>
-#include <OptFCore/FEvaluator.hpp>
-#include <OptFCore/FMove.hpp>
-#include <OptFCore/FNS.hpp>
-#include <OptFCore/FNSSeq.hpp>
-//
-#include "EA/RK/FConstructiveRK.hpp"         // Extra
-#include "EA/RK/FDecoderEvalRK.hpp"          // Extra
-#include "EA/RK/FDecoderNoEvaluationRK.hpp"  // Extra
-#include "EA/RK/FDecoderRK.hpp"              // Extra
-//
-#include <OptFCore/EA/FGeneralCrossover.hpp>
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
 
 namespace optframe {
 
 // OptFrame Functional Core (FCore)
-class FCore {
+MOD_EXPORT class FCore {
  public:
   static constexpr char OPTFRAME_VERSION[] = "5.1.0";
   static std::string version() { return OPTFRAME_VERSION; }

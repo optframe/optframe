@@ -4,19 +4,36 @@
 #ifndef OPTFCORE_FNSSEQ_HPP_
 #define OPTFCORE_FNSSEQ_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <functional>
 #include <string>
 #include <utility>
 //
 #include <OptFrame/Core/NSSeq.hpp>
 
-namespace optframe {
+#define MOD_EXPORT
+#else
 
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
+namespace optframe {
 // =============================================================
 // this NSSeq uses "Boring" iterator... first, next, bla, bla...
 // -------------------------------------------------------------
 
-template <class IMS, XESolution XES, typename ProblemType = void>
+MOD_EXPORT template <class IMS, XESolution XES, typename ProblemType = void>
 class FNSSeq final : public NSSeq<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective

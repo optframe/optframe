@@ -24,13 +24,13 @@ import optframe.concepts;
 
 #endif
 
-using namespace std;
+// using namespace std;
 
 namespace optframe {
 
 MOD_EXPORT class EA {
  public:
-  static string family() { return "EA"; }
+  static std::string family() { return "EA"; }
 
   virtual ~EA() {}
 };

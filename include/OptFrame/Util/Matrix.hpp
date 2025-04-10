@@ -40,12 +40,30 @@
 #ifndef MATRIX_H_
 #define MATRIX_H_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <stdlib.h>
 
 #include <iostream>
 #include <vector>
 
-using namespace std;  // TODO: remove!
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
+// using namespace std;  // TODO: remove!
 
 namespace optframe {
 
@@ -86,7 +104,7 @@ maxCol(_maxCol)
 };
 */
 
-template <class T>
+MOD_EXPORT template <class T>
 class Matrix {
  public:
   Matrix(unsigned _quadratic = 1) noexcept {
@@ -133,10 +151,8 @@ class Matrix {
     return data[cols * row + col];
   }
 
-  virtual ~Matrix()  // Destructor
-  {
-    delete[] data;
-  }
+  // Destructor
+  virtual ~Matrix() { delete[] data; }
 
   // Retorna true se a matriz for quadrada
   bool square() const { return (rows == cols); }
@@ -148,8 +164,8 @@ class Matrix {
     for (unsigned int i = 0; i < (total); i++) data[i] = v;
   }
 
-  Matrix(const Matrix& m)  // Copy constructor
-  {
+  // Copy constructor
+  Matrix(const Matrix& m) {
     rows = m.rows;
     cols = m.cols;
 
@@ -159,8 +175,8 @@ class Matrix {
     for (unsigned int i = 0; i < (total); i++) data[i] = m.data[i];
   }
 
-  Matrix& operator=(const Matrix& m)  // Assignment operator
-  {
+  // Assignment operator
+  Matrix& operator=(const Matrix& m) {
     // Verificando auto-referencia (Importante!)
     if (&m == this) return *this;
 
@@ -182,8 +198,8 @@ class Matrix {
 
   unsigned getNumCols() const { return cols; }
 
-  vector<T> getRow(int _row) const {
-    vector<T> row(cols);
+  std::vector<T> getRow(int _row) const {
+    std::vector<T> row(cols);
 
     for (int i = 0; i < cols; i++) {
       row[i] = operator()(_row, i);
@@ -192,7 +208,7 @@ class Matrix {
     return row;
   }
 
-  void setRow(int p, vector<T>& _row) {
+  void setRow(int p, std::vector<T>& _row) {
     int numCol = (_row.size() < cols) ? _row.size() : cols;
 
     for (int i = 0; i < numCol; i++) {
@@ -200,8 +216,8 @@ class Matrix {
     }
   }
 
-  vector<T> getCol(int _col) const {
-    vector<T> col(rows);
+  std::vector<T> getCol(int _col) const {
+    std::vector<T> col(rows);
 
     for (int i = 0; i < rows; i++) {
       col[i] = operator()(i, _col);
@@ -210,7 +226,7 @@ class Matrix {
     return col;
   }
 
-  void setCol(int p, vector<T>& _col) {
+  void setCol(int p, std::vector<T>& _col) {
     int numRow = (_col.size() < rows) ? _col.size() : rows;
 
     for (int i = 0; i < numRow; i++) {
@@ -218,9 +234,10 @@ class Matrix {
     }
   }
 
-  friend ostream& operator<<(ostream& os, const Matrix<T>& obj) {
+  friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& obj) {
     // const Matrix<T> &obj = *this;
-    // os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << std::endl;
+    // os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" <<
+    // std::endl;
 
     os << std::endl;
 
@@ -241,7 +258,8 @@ class Matrix {
 template<class T>
 ostream& operator<<(ostream &os, const Matrix<T> &obj)
 {
-   //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << std::endl;
+   //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" <<
+std::endl;
 
    os << std::endl;
 

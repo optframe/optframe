@@ -7,6 +7,7 @@
 #if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
 
 #include <algorithm>
+#include <string>
 // #include "../../../Evaluation.hpp"
 // #include "../../../Evaluator.hpp"
 // #include "../../../Solution.hpp"
@@ -49,7 +50,7 @@ class DecoderRandomKeys : public Component {
 
   // returns evaluation and, optionally the constructed solution.
   // Flag 'needsSolution' indicates that solution is ABSOLUTELY necessary...
-  virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) = 0;
+  virtual std::pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) = 0;
 
   virtual bool isMinimization() const = 0;
 
@@ -108,7 +109,7 @@ class DecoderRandomKeys : public Component {
 // XRepresentation RKeys = optframe::random_keys>
 //
 template <XSolution S, XEvaluation XEv, ConceptsComparability KeyType,
-          XESolution XES = pair<S, XEv>>
+          XESolution XES = std::pair<S, XEv>>
 class DecoderRandomKeysEvaluator : public DecoderRandomKeys<XES, KeyType> {
   using RSK = std::vector<KeyType>;
 
@@ -118,18 +119,16 @@ class DecoderRandomKeysEvaluator : public DecoderRandomKeys<XES, KeyType> {
 
   Evaluator<RSK, XEv, XES>& evaluator;
 
-  DecoderRandomKeysEvaluator(Evaluator<RSK, XEv, XES>& _evaluator)
+  explicit DecoderRandomKeysEvaluator(Evaluator<RSK, XEv, XES>& _evaluator)
       : evaluator{_evaluator} {}
 
   virtual ~DecoderRandomKeysEvaluator() {}
 
-  virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
-    return pair<XEv, op<S>>(evaluator.evaluate(rk, nullptr), nullptr);
+  std::pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
+    return std::pair<XEv, op<S>>(evaluator.evaluate(rk, nullptr), nullptr);
   }
 
-  virtual bool isMinimization() const override {
-    return evaluator.isMinimization();
-  }
+  bool isMinimization() const override { return evaluator.isMinimization(); }
 };
 
 // transforms 'random_keys' into a XRS solution (with R=permutation), then use
@@ -137,7 +136,7 @@ class DecoderRandomKeysEvaluator : public DecoderRandomKeys<XES, KeyType> {
 // template<XRSolution<vector<int>> XRS, XEvaluation XEv>
 //
 template <XEvaluation XEv, ConceptsComparability KeyType = double,
-          XESolution XES = pair<std::vector<int>, XEv>>
+          XESolution XES = std::pair<std::vector<int>, XEv>>
 class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   using RSK = std::vector<KeyType>;
 
@@ -151,20 +150,19 @@ class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
     assert(a <= b);
   }
 
-  virtual pair<XEv, op<std::vector<int>>> decode(const RSK& rk,
-                                                 bool needsSolution) override {
+  std::pair<XEv, op<std::vector<int>>> decode(const RSK& rk,
+                                              bool needsSolution) override {
     int sz = b - a + 1;
     std::vector<std::pair<double, int>> v(sz);
     int k = 0;
     for (int i = a; i <= b; i++, k++) v[k] = pair<double, int>(rk[i], k);
 
     sort(v.begin(), v.end(),
-         [](const pair<double, int>& i, const pair<double, int>& j) -> bool {
-           return i.first < j.first;
-         });
+         [](const std::pair<double, int>& i, const std::pair<double, int>& j)
+             -> bool { return i.first < j.first; });
 
     // R = vector<int>
-    vector<int> p(v.size());
+    std::vector<int> p(v.size());
     for (unsigned i = 0; i < v.size(); i++) p[i] = v[i].second;
 
     // XRS is user solution, based on 'vector<int>'
@@ -186,7 +184,7 @@ class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType> {
 // template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
 //
 template <XEvaluation XEv, ConceptsComparability KeyType,
-          XESolution XES = pair<std::vector<bool>, XEv>>
+          XESolution XES = std::pair<std::vector<bool>, XEv>>
 class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<XES, KeyType> {
   using RSK = std::vector<KeyType>;
 
@@ -201,8 +199,8 @@ class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<XES, KeyType> {
     assert(a <= b);
   }
 
-  virtual pair<XEv, op<std::vector<bool>>> decode(const RSK& rk,
-                                                  bool needsSolution) override {
+  virtual std::pair<XEv, op<std::vector<bool>>> decode(
+      const RSK& rk, bool needsSolution) override {
     std::vector<bool> v(b - a + 1);
     for (unsigned i = 0; i < v.size(); i++) v[i] = rk[i] >= limit;
 

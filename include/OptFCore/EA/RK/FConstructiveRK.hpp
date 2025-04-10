@@ -4,6 +4,8 @@
 #ifndef OPTFCORE_EA_RK_FCONSTRUCTIVERK_HPP_  // NOLINT
 #define OPTFCORE_EA_RK_FCONSTRUCTIVERK_HPP_  // NOLINT
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // C++
 #include <functional>
 #include <string>
@@ -14,11 +16,27 @@
 #include <OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp>
 #include <OptFrame/Heuristics/EA/RK/RK.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
 // only works for RK representation
 //
-template <class KeyType = double>
+MOD_EXPORT template <class KeyType = double>
 class FConstructiveRK final : public ConstructiveRK<KeyType> {
   using super = ConstructiveRK<KeyType>;
 

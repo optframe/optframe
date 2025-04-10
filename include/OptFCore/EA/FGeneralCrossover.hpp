@@ -4,6 +4,8 @@
 #ifndef OPTFCORE_EA_FGENERALCROSSOVER_HPP_
 #define OPTFCORE_EA_FGENERALCROSSOVER_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 // c++
 #include <functional>
 #include <string>
@@ -12,9 +14,25 @@
 #include <OptFrame/Heuristics/EA/GeneralCrossover.hpp>
 //
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XSolution S>
+MOD_EXPORT template <XSolution S>
 class FGeneralCrossover final : public GeneralCrossover<S> {
   using super = GeneralCrossover<S>;
 
@@ -50,9 +68,7 @@ class FGeneralCrossover final : public GeneralCrossover<S> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

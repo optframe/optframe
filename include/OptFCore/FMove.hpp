@@ -4,22 +4,39 @@
 #ifndef OPTFCORE_FMOVE_HPP_
 #define OPTFCORE_FMOVE_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <functional>
 #include <string>
 //
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 #include <OptFrame/Core/Move.hpp>
 
-namespace optframe {
+#define MOD_EXPORT
+#else
 
-template <class M, XESolution XES>
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
+namespace optframe {
+MOD_EXPORT template <class M, XESolution XES>
 auto fDefaultCanBeApplied = [](const M&, const XES&) -> bool { return true; };
 //
-template <class M, XESolution XES>
+MOD_EXPORT template <class M, XESolution XES>
 auto fDefaultCompareEq =
     [](const M& me, const Move<XES>& other) -> bool { return false; };
 //
-template <class M, XESolution XES>
+MOD_EXPORT template <class M, XESolution XES>
 class FMove final : public Move<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective

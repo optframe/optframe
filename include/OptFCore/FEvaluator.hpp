@@ -4,6 +4,8 @@
 #ifndef OPTFCORE_FEVALUATOR_HPP_
 #define OPTFCORE_FEVALUATOR_HPP_
 
+#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+
 #include <functional>
 #include <string>
 #include <type_traits>
@@ -11,9 +13,26 @@
 #include <OptFCore/FDirection.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#endif
+
 namespace optframe {
 
-template <XESolution XES, MinOrMax Minimizing, typename ProblemType = void>
+MOD_EXPORT template <XESolution XES, MinOrMax Minimizing,
+                     typename ProblemType = void>
 class FEvaluator final : public Evaluator<typename XES::first_type,
                                           typename XES::second_type, XES> {
   using super =
