@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 4.0)
 
 option(USE_CXX_MODULES "Use modules (default OFF unless -DUSE_CXX_MODULES=ON)" ON)
 
-# set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
+#set(CMAKE_CXX_COMPILER /usr/bin/g++-15)
 
-if(USE_CXX_MODULES)
-  set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ ")
-endif()
+#if(USE_CXX_MODULES)
+#  set(CMAKE_CXX_COMPILER /usr/bin/clang++-19)
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ ")
+#endif()
 
 option(USE_CXX_CONCEPTS "Use concepts (default OFF unless -DUSE_CXX_CONCEPTS=ON)" ON)
 
@@ -92,6 +92,11 @@ add_library(optframe_semstream)
 target_link_libraries(optframe_semstream PUBLIC OptFrameAll)
 target_sources(optframe_semstream  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/semstream.cppm)
 
+add_library(optframe_printable)
+target_link_libraries(optframe_printable PUBLIC OptFrameAll)
+target_sources(optframe_printable  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/printable.cppm)
+target_link_libraries(optframe_printable PUBLIC optframe_semstream)
+
 add_library(optframe_concepts_my)
 target_link_libraries(optframe_concepts_my PUBLIC OptFrameAll)
 target_sources(optframe_concepts_my  PUBLIC  FILE_SET CXX_MODULES FILES src/optframe/concepts_my.cppm)
@@ -162,7 +167,7 @@ target_link_libraries(optframe_util PUBLIC optframe_core optframe_scannerpp)
 
 #add_library(optframe_examples)
 #target_sources(optframe_examples  PUBLIC  FILE_SET CXX_MODULES FILES  src/optframe/examples/kp.cppm src/optframe/examples/btsp.cppm src/optframe/examples.cppm)
-#target_link_libraries(optframe_examples PUBLIC optframe_core optframe_heuristics optframe_scannerpp optframe_functional optframe_util)
+#target_link_libraries(optframe_examples PUBLIC optframe_core optframe_heuristics optframe_scannerpp optframe_functional optframe_util optframe_printable)
 
 
 add_library(optframe_module)
@@ -189,12 +194,13 @@ include(Catch)
 
 
 #if(USE_CXX_MODULES)
-#add_executable(my_test_module tests/all_module.Test.cpp)
-#target_link_libraries(my_test_module PRIVATE OptFrameAll Catch2::Catch2WithMain optframe_module optframe_examples)
-## https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
-#target_compile_definitions(my_test_module PRIVATE _HAS_STD_BYTE=0)
-#catch_discover_tests(my_test_module)
-#endif()
+if(0)
+add_executable(my_test_module tests/all_module.Test.cpp)
+target_link_libraries(my_test_module PRIVATE OptFrameAll Catch2::Catch2WithMain optframe_module optframe_examples)
+# https://stackoverflow.com/questions/58059048/ambiguous-byte-definition-in-rpcndr-and-cstddef#58060367
+target_compile_definitions(my_test_module PRIVATE _HAS_STD_BYTE=0)
+catch_discover_tests(my_test_module)
+endif()
 
 
 
