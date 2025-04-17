@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_RANDGEN_HPP_
 #define OPTFRAME_RANDGEN_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C includes
 #include <math.h>

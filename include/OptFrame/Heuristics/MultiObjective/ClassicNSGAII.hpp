@@ -123,7 +123,7 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
   }
 
  public:
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     //
     mevr->setMessageLevelR(ll);

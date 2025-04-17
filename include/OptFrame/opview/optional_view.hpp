@@ -29,7 +29,7 @@
 // and avoid user to take pointer (and maybe even ban pointer interface here).
 // Unsafe ref passing as T& is natural and should be kept.
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <optional>  // for std::nullopt
 

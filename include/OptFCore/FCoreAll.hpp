@@ -13,15 +13,16 @@
 #include "OptFCore/FNS.hpp"
 #include "OptFCore/FNSSeq.hpp"
 //
-#include "OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp"                 // Extra
-#include "OptFrame/Heuristics/EA/RK/DecoderRandomKeysNoEvaluation.hpp"  // Extra
+// #include "OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp"                 //
+// Extra #include "OptFrame/Heuristics/EA/RK/DecoderRandomKeysNoEvaluation.hpp"
+// // Extra
 //
 #include "OptFCore/EA/RK/FConstructiveRK.hpp"         // Extra
 #include "OptFCore/EA/RK/FDecoderEvalRK.hpp"          // Extra
 #include "OptFCore/EA/RK/FDecoderNoEvaluationRK.hpp"  // Extra
 #include "OptFCore/EA/RK/FDecoderRK.hpp"              // Extra
 //
-#include "OptFrame/Heuristics/EA/GeneralCrossover.hpp"  // Extra
+// #include "OptFrame/Heuristics/EA/GeneralCrossover.hpp"  // Extra
 //
 #include "OptFCore/EA/FGeneralCrossover.hpp"
 #include "OptFCore/FCore.hpp"

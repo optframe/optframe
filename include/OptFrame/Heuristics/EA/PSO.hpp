@@ -337,7 +337,7 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
    }
    */
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     // force execution over all components
     return evaluator.setMessageLevelR(ll);

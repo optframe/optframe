@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 #define OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Helper/Solution.hpp>

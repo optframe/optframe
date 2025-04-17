@@ -23,7 +23,7 @@
 #ifndef OPTFRAME_EXPERIMENTAL_NSBLOCKITERATOR_HPP_
 #define OPTFRAME_EXPERIMENTAL_NSBLOCKITERATOR_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
 #include <utility>

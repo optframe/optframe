@@ -16,4 +16,6 @@ export import optframe.concepts;  // testing Empty!
 export import std;
 
 // // -Winclude-angled-in-module-purview
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/Search.hpp"

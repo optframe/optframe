@@ -8,7 +8,7 @@
 #ifndef SCANNERPP_SCANNER_HPP_
 #define SCANNERPP_SCANNER_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <stdlib.h>
 

@@ -20,7 +20,7 @@ Fri Jun 18 20:10:45 2021 -0300 fix link
 */
 // TODO FIX ABOVE HASH... NOW WE NEED CXX_MODULES!!
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <stdlib.h>  // for exit()
 // #include <gsl/gsl> // NotNull (local copy)

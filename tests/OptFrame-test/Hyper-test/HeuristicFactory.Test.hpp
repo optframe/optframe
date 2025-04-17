@@ -59,7 +59,7 @@ TEST_CASE("OptFrameHeuristicFactoryTests: addComponentList") {
   hf.logdata = &ss;
 
   // normal print
-  hf.setLogLevel(LogLevel::Info);
+  hf.setLogLevel(modlog::LogLevel::Info);
 
   // case 1: empty list (should add normally!)
   vector<sptr<Component>> cListEmpty;

@@ -5,7 +5,7 @@
 #ifndef OPTFRAME_CORE_EXAMPLES_FCORE_KP_KP_FCORE_HPP_  // NOLINT
 #define OPTFRAME_CORE_EXAMPLES_FCORE_KP_KP_FCORE_HPP_  // NOLINT
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C++
 #include <algorithm>

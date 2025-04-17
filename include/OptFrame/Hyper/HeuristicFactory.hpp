@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HYPER_HEURISTICFACTORY_HPP_
 #define OPTFRAME_HYPER_HEURISTICFACTORY_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C++
 #include <iostream>
@@ -12,6 +12,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+// thirdparty
+#include <OptFrame/modlog/modlog.hpp>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/MultiESolution.hpp>
@@ -117,13 +119,17 @@ class HeuristicFactory {
 
  private:
   // for debug purposes (mainly 'memory debug')
-  LogLevel loglevel;
+  modlog::LogLevel loglevel;
   // default random number generator
   sref<RandGen> rg;
 
  public:
   // output stream (defaults to std::cout)
   std::ostream* logdata{&std::cout};
+
+  modlog::LogConfig log() {
+    return {.os = logdata, .minlog = loglevel, .prefix = true};
+  }
 
  public:
   std::map<std::string, std::vector<sptr<Component>>> components;
@@ -133,11 +139,12 @@ class HeuristicFactory {
   std::map<std::string, std::vector<std::vector<sptr<Component>>>>
       componentLists;
 
-  explicit HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
+  explicit HeuristicFactory(
+      modlog::LogLevel _loglevel = modlog::LogLevel::Warning)
       : loglevel{_loglevel}, rg{new RandGen} {}
 
-  explicit HeuristicFactory(sref<RandGen> _rg,
-                            LogLevel _loglevel = LogLevel::Warning)
+  explicit HeuristicFactory(
+      sref<RandGen> _rg, modlog::LogLevel _loglevel = modlog::LogLevel::Warning)
       : loglevel{_loglevel}, rg{_rg} {}
 
   virtual ~HeuristicFactory() {
@@ -150,13 +157,13 @@ class HeuristicFactory {
     actions.clear();
   }
 
-  const LogLevel& getLogLevel() const { return this->loglevel; }
+  const modlog::LogLevel getLogLevel() const { return this->loglevel; }
 
-  void setLogLevel(LogLevel ll) {
+  void setLogLevel(modlog::LogLevel ll) {
     this->loglevel = ll;
     // must apply loglevel to all builders
     for (unsigned i = 0; i < builders.size(); i++) {
-      if (ll == LogLevel::Debug)
+      if (ll == modlog::LogLevel::Debug)
         std::cout << "Setting builder LogLevel to Debug: " << builders[i]->id()
                   << std::endl;
       builders[i]->setMessageLevel(ll);
@@ -217,7 +224,7 @@ class HeuristicFactory {
         }
       }
       if (!component) {
-        if (loglevel >= LogLevel::Warning)
+        if (getLogLevel() <= modlog::LogLevel::Warning)
           std::cout << "HeuristicFactory warning: pattern of component '" << id
                     << " " << number << "' not found" << std::endl;
       }
@@ -228,7 +235,7 @@ class HeuristicFactory {
 
         if (number < v.size()) component = v[number];
       } else {
-        if (loglevel >= LogLevel::Warning)
+        if (getLogLevel() <= modlog::LogLevel::Warning)
           std::cout << "HeuristicFactory warning: component '" << id << " "
                     << number << "' not found!" << std::endl;
       }
@@ -245,7 +252,7 @@ class HeuristicFactory {
   template <class T>
   void assign(std::shared_ptr<T>& component, unsigned number, std::string id) {
     // NOTE THAT component is likely to be NULL!!
-    if (loglevel >= LogLevel::Debug) {
+    if (getLogLevel() <= modlog::LogLevel::Debug) {
       std::cout << "Debug: hf will try to assign component '"
                 << (component ? component->id() : "nullptr");
       std::cout << "' with id = '" << id << " #" << number << std::endl;
@@ -258,7 +265,7 @@ class HeuristicFactory {
     }
 
     if (!ComponentHelper::compareBase(T::idComponent(), id)) {
-      if (loglevel >= LogLevel::Warning)
+      if (getLogLevel() <= modlog::LogLevel::Warning)
         std::cout << "HeuristicFactory: incompatible assign '"
                   << T::idComponent() << "' <- '" << id << "'" << std::endl;
 
@@ -276,7 +283,7 @@ class HeuristicFactory {
         return;
       }
     } else {
-      if (loglevel >= LogLevel::Warning)
+      if (getLogLevel() <= modlog::LogLevel::Warning)
         std::cout << "'" << id << "' not found!" << std::endl;
     }
 
@@ -293,7 +300,7 @@ class HeuristicFactory {
     listId += "[]";
 
     if (!ComponentHelper::compareBase(T::idComponent(), noList)) {
-      if (loglevel >= LogLevel::Warning)
+      if (getLogLevel() <= modlog::LogLevel::Warning)
         std::cout << "HeuristicFactory: incompatible list assign '["
                   << T::idComponent() << "]' <- '[" << noList << "]'"
                   << std::endl;
@@ -308,7 +315,7 @@ class HeuristicFactory {
           cList.push_back(sptr<T>((std::shared_ptr<T>&)vv[number][i]));
       }
     } else {
-      if (loglevel >= LogLevel::Warning)
+      if (getLogLevel() <= modlog::LogLevel::Warning)
         std::cout << "'" << listId << " " << number << "' not found!"
                   << std::endl;
     }
@@ -329,7 +336,7 @@ class HeuristicFactory {
     std::vector<std::string> vparts2;
     while (scan2.hasNext()) vparts2.push_back(scan2.next());
     //
-    if (loglevel >= LogLevel::Debug) {
+    if (getLogLevel() <= modlog::LogLevel::Debug) {
       std::cout << "DEBUG: HF checkCompatible(" << scomponent << ";" << starget
                 << ")" << std::endl;
       for (unsigned i = 0; i < vparts1.size(); i++)
@@ -365,7 +372,7 @@ class HeuristicFactory {
     // NO NEED FOR DOUBLE POINTER WARNING ANYMORE... LONG LIVE SHARED_PTR!!!
     /*
       if (inComponents(component.sptr())) {
-         if (loglevel >= LogLevel::Warning)
+         if (getLogLevel() <= modlog::LogLevel::Warning)
             std::cout << "WARNING: HeuristicFactory addComponent: component '"
       << component->id() << "' already registered!" << std::endl;
          //return -1;
@@ -373,7 +380,7 @@ class HeuristicFactory {
       */
 
     bool b = checkCompatible(component->id(), id);
-    if (loglevel >= LogLevel::Debug)
+    if (getLogLevel() <= modlog::LogLevel::Debug)
       std::cout << "DEBUG: HF checkCompatible returns b=" << b << std::endl;
 
     bool b2 = component->compatible(id);
@@ -381,7 +388,7 @@ class HeuristicFactory {
     // experimental: disagreement is not ok
     // xor
     if (b ^ b2) {
-      if (loglevel >= LogLevel::Warning) {
+      if (getLogLevel() <= modlog::LogLevel::Warning) {
         std::cout << "HF WARNING: disagreement between b and b2! Must Fix this!"
                   << std::endl;
         // assert(false);
@@ -392,7 +399,7 @@ class HeuristicFactory {
 
     // experimental: but agreement is ok
     if ((!b) && (!b2)) {
-      if (loglevel >= LogLevel::Warning) {
+      if (getLogLevel() <= modlog::LogLevel::Warning) {
         std::cout << "HeuristicFactory addComponent: incompatible components. "
                      "NOTE: component->id():'";
         std::cout << component->id() << "' ->compatible('" << id
@@ -429,7 +436,7 @@ class HeuristicFactory {
     std::string tmp = scanner.next();
 
     if (tmp != T::idComponent()) {
-      if (loglevel >= LogLevel::Error)
+      if (getLogLevel() <= modlog::LogLevel::Error)
         std::cout << "Error: expected '" << T::idComponent() << "' and found '"
                   << tmp << "'." << std::endl;
 
@@ -461,7 +468,7 @@ class HeuristicFactory {
 
     for (unsigned i = 0; i < cList.size(); i++)
       if ((cList[i] == nullptr) || (!cList[i]->compatible(noList))) {
-        Component::logWarn(loglevel, "HeuristicFactory", *logdata)
+        Component::logWarn(getLogLevel(), "HeuristicFactory", *logdata)
             << "incompatible components '" << cList[i]->id() << "' and '"
             << ComponentHelper::typeOfList(listId) << "'!" << std::endl;
 
@@ -473,7 +480,7 @@ class HeuristicFactory {
 
     int idx = componentLists[listId].size() - 1;
 
-    Component::logInfo(loglevel, "HeuristicFactory", *logdata)
+    Component::logInfo(getLogLevel(), "HeuristicFactory", *logdata)
         << "adding to list type '" << listId << "' id " << idx << " size "
         << cList.size() << std::endl;
 
@@ -537,7 +544,7 @@ class HeuristicFactory {
                  \sa listComponents(std::string)
          */
   std::vector<std::string> listComponentLists(std::string pattern) {
-    if (loglevel >= LogLevel::Debug)
+    if (getLogLevel() <= modlog::LogLevel::Debug)
       std::cout << "listing component lists for pattern = '" << pattern << "'"
                 << std::endl;
     std::vector<std::string> list;
@@ -613,14 +620,14 @@ class HeuristicFactory {
       std::vector<std::shared_ptr<Component>>& v = iter->second;
 
       for (unsigned int i = 0; i < v.size(); i++) {
-        if (loglevel >= LogLevel::Debug)
+        if (getLogLevel() <= modlog::LogLevel::Debug)
           std::cout << "HF: will clear v.toString()=" << v[i]->toString()
                     << std::endl;
         // delete v[i];
         v[i] = nullptr;
       }
 
-      if (loglevel >= LogLevel::Debug)
+      if (getLogLevel() <= modlog::LogLevel::Debug)
         std::cout << "    => HF: CLEARING COMPONENT: '" << iter->first << "'"
                   << std::endl;
       //
@@ -693,7 +700,7 @@ class HeuristicFactory {
       }
     }
 
-    if (loglevel >= LogLevel::Warning)
+    if (getLogLevel() <= modlog::LogLevel::Warning)
       std::cout
           << "HeuristicFactory::createLocalSearch warning: no LocalSearch '"
           << h << "' found! ignoring..." << std::endl;
@@ -751,7 +758,7 @@ class HeuristicFactory {
       }
     }
 
-    if (loglevel >= LogLevel::Warning)
+    if (getLogLevel() <= modlog::LogLevel::Warning)
       std::cout << "HeuristicFactory::createSingleObjSearch warning: no "
                    "SingleObjSearch '"
                 << h << "' found! ignoring..." << std::endl;
@@ -785,7 +792,7 @@ class HeuristicFactory {
     if (h == EmptyMultiObjSearch<XES>::idComponent())
       return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
-    if (loglevel >= LogLevel::Warning)
+    if (getLogLevel() <= modlog::LogLevel::Warning)
       std::cout << "HeuristicFactory::createMultiObjSearch warning: no "
                    "MultiObjSearch '"
                 << h << "' found! ignoring..." << std::endl;

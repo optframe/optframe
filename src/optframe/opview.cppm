@@ -12,4 +12,6 @@ export import std;
 
 // #include <OptFrame/opview/optional_view.hpp>
 // // -Winclude-angled-in-module-purview
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/opview/optional_view.hpp"

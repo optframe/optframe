@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
 #include <utility>
@@ -102,7 +102,7 @@ class HillClimbing : public LocalSearch<XES> {
     return ss.str();
   }
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     // evaluator->setVerboseR();
     return ls->setMessageLevelR(ll);

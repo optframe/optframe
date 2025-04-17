@@ -23,7 +23,7 @@
 #ifndef OPTFRAME_NSFIND_HPP_
 #define OPTFRAME_NSFIND_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Core/GeneralEvaluator.hpp>  // included for Neighborhood Exploration

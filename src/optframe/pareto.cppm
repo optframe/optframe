@@ -15,6 +15,8 @@ export import std;
 
 // -Winclude-angled-in-module-purview
 //
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/Pareto/MultiEvaluator.hpp"
 //
 #include "OptFrame/Pareto/MultiEvaluation.hpp"  // Maybe not Core... some Helper!

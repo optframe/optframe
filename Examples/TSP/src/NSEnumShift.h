@@ -6,8 +6,7 @@
 
 // Framework includes
 
-#include "OptFrame/Move.hpp"
-//
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Util/NSAdapter/NSEnumVectorShift.hpp>
 

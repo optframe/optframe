@@ -47,7 +47,14 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 RUN sudo add-apt-repository "deb http://br.archive.ubuntu.com/ubuntu plucky main universe"
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-     && apt-get -y install --no-install-recommends g++-15 gcc-15
+     && apt-get -y install --no-install-recommends  g++-15 gcc-15
+
+# Cannot find source file:
+# /usr/lib/gcc/x86_64-linux-gnu/include/c++/15/bits/std.cc
+# __CMAKE__CXX23@synth_1b0281cd19d1
+
+RUN mkdir -p /usr/lib/gcc/x86_64-linux-gnu/include/
+RUN ln -s    /usr/include/c++/ /usr/lib/gcc/x86_64-linux-gnu/include/c++
 
 # FORCE UPGRADE (NEVER ON PLUCKY!)
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \

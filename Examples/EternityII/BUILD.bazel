@@ -13,5 +13,5 @@ cc_binary(
     data = glob([
         "pieces_set_2/*.txt",
     ]),
-    deps = ["@OptFrame//include:OptFrame", "//include:EtII_lib"]
+    deps = ["@optframe//include:OptFrame", "//include:EtII_lib"]
 )

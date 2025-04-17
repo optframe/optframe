@@ -10,7 +10,6 @@ app_*
 *.err
 *.code-workspace
 bazel-*
-.vscode
 .xxxxx-vscode
 vgcore.*
 
@@ -27,3 +26,4 @@ build/
 *.lock
 
 Examples/SUKP
+format-test

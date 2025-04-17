@@ -1,7 +1,7 @@
 #ifndef OPTFRAME_KAHANACCUMULATION_HPP_
 #define OPTFRAME_KAHANACCUMULATION_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <numeric>  //accumlate
 #include <vector>

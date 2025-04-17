@@ -14,4 +14,6 @@ export import optframe.search;
 
 export import std;
 
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/Heuristics.hpp"

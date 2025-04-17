@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_TIMER_BUILDER_HPP_
 #define OPTFRAME_TIMER_BUILDER_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #define MOD_EXPORT
 #else

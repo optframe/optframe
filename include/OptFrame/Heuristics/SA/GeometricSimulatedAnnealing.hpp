@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_SA_GEOMETRICSIMULATEDANNEALING_HPP_
 #define OPTFRAME_HEURISTICS_SA_GEOMETRICSIMULATEDANNEALING_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // ==== Classic Geometric Cooling Simulated Annealing ====
 // This is a simplified version of BasicSimulatedAnnealing,
@@ -150,7 +150,7 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
   //               Component
   // =======================================
   // set verbose level recursive: returns 'false' if not supported.
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     //
     evaluator->setMessageLevel(ll);

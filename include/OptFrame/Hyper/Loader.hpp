@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HYPER_LOADER_HPP_
 #define OPTFRAME_HYPER_LOADER_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 /*! \mainpage OptFrame
  * This is the OptFrame documentation.

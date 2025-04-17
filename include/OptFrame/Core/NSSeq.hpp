@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_NSSEQ_HPP_
 #define OPTFRAME_NSSEQ_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
 #include <type_traits>  // static assert is_same

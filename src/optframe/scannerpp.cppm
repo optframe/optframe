@@ -12,4 +12,7 @@ export import std;
 
 // #include <OptFrame/Scanner++/Scanner.hpp>
 // // -Winclude-angled-in-module-purview
+
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/Scanner++/Scanner.hpp"

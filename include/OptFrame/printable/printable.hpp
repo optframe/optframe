@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/SemStream.hpp>
+#include <OptFrame/SemStreams.hpp>
 
 // TODO(igormcoelho): std::ostreamable
 // #include "../myconcepts.h" // std::ostreamable concept!

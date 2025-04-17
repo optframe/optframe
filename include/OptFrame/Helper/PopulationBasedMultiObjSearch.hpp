@@ -102,7 +102,7 @@ class PopulationBasedMultiObjSearch
       const StopCriteria<XMEv>& stopCriteria,
       std::optional<Pareto<XMES>> _best) override = 0;
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     //
     mDir->setMessageLevelR(ll);
@@ -407,7 +407,7 @@ class NSPopulationBasedMultiObjSearch
   }
 
  public:
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     //
     mev->setMessageLevelR(ll);

@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_RK_HPP_
 #define OPTFRAME_CONSTRUCTIVE_RK_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C++
 #include <vector>

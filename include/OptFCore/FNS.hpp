@@ -4,7 +4,7 @@
 #ifndef OPTFCORE_FNS_HPP_
 #define OPTFCORE_FNS_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <functional>
 #include <string>

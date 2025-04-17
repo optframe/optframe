@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_ILOOP_HPP_  // NOLINT
 #define OPTFRAME_ILOOP_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <OptFrame/Search/SearchOutput.hpp>
 #include <OptFrame/Search/StopCriteria.hpp>

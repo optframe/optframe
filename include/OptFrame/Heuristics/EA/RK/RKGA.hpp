@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
 #define OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C++
 #include <algorithm>
@@ -100,7 +100,7 @@ class RandomKeysInitEPop
     return pop;
   }
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     return InitialEPopulation<XES>::setMessageLevelR(ll);
   }
@@ -509,7 +509,7 @@ class RKGA : public Populational<XES, XES, XES2> {
   }
   */
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     // force execution over all components
     bool b1 = decoder->setMessageLevelR(ll);

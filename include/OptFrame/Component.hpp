@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_COMPONENT_HPP_
 #define OPTFRAME_COMPONENT_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <cstdlib>
 #include <iostream>
@@ -14,7 +14,8 @@
 #include <vector>  // only for OPTFRAME_AC
 
 //
-#include <OptFrame/SemStream.hpp>
+// #include <OptFrame/SemStream.hpp>
+#include <OptFrame/modlog/modlog.hpp>
 
 #define MOD_EXPORT
 #else
@@ -44,26 +45,19 @@ using std::stringstream;
 #endif
 */
 
+// ================
+// Notes on Logging
+// ----------------
+
+// OptFrame v5 system: less is less verbose (more is more verbose)
+// Silent = 0
 // |      1      |      2      |      3      |      4      |
 // |    error    |   warning   | information | debug/verb. | => this direction =
 // more verbose...
 
-// One can use logs like this:
-// Suppose my 'loglevel' is Info (default)
-// Then, I would also allow everything more restrict than Info, such as Warnings
-// and Errors So, if my 'loglevel' (3) is higher than Warning (2), warnings will
-// also display, but Debug (4) will not. Example: if (loglevel >=
-// LogLevel::Warning) { ... } translates to: if loglevel "more verbose than"
-// warning ...
-//
-
-MOD_EXPORT enum LogLevel {
-  Silent = 0,
-  Error = 1,
-  Warning = 2,
-  Info = 3,
-  Debug = 4
-};
+// OptFrame v6 system: modlog!
+// debug=-1, info=0, warn=1, error=2, fatal=3
+// Now, greater is less verbose, but more important!
 
 enum StringFormat {
   Undefined = 0,  // undefined... typically 'Human'
@@ -83,12 +77,16 @@ MOD_EXPORT class ContextAC {
 
 MOD_EXPORT class Component {
  public:
-  // Log* logdata;
-  //
   //  'logdata' is for User logs
   std::ostream* logdata{&std::cout};
   // 'mlog' is for machine logs (disabled by default)
   std::ostream* mlog{nullptr};
+  // store component-level log flag
+  modlog::LogLevel verboseLevel;
+
+  modlog::LogConfig log() {
+    return {.os = logdata, .minlog = verboseLevel, .prefix = true};
+  }
 
   static bool safe_delete(Component* c) {
     if (c) {
@@ -108,25 +106,27 @@ MOD_EXPORT class Component {
   }
 
  public:
-  static std::ostream& logInfo(LogLevel ll, std::string prefix = "",
+  static std::ostream& logInfo(modlog::LogLevel severity,
+                               std::string prefix = "",
                                std::ostream& os = std::cout) {
-    if (ll >= LogLevel::Info) {
+    if (severity <= modlog::LogLevel::Info) {
       if (prefix.length() > 0)
         os << "INFO(" << prefix << "): ";  // add prefix if non-empty
       return os;
     } else {
-      return osNull;
+      return modlog::modlog_default.no;
     }
   }
 
-  static std::ostream& logWarn(LogLevel ll, std::string prefix = "",
+  static std::ostream& logWarn(modlog::LogLevel severity,
+                               std::string prefix = "",
                                std::ostream& os = std::cout) {
-    if (ll >= LogLevel::Warning) {
+    if (severity <= modlog::LogLevel::Warning) {
       if (prefix.length() > 0)
         os << "WARN(" << prefix << "): ";  // add prefix if non-empty
       return os;
     } else {
-      return osNull;
+      return modlog::modlog_default.no;
     }
   }
 
@@ -148,7 +148,7 @@ MOD_EXPORT class Component {
   // KEEP THIS PUBLIC, TO MAKE IT EASY TO USE
   //
   // this is equivalent to LogLevel
-  int verboseLevel;
+  // int verboseLevel;
 
   // auxiliar flags
   bool error;
@@ -162,6 +162,8 @@ MOD_EXPORT class Component {
                // constexpr, when NDEBUG is ON
 #endif
   bool verbose;  // no dead code elimination, even when NDEBUG is ON
+
+  // Notes on Logging
 
   // Mode: SILENT  = 0
   // |      1      |      2      |      3      |      4      |
@@ -191,7 +193,7 @@ MOD_EXPORT class Component {
  public:
   Component() {
     // TODO: create 'logless' implementation on OptFrame (is it faster?)
-    setMessageLevel(LogLevel::Info);
+    setMessageLevel(modlog::LogLevel::Info);
     // logdata = nullptr;
   }
 
@@ -256,24 +258,28 @@ MOD_EXPORT class Component {
 
   // -----------
 
-  void setVerbose() { setMessageLevel(LogLevel::Debug); }
+  void setVerbose() { setMessageLevel(modlog::LogLevel::Debug); }
 
   // set verbose level recursive: returns 'false' if not supported.
-  virtual bool setVerboseR() final { return setMessageLevelR(LogLevel::Debug); }
+  virtual bool setVerboseR() final {
+    return setMessageLevelR(modlog::LogLevel::Debug);
+  }
 
   // -----------
 
   // set silent level
-  virtual void setSilent() { setMessageLevel(LogLevel::Silent); }
+  virtual void setSilent() { setMessageLevel(modlog::LogLevel::Silent); }
 
   // set silent level recursive: returns 'false' if not supported.
-  virtual bool setSilentR() final { return setMessageLevelR(LogLevel::Silent); }
+  virtual bool setSilentR() final {
+    return setMessageLevelR(modlog::LogLevel::Silent);
+  }
 
   // ------------------------------
 
-  LogLevel getMessageLevel() const { return (LogLevel)verboseLevel; }
+  modlog::LogLevel getMessageLevel() const { return verboseLevel; }
 
-  virtual void setMessageLevel(LogLevel vl) final {
+  virtual void setMessageLevel(modlog::LogLevel vl) final {
     error = warning = information = verbose = false;
 #ifndef NDEBUG
     debug = false;
@@ -281,15 +287,15 @@ MOD_EXPORT class Component {
 
     verboseLevel = vl;
     switch (verboseLevel) {
-      case LogLevel::Silent:  // SILENT 0
+      case modlog::LogLevel::Silent:
         break;
-      case LogLevel::Error:  // ERROR 1
+      case modlog::LogLevel::Error:
         error = true;
         break;
-      case LogLevel::Warning:  // WARNING 2
+      case modlog::LogLevel::Warning:
         warning = true;
         break;
-      case LogLevel::Debug:  // VERBOSE 4
+      case modlog::LogLevel::Debug:
 #ifdef NDEBUG
         std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag! "
                      "Setting LogLevel::Info instead."
@@ -310,7 +316,7 @@ MOD_EXPORT class Component {
   }
 
   // set log level recursive: returns 'false' if not supported.
-  virtual bool setMessageLevelR(LogLevel vl) {
+  virtual bool setMessageLevelR(modlog::LogLevel vl) {
     setMessageLevel(vl);
     return false;
   }
@@ -318,7 +324,7 @@ MOD_EXPORT class Component {
   // =============================
   // for old/compatibility reasons
 
-  bool getVerboseLevel() { return verboseLevel >= 4; }
+  bool getVerboseLevel() { return verboseLevel == modlog::LogLevel::Debug; }
 };
 
 }  // namespace optframe

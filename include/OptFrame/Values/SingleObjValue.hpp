@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_SINGLE_OBJ_VALUE_HPP
 #define OPTFRAME_SINGLE_OBJ_VALUE_HPP
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <math.h> /* fabs */
 

@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_DECODERRANDOMKEYS_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_EA_RK_DECODERRANDOMKEYS_HPP_  // NOLINT
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <algorithm>
 #include <string>

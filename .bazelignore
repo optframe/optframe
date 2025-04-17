@@ -3,3 +3,4 @@ build/
 Examples/
 demo/
 libs/erenon_bazel_clang_tidy
+format-test

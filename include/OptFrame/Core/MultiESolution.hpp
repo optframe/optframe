@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HELPER_MULTIESOLUTION_HPP_
 #define OPTFRAME_HELPER_MULTIESOLUTION_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <vector>
 //
@@ -177,7 +177,7 @@ class MultiESolution : public Component {
 
 /*
 // DO NOT DO THESE TESTS INSIDE MODULES!
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 // TODO: only in unit tests (or somehow prevent #include "printable.h")

@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_NS_HPP_
 #define OPTFRAME_NS_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
 #include <utility>

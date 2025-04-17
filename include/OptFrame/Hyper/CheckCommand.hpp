@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_UTIL_CHECKCOMMAND_HPP_  // NOLINT
 #define OPTFRAME_UTIL_CHECKCOMMAND_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
 #include <vector>
@@ -253,13 +253,13 @@ class CheckCommand : public Component {  // NOLINT
     // this->verbose = _verbose;
     if (_verbose)
       // logLevel = LogLevel::Debug;
-      this->setMessageLevel(LogLevel::Debug);
+      this->setMessageLevel(modlog::LogLevel::Debug);
     else
       // logLevel = LogLevel::Silent;
-      this->setMessageLevel(LogLevel::Silent);
+      this->setMessageLevel(modlog::LogLevel::Silent);
   }
 
-  void setLogLevel(LogLevel _logLevel) {
+  void setLogLevel(modlog::LogLevel _logLevel) {
     // this->logLevel = _logLevel;
     this->setMessageLevel(_logLevel);
     // if (logLevel >= LogLevel::Debug)
@@ -271,9 +271,9 @@ class CheckCommand : public Component {  // NOLINT
   explicit CheckCommand(bool _verbose = false) : paramConvertNS{true} {
     //
     if (verbose)
-      this->setMessageLevel(LogLevel::Debug);
+      this->setMessageLevel(modlog::LogLevel::Debug);
     else
-      this->setMessageLevel(LogLevel::Info);
+      this->setMessageLevel(modlog::LogLevel::Info);
 
 #ifdef LEGACY_ADS
     adsMan = nullptr;
@@ -963,7 +963,8 @@ class CheckCommand : public Component {  // NOLINT
       (*this->logdata) << "CheckCommand::run(";
       (*this->logdata) << "iterMax=" << iterMax << ";";
       (*this->logdata) << "nSolNSSeq=" << nSolNSSeq << ";";
-      (*this->logdata) << "logLevel=" << getMessageLevel() << ")" << std::endl;
+      (*this->logdata) << "logLevel=" << (int)getMessageLevel() << ")"
+                       << std::endl;
     }
     // ======================================
     //           BEGIN TESTS

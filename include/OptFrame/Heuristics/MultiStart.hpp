@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_MULTISTART_HPP_
 #define OPTFRAME_HEURISTICS_MULTISTART_HPP_  // NOLINT
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
 #include <math.h>
@@ -104,7 +104,7 @@ class MultiStart : public SingleObjSearch<XES>, public ITrajectory<XES> {
   //               Component
   // =======================================
   // set verbose level recursive: returns 'false' if not supported.
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
 
     evaluator->setMessageLevel(ll);

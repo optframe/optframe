@@ -85,8 +85,8 @@ class FCoreApi1Engine {
   void updateParameters() {
     int engine_ll = std::stoi(this->experimentalParams["ENGINE_LOG_LEVEL"]);
     int comp_ll = std::stoi(this->experimentalParams["COMPONENT_LOG_LEVEL"]);
-    this->engineLogLevel = (optframe::LogLevel)engine_ll;
-    this->componentLogLevel = (optframe::LogLevel)comp_ll;
+    this->engineLogLevel = (modlog::LogLevel)engine_ll;
+    this->componentLogLevel = (modlog::LogLevel)comp_ll;
     check.setLogLevel(engineLogLevel);
     loader.factory.setLogLevel(engineLogLevel);
   }
@@ -98,9 +98,11 @@ class FCoreApi1Engine {
   // for specific components.
   //
   // engineLogLevel: 0-silent 1-error 2-warning 3-info 4-debug
-  optframe::LogLevel engineLogLevel;
+  // UPDATED (modlog): -2 silent, -1 debug, 0 info, 1 warn, 2 error, 3 fatal
+  modlog::LogLevel engineLogLevel;
   // componentLogLevel: 0-silent 1-error 2-warning 3-info 4-debug
-  optframe::LogLevel componentLogLevel;
+  // // UPDATED (modlog): -2 silent, -1 debug, 0 info, 1 warn, 2 error, 3 fatal
+  modlog::LogLevel componentLogLevel;
 
   optframe::Loader<FCoreLibESolution  //  XESolution XES = pair<S, XEv>,
                                       // X2ESolution<XES> X2ES =
@@ -301,9 +303,9 @@ OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int ll) {
   // safety checks on log level
   if (ll <= 0) ll = 0;
   if (ll >= 4) ll = 4;
-  auto l = (optframe::LogLevel)ll;
+  auto l = (modlog::LogLevel)ll;
   auto* _eng = new FCoreApi1Engine;
-  if (l == optframe::LogLevel::Debug)
+  if (l == modlog::LogLevel::Debug)
     std::cout << "Debug: will set OptFrame Engine loglevel to Debug"
               << std::endl;
   //
@@ -371,7 +373,7 @@ OPT_MODULE_API int  // index of ComponentList
 optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
                                      char* list_type) {
   auto* engine = (FCoreApi1Engine*)_engine;
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "DEBUG: create_component_list" << std::endl;
   //
   std::string str_list{clist};
@@ -384,7 +386,7 @@ optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
   std::vector<std::string>* vvlist =
       optframe::OptFrameList::readList(ldictionary, str_list);
   //
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug) {
     std::cout << "create_component_list readList:: size=" << vvlist->size()
               << std::endl;
     std::cout << vvlist->at(0) << std::endl;
@@ -403,7 +405,7 @@ optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
 
   int id = engine->loader.factory.addComponentList(vcomp, str_type);
 
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "DEBUG: end create_component_list id=" << id << std::endl;
   return id;
 }
@@ -493,7 +495,7 @@ optframe_api0d_engine_classic_nsgaii_params(FakeEnginePtr _engine,
       _mev, id_mevaluator, "OptFrame:GeneralEvaluator<XMESf64>:MultiEvaluator");
   assert(_mev);
   sref<MyMEval> multi_ev{_mev};
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Info)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Info)
     std::cout << "NDIRECTIONS = " << multi_ev->vDir.size() << std::endl;
   //
   using MyMOPopManager = optframe::MOPopulationManagement<FCoreLibEMSolution>;
@@ -519,13 +521,13 @@ optframe_api0d_engine_classic_nsgaii_params(FakeEnginePtr _engine,
 
   auto sout = classic_nsgaii.search({timelimit});
   //
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Info) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Info) {
     std::cout << "finished classic_nsgaii with: ";
     std::cout << "status=" << sout.status << std::endl;
   }
   optframe::Pareto<FCoreLibEMSolution> best = *sout.best;
 
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Info) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Info) {
     std::cout << "best pareto: ";
     // best pareto front
     best.print();
@@ -548,11 +550,11 @@ optframe_api1d_build_global(FakeEnginePtr _engine, char* builder,
   // Example: "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA"
   //
   std::string sbuilder = strBuilder;
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "OptFrame Engine GET BUILDER: " << sbuilder << std::endl;
   CB* cb = engine->loader.factory.getBuilder(sbuilder);
   if (!cb) {
-    if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Warning)
+    if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Warning)
       std::cout << "WARNING! OptFrame builder for GlobalSearch not found!"
                 << std::endl;
     return -1;
@@ -565,12 +567,12 @@ optframe_api1d_build_global(FakeEnginePtr _engine, char* builder,
   // OptFrame:NS[] 0 0.99 100 999";
   //
   std::string scan_params = strBuildString;
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "OptFrame Engine BUILD: " << scan_params << std::endl;
   scannerpp::Scanner scanner{scan_params};
   optframe::GlobalSearch<FCoreLibESolution>* global =
       cbglobal->build(scanner, engine->loader.factory);
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug) {
     std::cout << "global_search =" << global << std::endl;
     global->print();
   }
@@ -599,11 +601,11 @@ optframe_api1d_build_single(FakeEnginePtr _engine, char* builder,
   // Example: "OptFrame:ComponentBuilder:SingleObjSearch:SA:BasicSA"
   //
   std::string sbuilder = strBuilder;
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "OptFrame Engine GET BUILDER: " << sbuilder << std::endl;
   CB* cb = engine->loader.factory.getBuilder(sbuilder);
   if (!cb) {
-    if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Warning)
+    if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Warning)
       std::cout << "WARNING! OptFrame builder for SingleObjSearch not found!"
                 << std::endl;
     return -1;
@@ -616,12 +618,12 @@ optframe_api1d_build_single(FakeEnginePtr _engine, char* builder,
   // OptFrame:NS[] 0 0.99 100 999";
   //
   std::string scan_params = strBuildString;
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "OptFrame Engine BUILD: " << scan_params << std::endl;
   scannerpp::Scanner scanner{scan_params};
   optframe::SingleObjSearch<FCoreLibESolution>* single =
       cbsingle->build(scanner, engine->loader.factory);
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug) {
     std::cout << "single =" << single << std::endl;
     single->print();
   }
@@ -652,7 +654,7 @@ optframe_api1d_build_local_search(FakeEnginePtr _engine, char* builder,
   std::string sbuilder = strBuilder;
   CB* cb = engine->loader.factory.getBuilder(sbuilder);
   if (!cb) {
-    if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Warning)
+    if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Warning)
       std::cout << "WARNING! OptFrame builder for LocalSearch not found!"
                 << std::endl;
     return -1;
@@ -668,7 +670,7 @@ optframe_api1d_build_local_search(FakeEnginePtr _engine, char* builder,
   scannerpp::Scanner scanner{scan_params};
   optframe::LocalSearch<FCoreLibESolution>* local =
       cblocal->build(scanner, engine->loader.factory);
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug) {
     std::cout << "local_search =" << local << std::endl;
     local->print();
   }
@@ -700,7 +702,7 @@ optframe_api1d_build_component(FakeEnginePtr _engine, char* builder,
   std::string sbuilder = strBuilder;
   CB* cb = engine->loader.factory.getBuilder(sbuilder);
   if (!cb) {
-    if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Warning)
+    if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Warning)
       std::cout << "WARNING! OptFrame builder '" << strBuilder
                 << "' for Component not found!" << std::endl;
     return -1;
@@ -715,7 +717,7 @@ optframe_api1d_build_component(FakeEnginePtr _engine, char* builder,
   // use componentLogLevel
   c->setMessageLevel(engine->componentLogLevel);
   // use engineLogLevel (this is correct!)
-  if (engine->engineLogLevel >= optframe::LogLevel::Debug) {
+  if (engine->engineLogLevel <= modlog::LogLevel::Debug) {
     std::cout << "component =" << c << std::endl;
     c->print();
   }
@@ -731,14 +733,14 @@ optframe_api1d_run_global_search(FakeEnginePtr _engine, int g_idx,
                                  double timelimit) {
   auto* engine = (FCoreApi1Engine*)_engine;
   //
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "begin C++ optframe_api1d_run_global_search: g_idx=" << g_idx
               << " timelimit=" << timelimit << std::endl;
   //
   sptr<optframe::GlobalSearch<FCoreLibESolution, FCoreLibESolution>> gs;
   engine->loader.factory.assign(gs, g_idx, "OptFrame:GlobalSearch");
   assert(gs);
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug) {
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug) {
     gs->print();
   }
   // sos->setVerbose();
@@ -749,7 +751,7 @@ optframe_api1d_run_global_search(FakeEnginePtr _engine, int g_idx,
   //  ===============================
   //
   /*
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
      gs->setVerboseR();
   else if (engine->loader.factory.getLogLevel() == optframe::LogLevel::Silent)
      gs->setSilentR();
@@ -761,7 +763,7 @@ optframe_api1d_run_global_search(FakeEnginePtr _engine, int g_idx,
   // ===============================
   //
   optframe::SearchOutput<FCoreLibESolution> out = gs->search({timelimit});
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Info)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Info)
     std::cout << "run_global_search -> out=" << out.status << std::endl;
 
   LibSearchOutput lout;
@@ -782,7 +784,7 @@ optframe_api1d_run_sos_search(FakeEnginePtr _engine, int sos_idx,
                               double timelimit) {
   auto* engine = (FCoreApi1Engine*)_engine;
   //
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "begin C++ optframe_api1d_run_sos_search: sos_idx=" << sos_idx
               << " timelimit=" << timelimit << std::endl;
   //
@@ -790,7 +792,7 @@ optframe_api1d_run_sos_search(FakeEnginePtr _engine, int sos_idx,
   engine->loader.factory.assign(sos, sos_idx,
                                 "OptFrame:GlobalSearch:SingleObjSearch");
   assert(sos);
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     sos->print();
   // sos->setVerbose();
   //
@@ -800,7 +802,7 @@ optframe_api1d_run_sos_search(FakeEnginePtr _engine, int sos_idx,
   //  ===============================
   //
   /*
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
      sos->setVerboseR();
   else if (engine->loader.factory.getLogLevel() == optframe::LogLevel::Silent)
      sos->setSilentR();
@@ -813,7 +815,7 @@ optframe_api1d_run_sos_search(FakeEnginePtr _engine, int sos_idx,
 
   optframe::SearchOutput<FCoreLibESolution> out = sos->search({timelimit});
 
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Info)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Info)
     std::cout << "run_sos_search -> out=" << out.status << std::endl;
 
   LibSearchOutput lout;
@@ -856,7 +858,7 @@ OPT_MODULE_API bool optframe_api0d_engine_test(FakeEnginePtr _engine) {
   //
   sref<optframe::InitialSearch<FCoreLibESolution>> initSol{
       new optframe::BasicInitialSearch<FCoreLibESolution>(initial, iev2)};
-  if (engine->loader.factory.getLogLevel() >= optframe::LogLevel::Debug)
+  if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "### THIS IS DEBUG LEVEL!" << std::endl;
   //
   std::cout << "### test will generate solution" << std::endl;
@@ -1369,7 +1371,7 @@ optframe_api1d_add_ns(
   int max_tries =
       std::stoi(engine->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"]);
   if (max_tries > 1) {
-    if (engine->engineLogLevel >= optframe::LogLevel::Warning)
+    if (engine->engineLogLevel <= modlog::LogLevel::Warning)
       std::cout << "WARNING: using NS_VALID_RANDOM_MOVE_MAX_TRIES=" << max_tries
                 << std::endl;
     p_fns->fValidRandom = [p_fns, max_tries](const FCoreLibESolution& se)
@@ -1702,7 +1704,7 @@ optframe_api1d_add_nsseq(
   int max_tries =
       std::stoi(engine->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"]);
   if (max_tries > 1) {
-    if (engine->engineLogLevel >= optframe::LogLevel::Warning)
+    if (engine->engineLogLevel <= modlog::LogLevel::Warning)
       std::cout << "WARNING: using NS_VALID_RANDOM_MOVE_MAX_TRIES=" << max_tries
                 << std::endl;
     p_fnsseq->fValidRandom = [p_fnsseq, max_tries](const FCoreLibESolution& se)
@@ -1893,7 +1895,7 @@ OPT_MODULE_API bool optframe_api1d_engine_component_set_loglevel(
   };
   */
 
-  auto ll = (optframe::LogLevel)loglevel;
+  auto ll = (modlog::LogLevel)loglevel;
 
   assert(!recursive);  // TODO: Must create 'setMessageLevelR'
 

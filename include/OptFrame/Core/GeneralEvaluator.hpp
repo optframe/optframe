@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_GENERAL_EVALUATOR_HPP_
 #define OPTFRAME_GENERAL_EVALUATOR_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <iostream>
 #include <string>

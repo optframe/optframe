@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_ACTION_HPP_
 #define OPTFRAME_ACTION_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <cstdlib>
 #include <iostream>
@@ -250,7 +250,7 @@ class ComponentAction : public Action<XES> {
     if (action == "setVerboseLevel") {
       if (!scanner.hasNext()) return false;
 
-      LogLevel verboseLevel = (LogLevel)*scanner.nextInt();
+      modlog::LogLevel verboseLevel = (modlog::LogLevel)*scanner.nextInt();
 
       c->setMessageLevel(verboseLevel);
 

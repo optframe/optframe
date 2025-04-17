@@ -3,7 +3,7 @@
 
 #pragma once
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>

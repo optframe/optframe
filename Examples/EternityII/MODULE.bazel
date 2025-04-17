@@ -1,6 +1,15 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
-#
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+module(name = "optframe_etii")
+
+bazel_dep(name = "optframe")
+
+local_path_override(
+    module_name = "optframe",
+    path = "../../",
+)
+
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+git_override(
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "0e990032f3c5a866e72615cf67e5ce22186dcb97",  # 01/02/2025
+)

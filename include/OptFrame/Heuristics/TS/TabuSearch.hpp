@@ -25,9 +25,8 @@
 #define OPTFRAME_HEURISTICS_TS_TABUSEARCH_HPP_  // NOLINT
 
 #include <OptFrame/Core/Evaluator.hpp>
+#include <OptFrame/Core/NSEnum.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
-
-#include "../../NSEnum.hpp"
 
 namespace optframe {
 
@@ -84,8 +83,8 @@ class TabuSearch : public SingleObjSearch<XES> {
       if ((Iter - BestIter) > estimative_BTmax)
         estimative_BTmax = (Iter - BestIter);
 
-      // std::cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without
-      // improvement)" << std::endl;
+      // std::cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << "
+      // without improvement)" << std::endl;
 
       // ==================
       // First: aspiration

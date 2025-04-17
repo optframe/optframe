@@ -4,7 +4,7 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C includes
 #ifdef WIN32

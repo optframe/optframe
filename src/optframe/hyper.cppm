@@ -13,6 +13,9 @@ export import optframe.nnptr;
 
 export import std;
 
+#define OPTFRAME_CXX_MODULES 1
+
+
 #include "OptFrame/Hyper/ComponentBuilder.hpp"
 //
 #include "OptFrame/Hyper/ComponentMultiBuilder.hpp"

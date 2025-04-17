@@ -23,10 +23,10 @@
 #ifndef OPTFRAME_NSSEQTSPSWAP_HPP_
 #define OPTFRAME_NSSEQTSPSWAP_HPP_
 
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 
 #include "../../Helper/Solution.hpp"
-#include "../../Move.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "Moves/MoveTSPSwap.hpp"
 #include "NSIterators/IteratorTSPSwap.hpp"

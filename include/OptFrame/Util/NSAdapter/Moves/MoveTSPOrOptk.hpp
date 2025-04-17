@@ -25,9 +25,8 @@
 
 // Framework includes
 #include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
-
-#include "../../../Move.hpp"
 
 // using namespace std;
 // using namespace optframe; (?????????????????) Don't use namespace

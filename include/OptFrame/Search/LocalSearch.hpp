@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_LOCALSEARCH_HPP_
 #define OPTFRAME_LOCALSEARCH_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <iostream>
 #include <string>
@@ -90,7 +90,7 @@ class LocalSearch : public Component {
 
   std::string id() const override { return idComponent(); }
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     return true;
   }

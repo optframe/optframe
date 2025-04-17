@@ -7,7 +7,7 @@
 // Provides standard (named) domains for optframe. Notably defines:
 // <XS>, <XES>, <XRKf64>, <XMESf64>, <X2ESf64> and <X2MESf64>
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <limits>
 #include <string_view>

@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_GRASP_FAMILY_H_
 #define OPTFRAME_GRASP_FAMILY_H_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
 

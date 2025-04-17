@@ -12,4 +12,6 @@ import optframe.semstream;
 
 export import std;
 
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/Component.hpp"

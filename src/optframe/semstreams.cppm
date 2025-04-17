@@ -6,8 +6,10 @@ module;
 // declaration
 // #include <string>
 
-export module optframe.semstream;
+export module optframe.semstreams;
 
 export import std;
 
-#include "OptFrame/SemStream.hpp"
+#define OPTFRAME_CXX_MODULES 1
+
+#include "OptFrame/SemStreams.hpp"

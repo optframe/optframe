@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
 #include <assert.h>
@@ -17,6 +17,7 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/SemStreams.hpp>
 #include <OptFrame/Values/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
 #include <OptFrame/Values/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
 
@@ -361,8 +362,6 @@ class Evaluation final : public Component {
     return true;
   }
 
-// GCC 15: multiple definition of 'optframe::operator<<@optframe.core(...)'
-#ifdef NO_CXX_MODULES
   friend std::ostream& operator<<(std::ostream& os, const Evaluation& me) {
     if (&os == &optframe::cjson) {
       os << "{";
@@ -375,7 +374,6 @@ class Evaluation final : public Component {
     }
     return os;
   }
-#endif
 };
 
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)

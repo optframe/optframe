@@ -27,10 +27,10 @@
 #include <string>
 // Framework includes
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSIterator.hpp>
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
-#include "../../../Move.hpp"
-#include "../../../NSIterator.hpp"
 #include "../Moves/MoveTSPSwap.hpp"
 
 using namespace std;       // NOLINT

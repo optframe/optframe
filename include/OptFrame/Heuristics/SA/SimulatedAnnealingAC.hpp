@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
 #include <math.h>
@@ -439,7 +439,7 @@ XSH::first_type::typeR>);
   //               Component
   // =======================================
   // set verbose level recursive: returns 'false' if not supported.
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     //
     // evaluator ?? how to do this on GeneralEvaluator...

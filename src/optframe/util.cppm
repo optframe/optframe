@@ -8,4 +8,6 @@ import optframe.component;
 
 export import std;
 
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/Util/Matrix.hpp"

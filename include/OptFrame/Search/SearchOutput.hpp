@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_SEARCH_SEARCHOUTPUT_HPP_
 #define OPTFRAME_SEARCH_SEARCHOUTPUT_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 

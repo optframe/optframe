@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_EMPTY_MULTI_OBJ_SEARCH_HPP_
 #define OPTFRAME_EMPTY_MULTI_OBJ_SEARCH_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <math.h>
 

@@ -4,7 +4,7 @@
 #ifndef OPTFCORE_FDIRECTION_HPP_  // NOLINT
 #define OPTFCORE_FDIRECTION_HPP_  // NOLINT
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <functional>
 #include <string>

@@ -12,13 +12,9 @@ export module optframe.examples.btsp;
 export import optframe.core;
 export import optframe.search;
 export import optframe.heuristics;
-export import optframe.functional;
-export import optframe.scannerpp;
-export import optframe.core;
-export import optframe.search;
-export import optframe.heuristics;
 export import optframe.scannerpp;
 export import optframe.util;
+export import optframe.functional;
 export import optframe.hyper;
 
 export import std;

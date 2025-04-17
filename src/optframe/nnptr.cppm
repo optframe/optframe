@@ -12,4 +12,7 @@ export import std;
 
 // #include <OptFrame/nnptr/nnshared.hpp>
 // -Winclude-angled-in-module-purview
+
+#define OPTFRAME_CXX_MODULES 1
+
 #include "OptFrame/nnptr/nnshared.hpp"

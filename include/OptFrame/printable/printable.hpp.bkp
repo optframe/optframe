@@ -1,0 +1,404 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef OPTFRAME_PRINTABLE_PRINTABLE_HPP_
+#define OPTFRAME_PRINTABLE_PRINTABLE_HPP_
+
+// This library works with both operator<< and std::formatter
+// IMPORTANT: do not try to implement in a "general way",
+// from operator<< to std::format, or the opposite, as
+// this may propagate to other unrelated types.
+//
+// Do it manually!
+
+// TODO: think if this depends on SemStream or not!
+// Maybe :json can be supported for formatter at least...
+// but it's hard for operator<< without optframe::cjson!
+// Best to remove optframe::cjson from here!
+
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
+
+#include <iostream>
+#include <map>
+#include <optional>  // requires c++17
+#include <ostream>
+#include <sstream>  // stringstream
+#include <string>
+#include <utility>
+#include <vector>
+//
+#include <OptFrame/SemStreams.hpp>
+#include <OptFrame/modlog/modlog.hpp>
+
+#define MOD_EXPORT
+#else
+
+// CANNOT IMPORT HERE... Already part of optframe.core
+/*
+import std;
+import optframe.component;
+import optframe.concepts;
+*/
+
+// do NOT import/export modules on .hpp... only on .cppm
+
+#define MOD_EXPORT export
+
+#define USE_FORMATTER
+
+#endif
+
+// ============================================
+// WARNING: this is global scope, not optframe!
+// Implementations for operator<< for BOTH
+//   module or non-module.
+// ============================================
+
+// TODO: rename this to 'printable' namespace and remove from 'optframe'
+// TODO: or maybe, let it be global!
+// namespace optframe {
+
+template <class T1, class T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& obj);
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const std::optional<T>& obj) {
+  if (!obj)
+    os << "nullopt";
+  else
+    os << obj;
+  return os;
+}
+
+// ======================
+// operator<< for vectors
+// ======================
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& obj) {
+  if (&os == &optframe::cjson) {
+    // json
+    os << "[";
+    if (obj.size() > 0) {
+      for (unsigned int i = 0; i < obj.size() - 1; i++)
+        os << obj.at(i) << " , ";
+      os << obj.at(obj.size() - 1);
+    }
+    os << "]";
+  } else if (&os == &optframe::ctxt) {
+    // txt
+    if (obj.size() > 0) {
+      for (int i = 0; i < ((int)obj.size()) - 1; i++) os << obj.at(i) << '\t';
+      os << obj.at(obj.size() - 1);
+    }
+  } else {
+    // human readable (default)
+    os << "vector(" << obj.size() << ") [";
+    if (obj.size() > 0) {
+      for (unsigned int i = 0; i < obj.size() - 1; i++)
+        os << obj.at(i) << " , ";
+      os << obj.at(obj.size() - 1);
+    }
+    os << "]";
+  }
+
+  return os;
+}
+
+// ===================================================
+//   Impressao de vectors (com parametro ponteiro)
+// ===================================================
+template <class T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T*>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "vector(" << obj.size() << ") [";
+
+  if (obj.size() > 0) {
+    for (unsigned int i = 0; i < obj.size() - 1; i++)
+      if (obj.at(i) == nullptr)
+        os << "nullptr"
+           << " , ";
+      else
+        os << (*obj.at(i)) << " , ";
+
+    if (obj.size() > 0) {
+      if (obj.at(obj.size() - 1) == nullptr)
+        os << "nullptr";
+      else
+        os << (*obj.at(obj.size() - 1));
+    }
+  }
+
+  os << "]";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+// ===================================================
+//     Impressao de pares
+// ===================================================
+template <class T1, class T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "pair(" << obj.first << " , " << obj.second << ")";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+// ===================================================
+//  Impressao de pares (com segundo elemento ponteiro)
+// ===================================================
+template <class T1, class T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2*>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "pair(" << obj.first << " , ";
+
+  if (obj.second == nullptr)
+    os << "nullptr"
+       << ")";
+  else
+    os << (*obj.second) << ")";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+// ===================================================
+// Impressao de pares (com primeiro elemento ponteiro)
+// ===================================================
+template <class T1, class T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1*, T2>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "pair(";
+
+  if (obj.first == nullptr)
+    os << "nullptr";
+  else
+    os << *(obj.first);
+
+  os << " , " << obj.second << ")";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+// ===================================================
+//  Impressao de pares (com ambos elementos ponteiros)
+// ===================================================
+template <class T1, class T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1*, T2*>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "pair(";
+
+  if (obj.first == nullptr)
+    os << "nullptr";
+  else
+    os << (*obj.first);
+
+  os << " , ";
+
+  if (obj.second == nullptr)
+    os << "nullptr"
+       << ")";
+  else
+    os << (*obj.second) << ")";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+// ===================================================
+//     Impressao de multimaps
+// ===================================================
+template <class Key, class T>
+std::ostream& operator<<(std::ostream& os, std::multimap<Key, T>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "multimap(" << obj.size() << ") [";
+
+  if (obj.size() > 0) {
+    typename std::multimap<Key, T>::iterator it;
+    int i = 0;
+    for (it = obj.begin(); it != obj.end(); ++it) {
+      os << *it;
+      if (i != obj.size() - 1) os << " , ";
+      i++;
+    }
+  }
+
+  os << "]";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+// ===================================================
+//     Impressao de multimaps
+// ===================================================
+template <class Key, class T>
+std::ostream& operator<<(std::ostream& os, std::map<Key, T>& obj) {
+  // Se houver string interna, sera impressa com aspas
+  // string_aspas_25072009 = true;
+
+  os << "map(" << obj.size() << ") [";
+
+  if (obj.size() > 0) {
+    typename std::map<Key, T>::iterator it;
+    int i = 0;
+    for (it = obj.begin(); it != obj.end(); ++it) {
+      os << *it;
+      if (i != ((int)obj.size()) - 1) os << " , ";
+      i++;
+    }
+  }
+
+  os << "]";
+
+  // Libera a impressao normal de strings
+  // string_aspas_25072009 = false;
+
+  return os;
+}
+
+template <class T>
+std::string toString(const std::vector<T>& v) {
+  std::stringstream ss;
+  ss << v;
+  return ss.str();
+}
+
+// ============================================
+// WARNING: this is global scope, not optframe!
+// ============================================
+
+#ifdef USE_FORMATTER
+
+template <typename T>
+concept Streamable = requires(const T& t, std::ostream& os) { t.toStream(os); };
+
+template <typename T>
+concept Formattable = requires(const T& t) {
+  { std::format("{}", t) } -> std::convertible_to<std::string>;
+};
+
+template <typename T>
+concept OStreamable = requires(const T& t, std::ostream& os) { os << t; };
+
+// Avoiding the OR and the word "Printable" (that could naturally mean .print())
+// template <typename T> concept Printable = Streamable<T> || Formattable<T>;
+
+// only useful if target module imports this module...
+// otherwise must use std::formatter, or operator<< will not be visible.
+template <Streamable T>
+std::ostream& operator<<(std::ostream& os, const T& p) {
+  p.toStream(os);
+  return os;
+}
+
+template <Formattable T>
+std::ostream& operator<<(std::ostream& os, const T& p) {
+  os << std::format("{}", p);
+  return os;
+}
+
+template <Streamable T>
+struct std::formatter<T> : std::formatter<std::string> {
+  auto format(const T& t, format_context& ctx) const {
+    std::ostringstream os;
+    os << t;
+    return formatter<std::string>::format(std::move(os).str(), ctx);
+  }
+};
+
+// begin formats
+
+export template <typename T1, typename T2>
+struct std::formatter<std::pair<T1, T2>> {
+  constexpr auto parse(std::format_parse_context& ctx) { return ctx.begin(); }
+
+  auto format(const std::pair<T1, T2>& p, std::format_context& ctx) const {
+    return std::format_to(ctx.out(), "pair({}, {})", p.first, p.second);
+  }
+
+  //   os << "pair(" << obj.first << " , " << obj.second << ")";
+};
+
+struct test_printability_stream_format {
+  void ftest1() {
+    static_assert(Formattable<std::pair<int, int>>);
+    static_assert(OStreamable<std::pair<int, int>>);
+    if constexpr (Formattable<std::pair<int, int>>) {
+    }
+
+    std::pair<int, int> ppi;
+    std::cout << ppi << std::endl;
+  }
+};
+
+#endif
+
+// COMPILATION TESTS FOR PRINTABLE
+#ifndef NDEBUG
+
+namespace optframe {
+
+// TODO(igormcoelho): use std::ostreamable<T> here to test structures, instead
+// of printing to std::cout
+
+// #ifndef USE_FORMATTER
+
+class test_runtime_can_print {
+ public:
+  friend std::ostream& operator<<(std::ostream& myos,
+                                  const test_runtime_can_print& me) {
+    return myos;
+  }
+};
+
+struct test_printability_disable_runtime {
+  void ftest() {
+    std::pair<int, int> ppi;
+    std::cout << ppi << std::endl;
+    test_runtime_can_print t1;
+    std::cout << t1 << std::endl;
+    std::pair<test_runtime_can_print, test_runtime_can_print> tpp;
+    std::cout << tpp << std::endl;
+  }
+};
+
+// #else
+
+// tests with formatter
+
+// #endif
+
+}  // namespace optframe
+
+#endif
+
+#endif /*OPTFRAME_PRINTABLE_HPP_*/

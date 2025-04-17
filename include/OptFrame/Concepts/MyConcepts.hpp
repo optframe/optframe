@@ -6,7 +6,7 @@
 
 // general concepts expected to exist on c++20
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // Check if C++20 Concepts is supported
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)

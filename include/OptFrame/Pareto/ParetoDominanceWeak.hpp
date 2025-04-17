@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 #define OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <cmath>
 #include <iostream>

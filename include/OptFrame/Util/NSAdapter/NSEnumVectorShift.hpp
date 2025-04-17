@@ -7,7 +7,8 @@
 // C++
 #include <vector>
 // Framework includes
-#include "../../NSEnum.hpp"
+#include <OptFrame/Core/NSEnum.hpp>
+
 #include "./Moves/MoveVectorShift.hpp"
 
 namespace optframe {

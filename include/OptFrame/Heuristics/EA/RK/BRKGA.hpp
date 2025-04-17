@@ -4,7 +4,7 @@
 #ifndef OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_  // NOLINT
 
-#if (__cplusplus < 202302L) || defined(NO_CXX_MODULES)
+#if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C++
 #include <algorithm>
@@ -114,7 +114,7 @@ class BRKGA : public RKGA<XES, KeyType, XES2> {
     return v;  // TODO: pass by std::move() or unique_ptr
   }
 
-  bool setMessageLevelR(LogLevel ll) override {
+  bool setMessageLevelR(modlog::LogLevel ll) override {
     this->setMessageLevel(ll);
     return RKGA<XES, KeyType>::setMessageLevelR(ll);
   }

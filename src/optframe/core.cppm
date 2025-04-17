@@ -16,6 +16,8 @@ export import optframe.timer;
 
 export import std;
 
+#define OPTFRAME_CXX_MODULES 1
+
 // #include <OptFrame/Core.hpp>
 // -Winclude-angled-in-module-purview
 #include "OptFrame/Core.hpp"
