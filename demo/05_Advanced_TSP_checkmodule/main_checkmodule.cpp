@@ -23,7 +23,7 @@
 // import everything on main()
 using namespace std;
 using namespace optframe;
-using namespace optframe::hyper;
+// using namespace optframe::hyper;
 using namespace scannerpp;
 // using namespace TSP_fcore;
 int main() {

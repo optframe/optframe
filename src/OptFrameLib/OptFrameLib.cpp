@@ -110,7 +110,8 @@ class FCoreApi1Engine {
                    >
       loader;
 
-  optframe::hyper::CheckCommand<FCoreLibESolution> check;  // no verbose
+  optframe::CheckCommand<FCoreLibESolution> check;  // no verbose
+  // optframe::hyper::CheckCommand<FCoreLibESolution> check;  // no verbose
 };
 
 // IMPORTANT: OptFrame FMove does not require Copy on M (aka,

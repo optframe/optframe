@@ -36,7 +36,12 @@ import optframe.concepts;
 
 #endif
 
-namespace optframe::hyper {
+// Windows does not accept inner namespace!!!
+// namespace optframe::hyper {
+namespace optframe {
+
+// windows does not  accept this inner namespace!!!
+// namespace hyper {
 
 // TOO MUCH TROUBLE INSIDE HYPER!
 // BEST TO INCLUDE std::vector and std::string!
@@ -2382,6 +2387,8 @@ class CheckCommand : public Component {  // NOLINT
   }
 };
 
-}  // namespace optframe::hyper
+// }  // namespace hyper
+
+}  // namespace optframe
 
 #endif  // OPTFRAME_UTIL_CHECKCOMMAND_HPP_ // NOLINT
