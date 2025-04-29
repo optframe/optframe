@@ -1,4 +1,7 @@
-all: build/app_Example
+all: make_build_folder  build/app_Example
+
+make_build_folder:
+	mkdir -p build/
 
 #CC=g++-10.1
 #CC=clang++-12
@@ -15,7 +18,7 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace
 
 # pack all objs ($^) into a single APPNAME
 build/app_Example: $(OBJ_FILES)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o build/app_Example $^
 
 # compile each .cpp individually ($<)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp

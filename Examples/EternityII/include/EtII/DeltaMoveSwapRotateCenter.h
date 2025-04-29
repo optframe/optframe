@@ -52,15 +52,17 @@ class DeltaMoveSwapRotateCenter : public MoveSwapRotateCenter {
     return idComp;
   }
 
-  virtual bool operator==(const DeltaMoveSwapRotateCenter& _m) const {
+  // virtual bool operator==(const DeltaMoveSwapRotateCenter& _m) const {
+  bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
     const DeltaMoveSwapRotateCenter& m = (const DeltaMoveSwapRotateCenter&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) &&
            (m.r1 == r1) && (m.r2 == r2);
   }
 
   void print() const override {
-    std::cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
-         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << std::endl;
+    std::cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1
+              << ") r=" << r1 << " <=> (" << x2 << "," << y2 << ") r=" << r2
+              << std::endl;
   }
 
   std::string id() const override {

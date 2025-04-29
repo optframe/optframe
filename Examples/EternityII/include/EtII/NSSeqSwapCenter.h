@@ -113,14 +113,14 @@ class MoveSwapCenter : public Move<ESolutionEtII> {
     return rev;
   }
 
-  bool operator==(const Move<ESolutionEtII>& _m) const override {
+  bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
     const MoveSwapCenter& m = (const MoveSwapCenter&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
   }
 
   void print() const override {
-    std::cout << "MoveSwapCenter: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
-         << y2 << ")" << std::endl;
+    std::cout << "MoveSwapCenter: (" << x1 << "," << y1 << ") <=> (" << x2
+              << "," << y2 << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveSwapCenter"; }
@@ -225,7 +225,9 @@ class NSSeqSwapCenter : public NSSeq<ESolutionEtII> {
 
   void print() const override { std::cout << "NSSeqSwapCenter" << std::endl; }
 
-  std::string id() const override { return "OptFrame:NS:NSSeqSwapCenter"; }
+  std::string id() const override {
+    return "OptFrame:NS:NSFind:NSSeq:NSSeqSwapCenter";
+  }
 };
 
 }  // namespace EtII

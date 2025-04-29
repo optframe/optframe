@@ -115,7 +115,8 @@ class DeltaMoveSwapCenter : public MoveSwapCenter {
     return idComp;
   }
 
-  virtual bool operator==(const DeltaMoveSwapCenter& _m) const {
+  // virtual bool operator==(const DeltaMoveSwapCenter& _m) const {
+  bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
     const DeltaMoveSwapCenter& m = (const DeltaMoveSwapCenter&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
   }

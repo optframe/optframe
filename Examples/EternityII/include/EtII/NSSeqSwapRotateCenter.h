@@ -190,7 +190,7 @@ class MoveSwapRotateCenter : public Move<ESolutionEtII> {
     return rev;
   }
 
-  bool operator==(const Move<ESolutionEtII>& _m) const override {
+  bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
     const MoveSwapRotateCenter& m = (const MoveSwapRotateCenter&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) &&
            (m.r1 == r1) && (m.r2 == r2);
@@ -198,7 +198,7 @@ class MoveSwapRotateCenter : public Move<ESolutionEtII> {
 
   void print() const override {
     std::cout << "MoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
-         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << std::endl;
+              << " <=> (" << x2 << "," << y2 << ") r=" << r2 << std::endl;
   }
 
   std::string id() const override {
@@ -303,10 +303,12 @@ class NSSeqSwapRotateCenter : public NSSeq<ESolutionEtII> {
         rep.getNumRows() - 2, rep.getNumCols() - 2));
   }
 
-  void print() const override { std::cout << "NSSeqSwapRotateCenter" << std::endl; }
+  void print() const override {
+    std::cout << "NSSeqSwapRotateCenter" << std::endl;
+  }
 
   std::string id() const override {
-    return "OptFrame:NS:NSSeqSwapRotateCenter";
+    return "OptFrame:NS:NSFind:NSSeq:NSSeqSwapRotateCenter";
   }
 };
 }  // namespace EtII

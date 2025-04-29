@@ -80,14 +80,14 @@ class MoveRotate : public Move<ESolutionEtII> {
     return rev;
   }
 
-  bool operator==(const Move<ESolutionEtII>& _m) const override {
+  bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
     const MoveRotate& m = (const MoveRotate&)_m;
     return (m.nRot == nRot) && (m.x == x) && (m.y == y);
   }
 
   void print() const override {
-    std::cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")"
-         << std::endl;
+    std::cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y
+              << ")" << std::endl;
   }
 
   std::string id() const override { return "OptFrame:Move:MoveRotate"; }
@@ -165,7 +165,9 @@ class NSSeqRotate : public NSSeq<ESolutionEtII> {
 
   void print() const override { std::cout << "NSSeqRotate" << std::endl; }
 
-  std::string id() const override { return "OptFrame:NS:NSSeqRotate"; }
+  std::string id() const override {
+    return "OptFrame:NS:NSFind:NSSeq:NSSeqRotate";
+  }
 };
 
 }  // namespace EtII
