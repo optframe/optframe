@@ -151,6 +151,12 @@ MOD_EXPORT namespace optframe {
       return *opNadir;
     }
 
+    // prevents windows errors with std::numeric_limits::max()
+#ifdef _WIN32
+#undef max
+#undef min
+#endif
+
     // set min possible value: caching opMax
     // do not use 'min' as it breaks on windows... using 'dmin'
     virtual objType dmin() {
