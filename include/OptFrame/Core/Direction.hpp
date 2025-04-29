@@ -155,10 +155,12 @@ MOD_EXPORT namespace optframe {
     // do not use 'min' as it breaks on windows... using 'dmin'
     virtual objType dmin() {
       if (!opMin) {
-        if (std::numeric_limits<objType>::has_infinity)
-          opMin = -std::numeric_limits<objType>::infinity();
+        // use 'limits' as variable, otherwise it breaks on windows...
+        auto limits = std::numeric_limits<objType>();
+        if (limits.has_infinity)
+          opMin = -limits.infinity();
         else
-          opMin = -std::numeric_limits<objType>::max();
+          opMin = -limits.max();
       }
       return *opMin;
     }
@@ -167,10 +169,12 @@ MOD_EXPORT namespace optframe {
     // do not use 'max' as it breaks on windows... using 'dmax'
     virtual objType dmax() {
       if (!opMax) {
-        if (std::numeric_limits<objType>::has_infinity)
-          opMax = std::numeric_limits<objType>::infinity();
+        // use 'limits' as variable, otherwise it breaks on windows...
+        auto limits = std::numeric_limits<objType>();
+        if (limits.has_infinity)
+          opMax = limits.infinity();
         else
-          opMax = std::numeric_limits<objType>::max();
+          opMax = limits.max();
       }
       return *opMax;
     }
