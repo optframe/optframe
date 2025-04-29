@@ -36,9 +36,7 @@ import optframe.concepts;
 
 #endif
 
-namespace optframe {
-
-namespace hyper {
+namespace optframe::hyper {
 
 // TOO MUCH TROUBLE INSIDE HYPER!
 // BEST TO INCLUDE std::vector and std::string!
@@ -2384,8 +2382,6 @@ class CheckCommand : public Component {  // NOLINT
   }
 };
 
-}  // namespace hyper
-
-}  // namespace optframe
+}  // namespace optframe::hyper
 
 #endif  // OPTFRAME_UTIL_CHECKCOMMAND_HPP_ // NOLINT
