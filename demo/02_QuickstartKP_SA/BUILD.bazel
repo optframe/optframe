@@ -1,7 +1,23 @@
 #load("@rules_cc//cc:defs.bzl", "cc_binary")
 
+load("@rules_license//rules:license.bzl", "license")
+load("@rules_license//sample_reports:licenses_used.bzl", "licenses_used")
+
 package(
+    default_applicable_licenses = [":license"],
     default_visibility = ["//visibility:public"],
+)
+
+license(
+    name = "license",
+    license_kinds = [
+        "@rules_license//licenses/spdx:LGPL-3.0-or-later",
+        "@rules_license//licenses/spdx:MIT",
+    ],
+    license_text = "COPYING.LESSERv3",
+    copyright_notice = "Copyright (C) 2007-2025 - OptFrame Demos - https://github.com/optframe/optframe",
+    package_name = "optframe_demo_02",
+    package_url = "https://github.com/optframe/optframe/tree/master/demo/02_QuickstartKP_SA"
 )
 
 cc_binary(
@@ -14,4 +30,11 @@ cc_binary(
         "@bazel_tools//src/conditions:darwin": ["--std=c++17"],
         "//conditions:default": ["--std=c++17"],
     }),
+)
+
+# exporting all software licenses used in this demo
+licenses_used(
+    name = "project_licenses",
+    out = "project_licenses.json",
+    deps = [":app_KPfcore"],
 )

@@ -19,6 +19,31 @@ cc_test(
      #":catch2_thirdparty"],
 )
 
+'''
+cc_test(
+    name = "all_ut_test",
+    srcs = glob([
+        "all_ut.cpp",
+    ]),
+    cxxopts = ["-std=c++20"],
+    deps = ["//include:OptFrame", 
+    "//include:OptFCore",
+     "//include:OptFrame-Core-Examples", 
+     "@ut//:ut"],
+)
+
+cc_test(
+    name = "all_ut2_test",
+    srcs = glob([
+        "all_ut2.cpp",
+    ]),
+    cxxopts = ["-std=c++20"],
+    deps = ["//include:OptFrame", 
+    "//include:OptFCore",
+     "//include:OptFrame-Core-Examples", 
+     "@ut//:ut"],
+)
+'''
 
 #cc_library(
 #    name = "catch2_thirdparty",

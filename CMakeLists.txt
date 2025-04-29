@@ -217,6 +217,16 @@ target_link_libraries(my_test PRIVATE OptFrameHeaders Catch2::Catch2WithMain)
 target_compile_definitions(my_test PRIVATE _HAS_STD_BYTE=0)
 catch_discover_tests(my_test)
 
+FetchContent_Declare(ut GIT_REPOSITORY https://github.com/boost-ext/ut.git GIT_TAG v2.3.1)
+FetchContent_MakeAvailable(ut)
+
+#add_executable(all_ut_test tests/all_ut.cpp)
+#target_link_libraries(all_ut_test PRIVATE OptFrameHeaders ut)
+#catch_discover_tests(all_ut_test
+#TEST_PREFIX "Boost.UT."
+#EXTRA_ARGS --reporter json --list-tests
+#)
+
 enable_testing()
 
 endif() # testing

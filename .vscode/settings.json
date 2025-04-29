@@ -8,9 +8,18 @@
         "--compile-commands-dir=${workspaceFolder}/build/",
     ],
     "cmake.sourceDirectory": "${workspaceFolder}/.",
+    "cmake.configureSettings": {
+        "USE_CXX_MODULES": "OFF"
+    },
     "cpplint.root": "${workspaceFolder}/include",
     "cpplint.repository": "${workspaceFolder}",
     //
+    "testMate.cpp.test.advancedExecutables": [
+        {
+            //"pattern": "{bazel-bin}/**/*{test}*"
+            "pattern": "{build}/**/*{test}*"
+        }
+    ],
     "files.associations": {
         "array": "cpp",
         "bit": "cpp",

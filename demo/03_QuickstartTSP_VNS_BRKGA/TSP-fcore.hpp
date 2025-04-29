@@ -10,6 +10,7 @@
 #include <OptFrame/printable/printable.hpp>
 //
 #include <OptFCore/FCore.hpp>
+#include <OptFCore/FCoreAll.hpp>
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>

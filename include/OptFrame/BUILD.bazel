@@ -1,8 +1,22 @@
 ##load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_import", "cc_library")
 
+load("@rules_license//rules:license.bzl", "license")
+
 package(
+    default_applicable_licenses = [":license"],
     default_visibility = ["//visibility:public"],
 )
+
+license(
+    name = "license",
+    license_kinds = [
+        "@rules_license//licenses/spdx:LGPL-3.0-or-later",
+        "@rules_license//licenses/spdx:MIT",
+    ],
+    license_text = "COPYING.LESSERv3",
+    copyright_notice = "Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe"
+)
+
 
 cc_library(
     name = "all_hpp",

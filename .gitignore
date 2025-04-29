@@ -27,3 +27,6 @@ build/
 
 Examples/SUKP
 format-test
+all_ut.cpp
+all_ut2.cpp
+julia-test/
