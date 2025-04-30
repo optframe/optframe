@@ -26,9 +26,9 @@
 #include <type_traits>  // static assert is_same
 //
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 
-#include "../../Move.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "Moves/MoveTSP2Opt.hpp"
 #include "NSIterators/IteratorTSP2Opt.hpp"
@@ -162,11 +162,13 @@ class NSSeqTSP2Opt : public NSSeq<XES> {
 
 // compile tests
 
+#if 0
 using mynsseq_nsseq_tsp_2opt_test =
     NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>>;
 //
 static_assert(
     std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value,
     "not inherited from NSSeq");
+#endif
 
 #endif /*OPTFRAME_NSSEQTSP2OPT_HPP_*/

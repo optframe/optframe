@@ -23,15 +23,21 @@
 #ifndef TSP_NN_CONSTRUCTIVE_HPP_
 #define TSP_NN_CONSTRUCTIVE_HPP_
 
+#include <stdlib.h>
+
+#include <algorithm>
+#include <list>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
+
+//
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Search/InitialSearch.hpp>
 // #include "../../OptFrame/Util/TestSolution.hpp"
 
-#include <stdlib.h>
-
 #include <OptFrame/Core/RandGen.hpp>
-#include <algorithm>
-#include <list>
 
 #include "Evaluator.h"
 #include "ProblemInstance.h"

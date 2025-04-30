@@ -24,7 +24,7 @@
 #define OPTFRAME_MOVEVECTORSHIFT_HPP_
 
 // Framework includes
-#include "../../../Move.hpp"
+#include <OptFrame/Core/Move.hpp>
 
 // using namespace std;
 // using namespace optframe; (?????????????????) Don't use namespace

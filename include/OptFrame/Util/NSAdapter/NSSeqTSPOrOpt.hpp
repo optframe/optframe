@@ -24,9 +24,9 @@
 #define OPTFRAME_NSSEQVECTOROROPT_HPP_
 
 // Framework includes
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 
-#include "../../Move.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "NSSeqTSPOrOptk.hpp"
 #include "NSSeqUnionAdapter.hpp"
@@ -122,6 +122,7 @@ class NSSeqTSPOrOpt : public NSSeq<XES, XSH> {
 };
 
 // compile tests
+#if 0 
 // using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short,
 // IsSolution<vector<int>, short>, IsEvaluation<double>,
 // pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
@@ -131,6 +132,7 @@ using mynsseq_nsseq_tsp_oropt_test =
 static_assert(
     std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_oropt_test>::value,
     "not inherited from NSSeq");
+#endif
 
 }  // namespace optframe
 

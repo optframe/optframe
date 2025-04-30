@@ -31,6 +31,9 @@
 #include <string>
 #include <utility>
 //
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Util/NSAdapter/NSSeqTSPSwap.hpp>
@@ -109,8 +112,8 @@ class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
 
           if (ifo >= int(solutions.size()))
           {
-              std::cout << "ERROR!!!! FO IS BIGGER THAN SOLUTION LIMIT!" << ifo <<
-      std::endl; exit(1);
+              std::cout << "ERROR!!!! FO IS BIGGER THAN SOLUTION LIMIT!" << ifo
+      << std::endl; exit(1);
           }
           solutions[ifo]++;
 

@@ -24,7 +24,7 @@
 #define OPTFRAME_MOVENSSEQUNION_HPP_
 
 // Framework includes
-#include "../../../Move.hpp"
+#include <OptFrame/Core/Move.hpp>
 
 // using namespace std;
 

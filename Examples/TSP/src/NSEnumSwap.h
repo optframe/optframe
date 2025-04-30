@@ -51,7 +51,7 @@ class MoveSwap : public Move<ESolutionTSP> {
   sref<ProblemInstance> tsp;
 
  public:
-  MoveSwap(int c1, int c2, sref<ProblemInstance> _tsp) : tsp(_tsp) {
+  MoveSwap(int c1, int c2, sref<ProblemInstance> _tsp) : tsp{_tsp} {
     this->c1 = c1;
     this->c2 = c2;
 
@@ -170,7 +170,8 @@ class MoveSwap : public Move<ESolutionTSP> {
       k2 = c1;
     }
 
-    // std::cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 << "("
+    // std::cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 <<
+    // "("
     // << rep[k2] << ")" << std::endl;
 
     // before k2 and k1
@@ -309,7 +310,9 @@ class NSEnumSwap : public NSEnum<ESolutionTSP, ESolutionTSP> {
 
   unsigned int size() const override { return n * (n - 1) / 2; }
 
-  void print() const override { std::cout << "NSEnum Swap (" << size() << ")\n"; }
+  void print() const override {
+    std::cout << "NSEnum Swap (" << size() << ")\n";
+  }
 
   // Auxiliar methods
 
@@ -342,7 +345,8 @@ class NSEnumSwap : public NSEnum<ESolutionTSP, ESolutionTSP> {
   Move<ESolutionTSP>& busca(int k, int a, int b) {
     int d = (a + b) / 2;
 
-    // std::cout << "busca "<<k<<" na diagonal "<<d<<"entre ["<<a<<","<<b<<"]"<<endl;
+    // std::cout << "busca "<<k<<" na diagonal "<<d<<"entre
+    // ["<<a<<","<<b<<"]"<<endl;
 
     int c = comeca(d);
     int t = termina(d);
@@ -367,17 +371,17 @@ class NSEnumSwap : public NSEnum<ESolutionTSP, ESolutionTSP> {
 
     if (d <= n) {
       for (int i = 0; i < numElem(d); i++)
-        if (k == c + i) return *new MoveSwap(i, d - i - 1, *pI);
+        if (k == c + i) return *new MoveSwap(i, d - i - 1, pI);
     } else {
       for (int i = 0; i < numElem(d); i++)
         if (k == c + i) {
           int j = d - n;
-          return *new MoveSwap(i + j, d - i - 1 - j, *pI);
+          return *new MoveSwap(i + j, d - i - 1 - j, pI);
         }
     }
 
     std::cout << "Error!" << std::endl;
-    return *new MoveSwap(0, 0, *pI);
+    return *new MoveSwap(0, 0, pI);
   }
 };
 

@@ -11,6 +11,7 @@
 //
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Search/LocalSearchBuilder.hpp>
 
 #include "../../Experimental/NeighborhoodExploration.hpp"
 

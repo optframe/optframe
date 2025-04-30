@@ -7,6 +7,9 @@
 // C++
 #include <iostream>
 //
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>

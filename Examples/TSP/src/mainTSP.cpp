@@ -136,21 +136,31 @@ int main(int argc, char** argv) {
   //
   TSPEvaluator eval1(
       tsp.p);  // Should not be Specific to TSP!! Won't work on Decoder..
-  sref<Evaluator<SolutionTSP, EvaluationTSP>> eval = eval1;
+  // sref<Evaluator<SolutionTSP, EvaluationTSP>> eval = eval1;
+  sref<Evaluator<SolutionTSP, EvaluationTSP>> eval{new TSPEvaluator{tsp.p}};
+  sref<GeneralEvaluator<ESolutionTSP>> geval{new TSPEvaluator{tsp.p}};
 
-  RandomInitialSolutionTSP randomTSP(tsp.p, eval, rg);
-  NearestNeighborConstructive cnn(tsp.p, eval, rg);
-  ConstructiveBestInsertion cbi(tsp.p, eval, rg);
+  sref<InitialSearch<ESolutionTSP>> randomTSP{
+      new RandomInitialSolutionTSP{tsp.p, geval, rg2}};
+  // RandomInitialSolutionTSP randomTSP{tsp.p, geval, rg2};
+
+  sref<InitialSearch<ESolutionTSP>> cnn{
+      NearestNeighborConstructive{tsp.p, geval, rg2}};
+  // NearestNeighborConstructive cnn{tsp.p, geval, rg2};
+
+  sref<InitialSearch<ESolutionTSP>> cbi{
+      ConstructiveBestInsertion{tsp.p, geval, rg2}};
+  // ConstructiveBestInsertion cbi{tsp.p, geval, rg2};
 
   // NSEnumSwap enumswap(tsp.p, rg);
-  sref<NSEnum<ESolutionTSP, ESolutionTSP>> enumswap{new NSEnumSwap(tsp.p, rg)};
+  sref<NSEnum<ESolutionTSP, ESolutionTSP>> enumswap{new NSEnumSwap{tsp.p, rg2}};
 
   // ============
 
   std::cout << "WILL START SIMULATED ANNEALING!" << std::endl;
 
-  BasicSimulatedAnnealing<ESolutionTSP> sa(eval, randomTSP, enumswap, 0.98, 100,
-                                           99999, rg2);
+  BasicSimulatedAnnealing<ESolutionTSP> sa(geval, randomTSP, enumswap, 0.98,
+                                           100, 99999, rg2);
 
   auto status = sa.search(
       StopCriteria<ESolutionTSP::second_type>{10.0});  // 10.0 seconds max
@@ -282,16 +292,12 @@ std::endl; #endif
   static_assert(X2ESolution<VEPopulation<RK_ESolution>, RK_ESolution>);
   static_assert(XSearch<VEPopulation<RK_ESolution>, RK_ESolution>);
   //
-  BRKGA<std::pair<std::vector<int>, EvaluationTSP>, double,
-        pair<vector<double>, EvaluationTSP>  //,
-        // VEPopulation<pair<vector<double>, EvaluationTSP>>
-        >
-      brkga(
-          //
-          // BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(
-          eprk,
-          _initPop,  // key_size = tsp.p->n
-          10000, 10, 0.4, 0.3, 0.6, rg2);
+
+  using MyXES1 = std::pair<std::vector<int>, EvaluationTSP>;
+  using MyXES2 = std::pair<std::vector<double>, EvaluationTSP>;
+
+  BRKGA<MyXES1, double, MyXES2> brkga(sref_eprk, _initPop, 10, 10000, 0.4, 0.3,
+                                      0.6, rg2);
 
   StopCriteria<EvaluationTSP> sosc;
   // strange that this worked.... it's against 'override' pattern. Very
@@ -339,16 +345,26 @@ std::endl; #endif
   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
 
-  VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
+  // VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
+  sref<LocalSearch<ESolutionTSP>> VND{
+      new VariableNeighborhoodDescent<ESolutionTSP>(eval, ns_list)};
+
   // VND.setVerbose();
 
-  ILSLPerturbationLPlus2<ESolutionTSP> pert(eval, tsp2opt, rg);
-  pert.add_ns(tspor1);
-  pert.add_ns(tspor2);
-  pert.add_ns(tspor3);
-  pert.add_ns(tspswap);
+  // ILSLPerturbationLPlus2<ESolutionTSP> pert(geval, tsp2opt, rg2);
 
-  IteratedLocalSearchLevels<ESolutionTSP> ils(eval, randomTSP, VND, pert, 3, 2);
+  ILSLPerturbationLPlus2<ESolutionTSP>* ilsl_pert_p =
+      new ILSLPerturbationLPlus2<ESolutionTSP>(geval, tsp2opt, rg2);
+
+  ilsl_pert_p->add_ns(tspor1);
+  ilsl_pert_p->add_ns(tspor2);
+  ilsl_pert_p->add_ns(tspor3);
+  ilsl_pert_p->add_ns(tspswap);
+
+  sref<ILSLPerturbation<ESolutionTSP>> pert{ilsl_pert_p};
+
+  IteratedLocalSearchLevels<ESolutionTSP> ils(geval, randomTSP, VND, pert, 3,
+                                              2);
   // ils.setMessageLevel(4);
   //
   // ils.setVerbose();
@@ -393,7 +409,7 @@ std::endl; #endif
   for (unsigned i = 0; i < v_nsseq.size(); i++) v_ns.push_back(v_nsseq[i]);
 
   BasicVNS<ESolutionTSP> vns(eval, randomTSP, v_ns, v_nsseq);
-  vns.setMessageLevel(LogLevel::Info);  // INFORMATION
+  vns.setMessageLevel(modlog::LogLevel::Info);  // INFORMATION
   StopCriteria<EvaluationTSP> soscVNS;
   soscVNS.timelimit = 2;  // 2 seconds
   soscVNS.target_f = EvaluationTSP(7550.0);

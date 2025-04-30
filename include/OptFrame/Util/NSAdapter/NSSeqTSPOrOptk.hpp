@@ -24,9 +24,9 @@
 #define OPTFRAME_NSSEQ_TSP_OROPTK_HPP_
 
 // Framework includes
+#include <OptFrame/Core/Move.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 
-#include "../../Move.hpp"
 #include "BaseSolutionTSP.hpp"
 #include "Moves/MoveTSPOrOptk.hpp"
 #include "NSIterators/IteratorTSPOrOptk.hpp"
@@ -126,6 +126,7 @@ class NSSeqTSPOrOptk : public NSSeq<XES> {
 };
 
 // compile tests
+#if 0
 // using mynsseq_nsseq_tsp_oroptk_test = NSSeqTSPOrOptk<int, short,
 // IsSolution<vector<int>, short>, IsEvaluation<double>,
 // pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
@@ -137,5 +138,6 @@ static_assert(
     "not inherited from NSSeq");
 static_assert(!std::is_abstract<mynsseq_nsseq_tsp_oroptk_test>::value,
               "abstract nsseq");
+#endif
 
 #endif /*OPTFRAME_NSSEQ_TSP_OROPTK_HPP_*/

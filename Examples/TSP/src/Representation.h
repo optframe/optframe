@@ -23,152 +23,139 @@
 #ifndef TSP_REPRESENTATION_H_
 #define TSP_REPRESENTATION_H_
 
-#include <OptFrame/printable/printable.hpp>
 #include <vector>
+//
 
 #include <OptFrame/Util/Matrix.hpp>
-
-#include <vector>
+#include <OptFrame/printable/printable.hpp>
 
 using namespace std;
+using namespace optframe;
 
 // Solution Representation
 typedef vector<int> RepTSP;
 
 #ifdef MaPI
 
-class TSPSerializer : public MyMaPISerializer<RepTSP, MemTSP>
-{
-public:
-   virtual RepTSP KeyA_fromString(string s)
-   {
-      //printf("\nINIT================\n");
-      RepTSP r;
-      //cout << "# "<< s << std::endl;
-      //int i;
-      //cin >> i;
-      Scanner scan(s);
-      scan.useSeparators("()[], ");
+class TSPSerializer : public MyMaPISerializer<RepTSP, MemTSP> {
+ public:
+  virtual RepTSP KeyA_fromString(string s) {
+    // printf("\nINIT================\n");
+    RepTSP r;
+    // cout << "# "<< s << std::endl;
+    // int i;
+    // cin >> i;
+    Scanner scan(s);
+    scan.useSeparators("()[], ");
 
-      scan.next(); // vector
-      scan.next(); // int size
+    scan.next();  // vector
+    scan.next();  // int size
 
-      while (scan.hasNext())
-         r.push_back(scan.nextInt());
+    while (scan.hasNext()) r.push_back(scan.nextInt());
 
-      //cout << "##" << r << std::endl;
+    // cout << "##" << r << std::endl;
 
-      //printf("\nFIM================\n");
-      return r;
-   };
-   virtual string KeyA_toString(RepTSP o)
-   {
-      stringstream s;
-      s << o;
-      return s.str();
-   };
+    // printf("\nFIM================\n");
+    return r;
+  };
+  virtual string KeyA_toString(RepTSP o) {
+    stringstream s;
+    s << o;
+    return s.str();
+  };
 
-   virtual RankAndStop A_fromString(string s)
-   {
-      RankAndStop idd;
-      Scanner scan(s);
-      scan.useSeparators("()[], \t\r\npair");
-      idd.first = scan.nextInt();
-      idd.second.first = scan.nextDouble();
-      idd.second.second = scan.nextDouble();
-      return idd;
-   };
-   virtual string A_toString(RankAndStop o)
-   {
-      stringstream s;
-      s << o;
-      return s.str();
-   };
+  virtual RankAndStop A_fromString(string s) {
+    RankAndStop idd;
+    Scanner scan(s);
+    scan.useSeparators("()[], \t\r\npair");
+    idd.first = scan.nextInt();
+    idd.second.first = scan.nextDouble();
+    idd.second.second = scan.nextDouble();
+    return idd;
+  };
+  virtual string A_toString(RankAndStop o) {
+    stringstream s;
+    s << o;
+    return s.str();
+  };
 
-   virtual int KeyB_fromString(string s)
-   {
-      return atoi(s.c_str());
-   };
-   virtual string KeyB_toString(int o)
-   {
-      stringstream s;
-      s << o;
-      return s.str();
-   };
+  virtual int KeyB_fromString(string s) { return atoi(s.c_str()); };
+  virtual string KeyB_toString(int o) {
+    stringstream s;
+    s << o;
+    return s.str();
+  };
 
-   virtual pair<RepTSP, double> B_fromString(string s) // TODO
-   {
-      //printf("\nINIT================\n%s\n",s.c_str());
-      //cout << "Initializing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+  virtual pair<RepTSP, double> B_fromString(string s)  // TODO
+  {
+    // printf("\nINIT================\n%s\n",s.c_str());
+    // cout << "Initializing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" <<
+    // std::endl;
 
-      RepTSP r;
-      double c;
+    RepTSP r;
+    double c;
 
-      //cout << std::endl << "# "<< s << std::endl;
+    // cout << std::endl << "# "<< s << std::endl;
 
-      Scanner scan(s);
-      scan.useSeparators("()[], \t\n");
+    Scanner scan(s);
+    scan.useSeparators("()[], \t\n");
 
-      scan.next(); // pair
-      scan.next(); // vector
+    scan.next();  // pair
+    scan.next();  // vector
 
-      //		cout << scan.next(); // pair
-      //		cout << scan.next(); // -1
+    //		cout << scan.next(); // pair
+    //		cout << scan.next(); // -1
 
-      //		cout << scan.next(); // pair
-      //		cout << scan.next(); // vector
+    //		cout << scan.next(); // pair
+    //		cout << scan.next(); // vector
 
-      int size = scan.nextInt(); // int size
+    int size = scan.nextInt();  // int size
 
-      //cout << size << "!" << std::endl;
+    // cout << size << "!" << std::endl;
 
-      for (int i = 0; i < size && scan.hasNext(); i++)
-         r.push_back(scan.nextInt());
+    for (int i = 0; i < size && scan.hasNext(); i++)
+      r.push_back(scan.nextInt());
 
-      //int i;				cin >> i;
+    // int i;				cin >> i;
 
-      //cout << "rest" << scan.rest() << std::endl;
+    // cout << "rest" << scan.rest() << std::endl;
 
-      c = scan.nextDouble();
+    c = scan.nextDouble();
 
-      //cout << c << std::endl;
+    // cout << c << std::endl;
 
-      //cout << "##" << r << " c=" << c << std::endl;
-      //printf("\nFIM================\n");
-      return make_pair(r, c);
-   };
-   virtual string B_toString(pair<RepTSP, double> o)
-   {
-      stringstream s;
-      s << o;
-      return s.str();
-   };
+    // cout << "##" << r << " c=" << c << std::endl;
+    // printf("\nFIM================\n");
+    return make_pair(r, c);
+  };
+  virtual string B_toString(pair<RepTSP, double> o) {
+    stringstream s;
+    s << o;
+    return s.str();
+  };
 
-   virtual RepTSP C_fromString(string s)
-   {
-      RepTSP r;
-      //cout << "# "<< s << std::endl;
-      //int i;
-      //cin >> i;
-      Scanner scan(s);
-      scan.useSeparators("()[], ");
+  virtual RepTSP C_fromString(string s) {
+    RepTSP r;
+    // cout << "# "<< s << std::endl;
+    // int i;
+    // cin >> i;
+    Scanner scan(s);
+    scan.useSeparators("()[], ");
 
-      scan.next(); // vector
-      scan.next(); // int size
+    scan.next();  // vector
+    scan.next();  // int size
 
-      while (scan.hasNext())
-         r.push_back(scan.nextInt());
+    while (scan.hasNext()) r.push_back(scan.nextInt());
 
-      //cout << "##" << r << std::endl;
+    // cout << "##" << r << std::endl;
 
-      return r;
-   };
-   virtual string C_toString(RepTSP o)
-   {
-      stringstream s;
-      s << o;
-      return s.str();
-   };
+    return r;
+  };
+  virtual string C_toString(RepTSP o) {
+    stringstream s;
+    s << o;
+    return s.str();
+  };
 };
 
 #endif

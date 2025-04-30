@@ -25,8 +25,9 @@
 
 // Framework includes
 
-#include "../../../Move.hpp"
-#include "../../../NSIterator.hpp"
+#include <OptFrame/Core/Move.hpp>
+#include <OptFrame/Core/NSIterator.hpp>
+
 #include "../Moves/MoveNSSeqUnion.hpp"
 
 using namespace std;
