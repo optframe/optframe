@@ -12,7 +12,7 @@
 #include <OptFrame/Core/Evaluator.hpp>
 
 #include "Evaluation.h"
-#include "OptFrame/Direction.hpp"
+#include "OptFrame/Core/Direction.hpp"
 #include "ProblemInstance.h"
 #include "Representation.h"
 #include "Solution.h"
@@ -58,7 +58,8 @@ class OptHSEvaluator
 
             if (diff < 2) {
               fo_inv += diff;
-              // std::cout << "INF for member: " << p.members[m] << " (at week " << i
+              // std::cout << "INF for member: " << p.members[m] << " (at week "
+              // << i
               // << ")" << std::endl;
             }
           }

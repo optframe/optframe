@@ -14,7 +14,9 @@
 #include <iostream>
 #include <set>
 //
-
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 #include <OptFrame/Hyper/Loader.hpp>
 
 #include "./OptHScheduling.h"

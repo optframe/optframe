@@ -23,9 +23,13 @@
 #ifndef OptHS_PROBLEMMODULE_HPP_
 #define OptHS_PROBLEMMODULE_HPP_
 
+#include <iostream>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
-#include <iostream>
 
 #include "ConstructiveRandom.h"
 #include "Evaluation.h"

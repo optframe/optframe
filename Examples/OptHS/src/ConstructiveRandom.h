@@ -23,14 +23,19 @@
 #ifndef OptHS_INITIALSOLUTION_Random_HPP_
 #define OptHS_INITIALSOLUTION_Random_HPP_
 
-#include <OptFrame/Core/Constructive.hpp>
-// #include "../../OptFrame/Util/TestSolution.hpp"
-
 #include <stdlib.h>
 
-#include <OptFrame/Core/RandGen.hpp>
 #include <algorithm>
 #include <list>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
+
+//
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "Evaluator.h"
 #include "ProblemInstance.h"
