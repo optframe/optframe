@@ -1,0 +1,9 @@
+module(name = "optframe_modm")
+
+bazel_dep(name = "optframe")
+local_path_override(
+    module_name = "optframe",
+    path = "../../",
+)
+
+bazel_dep(name = "rules_cc", version = "0.1.1")

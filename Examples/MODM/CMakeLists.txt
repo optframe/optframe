@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 4.0)
 project(my-project LANGUAGES CXX VERSION 0.0.1)
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,7 +7,7 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Include(FetchContent)
 add_definitions(-DLEGACY_ADS)
 # add all executables
-add_executable(mainMODM src/mainMODM.cpp )
+add_executable(mainMODM src/mainMODM.cpp )    # main
 add_executable(Example.Test tests/Example.Test.cpp )
 add_library(my_headers0 INTERFACE)
 target_include_directories(my_headers0 INTERFACE include)

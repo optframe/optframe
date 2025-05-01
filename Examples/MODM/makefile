@@ -1,7 +1,10 @@
-all: build/app_Example
+all: make_build_folder  build/app_Example
+
+make_build_folder:
+	mkdir -p build/
 
 CC=g++
-CXXFLAGS= -I../../include -I../../libs -DLEGACY_ADS -Iinclude -fno-exceptions -O3 --std=c++20 #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../include -I../../libs -Wfatal-errors -DLEGACY_ADS -Iinclude -fno-exceptions -O3 --std=c++20 #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src

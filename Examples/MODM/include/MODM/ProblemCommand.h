@@ -1,9 +1,13 @@
 #ifndef MODM_PROBLEMMODULE_H_
 #define MODM_PROBLEMMODULE_H_
 
+#include <iostream>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
-#include <iostream>
 
 #include "ConstructiveBasicGreedyRandomized.h"
 #include "DeltaStructure.h"

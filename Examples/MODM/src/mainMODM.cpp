@@ -14,12 +14,15 @@
 #include <string>
 
 //
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Helper/Solutions/ESolution.hpp>  // TODO: remove.. just to enforce compilation errors.
 #include <OptFrame/Hyper/Loader.hpp>
 
-#include "Evaluator.cpp"  // TODO: very strange!!
+#include "MODM/Evaluator.h"
 // #include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
 // #include "../OptFrame/Heuristics/2PPLS.hpp"
 #include <OptFrame/Pareto/MultiEvaluator.hpp>
@@ -31,6 +34,7 @@
 
 #include "MODM/MODM.h"
 #include "OptFrame/Heuristics/GRASP/GRConstructive.hpp"
+#include "OptFrame/Heuristics/GRASP/GRInitialPopulation.hpp"
 
 using namespace std;
 using namespace optframe;
@@ -161,6 +165,7 @@ int main(int argc, char** argv) {
   MODMEvaluator eval(p, adsMan);
   sref<Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>> sref_eval{
       new MODMEvaluator(p, adsMan)};
+  sref<GeneralEvaluator<ESolutionMODM>> geval{new MODMEvaluator{p, adsMan}};
 
   //
   MODMRobustnessEvaluator evalRobustness(p, adsMan, rg);
@@ -169,7 +174,13 @@ int main(int argc, char** argv) {
 
   ConstructiveBasicGreedyRandomized grC(p, rg, adsMan);
 
+  sref<GRConstructive<SolutionMODM>> grC2{
+      new ConstructiveBasicGreedyRandomized{p, rg, adsMan}};
+
   ConstructiveToInitialSearch<ESolutionMODM> is_grC(grC, eval);
+
+  sref<InitialSearch<ESolutionMODM>> is_grC2{
+      new ConstructiveToInitialSearch<ESolutionMODM>(grC, eval)};
 
   // NSSeqSWAP nsseq_swap(rg, &p);
   sref<NSSeq<ESolutionMODM>> nsseq_swap{new NSSeqSWAP(rg, &p)};
@@ -197,18 +208,18 @@ int main(int argc, char** argv) {
          getchar();*/
 
   // ================ END OF CHECK MODULE ================
-  FirstImprovement<ESolutionMODM> fiSwap(eval, nsseq_swap);
-  FirstImprovement<ESolutionMODM> fiSwapInter(eval, nsseq_swapInter);
-  FirstImprovement<ESolutionMODM> fiInvert(eval, nsseq_invert);
+  FirstImprovement<ESolutionMODM> fiSwap(geval, nsseq_swap);
+  FirstImprovement<ESolutionMODM> fiSwapInter(geval, nsseq_swapInter);
+  FirstImprovement<ESolutionMODM> fiInvert(geval, nsseq_invert);
 
   int nMovesRDM = 500000;
-  RandomDescentMethod<ESolutionMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmSwapInter(eval, nsseq_swapInter,
+  RandomDescentMethod<ESolutionMODM> rdmSwap(geval, nsseq_swap, nMovesRDM);
+  RandomDescentMethod<ESolutionMODM> rdmSwapInter(geval, nsseq_swapInter,
                                                   nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmARProduct(eval, nsseq_arProduct,
+  RandomDescentMethod<ESolutionMODM> rdmInvert(geval, nsseq_invert, nMovesRDM);
+  RandomDescentMethod<ESolutionMODM> rdmARProduct(geval, nsseq_arProduct,
                                                   nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmADD(eval, nsseq_add, 1);
+  RandomDescentMethod<ESolutionMODM> rdmADD(geval, nsseq_add, 1);
 
   // vector<LocalSearch<ESolutionMODM>*> vLS;
   //
@@ -225,32 +236,38 @@ int main(int argc, char** argv) {
 
   // vLS.push_back(&rdmARProduct);
 
-  VariableNeighborhoodDescent<ESolutionMODM> vnd(eval, vLS);
+  VariableNeighborhoodDescent<ESolutionMODM> vnd(geval, vLS);
+  sref<LocalSearch<ESolutionMODM>> vnd2{
+      new VariableNeighborhoodDescent<ESolutionMODM>(geval, vLS)};
 
   // ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert,
   // rg);
   Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>& eval2 = eval;
 
-  sref<GeneralEvaluator<ESolutionMODM>> eval3{eval};
-
-  ILSLPerturbationLPlus2<ESolutionMODM> ilsl_pert(eval3, nsseq_arProduct, rg);
+  auto ilsl_pert =
+      new ILSLPerturbationLPlus2<ESolutionMODM>(geval, nsseq_arProduct, rg);
   // ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_add,
   // rg);
-  ilsl_pert.add_ns(nsseq_add);
-  ilsl_pert.add_ns(nsseq_swapInter);
-  ilsl_pert.add_ns(nsseq_swap);
-  ilsl_pert.add_ns(nsseq_invert);
+  ilsl_pert->add_ns(nsseq_add);
+  ilsl_pert->add_ns(nsseq_swapInter);
+  ilsl_pert->add_ns(nsseq_swap);
+  ilsl_pert->add_ns(nsseq_invert);
 
-  IteratedLocalSearchLevels<ESolutionMODM> ils(eval, is_grC, vnd, ilsl_pert, 50,
-                                               15);
-  ils.setMessageLevel(LogLevel::Info);
+  sref<optframe::ILSLPerturbation<ESolutionMODM>> ilsl_pert2{ilsl_pert};
+
+  IteratedLocalSearchLevels<ESolutionMODM> ils(geval, is_grC2, vnd2, ilsl_pert2,
+                                               50, 15);
+  ils.setMessageLevel(modlog::LogLevel::Info);
 
   pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;
 
   EmptyLocalSearch<ESolutionMODM> emptyLS;
-  BasicGRASP<ESolutionMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
+  sref<LocalSearch<ESolutionMODM>> emptyLS2{
+      new EmptyLocalSearch<ESolutionMODM>{}};
 
-  g.setMessageLevel(LogLevel::Info);
+  BasicGRASP<ESolutionMODM> g(geval, grC2, emptyLS2, alphaBuilder, 100000);
+
+  g.setMessageLevel(modlog::LogLevel::Info);
   int timeGRASP = 100;
   double target = 9999999;
   // MODMProblemCommand problemCommand(rg);

@@ -4,6 +4,10 @@
 #ifndef MODM_ADSMANAGER_H_
 #define MODM_ADSMANAGER_H_
 
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 #include <OptFrame/Helper/ADSManager.hpp>
 
 #include "ADS.h"

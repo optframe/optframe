@@ -1,0 +1,26 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "MODM_headers",
+    hdrs = glob([
+        "include/**/*.h",
+    ]),
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "app_Example",
+    srcs = glob([
+        "src/**/*.cpp",
+    ]),
+    copts = ["-Wfatal-errors"],
+    deps = [
+        "MODM_headers",
+        "@optframe//include:OptFrame",
+    ],
+)

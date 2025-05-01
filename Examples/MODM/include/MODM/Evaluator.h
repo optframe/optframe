@@ -5,6 +5,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
+
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Timer.hpp>
@@ -118,12 +123,13 @@ class MODMEvaluator
       std::cout << "foCheck = " << foCheck << std::endl;
       std::cout << "foCheckADS = " << foCheckADS << std::endl;
       std::cout << "fo = " << fo << std::endl;
-      /*			cout << "foRevenue = " << foRevenue << std::endl;
-                      std::cout << "foRevenueAds = " << foRevenueAds << std::endl;
+      /*			cout << "foRevenue = " << foRevenue <<
+         std::endl; std::cout << "foRevenueAds = " << foRevenueAds << std::endl;
                       std::cout << "foCost = " << foCost << std::endl;
                       std::cout << "foCostAds = " << foBudgetAds << std::endl;
                       std::cout << "foFixedCost = " << foFixedCost << std::endl;
-                      std::cout << "foFixedCostAds = " << foFixedCostAds << std::endl;*/
+                      std::cout << "foFixedCostAds = " << foFixedCostAds <<
+         std::endl;*/
       getchar();
     }
   }
@@ -155,28 +161,30 @@ class MODMEvaluator
           foInvMin +=
               pMODM.getProductMinClients(product) - ads.productOffers[product];
           // std::cout << "BUG ON EVALUATOR - NUMERO MINIMO CLIENTE NAO FOI
-          // RESPEITADO!!!" << std::endl; std::cout << "ads.productOffers[product] = " <<
-          // ads.productOffers[product] << std::endl; std::cout <<
-          // "pMODM.minClients[product] = " << pMODM.minClients[product] <<
-          // std::endl; getchar();
+          // RESPEITADO!!!" << std::endl; std::cout <<
+          // "ads.productOffers[product] = " << ads.productOffers[product] <<
+          // std::endl; std::cout << "pMODM.minClients[product] = " <<
+          // pMODM.minClients[product] << std::endl; getchar();
         }
       }
 
       if (ads.totalCost[product] > pMODM.getProductBudget(product)) {
         foInvBud += ads.totalCost[product] - pMODM.getProductBudget(product);
-        // std::cout << "BUG ON EVALUATOR - BUDGET NAO FOI RESPEITADO!!!" << std::endl;
-        // std::cout << "ads.totalCost[product] = " << ads.totalCost[product] <<
-        // std::endl; std::cout << "pMODM.getProductBudget(product) = " <<
+        // std::cout << "BUG ON EVALUATOR - BUDGET NAO FOI RESPEITADO!!!" <<
+        // std::endl; std::cout << "ads.totalCost[product] = " <<
+        // ads.totalCost[product] << std::endl; std::cout <<
+        // "pMODM.getProductBudget(product) = " <<
         // pMODM.getProductBudget(product) << std::endl; getchar();
       }
     }
 
     for (int c = 0; c < maxC; c++) {
       if (ads.clientOffers[c] > pMODM.getClientMaxOffers(c)) {
-        // std::cout << "BUG ON EVALUATOR - Cliente MAX NAO FOI RESPEITADO!!!" <<
-        // std::endl; std::cout << "ads.clientOffers[c] = " << ads.clientOffers[c] <<
-        // std::endl; std::cout << "pMODM.getClientMaxOffers(c) = " <<
-        // pMODM.getClientMaxOffers(c) << std::endl;
+        // std::cout << "BUG ON EVALUATOR - Cliente MAX NAO FOI RESPEITADO!!!"
+        // << std::endl; std::cout << "ads.clientOffers[c] = " <<
+        // ads.clientOffers[c] << std::endl; std::cout <<
+        // "pMODM.getClientMaxOffers(c) = " << pMODM.getClientMaxOffers(c) <<
+        // std::endl;
         foInvMaxOffersC += ads.clientOffers[c] - pMODM.getClientMaxOffers(c);
         // getchar();
       }
@@ -185,8 +193,8 @@ class MODMEvaluator
     // Verificar inviabilidades
     if (foRevenue < ((1 + pMODM.getHurdleRate()) * (foBudget + foFixedCost))) {
       foInvHR = 1;
-      // std::cout << "BUG ON EVALUATOR - LUCRO MENOR QUE O ESPERADO!!!" << std::endl;
-      // getchar();
+      // std::cout << "BUG ON EVALUATOR - LUCRO MENOR QUE O ESPERADO!!!" <<
+      // std::endl; getchar();
     }
 
     fo = foRevenue - foBudget - foFixedCost;
@@ -209,7 +217,8 @@ class MODMEvaluator
                FILE* arquivo = fopen("log.txt", "a");
                if (!arquivo)
                {
-               std::cout << "ERRO: falha ao criar arquivo \"log.txt\"" << std::endl;
+               std::cout << "ERRO: falha ao criar arquivo \"log.txt\"" <<
+       std::endl;
                }
                else
                {
