@@ -91,9 +91,16 @@ int main(int argc, char** argv) {
   sref<Evaluator<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>> eval =
       new HFMVRPEvaluator{*p};
 
+  sref<GeneralEvaluator<ESolutionHFMVRP>> geval{new HFMVRPEvaluator{*p}};
+
   HFMVRPADSManager* adsMan = new HFMVRPADSManager{*p};
+  sref<ADSManager<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>> adsMan2{
+      new HFMVRPADSManager{*p}};
+
   double alpha = 0;
   ConstructiveSavingsRandomized is{*p, rg, *adsMan};
+  sref<GRConstructive<SolutionHFMVRP>> is2{
+      ConstructiveSavingsRandomized{*p, rg, *adsMan}};
 
   sref<InitialSearch<ESolutionHFMVRP>> initSearch{
       new BasicInitialSearch<ESolutionHFMVRP>{
@@ -237,7 +244,8 @@ int main(int argc, char** argv) {
   cc.add(nsseq_deltaIterator_delta_or2);
   cc.add(nsseq_deltaIterator_delta_exchange);
   //
-  cc.add(*adsMan);
+  // cc.add(*adsMan);
+  cc.add(adsMan2);
   //
   cc.run(1, 1);
   getchar();
@@ -251,11 +259,18 @@ int main(int argc, char** argv) {
   VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg.sptr());
   // VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
   // newVNDUpdateADS(*eval, *adsMan, vLS);
+
   VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
-      newVNDUpdateADS(eval, *adsMan, vLS);
+      newVNDUpdateADS(eval, adsMan2, _lsList);
+
+  sref<LocalSearch<ESolutionHFMVRP>> newVNDUpdateADS2{
+      new VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP,
+                                               SolutionHFMVRP>(eval, adsMan2,
+                                                               _lsList)};
+
   // BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>
   // basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
-  BasicGRASP<ESolutionHFMVRP> basicGrasp(eval, is, newVNDUpdateADS, alpha,
+  BasicGRASP<ESolutionHFMVRP> basicGrasp(geval, is2, newVNDUpdateADS2, alpha,
                                          1000);
 
   EmptyLocalSearch<ESolutionHFMVRP> emptyLS;
@@ -313,19 +328,22 @@ int main(int argc, char** argv) {
   sref<GeneralEvaluator<ESolutionHFMVRP>> _eval = eval;
   sref<InitialSearch<ESolutionHFMVRP>> _constructive = initConstructive;
   vsref<NS<ESolutionHFMVRP>> _vNS;
-  sref<LocalSearch<ESolutionHFMVRP>> _ls = emptyLS;
+  // sref<LocalSearch<ESolutionHFMVRP>> _ls = emptyLS;
+  sref<LocalSearch<ESolutionHFMVRP>> _ls{
+      new EmptyLocalSearch<ESolutionHFMVRP>{}};
+
   // sref<RandGen> _rg = rg;
 
   // NGES<ESolutionHFMVRP>* es = new NGES<ESolutionHFMVRP>(*eval,
   // cloneSolAsConstructive, vNSeq, emptyLS, rg, *ngesParams);
   NGES<ESolutionHFMVRP>* es = new NGES<ESolutionHFMVRP>(
       _eval, _constructive, _vNS, _ls, rg, ngesParams);
-  es->setMessageLevel(LogLevel::Info);
+  es->setMessageLevel(modlog::LogLevel::Info);
 
   //=====================
 
   // StopCriteria<ESolutionHFMVRP> soscES(180, 0);
-  StopCriteria<EvaluationHFMVRP> soscES({180});
+  StopCriteria<EvaluationHFMVRP> soscES{180};
   // pair<Solution<ESolutionHFMVRP>, Evaluation<>>* initialSol =
   // es.search(soscES);
   auto initialOutput = es->search(soscES);

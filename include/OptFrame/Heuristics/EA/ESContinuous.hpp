@@ -23,14 +23,16 @@
 
 #include <math.h>
 
+#include <vector>
+
+//
+#include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
-#include <vector>
 
-#include "../../Constructive.hpp"
 namespace optframe {
 
 // ESTRUTURA DA ESTRATEGIA EVOLUTIVA
@@ -184,28 +186,36 @@ class ESContinous : public SingleObjSearch<XES> {
 
       /*
                          std::cout << "vRealClone = " <<
-         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl; std::cout <<
-         "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() <<
-         std::endl; std::cout << "vRealClone = " <<
-         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl; std::cout <<
-         "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() <<
-         std::endl; std::cout << "vRealClone = " <<
-         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl; std::cout <<
-         "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() <<
-         std::endl; std::cout << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl;
+         std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl;
+         std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl;
+         std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl;
+         std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl;
+         std::cout << "vRealClone = " <<
+         (&eval.evaluate(*v[0].first.first))->evaluation() << std::endl;
+         std::cout << "eStarClone = " <<
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl;
+         std::cout
          << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl;
+         std::cout
          << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl;
+         std::cout
          << "eStarClone = " <<
-         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl; std::cout
+         (&eval.evaluate(v[0].first.first->clone()))->evaluation() << std::endl;
+         std::cout
          << "eStarClone = " << eStar->evaluation() << std::endl;
 
                          std::cout << v[0].first.first->getR() << std::endl;
                          std::cout << sStar->getR() << std::endl;
                          */
-      std::cout << "Iter:" << gAtual << "\tWithoutImprovement: " << iterSemMelhora;
+      std::cout << "Iter:" << gAtual
+                << "\tWithoutImprovement: " << iterSemMelhora;
       std::cout << "\t Best: " << v[0].second;
       std::cout << "\t [";
       std::cout << "imprimirMatriz";
@@ -215,7 +225,8 @@ class ESContinous : public SingleObjSearch<XES> {
                          FILE* arquivo = fopen("logParam.txt", "a");
                          if (!arquivo)
                          {
-                         std::cout << "ERRO: falha ao criar arquivo \"logParam.txt\""
+                         std::cout << "ERRO: falha ao criar arquivo
+         \"logParam.txt\""
          << std::endl;
                          }
                          else
@@ -272,7 +283,7 @@ class ESContinous : public SingleObjSearch<XES> {
     //  TODO: reimplement with SearchBy ...
     op<XES> star;
     std::cout << "ES search(" << stopCriteria.target_f << ","
-         << stopCriteria.timelimit << ")" << std::endl;
+              << stopCriteria.timelimit << ")" << std::endl;
 
     Timer tnow;
 
@@ -375,7 +386,8 @@ class ESContinous : public SingleObjSearch<XES> {
         fo_filhos += e.evaluation();
       }
 
-      // std::cout << "Valor Medio das FO's dos filhos: " << fo_filhos / mi << std::endl;
+      // std::cout << "Valor Medio das FO's dos filhos: " << fo_filhos / mi <<
+      // std::endl;
 
       // APLICA B.L VND EM 'nb' INDIVIDUOS DA POP_FILHOS
       // applyLocalSearchBest(pop_filhos, 2);
@@ -414,11 +426,12 @@ class ESContinous : public SingleObjSearch<XES> {
                 getchar();*/
 
     std::cout << "tnow.now() = " << tnow.now()
-         << " timelimit = " << stopCriteria.timelimit << std::endl;
+              << " timelimit = " << stopCriteria.timelimit << std::endl;
     std::cout << "Acabou ES = iterSemMelhor = " << iterSemMelhora
-         << " gMax = " << gMax << std::endl;
+              << " gMax = " << gMax << std::endl;
     std::cout << "target_f = " << stopCriteria.target_f
-         << " eStar->evaluation() = " << (double)eStar->evaluation() << std::endl;
+              << " eStar->evaluation() = " << (double)eStar->evaluation()
+              << std::endl;
     // getchar();
 
     for (int i = 0; i < (int)pop.size(); i++) {

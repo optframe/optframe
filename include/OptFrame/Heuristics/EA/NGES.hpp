@@ -13,15 +13,15 @@
 #include <vector>
 
 // optframe
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 #include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
-#include "../../Constructive.hpp"
-#include "../../Evaluation.hpp"
-#include "../../RandGen.hpp"
 // #include <gsl/gsl_rng.h>
 // #include <gsl/gsl_randist.h>
 // #include <OptFrame/Core/NSSeq.hpp>
@@ -244,8 +244,8 @@ class NGES : public SingleObjSearch<XES> {
 
   virtual ~NGES() {}
 
-  void mutateESParams(std::vector<NGESIndStructure<S, XEv>>& p, vector<int>& vNSInd,
-                      const int nNS) {
+  void mutateESParams(std::vector<NGESIndStructure<S, XEv>>& p,
+                      vector<int>& vNSInd, const int nNS) {
     double z = rg->rand01();
     if (z <= ngesParams.mutationRate) {
       int posX = rg->rand(nNS);
@@ -396,7 +396,8 @@ class NGES : public SingleObjSearch<XES> {
       ////			cout << "inside comp:" << &eStar << "/" <<
       /// eStar.evaluation() << std::endl;
       if (Component::information) {
-        std::cout << "Gen:" << gCurrent << " | noImp: " << iterWithoutImprovement;
+        std::cout << "Gen:" << gCurrent
+                  << " | noImp: " << iterWithoutImprovement;
         // std::cout << " | Best: " << eStar.evaluation() << "\t [";
         std::cout << " | Best: " << star.second.evaluation() << "\t [";
         for (int param = 0; param < nNS; param++) {
@@ -417,7 +418,8 @@ class NGES : public SingleObjSearch<XES> {
         string outputBest = ss.str();
         FILE* arquivo = fopen(outputBest.c_str(), "a");
         if (!arquivo) {
-          std::cout << "ERRO: falha ao criar arquivo \"outputBest.txt\"" << std::endl;
+          std::cout << "ERRO: falha ao criar arquivo \"outputBest.txt\""
+                    << std::endl;
         } else {
           fprintf(arquivo, "%d\t%d\t%d\t", ngesParams.batch, gCurrent,
                   iterWithoutImprovement);
@@ -460,7 +462,7 @@ class NGES : public SingleObjSearch<XES> {
     int iterWithoutImprovement = 0, gCurrent = 0;
 
     std::cout << "NGES search(" << stopCriteria.target_f << ","
-         << stopCriteria.timelimit << ")" << std::endl;
+              << stopCriteria.timelimit << ")" << std::endl;
 
     double inititPopFitness = 0;
     // =============================
@@ -513,10 +515,11 @@ class NGES : public SingleObjSearch<XES> {
     }
 
     if (Component::information) {
-      // std::cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi << "\t
-      // eStar:" << (double)eStar->evaluation() << std::endl;
+      // std::cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi <<
+      // "\t eStar:" << (double)eStar->evaluation() << std::endl;
       std::cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi
-           << "\t eStar:" << (double)star->second.evaluation() << std::endl;
+                << "\t eStar:" << (double)star->second.evaluation()
+                << std::endl;
     }
     // ===============================
     //
@@ -573,7 +576,8 @@ class NGES : public SingleObjSearch<XES> {
         popOffsprings[l] = ind;
       }
 
-      // std::cout << "Offspring mean FO, iter " << gAtual << ":\t" << fo_filhos / mi
+      // std::cout << "Offspring mean FO, iter " << gAtual << ":\t" << fo_filhos
+      // / mi
       // << std::endl;
 
       // TODO: optionally apply LS in the best individuals
@@ -631,7 +635,8 @@ class NGES : public SingleObjSearch<XES> {
 
         FILE* arquivo = fopen(ngesParams.outputFile.c_str(), "a");
         if (!arquivo) {
-          std::cout << "ERRO: falha ao criar arquivo \"outputFileES.txt\"" << std::endl;
+          std::cout << "ERRO: falha ao criar arquivo \"outputFileES.txt\""
+                    << std::endl;
         } else {
           fprintf(arquivo, "%d\t%d\t", ngesParams.batch, gCurrent);
           for (int param = 0; param < nNS; param++) {
@@ -655,23 +660,26 @@ class NGES : public SingleObjSearch<XES> {
     ////   delete pop[i];
     for (int i = 0; i < ngesParams.mi; i++) pop[i] = nullptr;
 
-    std::cout << "Fishing NGES search:\nIterWithoutImp: " << iterWithoutImprovement
-         << "/" << ngesParams.gMaxWithoutImprovement << std::endl;
+    std::cout << "Fishing NGES search:\nIterWithoutImp: "
+              << iterWithoutImprovement << "/"
+              << ngesParams.gMaxWithoutImprovement << std::endl;
     // std::cout << "BestSol::" << eStar->evaluation() << "/" <<
     // stopCriteria.target_f << std::endl;
     std::cout << "BestSol::" << star->second.evaluation() << "/"
-         << stopCriteria.target_f << std::endl;
+              << stopCriteria.target_f << std::endl;
     std::cout << "tnow.now():" << tnow.now() << "/" << stopCriteria.timelimit
-         << std::endl;
+              << std::endl;
     std::cout << "g:" << gCurrent << std::endl;
     std::cout << "NGES Finished" << std::endl;
-    std::cout << "------------------------------------------------------------------"
-            "--------"
-         << std::endl;
+    std::cout
+        << "------------------------------------------------------------------"
+           "--------"
+        << std::endl;
     // getchar();
 
     ////pair<S, Evaluation<>>* pairToReturn = new pair<S,
-    /// Evaluation<>>(std::make_pair(*sStar, *eStar)); /delete sStar; /delete eStar;
+    /// Evaluation<>>(std::make_pair(*sStar, *eStar)); /delete sStar; /delete
+    /// eStar;
     ////return pairToReturn;
     // return make_optional(std::make_pair(*sStar, *eStar)); // TODO: fix leak
     /// return star;

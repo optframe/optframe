@@ -18,6 +18,9 @@
 
 #include "GRASPFamily.h"
 #include "GRConstructive.hpp"
+//
+#include <OptFrame/Search/SingleObjSearchBuilder.hpp>
+//
 
 #define MOD_EXPORT
 #else

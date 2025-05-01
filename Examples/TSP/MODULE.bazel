@@ -1,7 +1,6 @@
 module(name = "optframe_tsp")
 
 bazel_dep(name = "optframe")
-
 local_path_override(
     module_name = "optframe",
     path = "../../",
