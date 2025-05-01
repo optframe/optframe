@@ -1,3 +1,5 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -5,10 +7,10 @@ package(
 cc_binary(
     name = "app_Example",
     srcs = glob([
-        "src/**/*.h", 
-        "src/**/*.cpp"
+        "src/**/*.h",
+        "src/**/*.cpp",
     ]),
-    data = [ "instance-4.txt" ],
-    copts = ['-Wfatal-errors'],
-    deps = ["@optframe//include:OptFrame"]
+    copts = ["-Wfatal-errors"],
+    data = ["instance-4.txt"],
+    deps = ["@optframe//include:OptFrame"],
 )

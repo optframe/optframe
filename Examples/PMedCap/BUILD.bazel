@@ -7,14 +7,12 @@ package(
 cc_binary(
     name = "app_Example",
     srcs = glob([
+        "src/**/*.h",
         "src/**/*.cpp",
     ]),
-    ##copts = ['-std=c++20', '-Wfatal-errors'],
-    data = glob([
-        "pieces_set_2/*.txt",
-    ]),
+    copts = ["-Wfatal-errors"],
     deps = [
-        "//include:EtII_lib",
         "@optframe//include:OptFrame",
+        "@optframe//include/OptFrame:all_hpp",
     ],
 )

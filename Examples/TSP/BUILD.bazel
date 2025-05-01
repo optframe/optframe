@@ -1,4 +1,4 @@
-#load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary", "cc_import")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 package(
     default_visibility = ["//visibility:public"],
@@ -7,12 +7,15 @@ package(
 cc_binary(
     name = "app_Example",
     srcs = glob([
-        "src/**/*.h", 
-        "src/**/*.cpp"
+        "src/**/*.h",
+        "src/**/*.cpp",
     ]),
+    copts = ["-Wfatal-errors"],
     data = glob([
         "tsplib/*",
     ]),
-    copts = ['-Wfatal-errors'],
-    deps = ["@optframe//include:OptFrame", "@optframe//include/OptFrame:all_hpp"]
+    deps = [
+        "@optframe//include:OptFrame",
+        "@optframe//include/OptFrame:all_hpp",
+    ],
 )

@@ -72,3 +72,5 @@ RUN sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-19
 RUN sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-19 10
 
 RUN pip install --upgrade cmake --break-system-packages
+
+# RUN GOBIN=~/.local/bin go install github.com/bazelbuild/buildtools/buildifier@latest

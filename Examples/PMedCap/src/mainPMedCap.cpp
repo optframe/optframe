@@ -28,10 +28,15 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <iostream>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
+
 #include <OptFrame/Core/Move.hpp>  // for testing
 #include <OptFrame/Hyper/Loader.hpp>
 #include <OptFrame/Timer.hpp>
-#include <iostream>
 
 #include "PMedCap.h"
 
@@ -70,7 +75,9 @@ int main(int argc, char** argv) {
 
   PCAPSolCheck(p, s);
 
-  Loader<ESolutionPCAP> optframe(rg);
+  sref<RandGen> rg2{new RandGen(time(NULL))};
+
+  Loader<ESolutionPCAP> optframe(rg2);
   optframe.factory.addComponent(is_greedy, "OptFrame:Constructive");
   optframe.factory.addComponent(e, "OptFrame:GeneralEvaluator");
   optframe.factory.addComponent(nsSwap, "OptFrame:NS");
