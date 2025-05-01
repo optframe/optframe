@@ -1,5 +1,3 @@
-#load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
-
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -12,5 +10,5 @@ cc_binary(
     ]),
     data = [ "instance-4.txt" ],
     copts = ['-Wfatal-errors'],
-    deps = ["@OptFrame//include:OptFrame"]
+    deps = ["@optframe//include:OptFrame"]
 )

@@ -1,14 +1,17 @@
 #ifndef KP_CONSTRUCTIVE_Random_H_
 #define KP_CONSTRUCTIVE_Random_H_
 
-#include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/Search/InitialSearch.hpp>
-// #include "../../OptFrame/Util/TestSolution.hpp"
-
 #include <stdlib.h>
 
 #include <algorithm>
 #include <list>
+//
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
+// #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "Evaluator.h"
 #include "ProblemInstance.h"

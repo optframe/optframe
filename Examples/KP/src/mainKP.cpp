@@ -8,6 +8,9 @@
 
 #include <iostream>
 //
+#include <OptFrame/printable/printable.hpp>
+using namespace optframe;
+//
 
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
@@ -23,6 +26,7 @@
 #include <OptFrame/printable/printable.hpp>
 
 #include "KP.h"
+
 using namespace std;
 using namespace optframe;
 using namespace KP;

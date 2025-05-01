@@ -1,0 +1,7 @@
+module(name = "optframe_kp")
+
+bazel_dep(name = "optframe")
+local_path_override(
+    module_name = "optframe",
+    path = "../../",
+)
