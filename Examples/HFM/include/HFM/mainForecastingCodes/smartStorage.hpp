@@ -14,14 +14,18 @@
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iostream>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
 
 int smartStorage(int argc, char** argv) {
-  std::cout << "Welcome to SmartStorage prob. forecast generation wind, solar, price"
-       << std::endl;
+  std::cout
+      << "Welcome to SmartStorage prob. forecast generation wind, solar, price"
+      << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long
   long seed = time(nullptr);  // CalibrationMode
   // seed = 1;
@@ -69,8 +73,8 @@ int smartStorage(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
-   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = "
+   << nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -152,7 +156,7 @@ int smartStorage(int argc, char** argv) {
 
     // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
     //		ProblemParameters
-    //problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
+    // problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
     ProblemParameters problemParam;
 
     problemParam.setStepsAhead(stepsAheadR);
@@ -179,15 +183,15 @@ int smartStorage(int argc, char** argv) {
     int nTotalForecastingsTrainningSet =
         maxNotUsedForTest + nTrainningRounds * stepsAhead;
     std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
-    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: "
+              << nTotalForecastingsTrainningSet << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = 672;
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, beginTrainingSet, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 

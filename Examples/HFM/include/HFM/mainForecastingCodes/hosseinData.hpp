@@ -12,6 +12,8 @@
 #include <iostream>
 #include <numeric>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -19,6 +21,7 @@ using namespace HFM;
 int hosseinBlindForecasts(int argc, char** argv) {
   std::cout << "Welcome to Hossein evaluation model " << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
@@ -126,7 +129,7 @@ int hosseinBlindForecasts(int argc, char** argv) {
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
     std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
     std::cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << std::endl;
+              << nTotalForecastingsTrainningSet << std::endl;
     std::cout << "#~NTR: " << NTRaprox << std::endl;
     std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
     std::cout << "#maxNotUsed: " << maxLag << std::endl;
@@ -136,7 +139,7 @@ int hosseinBlindForecasts(int argc, char** argv) {
     trainningSet.push_back(
         rF.getPartsForecastsEndToBegin(0, 0, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
     sol = forecastObject.run(timeES, 0, 0);

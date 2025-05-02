@@ -34,11 +34,12 @@
 #include <OptFrame/Heuristics/MOLocalSearches/MORandomImprovement.hpp>
 #include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Pareto/MultiEvaluator.hpp>
-#include <OptFrame/ParetoManager.hpp>
+#include <OptFrame/Pareto/ParetoManager.hpp>
 #include <OptFrame/Search/InitialSearch.hpp>
 #include <OptFrame/Search/MultiObjSearch.hpp>
 
 #include "./ConstructiveRandom.hpp"
+#include "./ConstructiveRandomACF.hpp"
 #include "./Evaluation.h"
 #include "./Evaluator.hpp"
 #include "./HFMESContinous.hpp"
@@ -76,6 +77,8 @@ class ForecastClass {
   vector<NSSeq<ESolutionHFM>*> vNS;
 
   EmptyLocalSearch<ESolutionHFM> emptyLS;
+  sref<LocalSearch<ESolutionHFM>> emptyLS2{
+      new EmptyLocalSearch<ESolutionHFM>{}};
   // vector<NSSeq<ESolutionHFM>*>* vNSeq;
   vsref<NSSeq<ESolutionHFM>> vNSeq;
   // vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>* vNSeqMO;
@@ -109,6 +112,7 @@ class ForecastClass {
   // OptimalLinearRegression* olr;
   // MultiEvaluator<RepEFP>* mev;
   sptr<HFMMultiEvaluator> mev;
+  //
   sptr<IEvaluator<EMSolutionHFM>> imev;
   CheckCommand<ESolutionHFM, SolutionHFM, RepHFM, OPTFRAME_DEFAULT_ADS>
       checkModule;
@@ -295,9 +299,15 @@ class ForecastClass {
     ngesParams = sptr<NGESParams>{
         new NGESParams(vNSeqMax, selectionType, mutationRate, mu, lambda,
                        esGMaxWithoutImp, outputFile, 0)};
+    //
+    // NGES(sref<GeneralEvaluator<XES>> _eval,
+    //     sref<InitialSearch<XES>> _constructive, vsref<NS<XES, XSH>> _vNS,
+    //     sref<LocalSearch<XES>> _ls, sref<RandGen> _rg, NGESParams
+    //     _ngesParams)
+    //
     es = sptr<NGES<ESolutionHFM>>{new NGES<ESolutionHFM>(
-        eval, c, vNSSeqForNGES, emptyLS, rg, *ngesParams)};
-    es->setMessageLevel(LogLevel::Info);
+        evalGeneral, c, vNSSeqForNGES, emptyLS2, rg, *ngesParams)};
+    es->setMessageLevel(modlog::LogLevel::Info);
 
     // MO -- HFM MULTI IS ABLE TO ONLY "EVALUATE" once
     // vector<Evaluator<RepEFP>*> v_e;
@@ -393,7 +403,8 @@ class ForecastClass {
   // add solution to pareto front evaluating with forecasting class evaluators
   void addSolToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf,
                                        const SolutionHFM& candidateS) {
-    ParetoManager<ESolutionHFM, EMSolutionHFM> paretoMan(*mev);
+    sref<MultiEvaluator<ESolutionHFM, EMSolutionHFM>> mev2{mev};
+    ParetoManager<ESolutionHFM, EMSolutionHFM> paretoMan(mev2);
     paretoMan.addSolution(pf, candidateS);
   }
 
@@ -402,7 +413,8 @@ class ForecastClass {
   // SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
   void addSolWithMevToParetoWithParetoManager(Pareto<EMSolutionHFM>& pf,
                                               const EMSolutionHFM& cand_smev) {
-    ParetoManager<ESolutionHFM, EMSolutionHFM> paretoMan(*mev);
+    sref<MultiEvaluator<ESolutionHFM, EMSolutionHFM>> mev2{mev};
+    ParetoManager<ESolutionHFM, EMSolutionHFM> paretoMan(mev2);
     // paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
     paretoMan.addSolutionWithMEV(pf, cand_smev);
   }
@@ -437,11 +449,14 @@ class ForecastClass {
     // BasicInitialPareto(InitialSearch<XMES>& _constructive,
     // GeneralEvaluator<XMES>& _mev) :
 
+    sref<MultiEvaluator<ESolutionHFM, EMSolutionHFM>> mev2{mev};
     ParetoManager<ESolutionHFM, EMSolutionHFM>* paretoMan =
-        new ParetoManager<ESolutionHFM, EMSolutionHFM>(*mev);
+        new ParetoManager<ESolutionHFM, EMSolutionHFM>(mev2);
     // BasicInitialPareto<SolutionHFM, EvaluationHFM, MultiEvaluationHFM,
     // EMSolutionHFM> grIP(*cm, *mev);
     BasicInitialPareto<ESolutionHFM, EMSolutionHFM> grIP(*cm, *paretoMan);
+    sref<InitialPareto<EMSolutionHFM>> grIP2{
+        new BasicInitialPareto<ESolutionHFM, EMSolutionHFM>(*cm, *paretoMan)};
 
     sptr<GeneralEvaluator<EMSolutionHFM>> _sptrmev =
         std::static_pointer_cast<GeneralEvaluator<EMSolutionHFM>>(mev);
@@ -458,12 +473,25 @@ class ForecastClass {
         gmev, vNSeqMO.at(2), maxTriesRI);
     MORandomImprovement<ESolutionHFM, EMSolutionHFM> moriASI(
         gmev, vNSeqMO.at(3), maxTriesRI);
+    //
+    sref<MOLocalSearch<ESolutionHFM, EMSolutionHFM>> moriMFR2{
+        new MORandomImprovement<ESolutionHFM, EMSolutionHFM>(
+            gmev, vNSeqMO.at(0), maxTriesRI)};
+    sref<MOLocalSearch<ESolutionHFM, EMSolutionHFM>> moriCSI2{
+        new MORandomImprovement<ESolutionHFM, EMSolutionHFM>(
+            gmev, vNSeqMO.at(1), maxTriesRI)};
+    sref<MOLocalSearch<ESolutionHFM, EMSolutionHFM>> moriRSI2{
+        new MORandomImprovement<ESolutionHFM, EMSolutionHFM>(
+            gmev, vNSeqMO.at(2), maxTriesRI)};
+    sref<MOLocalSearch<ESolutionHFM, EMSolutionHFM>> moriASI2{
+        new MORandomImprovement<ESolutionHFM, EMSolutionHFM>(
+            gmev, vNSeqMO.at(3), maxTriesRI)};
 
     vsref<MOLocalSearch<ESolutionHFM, EMSolutionHFM>> vMOLS;
-    vMOLS.push_back(moriMFR);
-    vMOLS.push_back(moriRSI);
-    vMOLS.push_back(moriASI);
-    vMOLS.push_back(moriCSI);
+    vMOLS.push_back(moriMFR2);
+    vMOLS.push_back(moriRSI2);
+    vMOLS.push_back(moriASI2);
+    vMOLS.push_back(moriCSI2);
 
     sptr<MultiEvaluator<ESolutionHFM, EMSolutionHFM>> _mev =
         mev;  // std::static_pointer_cast<HFMEvaluator>(eval.sptr());
@@ -476,11 +504,14 @@ class ForecastClass {
     */
     // sref<IEvaluator<EMSolutionHFM>> _imev =
     //     std::static_pointer_cast<IEvaluator<EMSolutionHFM>>(mev);
+    //
+
     GeneralParetoLocalSearch<ESolutionHFM, EMSolutionHFM> generalPLS(
-        _mev, grIP, initial_population_size, vMOLS);
+        _mev, grIP2, initial_population_size, vMOLS);
 
     BasicMOILS<ESolutionHFM, EMSolutionHFM> basicMOILS(
-        _mev, grIP, initial_population_size, moriASI, rg, basicMOILSPert, 100);
+        _mev, grIP2, initial_population_size, moriASI2, rg, basicMOILSPert,
+        100);
 
     // for testing OptFrame v4
     // BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP,
@@ -489,7 +520,7 @@ class ForecastClass {
     int moIlslevelMax = 10;
     int moIlsIterMax = 100;
     MOILSLevels<ESolutionHFM, EMSolutionHFM> moILSLevels(
-        _mev, grIP, initial_population_size, moriASI, rg, moILSPert,
+        _mev, grIP2, initial_population_size, moriASI2, rg, moILSPert,
         moIlsIterMax, moIlslevelMax);
     // moILSLevels.setMessageLevel(3);
 
@@ -587,7 +618,7 @@ class ForecastClass {
     stopCriteria.timelimit = timeILS;
     // stopCriteria.target_f(Evaluation<>(0));
     //
-    ils->setMessageLevel(LogLevel::Info);
+    ils->setMessageLevel(modlog::LogLevel::Info);
     if (timeILS > 0) {
       // ils->best = finalSol;
       std::cout << "TODO: MUST IMPLEMENT SearchBy to inject parameter "

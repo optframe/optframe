@@ -9,6 +9,7 @@
 #include <OptFrame/Core/Evaluator.hpp>
 #include <algorithm>
 #include <utility>
+//
 
 #include "Evaluation.h"
 #include "ProblemInstance.hpp"
@@ -227,10 +228,10 @@ class HFMEvaluator
 
     if (((begin + pa - K) < 0)) {
       std::cout << "BUG Evaluator (function getKValue): (i + pa - K) = "
-           << begin + pa - K << std::endl;
+                << begin + pa - K << std::endl;
       std::cout << matrixWithSamples.size() << std::endl;
-      std::cout << "vForecastings[" << expVariable << "].size() = " << nSamplesVar
-           << std::endl;
+      std::cout << "vForecastings[" << expVariable
+                << "].size() = " << nSamplesVar << std::endl;
       assert((begin + pa - K) < 0);
     }
 
@@ -242,10 +243,11 @@ class HFMEvaluator
 
       if (!problemParam.getForceSampleLearningWithEndogenous(expVariable)) {
         std::cout << "Wrong Lag request (function getKValue): K = " << K
-             << " expVar = " << expVariable << std::endl;
-        std::cout << "Current sample learning is not allowed for this Endogenous "
-                "variable!"
-             << std::endl;
+                  << " expVar = " << expVariable << std::endl;
+        std::cout
+            << "Current sample learning is not allowed for this Endogenous "
+               "variable!"
+            << std::endl;
         exit(1);
       } else {
         if ((begin + pa) < nSamplesVar)
@@ -255,7 +257,7 @@ class HFMEvaluator
                       // of the historical data
 
         //				cout << "Go Ahead! Sample learning mode
-        //on! Current sample value = " << value<< "\texpVar = " << expVariable
+        // on! Current sample value = " << value<< "\texpVar = " << expVariable
         //<< std::endl; 				getchar();
         return value;
       }
@@ -409,8 +411,9 @@ class HFMEvaluator
           //(vIndex[ind] > maxLag))
           //					{
           //						cout << "vIndex[ind]:"
-          //<< vIndex[ind] << "maxLag:" << maxLag << std::endl; 						cout << "Erro on
-          //INDEX of the adjustment"; 						getchar();
+          //<< vIndex[ind] << "maxLag:" << maxLag << std::endl;
+          //cout << "Erro on INDEX of the adjustment";
+          // getchar();
           //					}
         }
       }
@@ -500,7 +503,8 @@ class HFMEvaluator
     if (nSamples != (int)estimatedValues.size()) {
       std::cout << "ERROR on GetAccuracy! Different sizes!" << std::endl;
       std::cout << "targetValues.size() = " << targetValues.size() << "\t";
-      std::cout << "estimatedValues.size() = " << estimatedValues.size() << std::endl;
+      std::cout << "estimatedValues.size() = " << estimatedValues.size()
+                << std::endl;
     }
     vector<double>* foIndicator =
         new vector<double>(EVALUTORS_NMETRICS_ENUM_COUNT, 0);
@@ -635,7 +639,7 @@ class HFMEvaluator
     // MSE AND RSME FINAL CALC
     // PINBALL FINAL CALC
     //		vector<pair<double, double> > vPinballFunctions(20, make_pair(0,
-    //0));
+    // 0));
     /*
                double minPinball = 1000000;
                double pinbalError;
@@ -727,10 +731,10 @@ class HFMEvaluator
         }
 
         //				allForecasts->insert(allForecasts->end(),
-        //forecasts->begin(), forecasts->begin() + fhSize);
+        // forecasts->begin(), forecasts->begin() + fhSize);
         //				allTargets->insert(allTargets->end(),
-        //vForecastings[targetFile].begin() + beginParallel,
-        //vForecastings[targetFile].begin() + beginParallel + fhSize);
+        // vForecastings[targetFile].begin() + beginParallel,
+        // vForecastings[targetFile].begin() + beginParallel + fhSize);
         delete forecasts;
       }
     }
@@ -757,7 +761,7 @@ class HFMEvaluator
   //		Timer tnow;
   //		//Fo vector with different metrics calculations
   //		vector<double> foIndicator(NMETRICS + 1, 0); //nMetrics +
-  //ErrorPinball
+  // ErrorPinball
   //
   //		/*
   //		 vector<vector<double> > foIndicatorStepsAhead(NMETRICS + 1);
@@ -765,11 +769,11 @@ class HFMEvaluator
   //		 foIndicatorStepsAhead[i].resize(stepsAhead);*/
   //
   //		vector<vector<double> >& vForecastings =
-  //pEFP.getForecastingsVector();
+  // pEFP.getForecastingsVector();
   //
   //		//validation mode = false | returnforecasts = false
   //		vector<double> predictedValues =
-  //generateSWMultiRoundForecasts(rep, vForecastings);
+  // generateSWMultiRoundForecasts(rep, vForecastings);
   //
   //		int maxLag = problemParam.getMaxLag();
   //		vector<double> targetValues;
@@ -777,7 +781,7 @@ class HFMEvaluator
   //			targetValues.push_back(vForecastings[targetFile][i]);
   //
   //		foIndicator = getAccuracy(targetValues, predictedValues,
-  //accIndicator);
+  // accIndicator);
   //
   //		timeTest+=tnow.now();
   //		Timer tNow2;
@@ -803,7 +807,7 @@ class HFMEvaluator
 
   //	//generate sliding window, with FH steps, multi round forecasts
   //	vector<double> generateSWMultiRoundForecasts(const RepEFP& rep, const
-  //vector<vector<double> >& vForecastings)
+  // vector<vector<double> >& vForecastings)
   //	{
   //		int nForTargetFile = vForecastings[targetFile].size();
   //		int maxLag = problemParam.getMaxLag();
@@ -813,41 +817,42 @@ class HFMEvaluator
   //
   //		double effectNumberSamples = (nForTargetFile - maxLag);
   //		vector<vector<double> >
-  //allForecastsVectors(ceil(effectNumberSamples / stepsAhead));
+  // allForecastsVectors(ceil(effectNumberSamples / stepsAhead));
   //
   //		//Timer t;
   //
   //		//for (int begin = maxLag; begin < nForTargetFile; begin ++) //
-  //main loop that varries all the time series 		int beginParallel, fParallel;
+  // main loop that varries all the time series 		int
+  // beginParallel, fParallel;
   ////		omp_set_num_threads(4);
   //		//			int np = omp_get_num_threads();
   //		//					cout << "number of
-  //threads: " << np << std::endl;
+  // threads: " << np << std::endl;
   //		// getchar();
   //
   //////		#pragma omp parallel for ordered
   ////		for (beginParallel = maxLag; beginParallel < nForTargetFile;
-  ///beginParallel += stepsAhead) // main loop that varries all the time series
+  /// beginParallel += stepsAhead) // main loop that varries all the time series
   ////		{
   //////			omp_set_dynamic(0);     // Explicitly disable
-  ///dynamic teams
+  /// dynamic teams
   //////			omp_set_num_threads(4); // Use 4 threads for all
-  ///consecutive parallel regions
+  /// consecutive parallel regions
   ////
   ////			vector<double> predicteds = returnForecasts(rep,
-  ///vForecastings, beginParallel);
+  /// vForecastings, beginParallel);
   ////
   //////			#pragma omp ordered
   ////			allForecasts.insert(allForecasts.end(),
-  ///predicteds.begin(), predicteds.end());
+  /// predicteds.begin(), predicteds.end());
   ////
   ////
   ////
   //////			for (fParallel = 0; fParallel <
-  ///predicteds.size(); fParallel++)
+  /// predicteds.size(); fParallel++)
   //////			{
   //////
-  ///allForecasts.push_back(predicteds[fParallel]);
+  /// allForecasts.push_back(predicteds[fParallel]);
   //////			}
   ////		}
   //
@@ -856,12 +861,12 @@ class HFMEvaluator
   //
   //		//#pragma omp parallel for num_threads(nThreads)
   //		for (beginParallel = maxLag; beginParallel < nForTargetFile;
-  //beginParallel += stepsAhead) // main loop that varries all the time series
+  // beginParallel += stepsAhead) // main loop that varries all the time series
   //		{
   //			int index = (beginParallel - maxLag) / stepsAhead;
   //
   //			allForecastsVectors[index] =
-  //std::move(returnForecasts(rep, vForecastings, beginParallel));
+  // std::move(returnForecasts(rep, vForecastings, beginParallel));
   ////predicteds;
   //		}
   //
@@ -892,18 +897,19 @@ class HFMEvaluator
   //		{
   //			int nExtraForecasts = allForecasts.size() - nSamples;
   //			allForecasts.erase(allForecasts.begin() +
-  //allForecasts.size() - nExtraForecasts, allForecasts.end());
+  // allForecasts.size() - nExtraForecasts, allForecasts.end());
   ////			cout<<"number of forecasts is bigger than the number of
-  ///samples"<<endl; /			cout<<"nExtraForecasts: "<<
-  ///nExtraForecasts << std::endl; /			exit(1);
+  /// samples"<<endl; /			cout<<"nExtraForecasts: "<<
+  /// nExtraForecasts << std::endl; /			exit(1);
   //		}
   //
   //		return allForecasts;
   //	}
 
   // TODO -- Check if the above blindForecasting provides the same results as
-  // this one down here 	vector<double> blindForecasting(const RepEFP& rep, const
-  //vector<vector<double> > vForecastings)
+  // this one down here 	vector<double> blindForecasting(const RepEFP&
+  // rep, const
+  // vector<vector<double> > vForecastings)
   //	{
   //
   //		//cout<<"availableForecasting = "<<availableForecasting<<endl;
@@ -919,7 +925,7 @@ class HFMEvaluator
   //		vector<double> predicteds;
   //
   //		for (int pa = 0; pa < stepsAhead; pa++)			//
-  //passos a frente
+  // passos a frente
   //		{
   //			//forecasting estimation
   //			double estimation = 0;
@@ -939,45 +945,47 @@ class HFMEvaluator
   //						value = predicteds[pa - K];
   //					else
   //						value = vForecastings[file][i +
-  //pa - K];
+  // pa - K];
   //
   //				}
   //				else
   //				{
   //					if ((i + pa - K) >
-  //vForecastings[file].size())
+  // vForecastings[file].size())
   //					{
-  //						//cout << nForecastings << std::endl;
+  //						//cout << nForecastings <<
+  //std::endl;
   //						//cout <<
-  //pEFP.getForecastings(file, i + pa - K) << std::endl;
+  // pEFP.getForecastings(file, i + pa - K) << std::endl;
   //						//cout << i + pa - K << "\t" <<
-  //i << "\t" << pa << "\t" << K << std::endl;
+  // i << "\t" << pa << "\t" << K << std::endl;
   //						//getchar();
   //						value = 0;
   //					}
   //					else
   //						value = vForecastings[file][i +
-  //pa - K];
+  // pa - K];
   //				}
   //
   //				double ruleGreater =
-  //rep.singleFuzzyRS[nSP][GREATER]; 				double greaterWeight =
-  //rep.singleFuzzyRS[nSP][GREATER_WEIGHT]; 				double ruleLower =
-  //rep.singleFuzzyRS[nSP][LOWER]; 				double lowerWeight =
-  //rep.singleFuzzyRS[nSP][LOWER_WEIGHT]; 				double ruleEpsilon =
-  //rep.singleFuzzyRS[nSP][EPSILON]; 				FuzzyFunction repFuzzyPertinenceFunc =
-  //FuzzyFunction(rep.singleFuzzyRS[nSP][PERTINENCEFUNC]);
+  // rep.singleFuzzyRS[nSP][GREATER]; 				double
+  // greaterWeight = rep.singleFuzzyRS[nSP][GREATER_WEIGHT];
+  // double ruleLower = rep.singleFuzzyRS[nSP][LOWER];
+  // double lowerWeight = rep.singleFuzzyRS[nSP][LOWER_WEIGHT];
+  // double ruleEpsilon = rep.singleFuzzyRS[nSP][EPSILON];
+  // FuzzyFunction repFuzzyPertinenceFunc =
+  // FuzzyFunction(rep.singleFuzzyRS[nSP][PERTINENCEFUNC]);
   //
   //				defuzzification(ruleGreater, greaterWeight,
-  //ruleLower, lowerWeight, ruleEpsilon, repFuzzyPertinenceFunc, value,
-  //estimation, greaterAccepeted, lowerAccepted);
+  // ruleLower, lowerWeight, ruleEpsilon, repFuzzyPertinenceFunc, value,
+  // estimation, greaterAccepeted, lowerAccepted);
   //
   //			}
   //
   //			for (int nMP = 0; nMP < sizeMP; nMP++)
   //			{
   //				vector<pair<int, int> > meansK =
-  //rep.averageIndex[nMP];
+  // rep.averageIndex[nMP];
   //				//cout << meansK << std::endl;
   //				//getchar();
   //				double mean = 0;
@@ -992,20 +1000,20 @@ class HFMEvaluator
   //						if (pa >= K)
   //						{
   //							mean += predicteds[pa -
-  //K];
+  // K];
   //
   //						}
   //						else
   //						{
   //							mean +=
-  //vForecastings[file][i + pa - K];
+  // vForecastings[file][i + pa - K];
   //
   //						}
   //					}
   //					else
   //					{
   //						mean += vForecastings[file][i +
-  //pa - K];
+  // pa - K];
   //					}
   //				}
   //
@@ -1013,23 +1021,24 @@ class HFMEvaluator
   //				//cout << mean << std::endl;
   //
   //				double ruleGreater =
-  //rep.averageFuzzyRS[nMP][GREATER]; 				double greaterWeight =
-  //rep.averageFuzzyRS[nMP][GREATER_WEIGHT]; 				double ruleLower =
-  //rep.averageFuzzyRS[nMP][LOWER]; 				double lowerWeight =
-  //rep.averageFuzzyRS[nMP][LOWER_WEIGHT]; 				double ruleEpsilon =
-  //rep.averageFuzzyRS[nMP][EPSILON]; 				FuzzyFunction repFuzzyPertinenceFunc =
-  //FuzzyFunction(rep.averageFuzzyRS[nMP][PERTINENCEFUNC]);
+  // rep.averageFuzzyRS[nMP][GREATER]; 				double
+  // greaterWeight = rep.averageFuzzyRS[nMP][GREATER_WEIGHT];
+  // double ruleLower = rep.averageFuzzyRS[nMP][LOWER];
+  // double lowerWeight = rep.averageFuzzyRS[nMP][LOWER_WEIGHT];
+  // double ruleEpsilon = rep.averageFuzzyRS[nMP][EPSILON];
+  // FuzzyFunction repFuzzyPertinenceFunc =
+  // FuzzyFunction(rep.averageFuzzyRS[nMP][PERTINENCEFUNC]);
   //
   //				defuzzification(ruleGreater, greaterWeight,
-  //ruleLower, lowerWeight, ruleEpsilon, repFuzzyPertinenceFunc, mean,
-  //estimation, greaterAccepeted, lowerAccepted);
+  // ruleLower, lowerWeight, ruleEpsilon, repFuzzyPertinenceFunc, mean,
+  // estimation, greaterAccepeted, lowerAccepted);
   //
   //			}
   //
   //			for (int nDP = 0; nDP < sizeDP; nDP++)
   //			{
   //				vector<pair<int, int> > derivateK =
-  //rep.derivativeIndex[nDP];
+  // rep.derivativeIndex[nDP];
   //				//cout << derivateK << std::endl;
   //				//getchar();
   //
@@ -1046,13 +1055,15 @@ class HFMEvaluator
   //						{
   //							if (pa >= K)
   //								d +=
-  //predicteds[pa - K]; 							else 								d += vForecastings[file][i + pa - K];
+  // predicteds[pa - K]; else
+  // d += vForecastings[file][i + pa - K];
   //						}
   //						else
   //						{
   //							if (pa >= K)
   //								d -=
-  //predicteds[pa - K]; 							else 								d -= vForecastings[file][i + pa - K];
+  // predicteds[pa - K]; else
+  // d -= vForecastings[file][i + pa - K];
   //						}
   //					}
   //					else
@@ -1060,27 +1071,28 @@ class HFMEvaluator
   //						if (dK == 0)
   //						{
   //							d +=
-  //vForecastings[file][i + pa - K];
+  // vForecastings[file][i + pa - K];
   //						}
   //						else
   //						{
   //							d -=
-  //vForecastings[file][i + pa - K];
+  // vForecastings[file][i + pa - K];
   //						}
   //					}
   //				}
   //
   //				double ruleGreater =
-  //rep.derivativeFuzzyRS[nDP][GREATER]; 				double greaterWeight =
-  //rep.derivativeFuzzyRS[nDP][GREATER_WEIGHT]; 				double ruleLower =
-  //rep.derivativeFuzzyRS[nDP][LOWER]; 				double lowerWeight =
-  //rep.derivativeFuzzyRS[nDP][LOWER_WEIGHT]; 				double ruleEpsilon =
-  //rep.derivativeFuzzyRS[nDP][EPSILON]; 				FuzzyFunction repFuzzyPertinenceFunc =
-  //FuzzyFunction(rep.derivativeFuzzyRS[nDP][PERTINENCEFUNC]);
+  // rep.derivativeFuzzyRS[nDP][GREATER]; 				double
+  // greaterWeight = rep.derivativeFuzzyRS[nDP][GREATER_WEIGHT];
+  // double ruleLower = rep.derivativeFuzzyRS[nDP][LOWER];
+  // double lowerWeight = rep.derivativeFuzzyRS[nDP][LOWER_WEIGHT];
+  // double ruleEpsilon = rep.derivativeFuzzyRS[nDP][EPSILON];
+  // FuzzyFunction repFuzzyPertinenceFunc =
+  // FuzzyFunction(rep.derivativeFuzzyRS[nDP][PERTINENCEFUNC]);
   //
   //				defuzzification(ruleGreater, greaterWeight,
-  //ruleLower, lowerWeight, ruleEpsilon, repFuzzyPertinenceFunc, d, estimation,
-  //greaterAccepeted, lowerAccepted);
+  // ruleLower, lowerWeight, ruleEpsilon, repFuzzyPertinenceFunc, d, estimation,
+  // greaterAccepeted, lowerAccepted);
   //
   //			}
   //
@@ -1096,7 +1108,8 @@ class HFMEvaluator
   //				vector<int> vIndex = rep.vIndex;
   //
   //				approximationsEnayatifar(aprox, alpha, vAlpha,
-  //vIndexAlphas, vIndex, estimation, i, pa, vForecastings, predicteds, maxLag);
+  // vIndexAlphas, vIndex, estimation, i, pa, vForecastings, predicteds,
+  // maxLag);
   //			}
   //
   //			predicteds.push_back(estimation);

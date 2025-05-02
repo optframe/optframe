@@ -49,18 +49,21 @@ class HFMMultiEvaluator : public MultiEvaluator<ESolutionHFM, EMSolutionHFM> {
 
   MultiEvaluation<> evaluate(const SolutionHFM& s) override {
     const RepHFM& r = s.getR();
-    MultiEvaluation<> nev;
+    // MultiEvaluation<> nev;
+    std::vector<EvaluationHFM> vnev;
 
     vector<double>* foIndicator = evalEFP->evaluateAll(r, ALL_EVALUATIONS);
 
     // It has been verified that most part of INDEX minimizes Square Errors and
     // are strongly correlated Instead of designed MAPE_INV
-    nev.addEvaluation(EvaluationHFM(foIndicator->at(MAPE_INDEX)));
-    nev.addEvaluation(EvaluationHFM(foIndicator->at(MAPE_INV_INDEX)));
+    vnev.push_back(EvaluationHFM(foIndicator->at(MAPE_INDEX)));
+    vnev.push_back(EvaluationHFM(foIndicator->at(MAPE_INV_INDEX)));
     // nev.addEvaluation(EvaluationHFM(foIndicator->at(SMAPE_INDEX)));
     // nev.addEvaluation(EvaluationHFM(foIndicator->at(RMSE_INDEX)));
     // nev.addEvaluation(EvaluationHFM(foIndicator->at(WMAPE_INDEX)));
     // nev.addEvaluation(EvaluationHFM(foIndicator->at(MMAPE_INDEX)));
+
+    MultiEvaluation<> nev(vnev);
 
     delete foIndicator;
     return nev;

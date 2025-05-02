@@ -103,11 +103,12 @@ class MultiEvaluator : public GeneralEvaluator<XMES, XSH>,
 
   // changed to Meval without point TODO
   XMEv evaluate(const S& s) override {
-    XMEv nev;
+    std::vector<XEv> vnev;
     for (unsigned i = 0; i < sngEvaluators.size(); i++) {
       XEv ev{sngEvaluators[i]->evaluate(s)};
-      nev.addEvaluation(ev);
+      vnev.push_back(ev);
     }
+    XMEv nev{vnev};
 
     return nev;
   }

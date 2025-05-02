@@ -7,9 +7,14 @@
 #include <stdlib.h>
 //
 #include <iostream>
+#include <optional>
 //
+#include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
+
+#include "../ForecastClass.hpp"
+#include "../TreatForecasts.hpp"
 
 using namespace std;
 using namespace optframe;
@@ -18,6 +23,7 @@ using namespace HFM;
 int AETwoVariables(int argc, char** argv) {
   std::cout << "Welcome to AE batch with two variables!" << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 1;
@@ -28,8 +34,8 @@ int AETwoVariables(int argc, char** argv) {
   if (argc != 4) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
-            "parameters options precision"
-         << std::endl;
+                 "parameters options precision"
+              << std::endl;
     exit(1);
   }
 
@@ -139,8 +145,8 @@ int AETwoVariables(int argc, char** argv) {
     int maxLag = problemParam.getMaxLag(0);
 
     int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds * stepsAhead;
-    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: "
+              << nTotalForecastingsTrainningSet << std::endl;
     std::cout << "maxNotUsed: " << maxLag << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
@@ -151,7 +157,7 @@ int AETwoVariables(int argc, char** argv) {
           expVar, stepsAhead, nTotalForecastingsTrainningSet));
     }
 
-    ForecastClass pFC(trainningSet, problemParam, rg, methodParam);
+    ForecastClass pFC{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
     sol = pFC.run(timeES, timeVND, timeILS);

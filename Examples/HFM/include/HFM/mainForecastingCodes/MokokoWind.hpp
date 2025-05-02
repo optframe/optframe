@@ -12,13 +12,17 @@
 #include <iostream>
 #include <numeric>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
 
 int mokokoWindSotavento(int argc, char** argv) {
-  std::cout << "Welcome to Mokoko Split Wind Sotavento  calibration!" << std::endl;
+  std::cout << "Welcome to Mokoko Split Wind Sotavento  calibration!"
+            << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
@@ -39,7 +43,8 @@ int mokokoWindSotavento(int argc, char** argv) {
   std::cout << "argvTimeES=" << argvTimeES << std::endl;
   std::cout << "argvFH=" << argvFH << std::endl;
   std::cout << "argvNEXP=" << argvNEXP << std::endl;
-  std::cout << "=========================================" << std::endl << std::endl;
+  std::cout << "=========================================" << std::endl
+            << std::endl;
 
   vector<vector<double>>
       vfoIndicatorCalibration;  // vector with the FO of each batch
@@ -147,9 +152,10 @@ int mokokoWindSotavento(int argc, char** argv) {
     vector<double> foIndicators;
 
     std::cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << std::endl;
+              << nTotalForecastingsTrainningSet << std::endl;
 
-    std::cout << "#sizeTrainingSet: " << rFTrain.getForecastsSize(0) << std::endl;
+    std::cout << "#sizeTrainingSet: " << rFTrain.getForecastsSize(0)
+              << std::endl;
     std::cout << "#maxNotUsed: " << maxLag << std::endl;
     std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
 
@@ -163,18 +169,20 @@ int mokokoWindSotavento(int argc, char** argv) {
     vector<double> predictedValues;
 
     int nSamplesComplete = rFComplete.getForecastsSize(0);
-    std::cout << "running test with:" << nSamplesComplete << " samples" << std::endl;
+    std::cout << "running test with:" << nSamplesComplete << " samples"
+              << std::endl;
     for (int begin = 1176; (begin + nSA) <= nSamplesComplete; begin += nSA) {
       std::cout << "=========================================" << std::endl;
-      std::cout << "Executing train and forecasts for round: " << nValidationRounds
-           << std::endl;
+      std::cout << "Executing train and forecasts for round: "
+                << nValidationRounds << std::endl;
       nValidationRounds++;
       vector<vector<double>> trainningSet;  // trainningSetVector
       for (int nEXP = 0; nEXP < argvNEXP; nEXP++)
         trainningSet.push_back(rFComplete.getPartsForecastsBeginToEnd(
             nEXP, begin - nTrainingSamples, nTrainingSamples));
 
-      ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+      ForecastClass forecastObject{trainningSet, problemParam, rg2,
+                                   methodParam};
 
       std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
       int timeES = argvTimeES;  // online training time
@@ -195,18 +203,20 @@ int mokokoWindSotavento(int argc, char** argv) {
       //			avgErrors[RMSE_INDEX] += errors[RMSE_INDEX];
 
       //			vector<double> targetValuesForPersistance =
-      //rFComplete.getPartsForecastsBeginToEnd(0, begin + nTrainingSamples - 1,
-      //nSA + 1); 			vector<double> persistanceMethodErrors =
-      //forecastObject.returnErrorsPersistance(targetValuesForPersistance, nSA);
+      // rFComplete.getPartsForecastsBeginToEnd(0, begin + nTrainingSamples - 1,
+      // nSA + 1); 			vector<double> persistanceMethodErrors =
+      // forecastObject.returnErrorsPersistance(targetValuesForPersistance,
+      // nSA);
       //
       //			avgErrorsP[MMAPE_INDEX] +=
-      //persistanceMethodErrors[MMAPE_INDEX]; 			avgErrorsP[RMSE_INDEX] +=
-      //persistanceMethodErrors[RMSE_INDEX];
+      // persistanceMethodErrors[MMAPE_INDEX];
+      // avgErrorsP[RMSE_INDEX] += persistanceMethodErrors[RMSE_INDEX];
 
       //			cout << "Round: " << nRounds << " HFM errors
-      //MMAPE and RMSE:" << std::endl; 			cout << errors[MMAPE_INDEX] << "\t" <<
-      //errors[RMSE_INDEX] << std::endl;
-      std::cout << "=========================================" << std::endl << std::endl;
+      // MMAPE and RMSE:" << std::endl; 			cout <<
+      // errors[MMAPE_INDEX] << "\t" << errors[RMSE_INDEX] << std::endl;
+      std::cout << "=========================================" << std::endl
+                << std::endl;
     }
     std::cout << "nRounds = " << nValidationRounds << std::endl;
     //		getchar();
@@ -218,11 +228,11 @@ int mokokoWindSotavento(int argc, char** argv) {
     //		vector<vector<double> > trainningSet; // trainningSetVector
     //		for (int nEXP = 0; nEXP < argvNEXP; nEXP++)
     //			trainningSet.push_back(rFTrain.getPartsForecastsEndToBegin(nEXP,
-    //0, nTotalForecastingsTrainningSet));
+    // 0, nTotalForecastingsTrainningSet));
     //
     //		cout << trainningSet << std::endl;
     //		ForecastClass forecastObject(trainningSet, problemParam, rg,
-    //methodParam);
+    // methodParam);
     //
     //		pair<Solution<RepEFP>&, Evaluation<>&>* sol;
     //		int timeES = argvTimeES; // online training time
@@ -234,19 +244,19 @@ int mokokoWindSotavento(int argc, char** argv) {
     //		vector<vector<double> > validationSet;
     //		for (int nEXP = 0; nEXP < argvNEXP; nEXP++)
     //			validationSet.push_back(rFVal.getPartsForecastsEndToBegin(nEXP,
-    //0, rFVal.getForecastsSize(0)));
+    // 0, rFVal.getForecastsSize(0)));
     //
     //		cout << validationSet << std::endl;
     //		vector<double> errors = forecastObject.returnErrors(sol,
-    //validationSet);
+    // validationSet);
     //
 
     vector<vector<double>> notUsedSet;
     for (int nEXP = 0; nEXP < argvNEXP; nEXP++)
       notUsedSet.push_back(rFComplete.getPartsForecastsEndToBegin(
           nEXP, 0, nValidationRounds * nSA));
-    ForecastClass forecastingClassOBJ(notUsedSet, problemParam, rg,
-                                      methodParam);
+    ForecastClass forecastingClassOBJ{notUsedSet, problemParam, rg2,
+                                      methodParam};
 
     vector<double> persistanceMethodErrors =
         *forecastingClassOBJ.returnErrorsPersistance(
@@ -255,7 +265,7 @@ int mokokoWindSotavento(int argc, char** argv) {
             nSA);
     std::cout << "persistanceMethod errors MMAPE and RMSE:" << std::endl;
     std::cout << persistanceMethodErrors[MMAPE_INDEX] << "\t"
-         << persistanceMethodErrors[RMSE_INDEX] << std::endl;
+              << persistanceMethodErrors[RMSE_INDEX] << std::endl;
     //
 
     vector<double> targetValues =

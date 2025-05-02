@@ -16,6 +16,8 @@
 #include <numeric>
 // #include "../../BBV/BBVTolls.hpp"
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -27,6 +29,7 @@ int stockMarketForecasting(int argc, char** argv) {
   std::cout << "Let's optimize with " << nThreads << " nThreads\n" << std::endl;
 
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
@@ -38,7 +41,7 @@ int stockMarketForecasting(int argc, char** argv) {
   //	{
   //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
-  //endl; 		exit(1);
+  // endl; 		exit(1);
   //	}
 
   //	const char* caminhoOutput = argv[1];
@@ -62,7 +65,8 @@ int stockMarketForecasting(int argc, char** argv) {
        explanatoryVariables.push_back("./Instance/dadosBovespa/emprestimoAigorExp3");
        explanatoryVariables.push_back("./Instance/dadosBovespa/emprestimoAigorExp4");*/
 
-  std::cout << "Variables and explanation:" << explanatoryVariables << std::endl;
+  std::cout << "Variables and explanation:" << explanatoryVariables
+            << std::endl;
 
   treatForecasts rF(explanatoryVariables);
 
@@ -72,7 +76,8 @@ int stockMarketForecasting(int argc, char** argv) {
   int lambda = mu * 6;
   int evalFOMinimizer = MAPE_INDEX;
   int contructiveNumberOfColumns = 100;
-  std::cout << "contructiveNumberOfColumns:" << contructiveNumberOfColumns << std::endl;
+  std::cout << "contructiveNumberOfColumns:" << contructiveNumberOfColumns
+            << std::endl;
   int evalAprox = 0;
   double alphaACF = -1;
   int construtive = 2;
@@ -147,8 +152,8 @@ int stockMarketForecasting(int argc, char** argv) {
   std::cout << std::fixed;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
   std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
-  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: "
+            << nTotalForecastingsTrainningSet << std::endl;
   std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
   std::cout << "#~NTR: " << NTRaprox << std::endl;
   std::cout << "#maxNotUsed: " << maxLag << std::endl;
@@ -171,11 +176,11 @@ int stockMarketForecasting(int argc, char** argv) {
     if (b == 1) methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
     // forecastObject = new ForecastClass(trainningSet, problemParam, rg,
     // methodParam);
-    ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObj{trainningSet, problemParam, rg2, methodParam};
     op<ESolutionHFM> sol = forecastObj.run(timeES, 0, 0);
     //		pair<Solution<RepEFP, OPTFRAME_DEFAULT_ADS>, Evaluation<>>* sol
-    //= forecastObject->runGILS(0, timeES); 		cout << "Bye bye..see u soon." <<
-    //endl; 		exit(1);
+    //= forecastObject->runGILS(0, timeES); 		cout << "Bye bye..see u
+    // soon." << endl; 		exit(1);
 
     forecastObj.addSolToParetoWithParetoManager(*opf, sol->first);
     // Pareto<SolutionHFM> pfNew = forecastObj.runMultiObjSearch(timeGPLS, pf);
@@ -190,7 +195,7 @@ int stockMarketForecasting(int argc, char** argv) {
 
   // forecastObject = new ForecastClass(trainningSet, problemParam, rg,
   // methodParam);
-  ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+  ForecastClass forecastObj{trainningSet, problemParam, rg2, methodParam};
 
   vector<MultiEvaluation<>*> vEvalPF = opf->getParetoFrontPtr();
   // vector<SolutionHFM*> vSolPF = pf->getParetoSet();
@@ -209,8 +214,9 @@ int stockMarketForecasting(int argc, char** argv) {
   // Using Multi Round forecasting for obtaining validation and tests
   //	vector<vector<double> > validationSet;
   //	for (int expVar = 0; expVar < (int) explanatoryVariables.size();
-  //expVar++) 		validationSet.push_back(rF.getPartsForecastsEndToBegin(expVar, 0,
-  //fh + maxLag));
+  // expVar++)
+  // validationSet.push_back(rF.getPartsForecastsEndToBegin(expVar, 0, fh +
+  // maxLag));
 
   vector<vector<double>*> ensembleBlindForecasts;
   std::cout << "\nPrinting obtained sets of predicted values..." << std::endl;
@@ -219,19 +225,21 @@ int stockMarketForecasting(int argc, char** argv) {
     vector<double>* blindForecasts = forecastObj.returnBlind(
         vESolPF[i]->first.getR(), dataForFeedingValidationTest);
     for (int f = 0; f < (int)blindForecasts->size(); f++)
-      std::cout << blindForecasts->at(f) << "/" << targetValidationSet.at(f) << "/"
-           << (targetValidationSet.at(f) - blindForecasts->at(f)) << "\t";
+      std::cout << blindForecasts->at(f) << "/" << targetValidationSet.at(f)
+                << "/" << (targetValidationSet.at(f) - blindForecasts->at(f))
+                << "\t";
 
     std::cout << std::endl;
 
     //		cout <<
-    //forecastObject->returnForecastsAndTargets(vSolPF[i]->getR(),
-    //validationSet) << std::endl; 		getchar();
+    // forecastObject->returnForecastsAndTargets(vSolPF[i]->getR(),
+    // validationSet) << std::endl; 		getchar();
     ensembleBlindForecasts.push_back(blindForecasts);
     // getchar();
   }
 
-  std::cout << "\nPrinting pareto front forecast accuracy measures..." << std::endl;
+  std::cout << "\nPrinting pareto front forecast accuracy measures..."
+            << std::endl;
   for (int i = 0; i < nObtainedParetoSol; i++) {
     std::cout << setprecision(5);
     for (int e = 0; e < (int)vEvalPF[i]->size(); e++)

@@ -8,16 +8,17 @@
 #include <string>
 #include <utility>
 //
+#include <OptFrame/Core/Constructive.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
+#include <OptFrame/Pareto/Pareto.hpp>
+
 #include "Component.hpp"
-#include "Constructive.hpp"
 #include "Heuristics/GRASP/GRConstructive.hpp"
-#include "MultiEvaluator.hpp"
-#include "Pareto.hpp"
-#include "RandGen.hpp"
 // #include "MultiEvaluation.hpp"
 // #include "Timer.hpp"
-#include "InitialSearch.hpp"
-#include "ParetoManager.hpp"
+#include <OptFrame/Pareto/ParetoManager.hpp>
+#include <OptFrame/Search/InitialSearch.hpp>
 
 using namespace std;
 

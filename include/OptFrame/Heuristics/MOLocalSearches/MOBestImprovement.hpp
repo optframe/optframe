@@ -61,7 +61,7 @@ class MOBestImprovement : public MOLocalSearch<XES, XMES> {
 
     exec(s, sMev, pManager, timelimit, target_f);
 
-    sMev.clear();
+    // sMev.clear();
     delete &sMev;
   }
 

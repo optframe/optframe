@@ -15,6 +15,8 @@
 #include <iostream>
 #include <numeric>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -22,10 +24,12 @@ extern int nThreads;
 
 int usingNonDominatedHFMModels(int argc, char** argv) {
   nThreads = 1;
-  std::cout << "Welcome to MO forecasting, let's generate a couple of non-dominated "
-          "HFM models!"
-       << std::endl;
+  std::cout
+      << "Welcome to MO forecasting, let's generate a couple of non-dominated "
+         "HFM models!"
+      << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
@@ -37,7 +41,7 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   //	{
   //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
-  //endl; 		exit(1);
+  // endl; 		exit(1);
   //	}
 
   const char* caminhoOutput = argv[1];
@@ -123,8 +127,8 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   std::cout << std::fixed;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
   std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
-  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: "
+            << nTotalForecastingsTrainningSet << std::endl;
   std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
   std::cout << "#~NTR: " << NTRaprox << std::endl;
   std::cout << "#maxNotUsed: " << maxLag << std::endl;
@@ -147,7 +151,7 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
     if (b == 1) methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
     // forecastObject = new ForecastClass(trainningSet, problemParam, rg,
     // methodParam);
-    ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObj{trainningSet, problemParam, rg2, methodParam};
     op<ESolutionHFM> sol = forecastObj.run(timeES, 0, 0);
     forecastObj.addSolToParetoWithParetoManager(*opf, sol->first);
     // Pareto<SolutionHFM> pfNew = forecastObj.runMultiObjSearch(timeGPLS, pf);
@@ -161,7 +165,7 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   }
   // forecastObject = new ForecastClass(trainningSet, problemParam, rg,
   // methodParam);
-  ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+  ForecastClass forecastObj{trainningSet, problemParam, rg2, methodParam};
 
   vector<MultiEvaluation<>*> vEvalPF = opf->getParetoFrontPtr();
   // vector<SolutionHFM*> vSolPF = pf->getParetoSet();
@@ -177,7 +181,7 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
   // Using Multi Round forescasting for obtaining validation and tests
   //	vector<vector<double> > validationSet;
   //	validationSet.push_back(rF.getPartsForecastsEndToBegin(0, 0, fh +
-  //maxLag));
+  // maxLag));
 
   vector<vector<double>> ensembleBlindForecasts;
   std::cout << "\nPrinting obtained sets of predicted values..." << std::endl;
@@ -186,20 +190,22 @@ int usingNonDominatedHFMModels(int argc, char** argv) {
     vector<double> blindForecasts = *forecastObj.returnBlind(
         vESolPF[i]->first.getR(), dataForFeedingValidationTest);
     for (int f = 0; f < (int)blindForecasts.size(); f++)
-      std::cout << blindForecasts[f] << "/" << targetValidationSet[targetFile][f]
-           << "/" << (targetValidationSet[targetFile][f] - blindForecasts[f])
-           << "\t";
+      std::cout << blindForecasts[f] << "/"
+                << targetValidationSet[targetFile][f] << "/"
+                << (targetValidationSet[targetFile][f] - blindForecasts[f])
+                << "\t";
 
     std::cout << std::endl;
 
     //		cout <<
-    //forecastObject->returnForecastsAndTargets(vSolPF[i]->getR(),
-    //validationSet) << std::endl; 		getchar();
+    // forecastObject->returnForecastsAndTargets(vSolPF[i]->getR(),
+    // validationSet) << std::endl; 		getchar();
     ensembleBlindForecasts.push_back(blindForecasts);
     // getchar();
   }
 
-  std::cout << "\nPrinting pareto front forecast accuracy measures..." << std::endl;
+  std::cout << "\nPrinting pareto front forecast accuracy measures..."
+            << std::endl;
   for (int i = 0; i < nObtainedParetoSol; i++) {
     std::cout << setprecision(5);
     for (int e = 0; e < (int)vEvalPF[i]->size(); e++)

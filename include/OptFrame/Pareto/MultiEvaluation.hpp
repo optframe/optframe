@@ -52,7 +52,11 @@ class MultiEvaluation : public Component {
 
  protected:
   // internal structure is a pack of XEv
-  std::vector<XEv> vev;
+  // TODO: must use valarray internally instead of vector!!!
+  // because of return in '.evaluation()' as reference!
+  //
+  // std::vector<XEv> vev;
+  std::valarray<XEv> vev;
 
  public:
   // this 'outdated' should be true, when any
@@ -76,14 +80,20 @@ class MultiEvaluation : public Component {
     for (unsigned i = 0; i < vd.size(); i++) vev.push_back(XEv{vd[i]});
   }
 
-  MultiEvaluation(const MultiEvaluation<ObjType>& mev) {
-    for (unsigned i = 0; i < mev.vev.size(); i++) vev.push_back(mev.vev[i]);
+  explicit MultiEvaluation(const std::vector<XEv>& vd) : vev{vd.size()} {
+    for (unsigned i = 0; i < vd.size(); i++) vev[i] = vd[i];
+  }
+
+  MultiEvaluation(const MultiEvaluation<ObjType>& mev) : vev{mev.vev} {
+    // for (unsigned i = 0; i < mev.vev.size(); i++) vev.push_back(mev.vev[i]);
   }
 
   MultiEvaluation(MultiEvaluation<ObjType>&& mev) noexcept
       : vev(std::move(mev.vev)) {}
 
-  ~MultiEvaluation() override { this->clear(); }
+  ~MultiEvaluation() override {
+    //  this->clear();
+  }
 
   // ===============
   // getters/setters
@@ -111,9 +121,11 @@ class MultiEvaluation : public Component {
   // this is 'valarray', not std::vector! needs to support operators +/-
   std::valarray<XEv>& evaluation() { return vev; }
 
+  /*
   void addEvaluation(Evaluation<ObjType>& ev) { vev.push_back(ev); }
 
   void addEvaluation(Evaluation<ObjType>&& ev) { vev.push_back(std::move(ev)); }
+  */
 
   unsigned size() const { return vev.size(); }
 
@@ -173,9 +185,10 @@ class MultiEvaluation : public Component {
     if (&mev == this)  // auto ref check
       return *this;
 
-    this->vev.clear();
-    for (unsigned i = 0; i < mev.vev.size(); i++)
-      this->vev.push_back(mev.vev[i]);
+    // this->vev.clear();
+    // for (unsigned i = 0; i < mev.vev.size(); i++)
+    //   this->vev.push_back(mev.vev[i]);
+    this->vev = mev.vev;
 
     return *this;
   }
@@ -184,7 +197,9 @@ class MultiEvaluation : public Component {
     return *new MultiEvaluation(*this);
   }
 
+  /*
   void clear() { this->vev.clear(); }
+  */
 
   // update Evaluation with costs
   virtual void update(MultiEvaluation<ObjType>& mevTarget) const {

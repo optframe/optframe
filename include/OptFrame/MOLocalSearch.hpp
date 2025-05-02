@@ -10,12 +10,13 @@
 
 using namespace std;
 
+#include <OptFrame/Core/Evaluation.hpp>
+#include <OptFrame/Pareto/ParetoManager.hpp>
+#include <OptFrame/Search/MultiObjSearch.hpp>
+
 #include "Component.hpp"
-#include "Evaluation.hpp"
 #include "Helper/Solution.hpp"
 #include "Hyper/ComponentBuilder.hpp"
-#include "MultiObjSearch.hpp"
-#include "ParetoManager.hpp"
 
 namespace optframe {
 

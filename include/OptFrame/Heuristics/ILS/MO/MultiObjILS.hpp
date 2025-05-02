@@ -7,11 +7,12 @@
 #include <algorithm>
 //
 
+#include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Pareto/MultiEvaluator.hpp>
+#include <OptFrame/Pareto/Pareto.hpp>
+
 #include "../../../InitialPareto.hpp"
 #include "../../../MOLocalSearch.hpp"
-#include "../../../MultiEvaluator.hpp"
-#include "../../../NSSeq.hpp"
-#include "../../../Pareto.hpp"
 #include "../../../Search/MultiObjSearch.hpp"
 #include "MOILS.h"
 

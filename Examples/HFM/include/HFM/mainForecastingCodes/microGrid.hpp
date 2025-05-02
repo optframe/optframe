@@ -11,14 +11,18 @@
 #include <iostream>
 #include <numeric>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
 
 int microGridLiuAppliedEnergy(int argc, char** argv) {
-  std::cout << "Welcome to Micro Grid Liu Applied Energy Dataset Calibration Mode..."
-       << std::endl;
+  std::cout
+      << "Welcome to Micro Grid Liu Applied Energy Dataset Calibration Mode..."
+      << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 9;
@@ -29,8 +33,8 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
   if (argc != 5) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nomeOutput targetTS "
-            "construtiveNRulesACF timeES"
-         << std::endl;
+                 "construtiveNRulesACF timeES"
+              << std::endl;
     exit(1);
   }
 
@@ -96,8 +100,8 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
-   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = "
+   << nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -124,11 +128,13 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
   for (int n = 0; n < nBatches; n++) {
     //		int contructiveNumberOfRules = rg.rand(maxPrecision) + 10;
     //		int evalFOMinimizer = rg.rand(NMETRICS); //tree is the number of
-    //possible objetive function index minimizers 		int evalAprox = rg.rand(2);
-    ////Enayatifar aproximation using previous values 		int construtive =
-    //rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) + 1; 		double
-    //mutationDesv = rg.rand(maxMutationDesv) + 1; 		int mu = rg.rand(maxMu) + 1;
-    //		int lambda = mu * 6;
+    // possible objetive function index minimizers 		int evalAprox =
+    // rg.rand(2);
+    ////Enayatifar aproximation using previous values 		int construtive
+    ///=
+    // rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) +
+    // 1; 		double mutationDesv = rg.rand(maxMutationDesv) + 1;
+    // int mu = rg.rand(maxMu) + 1; 		int lambda = mu * 6;
 
     // limit ACF for construtive ACF
     //		double alphaACF = rg.rand01();
@@ -196,7 +202,7 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
 
     std::cout << "BeginTrainninningSet: " << beginTrainingSet;
     std::cout << "\t #SamplesTrainningSet: " << nTotalForecastingsTrainningSet
-         << std::endl;
+              << std::endl;
     std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
     std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
     std::cout << "#StepsAhead: " << stepsAhead << std::endl << std::endl;
@@ -219,7 +225,7 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, beginTrainingSet, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
@@ -238,10 +244,11 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
     vector<double> foIndicatorCalibration;
     int nValidationSamples = maxLag + nVR * stepsAhead;
     //		vector<vector<double> > validationSet; //validation set for
-    //calibration 		validationSet.push_back(rF.getPartsForecastsEndToBegin(0,
-    //beginTrainingSet + stepsAhead, nValidationSamples)); 		vector<double>
-    //foIndicatorsWeeks; 		foIndicatorsWeeks = forecastObject.returnErrors(sol,
-    //validationSet);
+    // calibration
+    // validationSet.push_back(rF.getPartsForecastsEndToBegin(0,
+    // beginTrainingSet + stepsAhead, nValidationSamples));
+    // vector<double> foIndicatorsWeeks; 		foIndicatorsWeeks =
+    // forecastObject.returnErrors(sol, validationSet);
     //		foIndicatorCalibration.push_back(foIndicatorsWeeks[MAPE_INDEX]);
     //		foIndicatorCalibration.push_back(foIndicatorsWeeks[RMSE_INDEX]);
 
@@ -326,15 +333,17 @@ int microGridLiuAppliedEnergy(int argc, char** argv) {
 //		for (int day = 1; day <= 7; day++)
 //		{
 //			vector<vector<double> > validationSet; //validation set
-//for calibration 			validationSet.push_back(rF.getPartsForecastsEndToBegin(0, w *
-//168 - stepsAhead * day, nValidationSamples)); 			vector<double> foIndicators;
-//			foIndicators = forecastObject.returnErrors(sol,
-//validationSet); 			foIndicatorsMAPE.push_back(foIndicators[MAPE_INDEX]);
+// for calibration
+// validationSet.push_back(rF.getPartsForecastsEndToBegin(0, w * 168 -
+// stepsAhead * day, nValidationSamples)); 			vector<double>
+// foIndicators; 			foIndicators =
+// forecastObject.returnErrors(sol, validationSet);
+// foIndicatorsMAPE.push_back(foIndicators[MAPE_INDEX]);
 //			foIndicatorsRMSE.push_back(foIndicators[RMSE_INDEX]);
 //		}
 //		double sumMAPE = accumulate(foIndicatorsMAPE.begin(),
-//foIndicatorsMAPE.end(), 0.0); 		double sumRMSE =
-//accumulate(foIndicatorsRMSE.begin(), foIndicatorsRMSE.end(), 0.0);
+// foIndicatorsMAPE.end(), 0.0); 		double sumRMSE =
+// accumulate(foIndicatorsRMSE.begin(), foIndicatorsRMSE.end(), 0.0);
 //
 //		foIndicatorCalibration.push_back(sumMAPE/foIndicatorsMAPE.size());
 //		foIndicatorCalibration.push_back(sumRMSE/foIndicatorsRMSE.size());

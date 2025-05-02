@@ -10,6 +10,8 @@
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iostream>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -17,6 +19,7 @@ using namespace HFM;
 int rainMain(int argc, char** argv) {
   std::cout << "Welcome to rain forecast place" << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
@@ -27,8 +30,8 @@ int rainMain(int argc, char** argv) {
   if (argc != 10) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
-            "parameters options precision"
-         << std::endl;
+                 "parameters options precision"
+              << std::endl;
     exit(1);
   }
 
@@ -84,8 +87,8 @@ int rainMain(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
-   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = "
+   << nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -176,7 +179,7 @@ int rainMain(int argc, char** argv) {
 
     // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
     //		ProblemParameters
-    //problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
+    // problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
     ProblemParameters problemParam;
     problemParam.setStepsAhead(stepsAheadR);
     stepsAhead = problemParam.getStepsAhead();
@@ -204,8 +207,8 @@ int rainMain(int argc, char** argv) {
     int nTotalForecastingsTrainningSet =
         maxNotUsedForTest + nTrainningRounds * stepsAhead;
     std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
-    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: "
+              << nTotalForecastingsTrainningSet << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = stepsAhead;
@@ -215,7 +218,7 @@ int rainMain(int argc, char** argv) {
     // std::cout<< rF.getForecastsDataSize()<<endl;
     // getchar();
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 

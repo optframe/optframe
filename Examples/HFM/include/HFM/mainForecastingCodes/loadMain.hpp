@@ -10,6 +10,8 @@
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iostream>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -17,6 +19,7 @@ using namespace HFM;
 int loadCompetitionBlind(int argc, char** argv) {
   std::cout << "Welcome to Price Competition Mode..." << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long seed = time(nullptr);
   long seed = 1;
   std::cout << "Seed = " << seed << std::endl;
@@ -26,8 +29,8 @@ int loadCompetitionBlind(int argc, char** argv) {
   if (argc != 10) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
-            "parameters options precision"
-         << std::endl;
+                 "parameters options precision"
+              << std::endl;
     exit(1);
   }
 
@@ -184,7 +187,7 @@ int loadCompetitionBlind(int argc, char** argv) {
       tForecastings.clear();
       tForecastings.push_back(tForecastDayByDay[d]);
 
-      ForecastClass pFC(tForecastings, problemParam, rg, methodParam);
+      ForecastClass pFC{tForecastings, problemParam, rg2, methodParam};
 
       std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
       sol = pFC.run(timeES, timeVND, timeILS);
@@ -248,16 +251,16 @@ int loadCompetitionBlind(int argc, char** argv) {
    if (foPinballQuantil < foPVectors)
    {
    foPVectors = foPinballQuantil;
-   std::cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n << "\t" <<
-   foPinballQuantil << std::endl;
+   std::cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n <<
+   "\t" << foPinballQuantil << std::endl;
    }
    vQ++;
    }
    }
 
-   std::cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) << std::endl;
-   std::cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues) <<
-   std::endl;
+   std::cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) <<
+   std::endl; std::cout << "PINBALL = " << rF.getPinball(finalResultQuantis,
+   realValues) << std::endl;
 
    std::cout << finalResultQuantis[0] << std::endl;
 
@@ -272,6 +275,7 @@ int loadCompetitionBlind(int argc, char** argv) {
 int loadCompetitionCalibrationMode(int argc, char** argv) {
   std::cout << "Welcome to Load Competition Calibration Mode..." << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   long seed = time(nullptr);
   std::cout << "Seed = " << seed << std::endl;
   srand(seed);
@@ -280,8 +284,8 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
   if (argc != 10) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
-            "parameters options precision"
-         << std::endl;
+                 "parameters options precision"
+              << std::endl;
     exit(1);
   }
 
@@ -390,7 +394,7 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
     // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
     //		int randomParametersFiles = rg.rand(vParametersFiles.size());
     //		ProblemParameters
-    //problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
+    // problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
     ProblemParameters problemParam;
     stepsAhead = problemParam.getStepsAhead();
     // =========================================== CONSTRUTIVE 0 AND 1
@@ -449,7 +453,7 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
       // validationBlindForecastings.push_back(rF.getLastForecasts(0,
       // problemParam.getNotUsedForTest()));
 
-      ForecastClass pFC(trainningSetDay, problemParam, rg, methodParam);
+      ForecastClass pFC{trainningSetDay, problemParam, rg2, methodParam};
       // dayBlindForecasts = priceForecastMainLoopCompetition(tForecastings,
       // validationBlindForecastings, problemParam, rg, mu, lambda, initialDesv,
       // mutationDesv);
@@ -499,14 +503,16 @@ int loadCompetitionCalibrationMode(int argc, char** argv) {
       if (foPinballQuantil < foPVectors) {
         foPVectors = foPinballQuantil;
         std::cout << "PINBALL(Quantil = " << quantilError << ") batch = " << n
-             << "\t" << foPinballQuantil << std::endl;
+                  << "\t" << foPinballQuantil << std::endl;
       }
       vQ++;
     }
   }
 
-  std::cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues) << std::endl;
-  std::cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues) << std::endl;
+  std::cout << "MAPE = " << rF.getMape(batchOfBlindResults[0], realValues)
+            << std::endl;
+  std::cout << "PINBALL = " << rF.getPinball(finalResultQuantis, realValues)
+            << std::endl;
 
   std::cout << finalResultQuantis[0] << std::endl;
 

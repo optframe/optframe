@@ -12,6 +12,9 @@
 #include <iostream>
 #include <numeric>
 #include <sstream>
+
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -19,9 +22,11 @@ extern int nThreads;
 
 int musicGen(int argc, char** argv) {
   nThreads = 2;
-  std::cout << "Welcome to automatic music learning and forecasting and generation"
-       << std::endl;
+  std::cout
+      << "Welcome to automatic music learning and forecasting and generation"
+      << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
@@ -34,7 +39,7 @@ int musicGen(int argc, char** argv) {
   //	{
   //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
-  //endl; 		exit(1);
+  // endl; 		exit(1);
   //	}
 
   //	const char* caminhoOutput = argv[1];
@@ -130,8 +135,8 @@ int musicGen(int argc, char** argv) {
   int beginTrainingSet = fs;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
   std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
-  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: "
+            << nTotalForecastingsTrainningSet << std::endl;
   std::cout << "#~NTR: " << NTRaprox << std::endl;
   std::cout << "#maxNotUsed: " << maxLag << std::endl;
   std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
@@ -149,7 +154,7 @@ int musicGen(int argc, char** argv) {
   ForecastClass* forecastObject;
 
   forecastObject =
-      new ForecastClass(trainningSet, problemParam, rg, methodParam);
+      new ForecastClass{trainningSet, problemParam, rg2, methodParam};
   std::optional<pair<SolutionHFM, Evaluation<>>> sol =
       forecastObject->run(timeES, 0, 0);
 
@@ -188,9 +193,10 @@ int musicGen(int argc, char** argv) {
 int musicGenMidiCSV(int argc, char** argv) {
   nThreads = 2;
   std::cout << "Welcome to automatic music MIDI learning and forecasting and "
-          "generation"
-       << std::endl;
+               "generation"
+            << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   seed = 1;
@@ -203,7 +209,7 @@ int musicGenMidiCSV(int argc, char** argv) {
   //	{
   //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: stockMarketTimeSeries" <<
-  //endl; 		exit(1);
+  // endl; 		exit(1);
   //	}
 
   //	const char* caminhoOutput = argv[1];
@@ -289,8 +295,8 @@ int musicGenMidiCSV(int argc, char** argv) {
   int beginTrainingSet = 0;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
   std::cout << "#timeSeriesSize: " << rF.getForecastsSize(0) << std::endl;
-  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: "
+            << nTotalForecastingsTrainningSet << std::endl;
   std::cout << "#~NTR: " << NTRaprox << std::endl;
   std::cout << "#maxNotUsed: " << maxLag << std::endl;
   std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
@@ -304,7 +310,7 @@ int musicGenMidiCSV(int argc, char** argv) {
   ForecastClass* forecastObject;
 
   forecastObject =
-      new ForecastClass(trainningSet, problemParam, rg, methodParam);
+      new ForecastClass{trainningSet, problemParam, rg2, methodParam};
   std::optional<pair<SolutionHFM, Evaluation<>>> sol =
       forecastObject->run(timeES, 0, 0);
 

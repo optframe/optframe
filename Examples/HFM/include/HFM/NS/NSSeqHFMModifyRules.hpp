@@ -40,32 +40,32 @@ class MoveHFMModifyRule : public Move<hfmXES> {
           new MoveHFMModifyRule<hfmXES, hfmXEv>(-1, -1, -1, -1, -1));
 
     if (r == PERTINENCEFUNC) {
-      if (std::vectorType == Single_Input)
+      if (vectorType == Single_Input)
         rep.singleFuzzyRS[o][r] = !rep.singleFuzzyRS[o][r];
-      if (std::vectorType == Average_Inputs)
+      if (vectorType == Average_Inputs)
         rep.averageFuzzyRS[o][r] = !rep.averageFuzzyRS[o][r];
-      if (std::vectorType == Derivative_Inputs)
+      if (vectorType == Derivative_Inputs)
         rep.derivativeFuzzyRS[o][r] = !rep.derivativeFuzzyRS[o][r];
 
       return uptr<Move<hfmXES>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(
           r, o, applyValue, !sign, vectorType));
     }
 
-    if (std::vectorType == Single_Input) {
+    if (vectorType == Single_Input) {
       if (!sign)
         rep.singleFuzzyRS[o][r] += applyValue;
       else
         rep.singleFuzzyRS[o][r] -= applyValue;
     }
 
-    if (std::vectorType == Average_Inputs) {
+    if (vectorType == Average_Inputs) {
       if (!sign)
         rep.averageFuzzyRS[o][r] += applyValue;
       else
         rep.averageFuzzyRS[o][r] -= applyValue;
     }
 
-    if (std::vectorType == Derivative_Inputs) {
+    if (vectorType == Derivative_Inputs) {
       if (!sign)
         rep.derivativeFuzzyRS.at(o).at(r) += applyValue;
       else
@@ -84,7 +84,7 @@ class MoveHFMModifyRule : public Move<hfmXES> {
   void print() const override {
     std::cout << "MoveNEIGHModifyRule( vector: " << r << " : ";
     std::cout << " option " << o << " <=>  sign " << sign << "vectorType "
-         << vectorType << " )";
+              << vectorType << " )";
     std::cout << std::endl;
   }
 };
@@ -202,7 +202,8 @@ class NSSeqHFMModifyRules : public NSSeq<hfmXES> {
     double mean = pEFP.getMean(0);
 
     if (_vUpdateValues) {
-      std::cout << "Modify values given as input:" << *_vUpdateValues << std::endl;
+      std::cout << "Modify values given as input:" << *_vUpdateValues
+                << std::endl;
       assert(_vUpdateValues->size() > 0);
       vUpdateValues = *_vUpdateValues;
     } else {
@@ -235,21 +236,21 @@ class NSSeqHFMModifyRules : public NSSeq<hfmXES> {
     while ((r == -1) && (tries < maxTries)) {
       vectorType = rg.rand(N_Inputs_Types);
 
-      if (std::vectorType == Single_Input) {
+      if (vectorType == Single_Input) {
         if (rep.singleFuzzyRS.size() > 0) {
           o = rg.rand(rep.singleFuzzyRS.size());  // rep.size() options
           r = rg.rand(NCOLUMNATRIBUTES);
         }
       }
 
-      if (std::vectorType == Average_Inputs) {
+      if (vectorType == Average_Inputs) {
         if (rep.averageFuzzyRS.size() > 0) {
           o = rg.rand(rep.averageFuzzyRS.size());  // rep.size() options
           r = rg.rand(NCOLUMNATRIBUTES);
         }
       }
 
-      if (std::vectorType == Derivative_Inputs) {
+      if (vectorType == Derivative_Inputs) {
         if (rep.derivativeFuzzyRS.size() > 0) {
           o = rg.rand(rep.derivativeFuzzyRS.size());  // rep.size() options
           r = rg.rand(NCOLUMNATRIBUTES);

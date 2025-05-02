@@ -11,6 +11,7 @@
 #include <iostream>
 #include <numeric>
 
+#include "../ForecastClass.hpp"
 #include "../Util/treatREDD.hpp"
 
 using namespace std;
@@ -24,6 +25,7 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
   std::cout << "Welcome to REW2016 -- SI -- REED " << std::endl;
 
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // force seed
@@ -35,8 +37,8 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
   if (argc != 6) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: 1- instance 2- output 3- "
-            "granularidade 4-argvforecastingHorizonteMinutes 5-timeES "
-         << std::endl;
+                 "granularidade 4-argvforecastingHorizonteMinutes 5-timeES "
+              << std::endl;
 
     exit(1);
   }
@@ -52,10 +54,10 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
 
   if (forecastingHorizonteMinutes < granularityMin) {
     std::cout << "EXIT WITH ERROR! Forecasting horizon lower than granularity"
-         << std::endl;
+              << std::endl;
     std::cout << "granularityMin: " << granularityMin
-         << "\t forecastingHorizonteMinutes:" << forecastingHorizonteMinutes
-         << std::endl;
+              << "\t forecastingHorizonteMinutes:"
+              << forecastingHorizonteMinutes << std::endl;
     return 0;
   }
 
@@ -76,7 +78,8 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
       alexandreTreatObj.separateThroughIntervals(
           datasetInterpolated, 60 * granularityMin, "./REED/instance", false);
   std::cout << "data has been split" << std::endl;
-  std::cout << "dataSize =" << datasetWithSpecificGranularity.size() << std::endl;
+  std::cout << "dataSize =" << datasetWithSpecificGranularity.size()
+            << std::endl;
   // std::cout<<dataset60Seconds<<endl;
   std::cout << "data saved with sucess" << std::endl;
 
@@ -144,7 +147,7 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
 
     //========SET PROBLEM MAXIMUM LAG ===============
     //		problemParam.setMaxLag(pointsPerHour*24*3); // with maxLag
-    //equals to 2 you only lag K-1 as option
+    // equals to 2 you only lag K-1 as option
     problemParam.setMaxLag(
         pointsPerHour * 24 *
         3);  // with maxLag equals to 2 you only lag K-1 as option
@@ -168,13 +171,15 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
     int totalNumberOfSamplesTarget = rF.getForecastsSize(0);
     std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
     std::cout << "\t #nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << std::endl;
-    std::cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget << std::endl;
+              << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget
+              << std::endl;
     std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
     std::cout << "#StepsAhead: " << stepsAhead << std::endl;
     std::cout << "#forecastingHorizonteMinutes: " << forecastingHorizonteMinutes
-         << std::endl;
-    std::cout << "#granularityMin: " << granularityMin << std::endl << std::endl;
+              << std::endl;
+    std::cout << "#granularityMin: " << granularityMin << std::endl
+              << std::endl;
 
     int timeES = argvTimeES;
     vector<double> foIndicatorCalibration;
@@ -189,15 +194,17 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
       trainningSet.push_back(rF.getPartsForecastsBeginToEnd(
           0, begin, nTotalForecastingsTrainningSet));
 
-      ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+      ForecastClass forecastObject{trainningSet, problemParam, rg2,
+                                   methodParam};
 
       std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
       sol = forecastObject.run(timeES, 0, 0);
 
       vector<vector<double>> validationSet;  // validation set for calibration
-      std::cout << "blind test begin: " << nTotalForecastingsTrainningSet + begin
-           << " end:" << nTotalForecastingsTrainningSet + begin + stepsAhead
-           << std::endl;
+      std::cout << "blind test begin: "
+                << nTotalForecastingsTrainningSet + begin << " end:"
+                << nTotalForecastingsTrainningSet + begin + stepsAhead
+                << std::endl;
 
       validationSet.push_back(rF.getPartsForecastsBeginToEnd(
           0, nTotalForecastingsTrainningSet + begin - maxLag,
@@ -214,7 +221,8 @@ int APEN_SI_DemandForecasting(int argc, char** argv) {
         vectorOfForecasts.push_back(currentForecasts[cF]);
 
       std::cout << foIndicatorCalibration
-           << "\t average:" << averageError / (countSlidingWindows + 1) << std::endl;
+                << "\t average:" << averageError / (countSlidingWindows + 1)
+                << std::endl;
       countSlidingWindows++;
     }
     std::cout << foIndicatorCalibration << std::endl;
@@ -260,6 +268,7 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
   std::cout << "Welcome to APEN -- SI -- SPEED UP " << std::endl;
 
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // force seed
@@ -270,9 +279,10 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
 
   if (argc != 6) {
     std::cout << "Parametros incorretos!" << std::endl;
-    std::cout << "Os parametros esperados sao: instance(notused) output(notused) ; "
-            "samplesTraining set; argNSA ; argNThreads"
-         << std::endl;
+    std::cout
+        << "Os parametros esperados sao: instance(notused) output(notused) ; "
+           "samplesTraining set; argNSA ; argNThreads"
+        << std::endl;
     // ./REED/channel_1.dat ./UBUNTU1604 60	24	120 1000 24
     exit(1);
   }
@@ -348,8 +358,8 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
 
     // TODO remove for speed up
     std::cout << "forcing number of steps ahead nSA - line 200 - Than "
-            "forecastingHorizonteMinutes is not used"
-         << std::endl;
+                 "forecastingHorizonteMinutes is not used"
+              << std::endl;
     int nSA = argNSA;
 
     problemParam.setStepsAhead(nSA);
@@ -363,7 +373,7 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
 
     //========SET PROBLEM MAXIMUM LAG ===============
     //		problemParam.setMaxLag(pointsPerHour*24*3); // with maxLag
-    //equals to 2 you only lag K-1 as option
+    // equals to 2 you only lag K-1 as option
     problemParam.setMaxLag(
         4000);  // with maxLag equals to 2 you only lag K-1 as option
     int maxLag = problemParam.getMaxLag(0);
@@ -380,11 +390,13 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
     int totalNumberOfSamplesTarget = rF.getForecastsSize(0);
     std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
     std::cout << "\t #nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << std::endl;
-    std::cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget << std::endl;
+              << nTotalForecastingsTrainningSet << std::endl;
+    std::cout << "#sizeTrainingSet: " << totalNumberOfSamplesTarget
+              << std::endl;
     std::cout << "maxNotUsed: " << problemParam.getMaxLag(0) << std::endl;
     std::cout << "#StepsAhead: " << stepsAhead << std::endl;
-    std::cout << "#granularityMin(NotUSED): " << granularityMin << std::endl << std::endl;
+    std::cout << "#granularityMin(NotUSED): " << granularityMin << std::endl
+              << std::endl;
 
     int timeES = 1200;
     vector<double> foIndicatorCalibration;
@@ -409,15 +421,17 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
       trainningSet.push_back(rF.getPartsForecastsBeginToEnd(
           0, begin, nTotalForecastingsTrainningSet));
 
-      ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+      ForecastClass forecastObject{trainningSet, problemParam, rg2,
+                                   methodParam};
 
       std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
       sol = forecastObject.run(timeES, 0, 0);
 
       vector<vector<double>> validationSet;  // validation set for calibration
-      std::cout << "blind test begin: " << nTotalForecastingsTrainningSet + begin
-           << " end:" << nTotalForecastingsTrainningSet + begin + stepsAhead
-           << std::endl;
+      std::cout << "blind test begin: "
+                << nTotalForecastingsTrainningSet + begin << " end:"
+                << nTotalForecastingsTrainningSet + begin + stepsAhead
+                << std::endl;
 
       validationSet.push_back(rF.getPartsForecastsBeginToEnd(
           0, nTotalForecastingsTrainningSet + begin - maxLag,
@@ -434,7 +448,8 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char** argv) {
         vectorOfForecasts.push_back(currentForecasts[cF]);
 
       std::cout << foIndicatorCalibration
-           << "\t average:" << averageError / (countSlidingWindows + 1) << std::endl;
+                << "\t average:" << averageError / (countSlidingWindows + 1)
+                << std::endl;
 
       countSlidingWindows++;
     }

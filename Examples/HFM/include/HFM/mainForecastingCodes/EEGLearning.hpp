@@ -6,11 +6,15 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+//
+
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Util/RandGenMersenneTwister.hpp>
+
+#include "../ForecastClass.hpp"
 
 using namespace std;
 using namespace optframe;
@@ -42,9 +46,11 @@ static bool comparaVolunteersPoints2(pair<int, int> d1, pair<int, int> d2) {
 }
 
 vector<pair<int, int>> classificationRuleLessMax(
-    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
-    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
-    vector<int> metricWeights, int nVolunteers) {
+    std::vector<std::pair<double, int>> betterAVG,
+    std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax,
+    std::vector<std::pair<double, int>> betterGAP, vector<int> metricWeights,
+    int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
@@ -72,9 +78,11 @@ vector<pair<int, int>> classificationRuleLessMax(
 }
 
 vector<pair<int, int>> classificationRulePlusMax(
-    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
-    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
-    vector<int> metricWeights, int nVolunteers) {
+    std::vector<std::pair<double, int>> betterAVG,
+    std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax,
+    std::vector<std::pair<double, int>> betterGAP, vector<int> metricWeights,
+    int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
@@ -102,9 +110,11 @@ vector<pair<int, int>> classificationRulePlusMax(
 }
 
 vector<pair<int, int>> classificationRuleNoGapSumMax(
-    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
-    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
-    vector<int> metricWeights, int nVolunteers) {
+    std::vector<std::pair<double, int>> betterAVG,
+    std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax,
+    std::vector<std::pair<double, int>> betterGAP, vector<int> metricWeights,
+    int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
@@ -129,9 +139,11 @@ vector<pair<int, int>> classificationRuleNoGapSumMax(
 }
 
 vector<pair<int, int>> classificationRuleNoGapLessMax(
-    std::vector<std::pair<double, int>> betterAVG, std::vector<std::pair<double, int>> betterMin,
-    std::vector<std::pair<double, int>> betterMax, std::vector<std::pair<double, int>> betterGAP,
-    vector<int> metricWeights, int nVolunteers) {
+    std::vector<std::pair<double, int>> betterAVG,
+    std::vector<std::pair<double, int>> betterMin,
+    std::vector<std::pair<double, int>> betterMax,
+    std::vector<std::pair<double, int>> betterGAP, vector<int> metricWeights,
+    int nVolunteers) {
   int nIQ = metricWeights.size();  // number of indicators of quality
   int avgWeight = 4;
   int minWeight = 1;
@@ -312,8 +324,9 @@ vector<pair<double, int>> findBestPairsValuesByMetric(Matrix<double> results,
 
 pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
                                            int argvMaxLagRate, int argvTimeES,
-                                           long seed, RandGen& rg, int evalFO,
-                                           int fh) {
+                                           long seed, sref<RandGen> rg2,
+                                           int evalFO, int fh) {
+  //   sref<RandGen> rg2{new RandGenMersenneTwister{}};
   int evalFOMinimizer = evalFO;
   int mu = 100;
   int lambda = mu * 6;
@@ -356,7 +369,7 @@ pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
   int nTotalForecastingsTrainningSet = tFTraining.getForecastsSize(0);
 
   std::cout << "ContructiveACF HFM maximum number of Rules: "
-       << contructiveNumberOfRules << std::endl;
+            << contructiveNumberOfRules << std::endl;
   //========SET PROBLEM MAXIMUM LAG ===============
   std::cout << "argvMaxLagRate: " << argvMaxLagRate << std::endl;
 
@@ -389,10 +402,11 @@ pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
   std::cout << std::fixed;
   double NTRaprox = (nTotalForecastingsTrainningSet - maxLag) / double(fh);
   std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
-  std::cout << "#nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-       << std::endl;
+  std::cout << "#nTotalForecastingsTrainningSet: "
+            << nTotalForecastingsTrainningSet << std::endl;
   std::cout << "#~NTR: " << NTRaprox << std::endl;
-  std::cout << "#sizeTrainingSet: " << tFTraining.getForecastsSize(0) << std::endl;
+  std::cout << "#sizeTrainingSet: " << tFTraining.getForecastsSize(0)
+            << std::endl;
   std::cout << "#maxNotUsed: " << maxLag << std::endl;
   std::cout << "#StepsAhead: " << fh << std::endl << std::endl;
 
@@ -402,9 +416,9 @@ pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
      // nTotalForecastingsTrainningSet));
 
   //	trainningSet.push_back(tFTraining.getPartsForecastsEndToBegin(0, 0,
-  //nTotalForecastingsTrainningSet));
+  // nTotalForecastingsTrainningSet));
 
-  ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+  ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
   //		forecastObject.runMultiObjSearch();
   //		getchar();
@@ -415,7 +429,7 @@ pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining,
 
 vector<double> checkLearningAbility(treatForecasts& tFValidation,
                                     pair<SolutionHFM, Evaluation<>>* sol,
-                                    RandGen& rg, int fh) {
+                                    sref<RandGen> rg2, int fh) {
   int mu = 100;
   int lambda = mu * 6;
   int evalFOMinimizer = SMAPE_INDEX;
@@ -462,8 +476,9 @@ vector<double> checkLearningAbility(treatForecasts& tFValidation,
 
   if (nTotalForecastingsTrainningSet < (maxLag + fh)) {
     std::cout << "ERROR on learnModel -- small TS size " << std::endl;
-    std::cout << "nTotalForecastingsTrainningSet:" << nTotalForecastingsTrainningSet
-         << "\tmaxLag + stepsAhead:" << maxLag + fh << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet:"
+              << nTotalForecastingsTrainningSet
+              << "\tmaxLag + stepsAhead:" << maxLag + fh << std::endl;
   }
 
   // If maxUpperLag is greater than 0 model uses predicted data
@@ -473,7 +488,7 @@ vector<double> checkLearningAbility(treatForecasts& tFValidation,
 
   vector<vector<double>> validationSet = tFValidation.getTS();
 
-  ForecastClass forecastObject(validationSet, problemParam, rg, methodParam);
+  ForecastClass forecastObject{validationSet, problemParam, rg2, methodParam};
   vector<double> errors =
       *forecastObject.returnErrors(sol->first.getR(), validationSet);
 
@@ -483,6 +498,7 @@ vector<double> checkLearningAbility(treatForecasts& tFValidation,
 int EEGBiometricSystem(int argc, char** argv) {
   std::cout << "Welcome to EEG-Based Biometric system!" << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   //	seed = 1;
@@ -494,7 +510,8 @@ int EEGBiometricSystem(int argc, char** argv) {
 
   if (argc != 6) {
     std::cout << "Parametros incorretos!" << std::endl;
-    std::cout << "Os parametros esperados sao: exp fh nModels nTests timeES" << std::endl;
+    std::cout << "Os parametros esperados sao: exp fh nModels nTests timeES"
+              << std::endl;
     exit(1);
   }
 
@@ -510,8 +527,9 @@ int EEGBiometricSystem(int argc, char** argv) {
   maxNM = 10;
   argvTimeES = 10;
   nVolunters = 4;
-  std::cout << "Parameters [EXP,FH,maxNM,timeES,nVol]:" << argEXP << "\t" << argvFH
-       << "\t" << maxNM << "\t" << argvTimeES << "\t" << nVolunters << std::endl;
+  std::cout << "Parameters [EXP,FH,maxNM,timeES,nVol]:" << argEXP << "\t"
+            << argvFH << "\t" << maxNM << "\t" << argvTimeES << "\t"
+            << nVolunters << std::endl;
   int argvMaxLagRate = 3;  // percentage of ts to be used
   bool randomFH = true;
   bool randomChannel = true;
@@ -534,13 +552,14 @@ int EEGBiometricSystem(int argc, char** argv) {
   //	int fixedChannelT = 30;
   //	int fixedChannelV = 30;
 
-  // std::cout << "expT: " << expT << " -- channel: " << fixedChannelT << " with " <<
-  // trainingSetPercentage * 100 << "%" << std::endl;
+  // std::cout << "expT: " << expT << " -- channel: " << fixedChannelT << " with
+  // " << trainingSetPercentage * 100 << "%" << std::endl;
   std::cout << "EEG-BASED BIOMETRIC SYSTEM GOING TO RUN" << std::endl;
-  std::cout << maxNM << " models from " << nVolunters << " volunteers" << " expT "
-       << expT << " with " << trainingSetPercentage * 100 << "%" << std::endl;
-  std::cout << "expV: " << expV << " with " << validationSetPercentage * 100 << "%"
-       << std::endl;
+  std::cout << maxNM << " models from " << nVolunters << " volunteers"
+            << " expT " << expT << " with " << trainingSetPercentage * 100
+            << "%" << std::endl;
+  std::cout << "expV: " << expV << " with " << validationSetPercentage * 100
+            << "%" << std::endl;
 
   //=============================================
 
@@ -610,18 +629,20 @@ int EEGBiometricSystem(int argc, char** argv) {
       }
 
       if (!randomChannel) {
-        std::cout << "forcing random channel in the learning phase!" << std::endl;
+        std::cout << "forcing random channel in the learning phase!"
+                  << std::endl;
         // int randomChannel = rg.rand(64) + 1;
         variableChannelT = 10;
       }
       if (!randomQI) {
-        std::cout << "forcing indicator of quality in the learning phase!" << std::endl;
+        std::cout << "forcing indicator of quality in the learning phase!"
+                  << std::endl;
         evalFO = SMAPE_INDEX;
       }
 
-      std::cout << "\nTraining model " << nM + 1 << "/" << maxNM << " of Volunteer "
-           << v + 1 << " -- EEG Channel " << variableChannelT << " -- exp"
-           << expT << std::endl;
+      std::cout << "\nTraining model " << nM + 1 << "/" << maxNM
+                << " of Volunteer " << v + 1 << " -- EEG Channel "
+                << variableChannelT << " -- exp" << expT << std::endl;
 
       stringstream EEGTimeSeriesToBeLearned;
       stringstream sName;
@@ -646,7 +667,7 @@ int EEGBiometricSystem(int argc, char** argv) {
       explanatoryVariables.push_back(EEGTimeSeriesToBeLearned.str());
 
       //			int trainingTime = rg.rand(argvTimeES) +
-      //minTime;
+      // minTime;
 
       treatForecasts tFTraining(explanatoryVariables);
       tFTraining.setTSFile(
@@ -654,14 +675,14 @@ int EEGBiometricSystem(int argc, char** argv) {
           0);
 
       pair<SolutionHFM, Evaluation<>> HFMmodel = learnModel(
-          tFTraining, argvMaxLagRate, trainingTime, seed, rg, evalFO, fH);
+          tFTraining, argvMaxLagRate, trainingTime, seed, rg2, evalFO, fH);
       //			cout << "sol->first.getR().earliestInput: " <<
-      //HFMmodel->first.getR().earliestInput << std::endl;
+      // HFMmodel->first.getR().earliestInput << std::endl;
       //			cout<<HFMmodel->first.getR()<<endl;
       //			getchar();
 
       vector<double> allErrors =
-          checkLearningAbility(tFTraining, &HFMmodel, rg, fH);
+          checkLearningAbility(tFTraining, &HFMmodel, rg2, fH);
       vector<double> biometricSystemMeasures;
       for (int iq = 0; iq < (int)listOfIndicatorOfQuality.size(); iq++)
         biometricSystemMeasures.push_back(
@@ -676,7 +697,8 @@ int EEGBiometricSystem(int argc, char** argv) {
     }
   }
 
-  std::cout << "The different time series has been learned with success!\n" << std::endl;
+  std::cout << "The different time series has been learned with success!\n"
+            << std::endl;
   std::cout << "Time to check their performance...\n" << std::endl;
 
   // Checking the performance of each HFM model in different EEG channels of
@@ -688,7 +710,8 @@ int EEGBiometricSystem(int argc, char** argv) {
   vector<int> truePositivesPerMetric(nClassificationRules, 0);
   for (int hiddenV = 0; hiddenV < nVolunters; hiddenV++)  // how is volunter v?
   {
-    std::cout << "===================================================\n" << std::endl;
+    std::cout << "===================================================\n"
+              << std::endl;
 
     Matrix<double> resultsAVG(nIndicatorsOfQuality, nVolunters);
     Matrix<double> resultsMin(nIndicatorsOfQuality, nVolunters);
@@ -737,7 +760,7 @@ int EEGBiometricSystem(int argc, char** argv) {
       vector<string> validationExplanotoryVariables;
       validationExplanotoryVariables.push_back(validationTSFile.str());
       //				cout << "checking performance on " <<
-      //checkError.str() << std::endl;
+      // checkError.str() << std::endl;
 
       treatForecasts tFValidation(validationExplanotoryVariables);
       tFValidation.setTSFile(tFValidation.getPercentageFromEndToBegin(
@@ -746,7 +769,7 @@ int EEGBiometricSystem(int argc, char** argv) {
       //			cout << HFMmodel->first.getR() << std::endl;
       //			getchar();
       vector<double> allErrors =
-          checkLearningAbility(tFValidation, HFMmodel, rg, modelFH);
+          checkLearningAbility(tFValidation, HFMmodel, rg2, modelFH);
       vector<double> currentErrors;
 
       for (int iq = 0; iq < (int)listOfIndicatorOfQuality.size(); iq++)
@@ -774,15 +797,17 @@ int EEGBiometricSystem(int argc, char** argv) {
       }
 
     //		cout << maxNM << " models from volunteer:" << v << "-->" <<
-    //hiddenV << std::endl;
+    // hiddenV << std::endl;
 
     //			cout << "Average errors" << std::endl;
     //			//<< " applied over all  errors vollunter " << v2 + 1 <<
-    //" -- All channels from exp 2" << std::endl; 			cout << sumOfErrors << std::endl;
+    //" -- All channels from exp 2" << std::endl; 			cout <<
+    // sumOfErrors << std::endl;
     //
     //			cout << "Min errors" << std::endl;
     //			//<< " applied over all  errors vollunter " << v2 + 1 <<
-    //" -- All channels from exp 2" << std::endl; 			cout << minErrors << std::endl;
+    //" -- All channels from exp 2" << std::endl; 			cout <<
+    // minErrors << std::endl;
     //
     //			cout << "Max errors" << std::endl;
     //			cout << maxErrors << std::endl;
@@ -842,8 +867,8 @@ int EEGBiometricSystem(int argc, char** argv) {
 
     for (int vPM = 0; vPM < nClassificationRules; vPM++) {
       std::cout << "\nM" << vPM << "-- Model from volunteer: "
-           << volunteerRankPerMetric[vPM][0].first
-           << " is the most suitable for ts: " << hiddenV << std::endl;
+                << volunteerRankPerMetric[vPM][0].first
+                << " is the most suitable for ts: " << hiddenV << std::endl;
       std::cout << volunteerRankPerMetric[vPM] << std::endl;
 
       // Checking true positives
@@ -851,9 +876,11 @@ int EEGBiometricSystem(int argc, char** argv) {
         truePositivesPerMetric[vPM]++;
     }
 
-    std::cout << "===================================================\n" << std::endl;
+    std::cout << "===================================================\n"
+              << std::endl;
   }
-  std::cout << "===================================================\n" << std::endl;
+  std::cout << "===================================================\n"
+            << std::endl;
   std::cout << "True positives are:\n";
   for (int vPM = 0; vPM < nClassificationRules; vPM++) {
     std::cout << "M" << vPM << ":" << truePositivesPerMetric[vPM] << "\t";
@@ -865,12 +892,14 @@ int EEGBiometricSystem(int argc, char** argv) {
     std::cout << "M" << vPM << ":" << tempPercentage << "\t";
   }
   std::cout << "\n";
-  std::cout << "===================================================\n" << std::endl;
+  std::cout << "===================================================\n"
+            << std::endl;
 
-  std::cout << maxNM << " models from " << nVolunters << " volunteers" << " expT "
-       << expT << " with " << trainingSetPercentage * 100 << "%" << std::endl;
-  std::cout << "expV: " << expV << " with " << validationSetPercentage * 100 << "%"
-       << std::endl;
+  std::cout << maxNM << " models from " << nVolunters << " volunteers"
+            << " expT " << expT << " with " << trainingSetPercentage * 100
+            << "%" << std::endl;
+  std::cout << "expV: " << expV << " with " << validationSetPercentage * 100
+            << "%" << std::endl;
 
   // =================== PRINTING RESULTS ON FILE ========================
   string calibrationFile = "./EEGLearningAccuracy";

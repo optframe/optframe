@@ -10,6 +10,8 @@
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iostream>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -17,6 +19,7 @@ using namespace HFM;
 int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   std::cout << "Welcome to Mokoko's place" << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
 
   long seed = time(nullptr);
   seed = 1;  // Fix the seed
@@ -30,7 +33,7 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   //	{
   //		cout << "Parametros incorretos!" << std::endl;
   //		cout << "Os parametros esperados sao: nome nomeValidationSet
-  //saida parameters options precision" << std::endl; 		exit(1);
+  // saida parameters options precision" << std::endl; 		exit(1);
   //	}
 
   //	const char* caminho = argv[1];
@@ -75,8 +78,8 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
-   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = "
+   << nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -168,15 +171,15 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
     int nTotalForecastingsTrainningSet =
         maxNotUsedForTest + nTrainningRounds * stepsAhead;
     std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
-    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: "
+              << nTotalForecastingsTrainningSet << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = stepsAhead;
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, beginTrainingSet, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
@@ -227,8 +230,9 @@ int mokokoProbabilisticForecastWindPower(int argc, char** argv) {
   rF.exportQuantisVector(finalResultQuantis, "./ExportQuantileMokoko");
   rF.exportVectorOfVector(batchOfResults, "./MatrixOfBatchesAndForecasts");
   std::cout << "Pinball Function of Probabilistic Forecasting: \t"
-       << rF.getPinball(finalResultQuantis, rF.getLastForecasts(0, stepsAheadR))
-       << std::endl;
+            << rF.getPinball(finalResultQuantis,
+                             rF.getLastForecasts(0, stepsAheadR))
+            << std::endl;
 
   std::cout << vfoIndicatorCalibration << std::endl;
   for (int n = 0; n < nBatches; n++) {

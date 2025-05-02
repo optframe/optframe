@@ -10,14 +10,14 @@
 //
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
+#include <OptFrame/Pareto/Pareto.hpp>
+#include <OptFrame/Pareto/ParetoDominance.hpp>
+#include <OptFrame/Pareto/ParetoDominanceWeak.hpp>
 
 #include "../../Concepts/BaseConcepts.hpp"
 #include "../../Heuristics/MOLocalSearches/MOBestImprovement.hpp"
 #include "../../InitialPareto.hpp"
 #include "../../MOLocalSearch.hpp"
-#include "../../Pareto.hpp"
-#include "../../ParetoDominance.hpp"
-#include "../../ParetoDominanceWeak.hpp"
 
 namespace optframe {
 
@@ -158,7 +158,8 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XES, XMES> {
                                         op<Pareto<XMES>>& ioPF) {
     Timer tnow;
 
-    std::cout << "exec: General 2PPLS (tL:" << stopCriteria.timelimit << ")" << std::endl;
+    std::cout << "exec: General 2PPLS (tL:" << stopCriteria.timelimit << ")"
+              << std::endl;
     int r = vLS.size();
 
     gplsStructure<S, XMEv> gPLSData;
@@ -167,13 +168,13 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XES, XMES> {
     // if (_pf == nullptr)
     if (ioPF == std::nullopt) {
       std::cout << "Creating initial population using a initial pareto method:"
-           << init_pop_size << std::endl;
+                << init_pop_size << std::endl;
       if (tnow.now() < stopCriteria.timelimit)
         x_e = init_pareto->generatePareto(init_pop_size,
                                           stopCriteria.timelimit - tnow.now());
 
       std::cout << "Population generated with " << x_e.size() << " individuals!"
-           << std::endl;
+                << std::endl;
     } else {
       // assert(_pf->size() > 0);
       assert(ioPF->size() > 0);
@@ -183,7 +184,7 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XES, XMES> {
       x_e = std::move(*ioPF);  // check this move with AIIIGOR todo
 
       std::cout << "Extracting PF contains " << x_e.size() << " individuals."
-           << std::endl;
+                << std::endl;
     }
 
     // TODO - create a new method that does not copy
@@ -200,8 +201,8 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XES, XMES> {
       pMan2PPLS.gplsData.newSol.push_back(true);
     }
 
-    std::cout << "Number of initial x_e non-dominated solutions = " << x_e.size()
-         << std::endl;
+    std::cout << "Number of initial x_e non-dominated solutions = "
+              << x_e.size() << std::endl;
 
     int k = 0;
     std::cout << "Starting search with k = " << k << std::endl;
@@ -296,7 +297,7 @@ class GeneralParetoLocalSearch : public MOLocalSearch<XES, XMES> {
     pMan2PPLS.checkDominance(pReturn);
 
     std::cout << "General Two-Phase Pareto Local Search finished with "
-         << pReturn.size() << " non-dominated solutions." << std::endl;
+              << pReturn.size() << " non-dominated solutions." << std::endl;
 
     // return pReturn;
     ioPF = make_optional(pReturn);

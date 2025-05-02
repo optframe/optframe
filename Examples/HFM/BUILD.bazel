@@ -4,24 +4,28 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+cc_library(
+    name = "HFM_headers",
+    hdrs = glob([
+        "include/**/*.h",
+        "include/**/*.hpp",
+    ]),
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)
+
 cc_binary(
     name = "app_Example",
     srcs = glob([
-        "src/*.h", 
         "src/*.cpp",
-        "src/*.hpp",
-        "src/Util/*.h", 
-        "src/Util/*.cpp",
-        "src/Util/*.hpp",
-        "src/NS/*.h", 
-        "src/NS/*.cpp",
-        "src/NS/*.hpp",
-        "src/mainForecastingCodes/*.hpp"
     ]),
+    copts = ["-fopenmp"],
     data = glob([
-        "Instance/*",
+        "Instance/stockData/stockData",
     ]),
-    linkopts = ['-lgomp'],
-    copts = ['-fopenmp'],
-    deps = ["@OptFrame//include:OptFrame"]
+    linkopts = ["-lgomp"],
+    deps = [
+        "HFM_headers",
+        "@optframe//include:OptFrame",
+    ],
 )

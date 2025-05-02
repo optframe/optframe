@@ -6,11 +6,15 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Core/RandGen.hpp>
-#include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+//
+
+#include <OptFrame/Core/RandGen.hpp>
+#include <OptFrame/Util/RandGenMersenneTwister.hpp>
+
+#include "../ForecastClass.hpp"
 
 using namespace std;
 using namespace optframe;
@@ -19,6 +23,7 @@ using namespace HFM;
 int CIFWCCICalibration(int argc, char** argv) {
   std::cout << "Welcome to WCCI calibration for the competition!" << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
@@ -29,8 +34,8 @@ int CIFWCCICalibration(int argc, char** argv) {
   if (argc != 5) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nomeOutput targetTS "
-            "construtiveNRulesACF timeES"
-         << std::endl;
+                 "construtiveNRulesACF timeES"
+              << std::endl;
     exit(1);
   }
 
@@ -51,7 +56,7 @@ int CIFWCCICalibration(int argc, char** argv) {
 
   if (!fileWCCIInstances.isOpen()) {
     std::cout << "File '" << "./MyProjects/HFM/Instance/WCCI/CIFInstances"
-         << "' not found" << std::endl;
+              << "' not found" << std::endl;
     exit(1);
   }
 
@@ -88,11 +93,13 @@ int CIFWCCICalibration(int argc, char** argv) {
   for (int n = 0; n < nBatches; n++) {
     //		int contructiveNumberOfRules = rg.rand(maxPrecision) + 10;
     //		int evalFOMinimizer = rg.rand(NMETRICS); //tree is the number of
-    //possible objetive function index minimizers 		int evalAprox = rg.rand(2);
-    ////Enayatifar aproximation using previous values 		int construtive =
-    //rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) + 1; 		double
-    //mutationDesv = rg.rand(maxMutationDesv) + 1; 		int mu = rg.rand(maxMu) + 1;
-    //		int lambda = mu * 6;
+    // possible objetive function index minimizers 		int evalAprox =
+    // rg.rand(2);
+    ////Enayatifar aproximation using previous values 		int construtive
+    ///=
+    // rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) +
+    // 1; 		double mutationDesv = rg.rand(maxMutationDesv) + 1;
+    // int mu = rg.rand(maxMu) + 1; 		int lambda = mu * 6;
 
     // limit ACF for construtive ACF
     //		double alphaACF = rg.rand01();
@@ -178,7 +185,7 @@ int CIFWCCICalibration(int argc, char** argv) {
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
     std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
     std::cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << std::endl;
+              << nTotalForecastingsTrainningSet << std::endl;
     std::cout << "#~NTR: " << NTRaprox << std::endl;
     std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
     std::cout << "#maxNotUsed: " << maxLag << std::endl;
@@ -188,7 +195,7 @@ int CIFWCCICalibration(int argc, char** argv) {
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, stepsAhead, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     //		forecastObject.runMultiObjSearch();
     //		getchar();
@@ -250,9 +257,10 @@ int CIFWCCICalibration(int argc, char** argv) {
 
 int CIFWCCIGeneratingForecasts(int argc, char** argv) {
   std::cout << "Welcome to WCCI forecasting competition! With this code we "
-          "generated the forecasts."
-       << std::endl;
+               "generated the forecasts."
+            << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
@@ -263,8 +271,8 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
   if (argc != 5) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nomeOutput targetTS "
-            "construtiveNRulesACF timeES"
-         << std::endl;
+                 "construtiveNRulesACF timeES"
+              << std::endl;
     exit(1);
   }
 
@@ -291,7 +299,7 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
 
   if (!fileWCCIInstances.isOpen()) {
     std::cout << "File '" << "./MyProjects/HFM/Instance/WCCI/CIFInstances"
-         << "' not found" << std::endl;
+              << "' not found" << std::endl;
     exit(1);
   }
 
@@ -328,11 +336,13 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
   for (int n = 0; n < nBatches; n++) {
     //		int contructiveNumberOfRules = rg.rand(maxPrecision) + 10;
     //		int evalFOMinimizer = rg.rand(NMETRICS); //tree is the number of
-    //possible objetive function index minimizers 		int evalAprox = rg.rand(2);
-    ////Enayatifar aproximation using previous values 		int construtive =
-    //rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) + 1; 		double
-    //mutationDesv = rg.rand(maxMutationDesv) + 1; 		int mu = rg.rand(maxMu) + 1;
-    //		int lambda = mu * 6;
+    // possible objetive function index minimizers 		int evalAprox =
+    // rg.rand(2);
+    ////Enayatifar aproximation using previous values 		int construtive
+    ///=
+    // rg.rand(3); 		double initialDesv = rg.rand(maxInitialDesv) +
+    // 1; 		double mutationDesv = rg.rand(maxMutationDesv) + 1;
+    // int mu = rg.rand(maxMu) + 1; 		int lambda = mu * 6;
 
     // limit ACF for construtive ACF
     //		double alphaACF = rg.rand01();
@@ -418,7 +428,7 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
         (nTotalForecastingsTrainningSet - maxLag) / double(stepsAhead);
     std::cout << "BeginTrainninningSet: " << beginTrainingSet << std::endl;
     std::cout << "#nTotalForecastingsTrainningSet: "
-         << nTotalForecastingsTrainningSet << std::endl;
+              << nTotalForecastingsTrainningSet << std::endl;
     std::cout << "#~NTR: " << NTRaprox << std::endl;
     std::cout << "#sizeTrainingSet: " << rF.getForecastsSize(0) << std::endl;
     std::cout << "#maxNotUsed: " << maxLag << std::endl;
@@ -428,7 +438,7 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
     trainningSet.push_back(
         rF.getPartsForecastsEndToBegin(0, 0, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     //		forecastObject.runMultiObjSearch();
     //		getchar();
@@ -506,15 +516,17 @@ int CIFWCCIGeneratingForecasts(int argc, char** argv) {
 //		for (int day = 1; day <= 7; day++)
 //		{
 //			vector<vector<double> > validationSet; //validation set
-//for calibration 			validationSet.push_back(rF.getPartsForecastsEndToBegin(0, w *
-//168 - stepsAhead * day, nValidationSamples)); 			vector<double> foIndicators;
-//			foIndicators = forecastObject.returnErrors(sol,
-//validationSet); 			foIndicatorsMAPE.push_back(foIndicators[MAPE_INDEX]);
+// for calibration
+// validationSet.push_back(rF.getPartsForecastsEndToBegin(0, w * 168 -
+// stepsAhead * day, nValidationSamples)); 			vector<double>
+// foIndicators; 			foIndicators =
+// forecastObject.returnErrors(sol, validationSet);
+// foIndicatorsMAPE.push_back(foIndicators[MAPE_INDEX]);
 //			foIndicatorsRMSE.push_back(foIndicators[RMSE_INDEX]);
 //		}
 //		double sumMAPE = accumulate(foIndicatorsMAPE.begin(),
-//foIndicatorsMAPE.end(), 0.0); 		double sumRMSE =
-//accumulate(foIndicatorsRMSE.begin(), foIndicatorsRMSE.end(), 0.0);
+// foIndicatorsMAPE.end(), 0.0); 		double sumRMSE =
+// accumulate(foIndicatorsRMSE.begin(), foIndicatorsRMSE.end(), 0.0);
 //
 //		foIndicatorCalibration.push_back(sumMAPE/foIndicatorsMAPE.size());
 //		foIndicatorCalibration.push_back(sumRMSE/foIndicatorsRMSE.size());

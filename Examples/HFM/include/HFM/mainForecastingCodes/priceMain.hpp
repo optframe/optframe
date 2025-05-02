@@ -10,14 +10,17 @@
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iostream>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
 
 int priceCompetitionBlind(int argc, char** argv) {
   std::cout << "Welcome to Price Competition Mode Blind Result Generation..."
-       << std::endl;
+            << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   long seed = time(nullptr);
   seed = 2;
   std::cout << "Seed = " << seed << std::endl;
@@ -27,8 +30,8 @@ int priceCompetitionBlind(int argc, char** argv) {
   if (argc != 10) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
-            "parameters options precision"
-         << std::endl;
+                 "parameters options precision"
+              << std::endl;
     exit(1);
   }
 
@@ -99,7 +102,7 @@ int priceCompetitionBlind(int argc, char** argv) {
     // ============ FORCES ======================
     int randomPrecision = 30;  // best precision
     //		int randomParametersFiles = 1; //best parameters config
-    //Price_1Column_7Points
+    // Price_1Column_7Points
     int evalFOMinimizer = PINBALL_INDEX;
     int evalAprox = 5;
     int nTrainningRounds = 5;
@@ -132,7 +135,7 @@ int priceCompetitionBlind(int argc, char** argv) {
 
     // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
     //		ProblemParameters
-    //problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
+    // problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
     ProblemParameters problemParam;
     stepsAhead = problemParam.getStepsAhead();
     // =========================================== CONSTRUTIVE 0 AND 1
@@ -172,7 +175,7 @@ int priceCompetitionBlind(int argc, char** argv) {
     // trainningSet.push_back(rF.getPartsForecastsEndToBegin(2,
     // beginTrainingSet, nTotalForecastingsTrainningSet + stepsAhead));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
@@ -239,6 +242,7 @@ int priceCompetitionBlind(int argc, char** argv) {
 int priceCompetitionCalibrationMode(int argc, char** argv) {
   std::cout << "Welcome to Price Competition Calibration Mode..." << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long seed = 1;
   long seed = time(nullptr);  // CalibrationMode
   std::cout << "Seed = " << seed << std::endl;
@@ -248,8 +252,8 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
   if (argc != 10) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nome nomeValidationSet saida "
-            "parameters options precision"
-         << std::endl;
+                 "parameters options precision"
+              << std::endl;
     exit(1);
   }
 
@@ -313,8 +317,8 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
-   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = "
+   << nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -399,7 +403,7 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
 
     // ================== READ FILE ============== CONSTRUTIVE 0 AND 1
     //		ProblemParameters
-    //problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
+    // problemParam(vParametersFiles[randomParametersFiles]); //DEPRECATED
     ProblemParameters problemParam;
     stepsAhead = problemParam.getStepsAhead();
     // =========================================== CONSTRUTIVE 0 AND 1
@@ -461,7 +465,7 @@ int priceCompetitionCalibrationMode(int argc, char** argv) {
     validationSet.push_back(rF.getPartsForecastsEndToBegin(
         2, beginValidationSet, nValidationSamples + stepsAhead));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 

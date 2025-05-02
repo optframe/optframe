@@ -10,6 +10,8 @@
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <iostream>
 
+#include "../ForecastClass.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace HFM;
@@ -17,6 +19,7 @@ using namespace HFM;
 int jamesTaylorEuropeanDataset(int argc, char** argv) {
   std::cout << "Welcome to James Taylor European Dataset Analysis" << std::endl;
   RandGenMersenneTwister rg;
+  sref<RandGen> rg2{new RandGenMersenneTwister{}};
   // long  1412730737
   long seed = time(nullptr);  // CalibrationMode
   // seed = 9;
@@ -27,8 +30,8 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
   if (argc != 5) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: nomeOutput targetTS "
-            "construtiveNRulesACF timeES"
-         << std::endl;
+                 "construtiveNRulesACF timeES"
+              << std::endl;
     exit(1);
   }
 
@@ -105,8 +108,8 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
   /*int beginValidationSet = 0;
    int nTrainningRoundsValidation = 50;
    int nValidationSamples = problemParam.getNotUsedForTest() +
-   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = " <<
-   nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
+   nTrainningRoundsValidation * stepsAhead; std::cout << "nValidationSamples = "
+   << nValidationSamples << std::endl; int nTotalForecastingsValidationSet =
    nValidationSamples;
 
    vector<vector<double> > validationSet; //validation set for calibration
@@ -182,15 +185,15 @@ int jamesTaylorEuropeanDataset(int argc, char** argv) {
     int nTrainningRounds = 100;
     int nTotalForecastingsTrainningSet = maxLag + nTrainningRounds * stepsAhead;
     std::cout << "nTrainningRounds: " << nTrainningRounds << std::endl;
-    std::cout << "nTotalForecastingsTrainningSet: " << nTotalForecastingsTrainningSet
-         << std::endl;
+    std::cout << "nTotalForecastingsTrainningSet: "
+              << nTotalForecastingsTrainningSet << std::endl;
 
     vector<vector<double>> trainningSet;  // trainningSetVector
     int beginTrainingSet = 0;
     trainningSet.push_back(rF.getPartsForecastsEndToBegin(
         0, beginTrainingSet, nTotalForecastingsTrainningSet));
 
-    ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
+    ForecastClass forecastObject{trainningSet, problemParam, rg2, methodParam};
 
     std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 

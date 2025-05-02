@@ -346,10 +346,19 @@ class Pareto {
       return;
     }
 
+    /*
     for (const auto& front : paretoSetFront) {
       for (const auto& element : front.second) {
         fPF << static_cast<double>(element.evaluation()) << "\t";
       }
+      fPF << "\n";
+    }
+    */
+
+    for (const auto& front_element : paretoSetFront) {
+      for (const auto& e : front_element->second.evaluation())
+        fPF << static_cast<double>(e.evaluation()) << "\t";
+
       fPF << "\n";
     }
   }

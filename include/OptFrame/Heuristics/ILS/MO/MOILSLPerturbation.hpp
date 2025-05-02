@@ -7,9 +7,11 @@
 #include <math.h>
 
 #include <vector>
+//
 
-#include "../../../NS.hpp"
-#include "../../../RandGen.hpp"
+#include <OptFrame/Core/NS.hpp>
+#include <OptFrame/Core/RandGen.hpp>
+
 #include "../../../Search/MultiObjSearch.hpp"
 #include "MOILS.h"
 
