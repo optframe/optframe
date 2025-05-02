@@ -76,11 +76,14 @@ class MultiEvaluation : public Component {
 #endif
   }
 
-  explicit MultiEvaluation(const std::vector<ObjType>& vd) {
-    for (unsigned i = 0; i < vd.size(); i++) vev.push_back(XEv{vd[i]});
+  explicit MultiEvaluation(const std::vector<ObjType>& vd)
+      : vev((size_t)vd.size()) {
+    for (unsigned i = 0; i < vd.size(); i++) vev[i] = XEv{vd[i]};
+    // for (unsigned i = 0; i < vd.size(); i++) vev.push_back(XEv{vd[i]});
   }
 
-  explicit MultiEvaluation(const std::vector<XEv>& vd) : vev{vd.size()} {
+  explicit MultiEvaluation(const std::vector<XEv>& vd)
+      : vev((size_t)vd.size()) {
     for (unsigned i = 0; i < vd.size(); i++) vev[i] = vd[i];
   }
 
