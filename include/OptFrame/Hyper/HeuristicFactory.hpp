@@ -127,9 +127,7 @@ class HeuristicFactory {
   // output stream (defaults to std::cout)
   std::ostream* logdata{&std::cout};
 
-  modlog::LogConfig log() {
-    return {.os = logdata, .minlog = loglevel, .prefix = true};
-  }
+  modlog::LogConfig log() { return {logdata, loglevel}; }
 
  public:
   std::map<std::string, std::vector<sptr<Component>>> components;

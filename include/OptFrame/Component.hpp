@@ -84,9 +84,7 @@ MOD_EXPORT class Component {
   // store component-level log flag
   modlog::LogLevel verboseLevel;
 
-  modlog::LogConfig log() {
-    return {.os = logdata, .minlog = verboseLevel, .prefix = true};
-  }
+  modlog::LogConfig log() { return {logdata, verboseLevel}; }
 
   static bool safe_delete(Component* c) {
     if (c) {
