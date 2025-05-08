@@ -1,6 +1,6 @@
-CC_GCC=g++
-CC_CLANG=clang++-19
-#CC=clang++
+CXX_GCC=g++
+CXX_CLANG=clang++-19
+#CXX=clang++
 #CPPSTD=-std=c++20   # -fconcepts-diagnostics-depth=2  # -Wfatal-errors
 CPPSTD=--std=c++17   # TODO REMOVE # -Wfatal-errors
 
@@ -11,17 +11,17 @@ OPTFRAME_SRC=.
 
 optframe_lib_test:
 	mkdir -p build/
-	@echo "TEST BUILD LIBRARY WITH ${CC}"
-	$(CC) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
+	@echo "TEST BUILD LIBRARY WITH ${CXX}"
+	$(CXX) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
 
 optframe_lib_test_gcc_clang19:
 	mkdir -p build/
 	#
 	@echo "BUILD WITH ${CC_GCC} (PART 1/2)"
-	$(CC_GCC) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
+	$(CXX_GCC) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
 	#
 	@echo "BUILD WITH ${CC_CLANG} (PART 2/2)"
-	$(CC_CLANG) $(CPPSTD) -g -I${OPTFRAME_SRC}/include -Wall -pedantic -O3 --stdlib=libc++  --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB) -o build/optframe_lib.so -fPIC
+	$(CXX_CLANG) $(CPPSTD) -g -I${OPTFRAME_SRC}/include -Wall -pedantic -O3 --stdlib=libc++  --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB) -o build/optframe_lib.so -fPIC
 	#
 	# readelf -s build/optframe_lib.so | grep fcore
 	ls -la build/optframe_lib.so
