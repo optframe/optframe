@@ -10,12 +10,12 @@ OPTFRAME_C_LIB=./src/OptFrameLib/OptFrameLib.cpp
 OPTFRAME_SRC=.
 
 optframe_lib_test:
+	mkdir -p build/
 	@echo "TEST BUILD LIBRARY WITH ${CC}"
 	$(CC) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
 
 optframe_lib_test_gcc_clang19:
-	# mkdir -p build/
-	# -Wextra
+	mkdir -p build/
 	#
 	@echo "BUILD WITH ${CC_GCC} (PART 1/2)"
 	$(CC_GCC) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC

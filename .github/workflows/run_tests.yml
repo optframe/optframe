@@ -15,5 +15,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: optframe_lib_test
       working-directory: ./
-      run: make optframe_lib_test
+      run:  |
+        make optframe_lib_test
 
