@@ -162,8 +162,9 @@ class HeuristicFactory {
     // must apply loglevel to all builders
     for (unsigned i = 0; i < builders.size(); i++) {
       if (ll == modlog::LogLevel::Debug)
-        std::cout << "Setting builder LogLevel to Debug: " << builders[i]->id()
-                  << std::endl;
+        Log(modlog::LogLevel::Debug)
+            << "Setting builder LogLevel to Debug: " << builders[i]->id()
+            << std::endl;
       builders[i]->setMessageLevel(ll);
     }
   }

@@ -104,7 +104,8 @@ MODLOG_MOD_EXPORT enum class LogLevel : int {
   Info = 0,
   Warning = 1,
   Error = 2,
-  Fatal = 3
+  Fatal = 3,
+  Disabled = 4
 };
 #else
 MODLOG_MOD_EXPORT enum LogLevel : int {
@@ -113,7 +114,8 @@ MODLOG_MOD_EXPORT enum LogLevel : int {
   Info = 0,
   Warning = 1,
   Error = 2,
-  Fatal = 3
+  Fatal = 3,
+  Disabled = 4
 };
 #endif
 
@@ -130,6 +132,7 @@ MODLOG_MOD_EXPORT constexpr LogLevel WARNING = LogLevel::Warning;
 // ERROR is problematic on Windows
 MODLOG_MOD_EXPORT constexpr LogLevel ERROR = LogLevel::Error;
 MODLOG_MOD_EXPORT constexpr LogLevel FATAL = LogLevel::Fatal;
+MODLOG_MOD_EXPORT constexpr LogLevel DISABLED = LogLevel::Disabled;
 #else
 // Windows do not have upper case macros, so must use CamelCase ones
 MODLOG_MOD_EXPORT using modlog::LogLevel::Silent;
@@ -138,6 +141,7 @@ MODLOG_MOD_EXPORT using modlog::LogLevel::Info;
 MODLOG_MOD_EXPORT using modlog::LogLevel::Warning;
 MODLOG_MOD_EXPORT using modlog::LogLevel::Error;
 MODLOG_MOD_EXPORT using modlog::LogLevel::Fatal;
+MODLOG_MOD_EXPORT using modlog::LogLevel::Disabled;
 #endif
 
 // =======================================
@@ -336,6 +340,7 @@ MODLOG_MOD_EXPORT inline std::ostream& Log(
     LogLevel sev = LogLevel::Info,
     // const std::source_location location = std::source_location::current()) {
     const my_source_location location = MY_SOURCE_LOCATION()) {
+  if (modlog_default.minlog == LogLevel::Disabled) return modlog_default.no;
 #ifdef NDEBUG
   if (sev < LogLevel::Info) return modlog_default.no;
 #endif
@@ -356,6 +361,7 @@ MODLOG_MOD_EXPORT inline std::ostream& VLog(
     int vlevel,
     // const std::source_location location = std::source_location::current()) {
     const my_source_location location = MY_SOURCE_LOCATION()) {
+  if (modlog_default.minlog == LogLevel::Disabled) return modlog_default.no;
 #ifdef NDEBUG
   if (vlevel > 0) return modlog_default.no;
 #endif
@@ -395,6 +401,7 @@ inline std::ostream& Log(
     LogLevel sev, LogObj* lo,
     // const std::source_location location = std::source_location::current()) {
     const my_source_location location = MY_SOURCE_LOCATION()) {
+  if (lo->log().minlog == LogLevel::Disabled) return modlog_default.no;
 #ifdef NDEBUG
   if (sev < LogLevel::Info) return modlog_default.no;
 #endif

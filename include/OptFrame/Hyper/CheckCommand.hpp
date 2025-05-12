@@ -262,6 +262,7 @@ class CheckCommand : public Component {  // NOLINT
       this->setMessageLevel(modlog::LogLevel::Silent);
   }
 
+  /*
   void setLogLevel(modlog::LogLevel _logLevel) {
     // this->logLevel = _logLevel;
     this->setMessageLevel(_logLevel);
@@ -270,6 +271,7 @@ class CheckCommand : public Component {  // NOLINT
     // else
     //   verbose = false;
   }
+  */
 
   explicit CheckCommand(bool _verbose = false) : paramConvertNS{true} {
     //

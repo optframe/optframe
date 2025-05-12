@@ -56,8 +56,10 @@ using std::stringstream;
 // more verbose...
 
 // OptFrame v6 system: modlog!
-// debug=-1, info=0, warn=1, error=2, fatal=3
+// silent=-2, debug=-1, info=0, warn=1, error=2, fatal=3, disabled=4
 // Now, greater is less verbose, but more important!
+// Note that silent is MORE verbose than debug, thus LESS likely to occur!
+// On the other hand, disabled is the highest priority and should never print.
 
 enum StringFormat {
   Undefined = 0,  // undefined... typically 'Human'
@@ -285,7 +287,7 @@ MOD_EXPORT class Component {
 
     verboseLevel = vl;
     switch (verboseLevel) {
-      case modlog::LogLevel::Silent:
+      case modlog::LogLevel::Disabled:
         break;
       case modlog::LogLevel::Error:
         error = true;

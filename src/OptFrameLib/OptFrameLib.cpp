@@ -87,7 +87,7 @@ class FCoreApi1Engine {
     int comp_ll = std::stoi(this->experimentalParams["COMPONENT_LOG_LEVEL"]);
     this->engineLogLevel = (modlog::LogLevel)engine_ll;
     this->componentLogLevel = (modlog::LogLevel)comp_ll;
-    check.setLogLevel(engineLogLevel);
+    check.setMessageLevel(engineLogLevel);
     loader.factory.setLogLevel(engineLogLevel);
   }
 
@@ -1953,7 +1953,7 @@ OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
     // just to be extra safe...
     if (!scan.hasNextInt()) return false;
     auto op_x = scan.nextInt();
-    if (!op_x || *op_x < 0 || *op_x > 4) {
+    if (!op_x || *op_x < -2 || *op_x > 4) {
       std::cout << "WARNING: optframe_api1d_engine_experimental_set_parameter:";
       std::cout << "bad value '" << cleanValue << "' for param '" << cleanParam
                 << "'" << std::endl;
@@ -1966,7 +1966,7 @@ OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
     // just to be extra safe...
     if (!scan.hasNextInt()) return false;
     auto op_x = scan.nextInt();
-    if (!op_x || *op_x < 0 || *op_x > 4) {
+    if (!op_x || *op_x < -2 || *op_x > 4) {
       std::cout << "WARNING: optframe_api1d_engine_experimental_set_parameter:";
       std::cout << "bad value '" << cleanValue << "' for param '" << cleanParam
                 << "'" << std::endl;
