@@ -4,6 +4,9 @@ typedef void* FakeFEvaluatorPtr;
 typedef void* FakeFConstructivePtr;
 typedef void* FakeFNSPtr;
 typedef void* FakePythonObjPtr;
+typedef void* FakeProblemPtr;
+typedef void* FakeSolutionPtr;
+typedef void* FakeMovePtr;
 typedef void* FakeEnginePtr;
 
 // ============= compatible api components =============

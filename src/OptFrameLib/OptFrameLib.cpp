@@ -889,9 +889,9 @@ OPT_MODULE_API bool optframe_api1d_destroy_engine(FakeEnginePtr _engine) {
 OPT_MODULE_API int  // index of generalevaluator
 
 optframe_api1d_add_evaluator(FakeEnginePtr _engine,
-                             double (*_fevaluate)(FakePythonObjPtr,
-                                                  FakePythonObjPtr),
-                             bool min_or_max, FakePythonObjPtr problem_view) {
+                             double (*_fevaluate)(FakeProblemPtr,
+                                                  FakeSolutionPtr),
+                             bool min_or_max, FakeProblemPtr problem_view) {
   auto* engine = (FCoreApi1Engine*)_engine;
   // printf("hf=%p\n", (void*)hf);
 
@@ -970,11 +970,11 @@ optframe_api1d_add_evaluator(FakeEnginePtr _engine,
 
 OPT_MODULE_API int  // index of constructive
 optframe_api1d_add_constructive(
-    FakeEnginePtr _engine, FakePythonObjPtr (*_fconstructive)(FakePythonObjPtr),
-    FakePythonObjPtr problem_view,
+    FakeEnginePtr _engine, FakeSolutionPtr (*_fconstructive)(FakeProblemPtr),
+    FakeProblemPtr problem_view,
     // Support necessary for Solution construction and maintainance
     FakePythonObjPtr (*f_sol_deepcopy)(FakePythonObjPtr),
-    size_t (*f_sol_tostring)(FakePythonObjPtr, char*, size_t),
+    size_t (*f_sol_tostring)(FakeSolutionPtr, char*, size_t),
     int (*f_utils_decref)(FakePythonObjPtr)) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
@@ -1272,12 +1272,11 @@ optframe_api1d_add_rk_edecoder_op(
 OPT_MODULE_API int  // index of ns
 optframe_api1d_add_ns(
     FakeEnginePtr _engine,
-    FakePythonObjPtr (*_fns_rand)(FakePythonObjPtr, FakePythonObjPtr),
-    FakePythonObjPtr (*_fmove_apply)(FakePythonObjPtr, FakePythonObjPtr,
-                                     FakePythonObjPtr),
-    bool (*_fmove_eq)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
-    bool (*_fmove_cba)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
-    FakePythonObjPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr)) {
+    FakeMovePtr (*_fns_rand)(FakeProblemPtr, FakeSolutionPtr),
+    FakeMovePtr (*_fmove_apply)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    bool (*_fmove_eq)(FakeProblemPtr, FakeMovePtr, FakeMovePtr),
+    bool (*_fmove_cba)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    FakeProblemPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr)) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
   // std::cout << "invoking 'optframe_api1d_add_constructive' with "
@@ -1526,21 +1525,17 @@ optframe_api3d_add_ns_xmes(
 OPT_MODULE_API int  // index of ns
 optframe_api1d_add_nsseq(
     FakeEnginePtr _engine,
-    FakePythonObjPtr (*_fns_rand)(FakePythonObjPtr, FakePythonObjPtr),
-    FakePythonObjPtr (*_fIterator)(
-        FakePythonObjPtr,
-        FakePythonObjPtr),  // fIterator (just initializes IMS)
-    // problem*, ims*
-    void (*_fFirst)(FakePythonObjPtr, FakePythonObjPtr),   // iterator.first()
-    void (*_fNext)(FakePythonObjPtr, FakePythonObjPtr),    // iterator.next()
-    bool (*_fIsDone)(FakePythonObjPtr, FakePythonObjPtr),  // iterator.isDone()
-    FakePythonObjPtr (*_fCurrent)(FakePythonObjPtr,
-                                  FakePythonObjPtr),  // iterator.current()
-    FakePythonObjPtr (*_fmove_apply)(FakePythonObjPtr, FakePythonObjPtr,
-                                     FakePythonObjPtr),
-    bool (*_fmove_eq)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
-    bool (*_fmove_cba)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
-    FakePythonObjPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr)) {
+    FakeMovePtr (*_fns_rand)(FakeProblemPtr, FakeSolutionPtr),
+    FakePythonObjPtr (*_fIterator)(FakeProblemPtr, FakeSolutionPtr),
+    // problem*, ims* (maybe move*?)
+    void (*_fFirst)(FakeProblemPtr, FakePythonObjPtr),
+    void (*_fNext)(FakeProblemPtr, FakePythonObjPtr),
+    bool (*_fIsDone)(FakeProblemPtr, FakePythonObjPtr),
+    FakeMovePtr (*_fCurrent)(FakeProblemPtr, FakePythonObjPtr),
+    FakeMovePtr (*_fmove_apply)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    bool (*_fmove_eq)(FakeProblemPtr, FakeMovePtr, FakeMovePtr),
+    bool (*_fmove_cba)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    FakeProblemPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr)) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
   // std::cout << "invoking 'optframe_api1d_add_constructive' with "
