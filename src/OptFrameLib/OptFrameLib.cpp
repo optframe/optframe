@@ -1289,11 +1289,6 @@ optframe_api1d_add_ns(
     FakeProblemPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr)) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
-  // std::cout << "invoking 'optframe_api1d_add_constructive' with "
-  //           << "_hf=" << _hf << " _fconstructive and problem_view=" <<
-  //           problem_view << std::endl;
-
-  // ======== preparing move functions ========
   using FuncTypeMoveApply = std::function<FakePythonObjPtr(
       const FakePythonObjPtr&, FCoreLibESolution&)>;
 
@@ -1320,13 +1315,9 @@ optframe_api1d_add_ns(
       [_fmove_eq, problem_view](
           const FakeMovePtr& my_m_view,
           const optframe::Move<FCoreLibESolution>& _mOther) -> bool {
-    // cast to to lib move type. (TODO: check type... how? use OptFrame
-    // Component id()? or must improve OptFrame in this regard... not worry
-    // now!)
     auto& mOther = (FMoveLib<>&)_mOther;
     //
     FakePythonObjPtr mStructOtherView = mOther.m;
-    // IMPORTANT: python will receive all as views..
     bool r = _fmove_eq(problem_view, my_m_view, mStructOtherView);
     return r;
   };
@@ -1334,31 +1325,15 @@ optframe_api1d_add_ns(
   typedef std::function<bool(FakePythonObjPtr)> FuncTypeUtilsDecRef;
   FuncTypeUtilsDecRef func_utils_decref = _f_utils_decref;
 
-  // std::function<uptr<Move<XES>>(const XES&)>
   auto func_fns = [_fns_rand, problem_view, func_fmove_apply, func_fmove_cba,
                    func_fmove_eq,
                    func_utils_decref](const FCoreLibESolution& se)
       -> optframe::uptr<optframe::Move<FCoreLibESolution>> {
-    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I
-    // think so...
-    // TODO: will pass ESolution as a Solution in API1... ignoring
-    // Evaluation/Re-evaluation!
-    // TODO: don't know if IncRef or not solution_ptr... I THINK it's a "view"
-    // for python, so no IncRef here.
-    //
-    // vobj_owned should come IncRef'ed before! I guess...
     FakePythonObjPtr vobj_owned =
         _fns_rand(problem_view, se.first.solution_ptr);
-    // std::cout << "'optframe_api1d_add_ns' -> _fns_rand generated pointer: "
-    // << vobj_owned << std::endl;
-    assert(vobj_owned);  // check void* (TODO: allow non-existing move, return
-                         // nullptr)
-
-    //
+    assert(vobj_owned);
     auto* m_ptr = new FMoveLib(vobj_owned, func_fmove_apply, func_fmove_cba,
                                func_fmove_eq, func_utils_decref);
-
-    // std::cout << "'optframe_api1d_add_ns' -> move created!" << std::endl;
     return optframe::uptr<optframe::Move<FCoreLibESolution>>(m_ptr);
   };
 
@@ -1387,17 +1362,119 @@ optframe_api1d_add_ns(
   sref<optframe::NS<FCoreLibESolution>> fns{p_fns};
 
   sref<optframe::Component> fns_comp(fns);
-  // new optframe::FNS<FCoreLibESolution>{ func_fns });
-
-  // std::cout << "'optframe_api1d_add_ns' will add component on hf" <<
-  // std::endl;
-
   int id = engine->loader.factory.addComponent(fns_comp, "OptFrame:NS");
-  //
   engine->check.add(fns);
-  // fns->print();
   return id;
 }
+
+struct PairMoveDoubleLib {
+  FakeMovePtr first;
+  double second;
+};
+
+OPT_MODULE_API int  // index of ns
+optframe_api2d_add_ns(
+    FakeEnginePtr _engine,
+    FakeMovePtr (*_fns_rand)(FakeProblemPtr, FakeSolutionPtr),
+    FakeMovePtr (*_fmove_apply)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    bool (*_fmove_eq)(FakeProblemPtr, FakeMovePtr, FakeMovePtr),
+    bool (*_fmove_cba)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    PairMoveDoubleLib (*_fmove_apply_update)(FakeProblemPtr, FakeMovePtr,
+                                             FakeSolutionPtr, double),
+    FakeProblemPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr)) {
+  auto* engine = (FCoreApi1Engine*)_engine;
+
+  using FuncTypeMoveApply = std::function<FakePythonObjPtr(
+      const FakePythonObjPtr&, FCoreLibESolution&)>;
+
+  FuncTypeMoveApply func_fmove_apply =
+      [_fmove_apply, problem_view](const FakeMovePtr& m_view,
+                                   FCoreLibESolution& se) -> FakeMovePtr {
+    FakeMovePtr vobj_owned =
+        _fmove_apply(problem_view, m_view, se.first.solution_ptr);
+    return vobj_owned;
+  };
+
+  using FuncTypeMoveCBA =
+      std::function<bool(const FakeMovePtr&, const FCoreLibESolution&)>;
+  FuncTypeMoveCBA func_fmove_cba = [_fmove_cba, problem_view](
+                                       const FakeMovePtr& m_view,
+                                       const FCoreLibESolution& se) -> bool {
+    bool r = _fmove_cba(problem_view, m_view, se.first.solution_ptr);
+    return r;
+  };
+
+  using FuncTypeMoveEq = std::function<bool(
+      const FakeMovePtr&, const optframe::Move<FCoreLibESolution>&)>;
+  FuncTypeMoveEq func_fmove_eq =
+      [_fmove_eq, problem_view](
+          const FakeMovePtr& my_m_view,
+          const optframe::Move<FCoreLibESolution>& _mOther) -> bool {
+    auto& mOther = (FMoveLib<>&)_mOther;
+    //
+    FakePythonObjPtr mStructOtherView = mOther.m;
+    bool r = _fmove_eq(problem_view, my_m_view, mStructOtherView);
+    return r;
+  };
+
+  using FuncTypeMoveApplyUpdate =
+      std::function<FakeMovePtr(const FakeMovePtr&, FCoreLibESolution&)>;
+
+  FuncTypeMoveApplyUpdate func_fmove_apply_update =
+      [_fmove_apply_update, problem_view](
+          const FakeMovePtr& m_view, FCoreLibESolution& se) -> FakeMovePtr {
+    auto pair_mv = _fmove_apply_update(
+        problem_view, m_view, se.first.solution_ptr, se.second.evaluation());
+    FakeMovePtr vobj_owned = pair_mv.first;
+    se.second.setObjFunction(se.second.evaluation() + pair_mv.second);
+    return vobj_owned;
+  };
+
+  typedef std::function<bool(FakePythonObjPtr)> FuncTypeUtilsDecRef;
+  FuncTypeUtilsDecRef func_utils_decref = _f_utils_decref;
+
+  auto func_fns_v2 = [_fns_rand, problem_view, func_fmove_apply, func_fmove_cba,
+                      func_fmove_eq, func_utils_decref,
+                      func_fmove_apply_update](const FCoreLibESolution& se)
+      -> optframe::uptr<optframe::Move<FCoreLibESolution>> {
+    FakePythonObjPtr vobj_owned =
+        _fns_rand(problem_view, se.first.solution_ptr);
+    assert(vobj_owned);
+    auto* m_ptr =
+        new FMoveLib(vobj_owned, func_fmove_apply, func_fmove_cba,
+                     func_fmove_eq, func_utils_decref, func_fmove_apply_update);
+    return optframe::uptr<optframe::Move<FCoreLibESolution>>(m_ptr);
+  };
+
+  auto* p_fns = new optframe::FNS<FCoreLibESolution>{func_fns_v2};
+  // adjust NS_VALID_RANDOM_MOVE_MAX_TRIES for NS
+  int max_tries =
+      std::stoi(engine->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"]);
+  if (max_tries > 1) {
+    if (engine->engineLogLevel <= modlog::LogLevel::Warning)
+      std::cout << "WARNING: using NS_VALID_RANDOM_MOVE_MAX_TRIES=" << max_tries
+                << std::endl;
+    p_fns->fValidRandom = [p_fns, max_tries](const FCoreLibESolution& se)
+        -> optframe::uptr<Move<FCoreLibESolution>> {
+      int t = 0;
+      while (t < max_tries) {
+        optframe::uptr<Move<FCoreLibESolution>> moveValid = p_fns->fRandom(se);
+        if (moveValid && moveValid->canBeApplied(se))
+          return moveValid;
+        else
+          t++;
+      }
+      // no way!
+      return nullptr;
+    };
+  }
+  sref<optframe::NS<FCoreLibESolution>> fns{p_fns};
+
+  sref<optframe::Component> fns_comp(fns);
+  int id = engine->loader.factory.addComponent(fns_comp, "OptFrame:NS");
+  engine->check.add(fns);
+  return id;
+}  // v2
 
 OPT_MODULE_API int  // index of ns<XMES>
 optframe_api3d_add_ns_xmes(
