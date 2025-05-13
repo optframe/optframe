@@ -89,6 +89,11 @@ class FCoreApi1Engine {
 
 using optframe::Move;  // let's simplify things!!
 
+struct OpDoubleLib {
+  bool exists;
+  double value;
+};
+
 template <typename XES = FCoreLibESolution>
 class FMoveLib : public optframe::Move<XES> {
   using XEv = typename XES::second_type;
@@ -97,17 +102,26 @@ class FMoveLib : public optframe::Move<XES> {
  public:
   M m;  // internal structure for move
 
+  // API v1
   using FuncTypeMoveApply = std::function<M(const M&, XES&)>;
   using FuncTypeMoveCBA = std::function<bool(const M&, const XES&)>;
   using FuncTypeMoveEq =
       std::function<bool(const M&, const optframe::Move<XES>&)>;
   using FuncTypeUtilsDecRef = std::function<bool(FakeMovePtr)>;
+  // API v2
+  using FuncTypeMoveApplyUpdate = std::function<M(const M&, XES&)>;
+  using FuncTypeMoveCost = std::function<OpDoubleLib(const M&, const XES&)>;
 
+  // API v1
   FuncTypeMoveApply fApply;
   FuncTypeMoveCBA fCanBeApplied;
   FuncTypeMoveEq fCompareEq;
   FuncTypeUtilsDecRef f_utils_decref;
+  // API v2
+  FuncTypeMoveApplyUpdate fApplyUpdate;
+  // FuncTypeMoveCost fCost;
 
+  // v1
   FMoveLib(M _m_owned, const FuncTypeMoveApply& _fApply,
            const FuncTypeMoveCBA& _fCanBeApplied,
            const FuncTypeMoveEq& _fCompareEq,
@@ -116,16 +130,59 @@ class FMoveLib : public optframe::Move<XES> {
         fApply{_fApply},
         fCanBeApplied{_fCanBeApplied},
         fCompareEq{_fCompareEq},
-        f_utils_decref{_f_utils_decref} {}
+        f_utils_decref{_f_utils_decref},
+        fApplyUpdate{[_fApply](const M& m, XES& se) -> M {
+          if (!se.second.isOutdated()) se.second.invalidate();
+          return _fApply(m, se);
+        }}  //,
+            // fCost{[](const M& m, const XES& se) -> OpDoubleLib {
+            //  return OpDoubleLib{false, 0.0};
+            //}}
+  {}
+
+  // v2
+  FMoveLib(M _m_owned, const FuncTypeMoveApply& _fApply,
+           const FuncTypeMoveCBA& _fCanBeApplied,
+           const FuncTypeMoveEq& _fCompareEq,
+           const FuncTypeUtilsDecRef& _f_utils_decref,
+           const FuncTypeMoveApplyUpdate& _fApplyUpdate  //,
+           // const FuncTypeMoveCost& _fCost
+           )
+      : m{_m_owned},
+        fApply{_fApply},
+        fCanBeApplied{_fCanBeApplied},
+        fCompareEq{_fCompareEq},
+        f_utils_decref{_f_utils_decref},
+        fApplyUpdate{_fApplyUpdate}  // ,
+  // fCost{_fCost}
+  {}
 
   virtual ~FMoveLib() { f_utils_decref(m); }
 
   bool canBeApplied(const XES& se) override { return fCanBeApplied(m, se); }
 
   optframe::uptr<Move<XES>> apply(XES& se) override {
-    return optframe::uptr<Move<XES>>{new FMoveLib{
-        fApply(m, se), fApply, fCanBeApplied, fCompareEq, f_utils_decref}};
+    return optframe::uptr<Move<XES>>{
+        new FMoveLib{fApply(m, se), fApply, fCanBeApplied, fCompareEq,
+                     f_utils_decref, fApplyUpdate}};
   }
+
+  optframe::uptr<Move<XES>> applyUpdate(XES& se) override {
+    return optframe::uptr<Move<XES>>{
+        new FMoveLib{fApplyUpdate(m, se), fApply, fCanBeApplied, fCompareEq,
+                     f_utils_decref, fApplyUpdate}};
+  }
+
+  // Breaks MultiEvaluation... TODO!
+  /*
+  std::optional<XEv> cost(const XES& se, bool allowEstimated) override {
+    auto opDouble = fCost(m, se);
+    if (!opDouble.exists)
+      return std::nullopt;
+    else
+      return std::make_optional(XEv{opDouble.value});
+  }
+  */
 
   bool operator==(const Move<XES>& move) const override {
     const Move<XES>& move2 = (Move<XES>&)move;
@@ -864,8 +921,8 @@ optframe_api1d_add_evaluator(FakeEnginePtr _engine,
                              FCoreLibESolution>>
         eval2(ev_ptr);
     sref<optframe::Component> eval(eval2);
-    // std::cout << "created FEvaluator<MIN> ptr=" << &eval.get() << std::endl;
-    // id = engine->loader.factory.addComponent(eval,
+    // std::cout << "created FEvaluator<MIN> ptr=" << &eval.get() <<
+    // std::endl; id = engine->loader.factory.addComponent(eval,
     // "OptFrame:GeneralEvaluator");
     //
     //  double add to prevent future down-casts (NOT ANYMORE)
@@ -908,14 +965,16 @@ optframe_api1d_add_evaluator(FakeEnginePtr _engine,
 }
 
 // IMPORTANT: method 'add_constructive' receives a 'problem_view', while a
-// 'problem_owned' would be desired... However, this would require an extra 'int
-// (*f_utils_decref)(FakePythonObjPtr)', but it's doable. Worse, this would also
-// require some personalization of std::function destructor over FConstructive,
-// or a change in FConstructor to allow personalized destructors...
-// Maybe, at this moment, we just require that 'problem_view' must exist at the
-// time constructive is invoked. We can somehow ensure this on Python, which
-// prevents extra referencing counting on both sides. On Python, storing it on
-// the engine (or the opposite) may do the job for us, so, no worry for now.
+// 'problem_owned' would be desired... However, this would require an extra
+// 'int
+// (*f_utils_decref)(FakePythonObjPtr)', but it's doable. Worse, this would
+// also require some personalization of std::function destructor over
+// FConstructive, or a change in FConstructor to allow personalized
+// destructors... Maybe, at this moment, we just require that 'problem_view'
+// must exist at the time constructive is invoked. We can somehow ensure this
+// on Python, which prevents extra referencing counting on both sides. On
+// Python, storing it on the engine (or the opposite) may do the job for us,
+// so, no worry for now.
 
 OPT_MODULE_API int  // index of constructive
 optframe_api1d_add_constructive(
@@ -938,12 +997,12 @@ optframe_api1d_add_constructive(
     FakePythonObjPtr vobj_owned = _fconstructive(problem_view);
     // std::cout << "'optframe_api1d_add_constructive' -> _fconstructive
     // generated pointer: " << vobj_owned << std::endl;
-    assert(
-        vobj_owned);  // check void* (TODO: for FxConstructive, return nullopt)
+    assert(vobj_owned);  // check void* (TODO: for FxConstructive, return
+                         // nullopt)
     FCoreLibSolution sol(vobj_owned, f_sol_deepcopy, f_sol_tostring,
                          f_utils_decref);
-    // std::cout << "'optframe_api1d_add_constructive' -> solution created!" <<
-    // std::endl;
+    // std::cout << "'optframe_api1d_add_constructive' -> solution created!"
+    // << std::endl;
     return sol;
   };
 
@@ -1084,11 +1143,13 @@ optframe_api1d_add_rk_constructive(FakeEnginePtr _engine,
   sref<optframe::Constructive<std::vector<double>>> fc2(c_ptr);
   sref<optframe::Component> fc(fc2);
 
-  // std::cout << "   ==== optframe_api1d_add_rk_constructive: will try c_ptr="
+  // std::cout << "   ==== optframe_api1d_add_rk_constructive: will try
+  // c_ptr="
   // << c_ptr << " ->generateSolution()" << std::endl; auto opv =
-  // c_ptr->generateSolution({ 0.0 }); std::vector<double> vd = *opv; std::cout
-  // << "   ==== optframe_api1d_add_rk_constructive: vd.size()=" << vd.size() <<
-  // std::endl;
+  // c_ptr->generateSolution({ 0.0 }); std::vector<double> vd = *opv;
+  // std::cout
+  // << "   ==== optframe_api1d_add_rk_constructive: vd.size()=" << vd.size()
+  // << std::endl;
 
   int id = engine->loader.factory.addComponent(
       fc, "OptFrame:Constructive<XRKf64>:EA:RK:ConstructiveRK");
@@ -1132,12 +1193,12 @@ optframe_api1d_add_rk_decoder(
     FakePythonObjPtr vobj_owned = _fdecoder(problem_view, lad);
     // std::cout << "'optframe_api1d_add_constructive' -> _fconstructive
     // generated pointer: " << vobj_owned << std::endl;
-    assert(
-        vobj_owned);  // check void* (TODO: for FxConstructive, return nullopt)
+    assert(vobj_owned);  // check void* (TODO: for FxConstructive, return
+                         // nullopt)
     FCoreLibSolution sol(vobj_owned, f_sol_deepcopy, f_sol_tostring,
                          f_utils_decref);
-    // std::cout << "'optframe_api1d_add_constructive' -> solution created!" <<
-    // std::endl;
+    // std::cout << "'optframe_api1d_add_constructive' -> solution created!"
+    // << std::endl;
 
     return sol;
   };
@@ -1278,8 +1339,8 @@ optframe_api1d_add_ns(
                    func_fmove_eq,
                    func_utils_decref](const FCoreLibESolution& se)
       -> optframe::uptr<optframe::Move<FCoreLibESolution>> {
-    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I think
-    // so...
+    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I
+    // think so...
     // TODO: will pass ESolution as a Solution in API1... ignoring
     // Evaluation/Re-evaluation!
     // TODO: don't know if IncRef or not solution_ptr... I THINK it's a "view"
@@ -1414,8 +1475,8 @@ optframe_api3d_add_ns_xmes(
                    func_fmove_eq,
                    func_utils_decref](const FCoreLibEMSolution& se)
       -> optframe::uptr<optframe::Move<FCoreLibEMSolution>> {
-    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I think
-    // so...
+    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I
+    // think so...
     // TODO: will pass ESolution as a Solution in API1... ignoring
     // Evaluation/Re-evaluation!
     // TODO: don't know if IncRef or not solution_ptr... I THINK it's a "view"
@@ -1528,8 +1589,8 @@ optframe_api1d_add_nsseq(
                        func_fmove_cba, func_fmove_eq,
                        func_utils_decref](const FCoreLibESolution& se)
       -> optframe::uptr<optframe::Move<FCoreLibESolution>> {
-    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I think
-    // so...
+    // IMPORTANT: _fns_rand must IncRef Move on python before returning! I
+    // think so...
     // TODO: will pass ESolution as a Solution in API1... ignoring
     // Evaluation/Re-evaluation!
     // TODO: don't know if IncRef or not solution_ptr... I THINK it's a "view"
@@ -1620,11 +1681,11 @@ optframe_api1d_add_nsseq(
   /*
      FNSSeq(
     uptr<Move<XES>> (*_fRandom)(const XES&), // fRandom
-    IMS (*_fIterator)(const XES&),           // fIterator (just initializes IMS)
-    void (*_fFirst)(IMS&),                   // iterator.first()
-    void (*_fNext)(IMS&),                    // iterator.next()
-    bool (*_fIsDone)(IMS&),                  // iterator.isDone()
-    uptr<Move<XES>> (*_fCurrent)(IMS&)       // iterator.current()
+    IMS (*_fIterator)(const XES&),           // fIterator (just initializes
+    IMS) void (*_fFirst)(IMS&),                   // iterator.first() void
+    (*_fNext)(IMS&),                    // iterator.next() bool
+    (*_fIsDone)(IMS&),                  // iterator.isDone() uptr<Move<XES>>
+    (*_fCurrent)(IMS&)       // iterator.current()
     )
   */
   auto* p_fnsseq = new optframe::FNSSeq<IMSObjLib, FCoreLibESolution>{
@@ -1780,8 +1841,8 @@ optframe_api0_fconstructive_gensolution(FakeFConstructivePtr _fconstructive) {
   assert(sol);
   // will return solution to Python... must make sure it will live!
   // should IncRef it here?? Perhaps...
-  // will move it out from boxed Sol object, and make it a fake is_view=1 object
-  // here.
+  // will move it out from boxed Sol object, and make it a fake is_view=1
+  // object here.
   FakePythonObjPtr ptr = sol->solution_ptr;
   // std::cout << "finished 'optframe_api1d_fconstructive_gensolution'...
   // returning ptr=" << ptr << std::endl;
