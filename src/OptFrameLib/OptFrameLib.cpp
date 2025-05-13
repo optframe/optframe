@@ -30,17 +30,9 @@
 // C/C++ Library implementation
 #include <OptFrameLib/FCoreLibSolution.hpp>
 
-// ============================ Engine: HeuristicFactory
 // ===========================
-
-/*
-using FCoreApi1Engine = optframe::HeuristicFactory<
-  FCoreLibSolution,             //XSolution S,
-  optframe::Evaluation<double>, // XEvaluation XEv = Evaluation<>,
-  FCoreLibESolution             //  XESolution XES = pair<S, XEv>,
-  //X2ESolution<XES> X2ES = MultiESolution<XES>>
-  >;
-*/
+//  Engine: HeuristicFactory
+// ===========================
 
 using CB = optframe::ComponentBuilder<FCoreLibESolution>;
 
@@ -60,26 +52,18 @@ using CB = optframe::ComponentBuilder<FCoreLibESolution>;
 class FCoreApi1Engine {
  public:
   FCoreApi1Engine() {
-    // ======================
-    // setup basic parameters
-    // ======================
-    // parameter: NS_VALID_RANDOM_MOVE_MAX_TRIES
+    // parameter: NS_VALID_RANDOM_MOVE_MAX_TRIES (just try a SINGLE move)
     this->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"] = "1";
     // parameter: EVTYPE_NUM_ZERO_PRECISION
     std::stringstream ss_zero;
     ss_zero << std::fixed << std::setprecision(8)
             << optframe::num_zero_precision<double>();
     this->experimentalParams["EVTYPE_NUM_ZERO_PRECISION"] = ss_zero.str();
-    // parameter: ENGINE_LOG_LEVEL
-    // from Component.hpp
-    // |      1      |      2      |      3      |      4      |
-    // |    error    |   warning   | information | debug/verb. | => this
-    // direction = more verbose... 0 is silent
-    this->experimentalParams["ENGINE_LOG_LEVEL"] = "2";
-    // parameter: COMPONENT_LOG_LEVEL
-    this->experimentalParams["COMPONENT_LOG_LEVEL"] = "3";
-    // refresh engine parameters
-    updateParameters();
+    // modlog system is:
+    // -2 silent, -1 debug, 0 info, 1 warn, 2 err, 3 fatal, 4 disabled
+    this->experimentalParams["ENGINE_LOG_LEVEL"] = "1";     // warn
+    this->experimentalParams["COMPONENT_LOG_LEVEL"] = "0";  // info
+    updateParameters();  // refresh engine parameters
   }
 
   void updateParameters() {
@@ -93,89 +77,52 @@ class FCoreApi1Engine {
 
   std::map<std::string, std::string> experimentalParams;
 
-  // =========================================================================
-  // LOG SYSTEM: use 'engineLogLevel' for system logs, but 'componentLogLevel'
-  // for specific components.
-  //
-  // engineLogLevel: 0-silent 1-error 2-warning 3-info 4-debug
-  // UPDATED (modlog): -2 silent, -1 debug, 0 info, 1 warn, 2 error, 3 fatal
+  // LOG SYSTEM:
+  // use 'engineLogLevel' for system logs, but 'componentLogLevel' for specific
+  // components.
   modlog::LogLevel engineLogLevel;
-  // componentLogLevel: 0-silent 1-error 2-warning 3-info 4-debug
-  // // UPDATED (modlog): -2 silent, -1 debug, 0 info, 1 warn, 2 error, 3 fatal
   modlog::LogLevel componentLogLevel;
 
-  optframe::Loader<FCoreLibESolution  //  XESolution XES = pair<S, XEv>,
-                                      // X2ESolution<XES> X2ES =
-                                      // MultiESolution<XES>>
-                   >
-      loader;
-
-  optframe::CheckCommand<FCoreLibESolution> check;  // no verbose
-  // optframe::hyper::CheckCommand<FCoreLibESolution> check;  // no verbose
+  optframe::Loader<FCoreLibESolution> loader;
+  optframe::CheckCommand<FCoreLibESolution> check;  // no verbose here...
 };
-
-// IMPORTANT: OptFrame FMove does not require Copy on M (aka,
-// FakePythonObjPtr)... I HOPE! Don't remember needing a clone() member on
-// OptFrame Moves... but nice to clarify a NoCopy (NoNothing...) concept there.
-// using FMoveLib = optframe::FMove<FakePythonObjPtr, FCoreLibESolution>;
-// will not use FMove now, because of DecRef on destructor... a necessary
-// personalization.
 
 using optframe::Move;  // let's simplify things!!
 
-// class FMoveLib : public optframe::Move<FCoreLibESolution, typename
-// FCoreLibESolution::second_type>
 template <typename XES = FCoreLibESolution>
 class FMoveLib : public optframe::Move<XES> {
-  // using XES = FCoreLibESolution;
   using XEv = typename XES::second_type;
-  using XSH = XES;  // only single objective
-  using M = FakePythonObjPtr;
+  using M = FakeMovePtr;
 
  public:
   M m;  // internal structure for move
 
-  typedef std::function<M(const M&, XES&)> FuncTypeMoveApply;
-  typedef std::function<bool(const M&, const XES&)> FuncTypeMoveCBA;
-  typedef std::function<bool(const M&, const optframe::Move<XES>&)>
-      FuncTypeMoveEq;
-  typedef std::function<bool(FakePythonObjPtr)> FuncTypeUtilsDecRef;
+  using FuncTypeMoveApply = std::function<M(const M&, XES&)>;
+  using FuncTypeMoveCBA = std::function<bool(const M&, const XES&)>;
+  using FuncTypeMoveEq =
+      std::function<bool(const M&, const optframe::Move<XES>&)>;
+  using FuncTypeUtilsDecRef = std::function<bool(FakeMovePtr)>;
 
-  // M (*fApply)(const M&, XES&);                    // fApply
   FuncTypeMoveApply fApply;
-  // bool (*fCanBeApplied)(const M&, const XES&) ;   // fCanBeApplied
   FuncTypeMoveCBA fCanBeApplied;
-  // bool (*fCompareEq)(const M&, const Move<XES>&); // fCompareEq
   FuncTypeMoveEq fCompareEq;
-  // utils for decref
   FuncTypeUtilsDecRef f_utils_decref;
 
-  FMoveLib(
-      M _m_owned,  // must IncRef before passing here...
-                   // M (*_fApply)(const M&, XES&),                   // fApply
-      const FuncTypeMoveApply& _fApply,
-      // bool (*_fCanBeApplied)(const M&, const XES&) ,  // fCanBeApplied
-      const FuncTypeMoveCBA& _fCanBeApplied,
-      // bool (*_fCompareEq)(const M&, const Move<XES>&) // fCompareEq
-      const FuncTypeMoveEq& _fCompareEq,
-      // decref utils
-      const FuncTypeUtilsDecRef& _f_utils_decref)
+  FMoveLib(M _m_owned, const FuncTypeMoveApply& _fApply,
+           const FuncTypeMoveCBA& _fCanBeApplied,
+           const FuncTypeMoveEq& _fCompareEq,
+           const FuncTypeUtilsDecRef& _f_utils_decref)
       : m{_m_owned},
         fApply{_fApply},
         fCanBeApplied{_fCanBeApplied},
         fCompareEq{_fCompareEq},
         f_utils_decref{_f_utils_decref} {}
 
-  virtual ~FMoveLib() {
-    // std::cout << "~FMoveLib()" << std::endl;
-    // int x =
-    f_utils_decref(m);
-    // std::cout << "~FMoveLib count(m) = " << x << std::endl;
-  }
+  virtual ~FMoveLib() { f_utils_decref(m); }
 
   bool canBeApplied(const XES& se) override { return fCanBeApplied(m, se); }
 
-  optframe::uptr<Move<XES>> apply(XSH& se) override {
+  optframe::uptr<Move<XES>> apply(XES& se) override {
     return optframe::uptr<Move<XES>>{new FMoveLib{
         fApply(m, se), fApply, fCanBeApplied, fCompareEq, f_utils_decref}};
   }
@@ -195,8 +142,10 @@ class FMoveLib : public optframe::Move<XES> {
 
   std::string id() const override { return idComponent(); }
 
-  // use 'operator<<' for M
-  void print() const override { std::cout << m << std::endl; }
+  // TODO: use 'operator<<' for (*M), not M
+  void print() const override {
+    std::cout << "FMoveLib.m_ptr:" << m << std::endl;
+  }
 };
 
 // Iterator object for NSSeqIterator
@@ -1284,45 +1233,31 @@ optframe_api1d_add_ns(
   //           problem_view << std::endl;
 
   // ======== preparing move functions ========
-  typedef std::function<FakePythonObjPtr(const FakePythonObjPtr&,
-                                         FCoreLibESolution&)>
-      FuncTypeMoveApply;
+  using FuncTypeMoveApply = std::function<FakePythonObjPtr(
+      const FakePythonObjPtr&, FCoreLibESolution&)>;
+
   FuncTypeMoveApply func_fmove_apply =
-      [_fmove_apply, problem_view](const FakePythonObjPtr& m_view,
-                                   FCoreLibESolution& se) -> FakePythonObjPtr {
-    // IMPORTANT: _fmove_apply must IncRef Move on python before returning! I
-    // think so... m_view seems to come from Python, to be used on Python...
-    // don't know if we need to IncRef or DecRef that...
-    // TODO: will pass ESolution as a Solution in API1... ignoring
-    // Evaluation/Re-evaluation!
-    //
-    // vobj_owned should come IncRef'ed before! I guess...
-    //
-    FakePythonObjPtr vobj_owned =
+      [_fmove_apply, problem_view](const FakeMovePtr& m_view,
+                                   FCoreLibESolution& se) -> FakeMovePtr {
+    FakeMovePtr vobj_owned =
         _fmove_apply(problem_view, m_view, se.first.solution_ptr);
-    // TODO: don't know if IncRef or not solution_ptr... I THINK it's a "view"
-    // for python, so no IncRef here.
     return vobj_owned;
   };
 
-  typedef std::function<bool(const FakePythonObjPtr&, const FCoreLibESolution&)>
-      FuncTypeMoveCBA;
+  using FuncTypeMoveCBA =
+      std::function<bool(const FakeMovePtr&, const FCoreLibESolution&)>;
   FuncTypeMoveCBA func_fmove_cba = [_fmove_cba, problem_view](
-                                       const FakePythonObjPtr& m_view,
+                                       const FakeMovePtr& m_view,
                                        const FCoreLibESolution& se) -> bool {
-    // IMPORTANT: python will receive all as views..
-    // TODO: will pass ESolution as a Solution in API1... ignoring
-    // Evaluation/Re-evaluation!
     bool r = _fmove_cba(problem_view, m_view, se.first.solution_ptr);
     return r;
   };
 
-  typedef std::function<bool(const FakePythonObjPtr&,
-                             const optframe::Move<FCoreLibESolution>&)>
-      FuncTypeMoveEq;
+  using FuncTypeMoveEq = std::function<bool(
+      const FakeMovePtr&, const optframe::Move<FCoreLibESolution>&)>;
   FuncTypeMoveEq func_fmove_eq =
       [_fmove_eq, problem_view](
-          const FakePythonObjPtr& my_m_view,
+          const FakeMovePtr& my_m_view,
           const optframe::Move<FCoreLibESolution>& _mOther) -> bool {
     // cast to to lib move type. (TODO: check type... how? use OptFrame
     // Component id()? or must improve OptFrame in this regard... not worry
