@@ -17,12 +17,13 @@ OptFrame
 
 ![C++17](https://img.shields.io/badge/std-c%2B%2B17-blue) ![C++20](https://img.shields.io/badge/std-c%2B%2B20-blue)
 
+[![PyPI version](https://badge.fury.io/py/optframe.svg)](https://badge.fury.io/py/optframe)
 
 ## OptFrame - C++ Optimization Framework
 
 OptFrame `5.1.0` is released.
 
-For optframe python version, see [github.com/optframe/pyoptframe-dev](https://github.com/optframe/pyoptframe-dev)
+For optframe python, just `pip install optframe`. See [github.com/optframe/pyoptframe](https://github.com/optframe/pyoptframe-dev)
 
 Project uses semantic versioning, so to patch it, run: `bumpver update --patch`
 
