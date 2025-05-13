@@ -1423,6 +1423,7 @@ optframe_api2d_add_ns(
   FuncTypeMoveApplyUpdate func_fmove_apply_update =
       [_fmove_apply_update, problem_view](
           const FakeMovePtr& m_view, FCoreLibESolution& se) -> FakeMovePtr {
+    assert(!se.second.isOutdated());  // input cannot be outdated
     auto pair_mv = _fmove_apply_update(
         problem_view, m_view, se.first.solution_ptr, se.second.evaluation());
     FakeMovePtr vobj_owned = pair_mv.first;
