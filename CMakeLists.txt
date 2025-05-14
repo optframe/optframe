@@ -226,8 +226,8 @@ catch_discover_tests(my_test)
 FetchContent_Declare(ut GIT_REPOSITORY https://github.com/boost-ext/ut.git GIT_TAG v2.3.1)
 FetchContent_MakeAvailable(ut)
 
-add_executable(test_lib tests/OptFrameLib-test/optframelib.Test.cpp)
-target_link_libraries(test_lib PRIVATE OptFrameHeaders ut optframe_lib_static)
+add_executable(test_clib_kp tests/OptFrameLib-test/optframelib_kp.Test.cpp)
+target_link_libraries(test_clib_kp PRIVATE OptFrameHeaders ut optframe_lib_static)
 
 #add_executable(all_ut_test tests/all_ut.cpp)
 #target_link_libraries(all_ut_test PRIVATE OptFrameHeaders ut)
