@@ -276,6 +276,9 @@ MODLOG_MOD_EXPORT inline std::ostream& json_prefix(
 
 MODLOG_MOD_EXPORT class LogConfig {
  public:
+  using FuncLogPrefix = std::function<std::ostream&(
+      std::ostream&, LogLevel, std::tm, std::chrono::microseconds,
+      std::uintptr_t, std::string_view, int, bool)>;
   std::ostream* os{&std::cerr};
   // OBS: could host a unique_ptr here, if necessary for thirdparty streams
   // OBS 2: not necessary for the moment... if you need it, just let us know!
@@ -283,10 +286,7 @@ MODLOG_MOD_EXPORT class LogConfig {
   int vlevel{0};
   bool prefix{true};
   NullOStream no;
-  std::function<std::ostream&(std::ostream&, LogLevel, std::tm,
-                              std::chrono::microseconds, std::uintptr_t,
-                              std::string_view, int, bool)>
-      fprefixdata{default_prefix_data};
+  FuncLogPrefix fprefixdata{default_prefix_data};
 
   std::ostream& fprefix(std::ostream* os, LogLevel l, std::string_view path,
                         int line, bool debug) {
@@ -407,10 +407,10 @@ inline std::ostream& Log(
 #endif
   return (sev < lo->log().minlog)
              ? modlog_default.no
-             : (lo->log().prefix ? modlog_default.fprefix(
-                                       lo->log().os, sev, location.file_name(),
-                                       location.line(), false)
-                                 : *lo->log().os);
+             : (lo->log().prefix
+                    ? lo->log().fprefix(lo->log().os, sev, location.file_name(),
+                                        location.line(), false)
+                    : *lo->log().os);
 }
 
 // ================================

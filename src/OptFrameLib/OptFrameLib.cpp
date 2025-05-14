@@ -22,13 +22,11 @@
 #include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicInitialEPopulationRK.hpp>
 #include <OptFrame/Heuristics/MultiObjective/ClassicNSGAII.hpp>
-#include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
-#include <OptFrame/Hyper/Loader.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
 #include <OptFrame/Timer.hpp>
 // C/C++ Library implementation
-#include <OptFrameLib/FCoreLibSolution.hpp>
+#include <OptFrameLib/FCoreApi1Engine.hpp>
 
 // ===========================
 //  Engine: HeuristicFactory
@@ -48,44 +46,6 @@ using CBGlobal = optframe::GlobalSearchBuilder<FCoreLibESolution>;
 using CBLocal = optframe::LocalSearchBuilder<FCoreLibESolution>;
 
 using CB = optframe::ComponentBuilder<FCoreLibESolution>;
-
-class FCoreApi1Engine {
- public:
-  FCoreApi1Engine() {
-    // parameter: NS_VALID_RANDOM_MOVE_MAX_TRIES (just try a SINGLE move)
-    this->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"] = "1";
-    // parameter: EVTYPE_NUM_ZERO_PRECISION
-    std::stringstream ss_zero;
-    ss_zero << std::fixed << std::setprecision(8)
-            << optframe::num_zero_precision<double>();
-    this->experimentalParams["EVTYPE_NUM_ZERO_PRECISION"] = ss_zero.str();
-    // modlog system is:
-    // -2 silent, -1 debug, 0 info, 1 warn, 2 err, 3 fatal, 4 disabled
-    this->experimentalParams["ENGINE_LOG_LEVEL"] = "1";     // warn
-    this->experimentalParams["COMPONENT_LOG_LEVEL"] = "0";  // info
-    updateParameters();  // refresh engine parameters
-  }
-
-  void updateParameters() {
-    int engine_ll = std::stoi(this->experimentalParams["ENGINE_LOG_LEVEL"]);
-    int comp_ll = std::stoi(this->experimentalParams["COMPONENT_LOG_LEVEL"]);
-    this->engineLogLevel = (modlog::LogLevel)engine_ll;
-    this->componentLogLevel = (modlog::LogLevel)comp_ll;
-    check.setMessageLevel(engineLogLevel);
-    loader.factory.setLogLevel(engineLogLevel);
-  }
-
-  std::map<std::string, std::string> experimentalParams;
-
-  // LOG SYSTEM:
-  // use 'engineLogLevel' for system logs, but 'componentLogLevel' for specific
-  // components.
-  modlog::LogLevel engineLogLevel;
-  modlog::LogLevel componentLogLevel;
-
-  optframe::Loader<FCoreLibESolution> loader;
-  optframe::CheckCommand<FCoreLibESolution> check;  // no verbose here...
-};
 
 using optframe::Move;  // let's simplify things!!
 
@@ -301,26 +261,19 @@ class IMSObjLib {
 // ==================
 
 OPT_MODULE_API void optframe_api0d_engine_welcome(FakeEnginePtr _engine) {
-  // IGNORING LOG LEVEL FOR WELCOME! ASSUMING AS DEBUG FUNCTION!
-  // if(_engine->engineLogLevel >= optframe::LogLevel::Error)
-  std::cout << optframe::FCore::welcome() << std::endl;
+  using modlog::LogLevel::Info;
+  Log(Info, (FCoreApi1Engine*)_engine)
+      << optframe::FCore::welcome() << std::endl;
 }
 
 OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int ll) {
   // safety checks on log level
-  if (ll <= 0) ll = 0;
+  if (ll <= -1) ll = -1;
   if (ll >= 4) ll = 4;
-  auto l = (modlog::LogLevel)ll;
-  auto* _eng = new FCoreApi1Engine;
-  if (l == modlog::LogLevel::Debug)
-    std::cout << "Debug: will set OptFrame Engine loglevel to Debug"
-              << std::endl;
-  //
-  _eng->experimentalParams["ENGINE_LOG_LEVEL"] = std::to_string(ll);
-  _eng->updateParameters();
-  //
-  FakeEnginePtr engine_ptr = _eng;
-  return engine_ptr;
+  auto* engine = new FCoreApi1Engine{};
+  engine->experimentalParams["ENGINE_LOG_LEVEL"] = std::to_string(ll);
+  engine->updateParameters();
+  return (FakeEnginePtr)engine;
 }
 
 OPT_MODULE_API bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
