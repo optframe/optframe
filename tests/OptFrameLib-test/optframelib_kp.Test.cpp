@@ -212,8 +212,15 @@ int main() {
 
   // test check module
 
-  bool expr = optframe_api1d_engine_check(engine, 10, 5, false,
-                                          [](int) -> bool { return false; });
+  bool expr = optframe_api1d_engine_check(
+      engine, 10, 5, false, [](int, FakeEnginePtr eng) -> bool {
+        // This enables debugging mode, if component supports it...
+        // TODO: create an example where check fails and we verify the logs
+        auto* engine = (FCoreApi1Engine*)eng;
+        engine->experimentalParams["COMPONENT_LOG_LEVEL"] = "-1";
+        engine->updateParameters();
+        return true;
+      });
   "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
 
   // =====================

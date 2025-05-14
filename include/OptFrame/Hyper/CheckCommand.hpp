@@ -963,7 +963,9 @@ class CheckCommand : public Component {  // NOLINT
   }
 
  public:
-  AllDataCheckCommand<XES> run(int iterMax, int nSolNSSeq) {
+  AllDataCheckCommand<XES> run(int softTests, int hardTests) {
+    int iterMax = softTests;
+    int nSolNSSeq = hardTests;
     if (this->information) {
       (*this->logdata) << "CheckCommand::run(";
       (*this->logdata) << "iterMax=" << iterMax << ";";

@@ -298,16 +298,15 @@ OPT_MODULE_API void optframe_api1d_engine_rand_set_seed(FakeEnginePtr _engine,
   engine->loader.factory.getRandGen()->setSeed(seed);
 }
 
-OPT_MODULE_API bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
-                                                int p2, bool verbose,
-                                                bool (*_fOnFail)(int)) {
+OPT_MODULE_API bool optframe_api1d_engine_check(
+    FakeEnginePtr _engine, int softTests, int hardTests, bool verbose,
+    bool (*_fOnFail)(int, FakeEnginePtr)) {
   auto* engine = (FCoreApi1Engine*)_engine;
   if (verbose) engine->check.setParameters(verbose);
-  engine->check.onFail = [_fOnFail](int code) -> bool {
-    return _fOnFail(code);
+  engine->check.onFail = [_fOnFail, _engine](int code) -> bool {
+    return _fOnFail(code, _engine);
   };
-  // bool run(int iterMax, int nSolNSSeq)
-  auto data = engine->check.run(p1, p2);
+  auto data = engine->check.run(softTests, hardTests);
   return true;
 }
 
