@@ -71,14 +71,20 @@ int main() {
             std::string::npos));
   };
 
+  // testing welcome again on std::cout
   eng->logstream = &std::cout;
+  optframe_api0d_engine_welcome(engine);
+
+  // manipulating seed from rand in engine
+  eng->loader.factory.getRandGen()->setSeed(0);
 
   sref<KP_fcore::ProblemContext> problem{new KP_fcore::ProblemContext{}};
   Scanner scanner{"5\n260\n60 35 55 40 45\n120 70 110 80 90\n1000"};
   problem->load(scanner);
-  problem->rg->setSeed(0);
+  problem->rg = eng->loader.factory.getRandGen();
 
   auto sol = KP_fcore::frandom(problem);
+  // sol = vector(5) [1 , 0 , 1 , 0 , 0]
 
   "sol"_test = [sol] {
     expect(sol[0] == 1_i);
