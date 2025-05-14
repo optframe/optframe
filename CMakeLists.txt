@@ -60,7 +60,13 @@ add_executable(app_demo_opt demo/00_SimpleBuild/src/OptFCore_load.cpp)
 target_link_libraries(app_demo_opt PRIVATE OptFrameHeaders)
 endif()
 
+
+
 if (OPTFRAME_BUILD_CLIBRARY AND NOT IS_SUBPROJECT)
+add_library(optframe_lib_static src/OptFrameLib/OptFrameLib.cpp)
+add_library(OptFrame::optframe_lib_static ALIAS optframe_lib_static)
+target_link_libraries(optframe_lib_static PRIVATE OptFrameHeaders)
+#
 add_library(optframe_lib MODULE src/OptFrameLib/OptFrameLib.cpp)
 add_library(OptFrame::optframe_lib ALIAS optframe_lib)
 target_link_libraries(optframe_lib PRIVATE OptFrameHeaders)
@@ -219,6 +225,9 @@ catch_discover_tests(my_test)
 
 FetchContent_Declare(ut GIT_REPOSITORY https://github.com/boost-ext/ut.git GIT_TAG v2.3.1)
 FetchContent_MakeAvailable(ut)
+
+add_executable(test_lib tests/OptFrameLib-test/optframelib.Test.cpp)
+target_link_libraries(test_lib PRIVATE OptFrameHeaders ut optframe_lib_static)
 
 #add_executable(all_ut_test tests/all_ut.cpp)
 #target_link_libraries(all_ut_test PRIVATE OptFrameHeaders ut)

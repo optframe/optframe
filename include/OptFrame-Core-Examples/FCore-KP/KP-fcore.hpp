@@ -80,7 +80,7 @@ MOD_EXPORT namespace KP_fcore {
   //
   // ProblemContext pKP;  // NOLINT
 
-  std::vector<bool> frandom(sref<ProblemContext> pKP) {
+  inline std::vector<bool> frandom(sref<ProblemContext> pKP) {
     vector<bool> v(pKP->n, false);
     for (unsigned i = 0; i < v.size(); i++) v[i] = pKP->rg->rand() % 2;
     //
@@ -88,8 +88,8 @@ MOD_EXPORT namespace KP_fcore {
   }
 
   //
-  Evaluation<int> fevaluate(sref<ProblemContext> pKP,
-                            const std::vector<bool>& s) {
+  inline Evaluation<int> fevaluate(sref<ProblemContext> pKP,
+                                   const std::vector<bool>& s) {
     int f = 0;
     int sum_w = 0;
     for (int i = 0; i < pKP->n; i++)

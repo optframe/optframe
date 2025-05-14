@@ -50,6 +50,11 @@ OPT_MODULE_API bool optframe_api0d_engine_test(FakeEnginePtr _engine);
 
 OPT_MODULE_API bool optframe_api1d_destroy_engine(FakeEnginePtr _engine);
 
+OPT_MODULE_API int optframe_api1d_add_evaluator(
+    FakeEnginePtr _engine,
+    double (*_fevaluate)(FakeProblemPtr, FakeSolutionPtr), bool min_or_max,
+    FakeProblemPtr problem_view);
+
 // ============
 
 OPT_MODULE_API int  // index of generalevaluator

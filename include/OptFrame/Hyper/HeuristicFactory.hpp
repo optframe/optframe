@@ -151,6 +151,10 @@ class HeuristicFactory {
     for (unsigned i = 0; i < builders.size(); i++) delete builders.at(i);
     builders.clear();
 
+    for (unsigned i = 0; i < xmes_builders.size(); i++)
+      delete xmes_builders.at(i);
+    xmes_builders.clear();
+
     for (unsigned i = 0; i < actions.size(); i++) delete actions.at(i);
     actions.clear();
   }
