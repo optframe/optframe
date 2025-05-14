@@ -10,6 +10,9 @@
 
 #include "OptFrameLib/LibCTypes.h"
 
+using KP_fcore::ESolutionKP;
+using KP_fcore::MoveBitFlip;
+
 // directly testing optframe C library (static)
 
 double fevaluate_c(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
@@ -29,6 +32,36 @@ FakeSolutionPtr fconstructive_c(FakeProblemPtr p_ptr) {
   return new std::vector<bool>(std::move(v));
 }
 
+FakeMovePtr fnsrand_c(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
+  using PKP = KP_fcore::ProblemContext;
+  std::shared_ptr<PKP> problem_view{(PKP*)p_ptr, [](PKP*) {}};
+  sref<PKP> problem{problem_view};
+  auto* v = (std::vector<bool>*)s_ptr;
+  auto m = KP_fcore::fRandomFlip(problem, ESolutionKP{*v, Evaluation<int>{0}});
+  auto* m_ptr = m.release();
+  return m_ptr;
+}
+
+FakeMovePtr fmove_apply_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                          FakeSolutionPtr s_ptr) {
+  auto* m = (MoveBitFlip*)m_ptr;
+  int k = m->k;
+  auto* v = (std::vector<bool>*)s_ptr;
+  (*v)[k] = !(*v)[k];  // reverts element 'k'
+  return new MoveBitFlip{k};
+}
+
+bool fmove_eq_c(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr, FakeMovePtr m2_ptr) {
+  auto* m1 = (MoveBitFlip*)m1_ptr;
+  auto* m2 = (MoveBitFlip*)m2_ptr;
+  return m1->k == m2->k;
+}
+
+bool fmove_cba_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                 FakeSolutionPtr s_ptr) {
+  return true;
+}
+
 FakeSolutionPtr f_sol_deepcopy(FakeSolutionPtr s_ptr) {
   auto* v = (std::vector<bool>*)(s_ptr);
   return new std::vector<bool>(*v);
@@ -46,6 +79,12 @@ size_t f_sol_tostring(FakeSolutionPtr s_ptr, char* str, size_t str_size) {
 int f_decref_solution(FakeSolutionPtr s_ptr) {
   auto* v = (std::vector<bool>*)(s_ptr);
   delete v;
+  return true;
+}
+
+int f_decref_move(FakeMovePtr m_ptr) {
+  auto* m = (Move<ESolutionKP>*)(m_ptr);
+  delete m;
   return true;
 }
 
@@ -92,6 +131,10 @@ int main() {
   Scanner scanner{"5\n260\n60 35 55 40 45\n120 70 110 80 90\n1000"};
   problem->load(scanner);
   problem->rg = eng->loader.factory.getRandGen();
+  // get problem pointer as void*
+  FakeProblemPtr p_ptr = (void*)(&problem.get());
+
+  // testing initial solutions
 
   auto sol = KP_fcore::frandom(problem);
   // sol = vector(5) [1 , 0 , 1 , 0 , 0]
@@ -108,7 +151,7 @@ int main() {
 
   "e"_test = [e] { expect(e.evaluation() == 115_i); };
 
-  FakeProblemPtr p_ptr = (void*)(&problem.get());
+  auto esol = ESolutionKP{sol, e};
 
   int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, false, p_ptr);
 
@@ -119,6 +162,34 @@ int main() {
                                               f_decref_solution);
 
   "optframe_api1d_add_constructive"_test = [idx_c] { expect(idx_c == 0_i); };
+
+  int idx_is = optframe_api1d_create_initial_search(engine, idx_ev, idx_c);
+
+  "optframe_api1d_create_initial_search"_test = [idx_is] {
+    expect(idx_is == 0_i);
+  };
+
+  "random_move"_test = [problem, esol] {
+    auto m = KP_fcore::fRandomFlip(problem, esol);
+    expect(m->toString() == std::string("MoveBitFlip(k=1)"));
+    expect(m->canBeApplied(esol));
+  };
+
+  int idx_ns =
+      optframe_api1d_add_ns(engine, fnsrand_c, fmove_apply_c, fmove_eq_c,
+                            fmove_cba_c, p_ptr, f_decref_move);
+
+  "optframe_api1d_add_ns"_test = [idx_ns] { expect(idx_ns == 0_i); };
+
+  // =====================
+
+  // test check module
+
+  bool expr = optframe_api1d_engine_check(engine, 10, 5, false,
+                                          [](int) -> bool { return false; });
+  "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
+
+  // =====================
 
   bool b = optframe_api1d_destroy_engine(engine);
 
