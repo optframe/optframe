@@ -21,6 +21,16 @@ OPT_MODULE_API void optframe_api0d_engine_welcome(FakeEnginePtr _engine);
 
 OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int LogLevel);
 
+OPT_MODULE_API int optframe_api1d_engine_rand(FakeEnginePtr _engine);
+
+OPT_MODULE_API int optframe_api1d_engine_rand_n(FakeEnginePtr _engine, int n);
+
+OPT_MODULE_API int optframe_api1d_engine_rand_n_n(FakeEnginePtr _engine, int n1,
+                                                  int n2);
+
+OPT_MODULE_API void optframe_api1d_engine_rand_set_seed(FakeEnginePtr _engine,
+                                                        uint32_t seed);
+
 OPT_MODULE_API bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
                                                 int p2, bool verbose,
                                                 bool (*_fOnFail)(int));

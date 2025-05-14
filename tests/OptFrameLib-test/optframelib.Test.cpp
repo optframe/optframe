@@ -75,6 +75,16 @@ int main() {
   eng->logstream = &std::cout;
   optframe_api0d_engine_welcome(engine);
 
+  "first_rand"_test = [eng] {
+    eng->loader.factory.getRandGen()->setSeed(9999);
+    expect(eng->loader.factory.getRandGen()->rand() % 100 == 5_i);
+  };
+
+  "optframe_api1d_engine_rand"_test = [engine] {
+    optframe_api1d_engine_rand_set_seed(engine, 9999);
+    expect(optframe_api1d_engine_rand(engine) % 100 == 5_i);
+  };
+
   // manipulating seed from rand in engine
   eng->loader.factory.getRandGen()->setSeed(0);
 

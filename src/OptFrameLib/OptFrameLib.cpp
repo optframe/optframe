@@ -276,6 +276,28 @@ OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int ll) {
   return (FakeEnginePtr)engine;
 }
 
+OPT_MODULE_API int optframe_api1d_engine_rand(FakeEnginePtr _engine) {
+  auto* engine = (FCoreApi1Engine*)_engine;
+  return engine->loader.factory.getRandGen()->rand();
+}
+
+OPT_MODULE_API int optframe_api1d_engine_rand_n(FakeEnginePtr _engine, int n) {
+  auto* engine = (FCoreApi1Engine*)_engine;
+  return engine->loader.factory.getRandGen()->rand(n);
+}
+
+OPT_MODULE_API int optframe_api1d_engine_rand_n_n(FakeEnginePtr _engine, int n1,
+                                                  int n2) {
+  auto* engine = (FCoreApi1Engine*)_engine;
+  return engine->loader.factory.getRandGen()->rand(n1, n2);
+}
+
+OPT_MODULE_API void optframe_api1d_engine_rand_set_seed(FakeEnginePtr _engine,
+                                                        uint32_t seed) {
+  auto* engine = (FCoreApi1Engine*)_engine;
+  engine->loader.factory.getRandGen()->setSeed(seed);
+}
+
 OPT_MODULE_API bool optframe_api1d_engine_check(FakeEnginePtr _engine, int p1,
                                                 int p2, bool verbose,
                                                 bool (*_fOnFail)(int)) {
