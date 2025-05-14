@@ -1255,6 +1255,9 @@ class CheckCommand : public Component {  // NOLINT
         (*this->logdata) << std::endl;
       }
 
+      int count_moves_ns = 0;
+      int count_not_cba = 0;
+
       for (int iter = 1; iter <= iterMax; iter++) {
         message(lNS.at(id_ns), iter, "starting tests!");
 
@@ -1273,6 +1276,7 @@ class CheckCommand : public Component {  // NOLINT
           if (verbose) move->print();
 
           if (!move->canBeApplied(se)) {
+            count_not_cba++;
             if (verbose) {
               (*this->logdata) << "move cannot be applied: ";
               move->print();
@@ -1294,15 +1298,22 @@ class CheckCommand : public Component {  // NOLINT
           // Move<XES>& move, vector<vector<Evaluation<>*> >&
           // evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
+          count_moves_ns++;
           if (!testMoveGeneral(iter, ns, id_ns, s, id_s, *move, evaluations,
                                timeSamples)) {
+            if (this->warning)
+              (*this->logdata) << "checkcommand: failed at iter = " << iter
+                               << " / " << iterMax << " id_s = " << id_s
+                               << " / " << solutions.size() << std::endl;
             return false;
           }
         }
       }
       if (this->information)
         (*this->logdata) << "checkcommand: " << lNS.at(id_ns)->id()
-                         << " finished." << std::endl;
+                         << " finished with moves = " << count_moves_ns << " / "
+                         << iterMax * solutions.size()
+                         << " count_not_cba=" << count_not_cba << std::endl;
     }
     return true;
   }
