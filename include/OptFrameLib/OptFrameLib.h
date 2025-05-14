@@ -104,6 +104,21 @@ optframe_api1d_add_ns(
     bool (*_fmove_cba)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
     FakePythonObjPtr problem_view, int (*f_utils_decref)(FakePythonObjPtr));
 
+OPT_MODULE_API int  // index of nsseq
+optframe_api1d_add_nsseq(
+    FakeEnginePtr _engine,
+    FakeMovePtr (*_fns_rand)(FakeProblemPtr, FakeSolutionPtr),
+    FakePythonObjPtr (*_fIterator)(FakeProblemPtr, FakeSolutionPtr),
+    // problem*, ims* (maybe move*?)
+    void (*_fFirst)(FakeProblemPtr, FakePythonObjPtr),
+    void (*_fNext)(FakeProblemPtr, FakePythonObjPtr),
+    bool (*_fIsDone)(FakeProblemPtr, FakePythonObjPtr),
+    FakeMovePtr (*_fCurrent)(FakeProblemPtr, FakePythonObjPtr),
+    FakeMovePtr (*_fmove_apply)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    bool (*_fmove_eq)(FakeProblemPtr, FakeMovePtr, FakeMovePtr),
+    bool (*_fmove_cba)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    FakeProblemPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr));
+
 OPT_MODULE_API int  // index of ns<XMES>
 optframe_api3d_add_ns_xmes(
     FakeEnginePtr _engine,

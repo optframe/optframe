@@ -62,6 +62,27 @@ bool fmove_cba_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
   return true;
 }
 
+FakePythonObjPtr fIterator_c(FakeProblemPtr, FakeSolutionPtr) {
+  return new MoveBitFlip{0};
+}
+void fFirst_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  auto* m = (MoveBitFlip*)it_ptr;
+  m->k = 0;
+}
+void fNext_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  auto* m = (MoveBitFlip*)it_ptr;
+  m->k++;
+}
+bool fIsDone_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  auto* problem = (KP_fcore::ProblemContext*)p_ptr;
+  auto* m = (MoveBitFlip*)it_ptr;
+  return m->k >= problem->n;
+}
+FakeMovePtr fCurrent_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  auto* m = (MoveBitFlip*)it_ptr;
+  return new MoveBitFlip{m->k};
+}
+
 FakeSolutionPtr f_sol_deepcopy(FakeSolutionPtr s_ptr) {
   auto* v = (std::vector<bool>*)(s_ptr);
   return new std::vector<bool>(*v);
@@ -180,6 +201,12 @@ int main() {
                             fmove_cba_c, p_ptr, f_decref_move);
 
   "optframe_api1d_add_ns"_test = [idx_ns] { expect(idx_ns == 0_i); };
+
+  int idx_nsseq = optframe_api1d_add_nsseq(
+      engine, fnsrand_c, fIterator_c, fFirst_c, fNext_c, fIsDone_c, fCurrent_c,
+      fmove_apply_c, fmove_eq_c, fmove_cba_c, p_ptr, f_decref_move);
+
+  "optframe_api1d_add_nsseq"_test = [idx_nsseq] { expect(idx_nsseq == 0_i); };
 
   // =====================
 

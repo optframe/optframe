@@ -1571,7 +1571,7 @@ optframe_api3d_add_ns_xmes(
 
 // FOR NOW, WE IGNORE 'const XES' AND JUST USE 'const S'.... LET'S SEE!
 
-OPT_MODULE_API int  // index of ns
+OPT_MODULE_API int  // index of nsseq
 optframe_api1d_add_nsseq(
     FakeEnginePtr _engine,
     FakeMovePtr (*_fns_rand)(FakeProblemPtr, FakeSolutionPtr),
