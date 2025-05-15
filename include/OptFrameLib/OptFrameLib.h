@@ -17,6 +17,11 @@
 #define OPT_MODULE_API extern "C"
 #endif
 
+struct PairMoveDoubleLib {
+  FakeMovePtr first;
+  double second;
+};
+
 OPT_MODULE_API void optframe_api0d_engine_welcome(FakeEnginePtr _engine);
 
 OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int LogLevel);
@@ -103,6 +108,17 @@ optframe_api1d_add_ns(
     bool (*_fmove_eq)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
     bool (*_fmove_cba)(FakePythonObjPtr, FakePythonObjPtr, FakePythonObjPtr),
     FakePythonObjPtr problem_view, int (*f_utils_decref)(FakePythonObjPtr));
+
+OPT_MODULE_API int  // index of ns
+optframe_api2d_add_ns(
+    FakeEnginePtr _engine,
+    FakeMovePtr (*_fns_rand)(FakeProblemPtr, FakeSolutionPtr),
+    FakeMovePtr (*_fmove_apply)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    bool (*_fmove_eq)(FakeProblemPtr, FakeMovePtr, FakeMovePtr),
+    bool (*_fmove_cba)(FakeProblemPtr, FakeMovePtr, FakeSolutionPtr),
+    PairMoveDoubleLib (*_fmove_apply_update)(FakeProblemPtr, FakeMovePtr,
+                                             FakeSolutionPtr, double),
+    FakeProblemPtr problem_view, int (*_f_utils_decref)(FakePythonObjPtr));
 
 OPT_MODULE_API int  // index of nsseq
 optframe_api1d_add_nsseq(

@@ -186,11 +186,12 @@ MOD_EXPORT namespace TSP_fcore {
 
     uptr<Move<ESolutionTSP>> applyUpdate(ESolutionTSP& se) override {
       auto& v = se.first;
+      int diff = 0;
       int before_i = (pTSP->n + i - 1) % pTSP->n;
       int before_j = (pTSP->n + j - 1) % pTSP->n;
       int after_i = (pTSP->n + i + 1) % pTSP->n;
       int after_j = (pTSP->n + j + 1) % pTSP->n;
-      int diff = 0;
+
       diff -= pTSP->dist(v[before_i], v[i]);
       diff -= pTSP->dist(v[i], v[after_i]);
       diff -= pTSP->dist(v[before_j], v[j]);

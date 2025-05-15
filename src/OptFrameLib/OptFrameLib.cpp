@@ -1341,11 +1341,6 @@ optframe_api1d_add_ns(
   return id;
 }
 
-struct PairMoveDoubleLib {
-  FakeMovePtr first;
-  double second;
-};
-
 OPT_MODULE_API int  // index of ns
 optframe_api2d_add_ns(
     FakeEnginePtr _engine,

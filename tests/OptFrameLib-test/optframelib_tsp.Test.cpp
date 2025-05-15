@@ -124,6 +124,40 @@ FakeMovePtr fmove_apply_delta_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
   return new MoveSwapDelta{problem, j, i};
 }
 
+PairMoveDoubleLib fmove_applyupdate_delta_c(FakeProblemPtr p_ptr,
+                                            FakeMovePtr m_ptr,
+                                            FakeSolutionPtr s_ptr, double e) {
+  auto* pTSP = (TSP_fcore::ProblemContext*)p_ptr;
+  auto* m = (MoveSwapDelta*)m_ptr;
+  double diff = 0;
+  int i = m->i;
+  int j = m->j;
+  auto* pv = (std::vector<int>*)s_ptr;
+  auto& v = *pv;
+
+  int before_i = (pTSP->n + i - 1) % pTSP->n;
+  int before_j = (pTSP->n + j - 1) % pTSP->n;
+  int after_i = (pTSP->n + i + 1) % pTSP->n;
+  int after_j = (pTSP->n + j + 1) % pTSP->n;
+
+  diff -= pTSP->dist(v[before_i], v[i]);
+  diff -= pTSP->dist(v[i], v[after_i]);
+  diff -= pTSP->dist(v[before_j], v[j]);
+  diff -= pTSP->dist(v[j], v[after_j]);
+  diff += pTSP->dist(v[before_i], v[j]);
+  diff += pTSP->dist(v[j], v[after_i]);
+  diff += pTSP->dist(v[before_j], v[i]);
+  diff += pTSP->dist(v[i], v[after_j]);
+
+  // perform swap of clients i and j
+  int aux = v[j];
+  v[j] = v[i];
+  v[i] = aux;
+
+  return PairMoveDoubleLib{.first = new MoveSwapDelta{pTSP, j, i},
+                           .second = diff};
+}
+
 bool fmove_eq_delta_c(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr,
                       FakeMovePtr m2_ptr) {
   auto* m1 = (TSP_fcore::MoveSwapDelta*)m1_ptr;
@@ -294,6 +328,12 @@ int main() {
       fmove_apply_c, fmove_eq_c, fmove_cba_c, p_ptr, f_decref_move);
 
   "optframe_api1d_add_nsseq"_test = [idx_nsseq] { expect(idx_nsseq == 0_i); };
+
+  int idx_ns_v2 = optframe_api2d_add_ns(
+      engine, fnsrand_delta_c, fmove_apply_delta_c, fmove_eq_delta_c,
+      fmove_cba_delta_c, fmove_applyupdate_delta_c, p_ptr, f_decref_move);
+
+  "optframe_api2d_add_ns"_test = [idx_ns_v2] { expect(idx_ns_v2 == 1_i); };
 
   // =====================
 
