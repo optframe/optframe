@@ -228,6 +228,8 @@ FetchContent_MakeAvailable(ut)
 
 add_executable(test_clib_kp tests/OptFrameLib-test/optframelib_kp.Test.cpp)
 target_link_libraries(test_clib_kp PRIVATE OptFrameHeaders ut optframe_lib_static)
+add_executable(test_clib_tsp tests/OptFrameLib-test/optframelib_tsp.Test.cpp)
+target_link_libraries(test_clib_tsp PRIVATE OptFrameHeaders ut optframe_lib_static)
 
 #add_executable(all_ut_test tests/all_ut.cpp)
 #target_link_libraries(all_ut_test PRIVATE OptFrameHeaders ut)
