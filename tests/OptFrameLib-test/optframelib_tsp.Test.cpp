@@ -339,8 +339,10 @@ int main() {
 
   // test check module
 
+  eng->check.setMessageLevel(modlog::LogLevel::Info);
+
   bool expr = optframe_api1d_engine_check(
-      engine, 10, 5, false, [](int, FakeEnginePtr eng) -> bool {
+      engine, 100, 5, false, [](int, FakeEnginePtr eng) -> bool {
         // This enables debugging mode, if component supports it...
         // TODO: create an example where check fails and we verify the logs
         auto* engine = (FCoreApi1Engine*)eng;
