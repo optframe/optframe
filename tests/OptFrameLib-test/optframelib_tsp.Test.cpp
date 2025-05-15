@@ -12,6 +12,7 @@
 
 using TSP_fcore::ESolutionTSP;
 using TSP_fcore::MoveSwap;
+using TSP_fcore::MoveSwapDelta;
 
 // directly testing optframe C library (static)
 
@@ -31,6 +32,8 @@ FakeSolutionPtr fconstructive_c(FakeProblemPtr p_ptr) {
   auto v = TSP_fcore::frandom(problem);
   return new std::vector<int>(std::move(v));
 }
+
+// ==================
 
 FakeMovePtr fnsrand_c(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
   using PTSP = TSP_fcore::ProblemContext;
@@ -63,7 +66,8 @@ bool fmove_eq_c(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr, FakeMovePtr m2_ptr) {
 
 bool fmove_cba_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
                  FakeSolutionPtr s_ptr) {
-  return true;
+  auto* m = (MoveSwap*)m_ptr;
+  return (::abs(m->i - m->j) >= 2) && (m->i >= 1) && (m->j >= 1);
 }
 
 FakePythonObjPtr fIterator_c(FakeProblemPtr, FakeSolutionPtr) {
@@ -93,6 +97,76 @@ FakeMovePtr fCurrent_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
   auto* m = (MoveSwap*)it_ptr;
   return new MoveSwap{m->i, m->j};
 }
+
+// ==================
+
+FakeMovePtr fnsrand_delta_c(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
+  using PTSP = TSP_fcore::ProblemContext;
+  std::shared_ptr<PTSP> problem_view{(PTSP*)p_ptr, [](PTSP*) {}};
+  sref<PTSP> problem{problem_view};
+  auto* v = (std::vector<int>*)s_ptr;
+  auto m = TSP_fcore::fRandomSwapDelta(problem,
+                                       ESolutionTSP{*v, Evaluation<int>{0}});
+  auto* m_ptr = m.release();
+  return m_ptr;
+}
+
+FakeMovePtr fmove_apply_delta_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                                FakeSolutionPtr s_ptr) {
+  auto* problem = (TSP_fcore::ProblemContext*)p_ptr;
+  auto* m = (MoveSwapDelta*)m_ptr;
+  int i = m->i;
+  int j = m->j;
+  auto* v = (std::vector<int>*)s_ptr;
+  int aux = (*v)[j];
+  (*v)[j] = (*v)[i];
+  (*v)[i] = aux;
+  return new MoveSwapDelta{problem, j, i};
+}
+
+bool fmove_eq_delta_c(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr,
+                      FakeMovePtr m2_ptr) {
+  auto* m1 = (TSP_fcore::MoveSwapDelta*)m1_ptr;
+  auto* m2 = (MoveSwapDelta*)m2_ptr;
+  return (m1->i == m2->i) && (m1->j == m2->j);
+}
+
+bool fmove_cba_delta_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                       FakeSolutionPtr s_ptr) {
+  auto* m = (MoveSwapDelta*)m_ptr;
+  return (::abs(m->i - m->j) >= 2) && (m->i >= 1) && (m->j >= 1);
+}
+
+FakePythonObjPtr fIterator_delta_c(FakeProblemPtr, FakeSolutionPtr) {
+  return new MoveSwap{0, 0};
+}
+void fFirst_delta_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  auto* m = (MoveSwapDelta*)it_ptr;
+  m->i = 0;
+  m->j = 1;
+}
+void fNext_delta_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  auto* problem = (TSP_fcore::ProblemContext*)p_ptr;
+  auto* m = (MoveSwapDelta*)it_ptr;
+  if (m->j < (problem->n - 1)) {
+    m->j++;
+  } else {
+    m->i++;
+    m->j = m->i + 1;
+  }
+}
+bool fIsDone_delta_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  auto* problem = (TSP_fcore::ProblemContext*)p_ptr;
+  auto* m = (MoveSwapDelta*)it_ptr;
+  return m->i >= problem->n - 1;
+}
+FakeMovePtr fCurrent_delta_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  auto* problem = (TSP_fcore::ProblemContext*)p_ptr;
+  auto* m = (MoveSwapDelta*)it_ptr;
+  return new MoveSwapDelta{problem, m->i, m->j};
+}
+
+// ==================
 
 FakeSolutionPtr f_sol_deepcopy(FakeSolutionPtr s_ptr) {
   auto* v = (std::vector<int>*)(s_ptr);

@@ -107,13 +107,9 @@ MOD_EXPORT namespace TSP_fcore {
       v[i] = v[j];
       v[j] = aux;
     }
-    // std::random_device rd;
-    // std::mt19937 g(rd());
-    // std::shuffle(v.begin() + 1, v.end(), g);
     return v;
   }
 
-  //
   class MoveSwap : public Move<ESolutionTSP> {
    public:
     int i, j;
@@ -158,7 +154,88 @@ MOD_EXPORT namespace TSP_fcore {
       j = pTSP->rg->rand() % pTSP->n;
     }
 
-    return uptr<Move<ESolutionTSP>>(makeMoveSwap(pTSP, i, j));
+    return makeMoveSwap(pTSP, i, j);
+  }
+
+  // TODO: make MoveSwap inherit from MovePairIntInt...
+  // a "business move" which is general and holds <int,int>.
+  // This helps with castings on all operations and prevents
+  // lots of rework.
+
+  // ============= MoveSwapDelta ==========
+
+  class MoveSwapDelta : public Move<ESolutionTSP> {
+   public:
+    ProblemContext* pTSP;
+    int i, j;
+
+    MoveSwapDelta(ProblemContext* _pTSP, int _i, int _j)
+        : pTSP{_pTSP}, i{_i}, j{_j} {}
+
+    bool canBeApplied(const ESolutionTSP& se) override {
+      return (::abs(i - j) >= 2) && (i >= 1) && (j >= 1);
+    }
+
+    uptr<Move<ESolutionTSP>> apply(ESolutionTSP& se) override {
+      // perform swap of clients i and j
+      int aux = se.first[j];
+      se.first[j] = se.first[i];
+      se.first[i] = aux;
+      return uptr<Move<ESolutionTSP>>(new MoveSwapDelta{pTSP, j, i});
+    }
+
+    uptr<Move<ESolutionTSP>> applyUpdate(ESolutionTSP& se) override {
+      auto& v = se.first;
+      int before_i = (pTSP->n + i - 1) % pTSP->n;
+      int before_j = (pTSP->n + j - 1) % pTSP->n;
+      int after_i = (pTSP->n + i + 1) % pTSP->n;
+      int after_j = (pTSP->n + j + 1) % pTSP->n;
+      int diff = 0;
+      diff -= pTSP->dist(v[before_i], v[i]);
+      diff -= pTSP->dist(v[i], v[after_i]);
+      diff -= pTSP->dist(v[before_j], v[j]);
+      diff -= pTSP->dist(v[j], v[after_j]);
+      diff += pTSP->dist(v[before_i], v[j]);
+      diff += pTSP->dist(v[j], v[after_i]);
+      diff += pTSP->dist(v[before_j], v[i]);
+      diff += pTSP->dist(v[i], v[after_j]);
+
+      // perform swap of clients i and j
+      int aux = se.first[j];
+      se.first[j] = se.first[i];
+      se.first[i] = aux;
+
+      se.second.setObjFunction(se.second.getObjFunction() + diff);
+      return uptr<Move<ESolutionTSP>>(new MoveSwapDelta{pTSP, j, i});
+    }
+
+    bool operator==(const Move<ESolutionTSP>& other) const override {
+      auto& fmove = (MoveSwapDelta&)other;
+      return (i == fmove.i) && (j == fmove.j);
+    }
+
+    std::string toString() const override {
+      std::stringstream ss;
+      ss << "MoveSwapDelta(i=" << i << "; j=" << j << ")";
+      return ss.str();
+    }
+  };
+
+  uptr<Move<ESolutionTSP>> makeMoveSwapDelta(sref<ProblemContext> pTSP, int i,
+                                             int j) {
+    return uptr<Move<ESolutionTSP>>(new MoveSwapDelta{&pTSP.get(), i, j});
+  }
+
+  uptr<Move<ESolutionTSP>> fRandomSwapDelta(sref<ProblemContext> pTSP,
+                                            const ESolutionTSP& se) {
+    int i = pTSP->rg->rand() % pTSP->n;
+    int j = i;
+    while ((j <= i) || (i == 0)) {
+      i = pTSP->rg->rand() % pTSP->n;
+      j = pTSP->rg->rand() % pTSP->n;
+    }
+
+    return makeMoveSwapDelta(pTSP, i, j);
   }
 
   class OptFrameCoreTSP {
@@ -184,7 +261,7 @@ MOD_EXPORT namespace TSP_fcore {
                     i = rand() % pTSP->n;
                     j = rand() % pTSP->n;
                   }
-                  return uptr<Move<ESolutionTSP>>(makeMoveSwap(pTSP, i, j));
+                  return makeMoveSwap(pTSP, i, j);
                 },
 
                 [](sref<ProblemContext> pTSP, const ESolutionTSP& se)
@@ -206,8 +283,7 @@ MOD_EXPORT namespace TSP_fcore {
                 },
                 [](sref<ProblemContext> pTSP,
                    std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
-                  return uptr<Move<ESolutionTSP>>(
-                      makeMoveSwap(pTSP, p.first, p.second));
+                  return makeMoveSwap(pTSP, p.first, p.second);
                 }} {
       //
     }
