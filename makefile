@@ -6,22 +6,21 @@ CPPSTD=--std=c++17   # TODO REMOVE # -Wfatal-errors
 
 all: optframe_lib_test   test    optframe_lib_test_gcc_clang19
 
-OPTFRAME_C_LIB=./src/OptFrameLib/OptFrameLib.cpp
-OPTFRAME_SRC=.
+OPTFRAME_ROOT=.
 
-optframe_lib_test:
+optframe_lib_test: ./src/OptFrameLib/OptFrameLib.cpp
 	mkdir -p build/
 	@echo "TEST BUILD LIBRARY WITH ${CXX}"
-	$(CXX) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
+	$(CXX) --std=c++20 -g -I${OPTFRAME_ROOT}/include   -Wall -pedantic -O3  --shared  $< -o build/optframe_lib.so -fPIC
 
-optframe_lib_test_gcc_clang19:
+optframe_lib_test_gcc_clang19: ./src/OptFrameLib/OptFrameLib.cpp
 	mkdir -p build/
 	#
 	@echo "BUILD WITH ${CC_GCC} (PART 1/2)"
-	$(CXX_GCC) $(CPPSTD) -g -I${OPTFRAME_SRC}/include   -Wall -pedantic -Ofast               --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB)  -o build/optframe_lib.so -fPIC
+	$(CXX_GCC)   $(CPPSTD) -g -I${OPTFRAME_ROOT}/include -Wall -pedantic -Ofast               --shared $<  -o build/optframe_lib.so -fPIC
 	#
 	@echo "BUILD WITH ${CC_CLANG} (PART 2/2)"
-	$(CXX_CLANG) $(CPPSTD) -g -I${OPTFRAME_SRC}/include -Wall -pedantic -O3 --stdlib=libc++  --shared tests/OptFrameLib-test/build_optframe_lib.cpp $(OPTFRAME_C_LIB) -o build/optframe_lib.so -fPIC
+	$(CXX_CLANG) $(CPPSTD) -g -I${OPTFRAME_ROOT}/include -Wall -pedantic -O3 --stdlib=libc++  --shared $< -o build/optframe_lib.so -fPIC
 	#
 	# readelf -s build/optframe_lib.so | grep fcore
 	ls -la build/optframe_lib.so
