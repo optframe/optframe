@@ -1,0 +1,12 @@
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "all_hpp",
+    hdrs = glob([
+        "**/*.hpp",
+        "**/*.h",
+    ]),
+    include_prefix = "OptFrameLib/",
+)

@@ -2,7 +2,6 @@
 
 package(default_visibility = ["//visibility:public"])
 
-
 cc_test(
     name = "OptFrame-test",
     #srcs = ["OptFrame.Test.cpp"],
@@ -12,11 +11,55 @@ cc_test(
         #"OptFrame-test/**/*.h",
     ]),
     defines = ["CATCH_CONFIG_MAIN"],
-    deps = ["//include:OptFrame", 
-    "//include:OptFCore",
-     "//include:OptFrame-Core-Examples", 
-     "@catch2//:catch2_main"],
-     #":catch2_thirdparty"],
+    deps = [
+        "//include:OptFCore",
+        "//include:OptFrame",
+        "//include:OptFrame-Core-Examples",
+        "@catch2//:catch2_main",
+    ],
+    #":catch2_thirdparty"],
+)
+
+cc_test(
+    name = "OptFrameLib-test-kp",
+    srcs = [
+        "OptFrameLib-test/optframelib_kp.Test.cpp",
+    ],
+    deps = [
+        "//include:OptFrameLib",
+        "//include/OptFrame-Core-Examples:core-examples-hpp",
+        "//src/OptFrameLib:lib_src",
+        # "@ut//:ut",
+        "@ut",
+    ],
+)
+
+cc_test(
+    name = "OptFrameLib-test-tsp",
+    srcs = [
+        "OptFrameLib-test/optframelib_tsp.Test.cpp",
+    ],
+    deps = [
+        "//include:OptFrameLib",
+        "//include/OptFrame-Core-Examples:core-examples-hpp",
+        "//src/OptFrameLib:lib_src",
+        # "@ut//:ut",
+        "@ut",
+    ],
+)
+
+cc_test(
+    name = "OptFrameLib-test-base",
+    srcs = [
+        "OptFrameLib-test/optframelib_base.Test.cpp",
+    ],
+    deps = [
+        "//include:OptFrameLib",
+        "//include/OptFrame-Core-Examples:core-examples-hpp",
+        "//src/OptFrameLib:lib_src",
+        # "@ut//:ut",
+        "@ut",
+    ],
 )
 
 '''
@@ -56,6 +99,6 @@ cc_test(
 test_suite(
     name = "all-tests",
     tests = [
-        "OptFrame-test"
-    ]
+        "OptFrame-test",
+    ],
 )
