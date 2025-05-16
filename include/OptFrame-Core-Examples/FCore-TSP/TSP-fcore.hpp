@@ -180,27 +180,27 @@ MOD_EXPORT namespace TSP_fcore {
                                        const ESolutionTSP& se) {
     int i = pTSP->rg->rand(pTSP->n - 3);
     int j = pTSP->rg->rand(i + 2, pTSP->n - 1);
-    return makeMove<T>(pTSP, i, j);
+    return makeMove<T>(i, j);
   }
 
   uptr<Move<ESolutionTSP>> makeMoveSwap(sref<ProblemContext> pTSP, int i,
                                         int j) {
-    return makeMove<MoveSwap>(pTSP, i, j);
+    return makeMove<MoveSwap>(i, j);
   }
 
   uptr<Move<ESolutionTSP>> fRandomSwap(sref<ProblemContext> pTSP,
                                        const ESolutionTSP& se) {
-    return fRandomMove<MoveSwap>(pTSP, se);
+    return fRandomMove<MoveSwap>(se);
   }
 
-  uptr<Move<ESolutionTSP>> makeMove2Opt(sref<ProblemContext> pTSP, int i,
+  uptr<Move<ESolutionTSP>> makeMove2Opt(int i,
                                         int j) {
-    return makeMove<Move2Opt>(pTSP, i, j);
+    return makeMove<Move2Opt>(i, j);
   }
 
   uptr<Move<ESolutionTSP>> fRandom2Opt(sref<ProblemContext> pTSP,
                                        const ESolutionTSP& se) {
-    return fRandomMove<Move2Opt>(pTSP, se);
+    return fRandomMove<Move2Opt>(se);
   }
 
   // ============= MoveSwapDelta ==========
