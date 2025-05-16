@@ -46,6 +46,17 @@ FakeMovePtr fnsrand_c(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
   return m_ptr;
 }
 
+FakeMovePtr fnsrand_c_2opt(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
+  using PTSP = TSP_fcore::ProblemContext;
+  std::shared_ptr<PTSP> problem_view{(PTSP*)p_ptr, [](PTSP*) {}};
+  sref<PTSP> problem{problem_view};
+  auto* v = (std::vector<int>*)s_ptr;
+  auto m =
+      TSP_fcore::fRandom2Opt(problem, ESolutionTSP{*v, Evaluation<int>{0}});
+  auto* m_ptr = m.release();
+  return m_ptr;
+}
+
 FakeMovePtr fmove_apply_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
                           FakeSolutionPtr s_ptr) {
   auto* m = (MoveSwap*)m_ptr;
@@ -58,29 +69,72 @@ FakeMovePtr fmove_apply_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
   return new MoveSwap{j, i};
 }
 
-bool fmove_eq_c(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr, FakeMovePtr m2_ptr) {
-  auto* m1 = (MoveSwap*)m1_ptr;
-  auto* m2 = (MoveSwap*)m2_ptr;
+FakeMovePtr fmove_apply_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                               FakeSolutionPtr s_ptr) {
+  auto* m = (MoveSwap*)m_ptr;
+  auto* v = (std::vector<int>*)s_ptr;
+  reverse(v->begin() + m->i, v->begin() + m->j + 1);
+  return new MoveSwap{m->j, m->i};
+}
+
+template <typename T>
+bool fmove_eq_c_base(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr,
+                     FakeMovePtr m2_ptr) {
+  auto* m1 = (T*)m1_ptr;
+  auto* m2 = (T*)m2_ptr;
   return (m1->i == m2->i) && (m1->j == m2->j);
+}
+
+bool fmove_eq_c(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr, FakeMovePtr m2_ptr) {
+  return fmove_eq_c_base<MoveSwap>(p_ptr, m1_ptr, m2_ptr);
+}
+
+bool fmove_eq_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m1_ptr,
+                     FakeMovePtr m2_ptr) {
+  return fmove_eq_c_base<TSP_fcore::Move2Opt>(p_ptr, m1_ptr, m2_ptr);
+}
+
+template <typename T>
+bool fmove_cba_c_base(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                      FakeSolutionPtr s_ptr) {
+  auto* m = (T*)m_ptr;
+  return (::abs(m->i - m->j) >= 2) && (m->i >= 1) && (m->j >= 1);
 }
 
 bool fmove_cba_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
                  FakeSolutionPtr s_ptr) {
-  auto* m = (MoveSwap*)m_ptr;
-  return (::abs(m->i - m->j) >= 2) && (m->i >= 1) && (m->j >= 1);
+  return fmove_cba_c_base<MoveSwap>(p_ptr, m_ptr, s_ptr);
 }
 
-FakePythonObjPtr fIterator_c(FakeProblemPtr, FakeSolutionPtr) {
-  return new MoveSwap{0, 0};
+bool fmove_cba_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
+                      FakeSolutionPtr s_ptr) {
+  return fmove_cba_c_base<TSP_fcore::Move2Opt>(p_ptr, m_ptr, s_ptr);
 }
-void fFirst_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
-  auto* m = (MoveSwap*)it_ptr;
+
+template <typename T>
+FakePythonObjPtr fIterator_c_base(FakeProblemPtr, FakeSolutionPtr) {
+  return new T{0, 0};
+}
+
+template <typename T>
+void fFirst_c_base(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  auto* m = (T*)it_ptr;
   m->i = 0;
   m->j = 1;
 }
-void fNext_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+
+void fFirst_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  return fFirst_c_base<MoveSwap>(nullptr, it_ptr);
+}
+
+void fFirst_c_2opt(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  return fFirst_c_base<TSP_fcore::Move2Opt>(nullptr, it_ptr);
+}
+
+template <typename T>
+void fNext_c_base(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
   auto* problem = (TSP_fcore::ProblemContext*)p_ptr;
-  auto* m = (MoveSwap*)it_ptr;
+  auto* m = (T*)it_ptr;
   if (m->j < (problem->n - 1)) {
     m->j++;
   } else {
@@ -88,14 +142,42 @@ void fNext_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
     m->j = m->i + 1;
   }
 }
-bool fIsDone_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+
+void fNext_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  return fNext_c_base<MoveSwap>(p_ptr, it_ptr);
+}
+
+void fNext_c_2opt(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  return fNext_c_base<MoveSwap>(p_ptr, it_ptr);
+}
+
+template <typename T>
+bool fIsDone_c_base(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
   auto* problem = (TSP_fcore::ProblemContext*)p_ptr;
-  auto* m = (MoveSwap*)it_ptr;
+  auto* m = (T*)it_ptr;
   return m->i >= problem->n - 1;
 }
-FakeMovePtr fCurrent_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
-  auto* m = (MoveSwap*)it_ptr;
+
+bool fIsDone_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  return fIsDone_c_base<MoveSwap>(p_ptr, it_ptr);
+}
+
+bool fIsDone_c_2opt(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  return fIsDone_c_base<MoveSwap>(p_ptr, it_ptr);
+}
+
+template <typename T>
+FakeMovePtr fCurrent_c_base(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  auto* m = (T*)it_ptr;
   return new MoveSwap{m->i, m->j};
+}
+
+FakeMovePtr fCurrent_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  return fCurrent_c_base<MoveSwap>(p_ptr, it_ptr);
+}
+
+FakeMovePtr fCurrent_c_2opt(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
+  return fCurrent_c_base<MoveSwap>(p_ptr, it_ptr);
 }
 
 // ==================
