@@ -4,13 +4,24 @@ INC_PATH=../include
 LIBS_PATH=../libs
 CATCH2_MAIN_PART=-Ithirdparty -DCATCH_CONFIG_MAIN thirdparty/catch2/catch_amalgamated.cpp -DMAKE
 
-all: test_lib test
+all: test
 	@echo "Executing tests"
 	./build/OptFrame_test
 
-test: clean OptFrame_test 
+test: clean test_lib OptFrame_test 
 
-test_lib: OptFrameLib-test/optframelib.Test.cpp
+test_lib: test_lib_base test_lib_kp test_lib_tsp
+	./build/test_lib_base
+	./build/test_lib_kp
+	./build/test_lib_tsp
+
+test_lib_base: OptFrameLib-test/optframelib_base.Test.cpp
+	g++ --coverage -g -O3 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+
+test_lib_kp: OptFrameLib-test/optframelib_kp.Test.cpp
+	g++ --coverage -g -O3 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+
+test_lib_tsp: OptFrameLib-test/optframelib_tsp.Test.cpp
 	g++ --coverage -g -O3 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 
 
