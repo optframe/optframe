@@ -5,6 +5,13 @@
 
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
+#include <OptFrame/Heuristics/SA/SA.hpp>
+#include <OptFrame/Hyper/WarmupBuilder.hpp>
+
+#include "BasicSimulatedAnnealing.hpp"
+#include "BasicSimulatedAnnealingBuilder.hpp"
+#include "HelperSA.hpp"
+
 #define MOD_EXPORT
 #else
 
@@ -30,42 +37,53 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
-                                       public SA {
-  // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
-  // using XM = Component; // only general builds here
+class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>, public SA {
+  using VParameters = std::vector<std::pair<std::string, std::string>>;
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~BasicSimulatedAnnealingBuilder() {}
+  virtual ~BasicSimulatedAnnealingWarmup() {}
 
-  // has sptr instead of sref, is that on purpose or legacy class?
-  GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
-                           std::string family = "") override {
+  Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
+                            std::string family = "") override {
+    // first warmup, then build with builder
+    WarmupOutput wo = warmup(scanner, hf, family);
+    if (!wo.config) {
+      return nullptr;
+    } else {
+      Scanner scanner2{*wo.config};
+      BasicSimulatedAnnealingBuilder<XES, XES2, X2ES> builder;
+      return builder.build(scanner2, hf, family);
+    }
+  }
+
+  WarmupOutput warmup(Scanner& scanner, HeuristicFactory<XES>& hf,
+                      std::string family = "") override {
     using modlog::LogLevel::Debug;
     using modlog::LogLevel::Warning;
-    Log(Debug, &hf) << "BasicSA Builder" << std::endl;
+    Log(Debug, &hf) << "BasicSA Warmup" << std::endl;
     auto eval = hf.template tryAssign<GeneralEvaluator<XES>>(scanner);
     if (!eval.get()) {
-      Log(Warning, &hf) << "BasicSA Builder failed" << std::endl;
-      return nullptr;
+      Log(Warning, &hf) << "BasicSA Warmup failed" << std::endl;
+      return WarmupOutput{};
     }
     sptr<GeneralEvaluator<XES>> ge{eval};
 
     int counter = 0;
-    auto constructive = hf.template tryAssignIf<InitialSearch<XES>>(
-        eval.get(), scanner, counter);
-    auto _hlist = hf.template tryAssignListIf<NS<XES, XSH>>(constructive.get(),
-                                                            scanner, counter);
-    auto alpha = hf.tryAssignDoubleIf(_hlist.size() > 0, scanner, counter);
-    auto SAmax = hf.tryAssignDoubleIf((bool)alpha, scanner, counter);
-    auto Ti = hf.tryAssignDoubleIf((bool)SAmax, scanner, counter);
+    sptr<InitialSearch<XES>> constructive =
+        hf.tryAssignIf(eval.get(), scanner, counter);
+    vsptr<NS<XES, XSH>> _hlist =
+        hf.tryAssignListIf(constructive.get(), scanner, counter);
+    op<double> alpha =
+        hf.tryAssignDoubleIf(_hlist.size() > 0, scanner, counter);
+    op<int> SAmax = hf.tryAssignDoubleIf(alpha, scanner, counter);
+    op<double> Ti = hf.tryAssignDoubleIf(SAmax, scanner, counter);
 
     if (!Ti) {
-      Log(Warning, &hf) << "BasicSA Builder failed" << std::endl;
-      return nullptr;
+      Log(Warning, &hf) << "BasicSA Warmup failed" << std::endl;
+      return WarmupOutput{};
     }
 
     vsref<NS<XES, XSH>> hlist;
@@ -83,31 +101,28 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
       std::cout << "\tTi=" << *Ti << std::endl;
     }
 
-    return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, *alpha,
-                                            *SAmax, *Ti, hf.getRandGen());
+    return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha,
+                                            SAmax, Ti, hf.getRandGen());
   }
 
-  std::vector<std::pair<std::string, std::string>> parameters() override {
-    std::vector<std::pair<std::string, std::string>> params;
-    // params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
-    // "evaluation function"));
+  VParameters parameters() override {
+    VParameters params;
     params.push_back(
         std::make_pair(Evaluator<typename XES::first_type,
                                  typename XES::second_type, XES>::idComponent(),
                        "evaluation function"));
-    //
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
-    // "constructive heuristic"));
     params.push_back(std::make_pair(InitialSearch<XES>::idComponent(),
                                     "constructive heuristic"));
     std::stringstream ss;
     ss << NS<XES, XSH>::idComponent() << "[]";
     params.push_back(std::make_pair(ss.str(), "list of NS"));
-    params.push_back(std::make_pair("OptFrame:double", "cooling factor"));
+    params.push_back(std::make_pair("OptFrame:double", "beta heating factor"));
+    params.push_back(
+        std::make_pair("OptFrame:double", "gama acceptance ratio"));
     params.push_back(std::make_pair(
-        "OptFrame:int", "number of iterations for each temperature"));
-    params.push_back(std::make_pair("OptFrame:double", "initial temperature"));
-
+        "OptFrame:int", "SAmax number of iterations for each temperature"));
+    params.push_back(
+        std::make_pair("OptFrame:double", "T0 initial cold temperature"));
     return params;
   }
 
@@ -117,7 +132,7 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family() << "BasicSA";
+    ss << WarmupBuilder<XES>::idComponent() << SA::family() << "BasicSA";
     return ss.str();
   }
 

@@ -253,6 +253,123 @@ class HeuristicFactory {
   }
 
   template <class T>
+  sptr<T> tryAssign(Scanner& scanner) {
+    sptr<T> myComponent;
+    if (scanner.hasNext()) {
+      std::string sid_0 = scanner.next();
+      if (scanner.hasNextInt()) {
+        int id_0 = *scanner.nextInt();
+        this->assign(myComponent, id_0, sid_0);
+      }
+    }
+    if (!myComponent) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssign failed to load component" << std::endl;
+    }
+    return myComponent;
+  }
+
+  template <class T>
+  sptr<T> tryAssignIf(bool condition, Scanner& scanner, int& counter) {
+    counter++;
+    if (!condition) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignIf skipping parameter #" << counter
+                         << std::endl;
+      return nullptr;
+    }
+    sptr<T> myComponent;
+    if (scanner.hasNext()) {
+      std::string sid_0 = scanner.next();
+      if (scanner.hasNextInt()) {
+        int id_0 = *scanner.nextInt();
+        this->assign(myComponent, id_0, sid_0);
+      }
+    }
+    if (!myComponent) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignIf failed to load component #" << counter
+                         << std::endl;
+    }
+    return myComponent;
+  }
+
+  template <class T>
+  vsptr<T> tryAssignListIf(bool condition, Scanner& scanner, int& counter) {
+    counter++;
+    if (!condition) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignListIf skipping parameter #" << counter
+                         << std::endl;
+      return vsptr<T>{};
+    }
+    vsptr<T> myComponentList;
+    if (scanner.hasNext()) {
+      std::string sid_0 = scanner.next();
+      if (scanner.hasNextInt()) {
+        int id_0 = *scanner.nextInt();
+        this->assignList(myComponentList, id_0, sid_0);
+      }
+    }
+
+    for (sptr<T> x : myComponentList) {
+      if (!x) {
+        using modlog::LogLevel::Warning;
+        Log(Warning, this) << "tryAssignListIf failed to load component #"
+                           << counter << std::endl;
+        return vsptr<T>{};
+      }
+    }
+
+    // assume non-empty list!
+    if (myComponentList.size() == 0) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignListIf EMPTY LIST" << std::endl;
+      Log(Warning, this) << "tryAssignListIf failed to load component #"
+                         << counter << std::endl;
+    }
+    return myComponentList;
+  }
+
+  op<double> tryAssignDoubleIf(bool condition, Scanner& scanner, int& counter) {
+    counter++;
+    if (!condition) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignDoubleIf skipping parameter #" << counter
+                         << std::endl;
+      return std::nullopt;
+    }
+    op<double> myComponent;
+    if (scanner.hasNextDouble()) myComponent = scanner.nextDouble();
+
+    if (!myComponent) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignDoubleIf failed to load component #"
+                         << counter << std::endl;
+    }
+    return myComponent;
+  }
+
+  op<int> tryAssignIntIf(bool condition, Scanner& scanner, int& counter) {
+    counter++;
+    if (!condition) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignIntIf skipping parameter #" << counter
+                         << std::endl;
+      return std::nullopt;
+    }
+    op<int> myComponent;
+    if (scanner.hasNextDouble()) myComponent = scanner.nextInt();
+
+    if (!myComponent) {
+      using modlog::LogLevel::Warning;
+      Log(Warning, this) << "tryAssignIntIf failed to load component #"
+                         << counter << std::endl;
+    }
+    return myComponent;
+  }
+
+  template <class T>
   void assign(std::shared_ptr<T>& component, unsigned number, std::string id) {
     // NOTE THAT component is likely to be NULL!!
     if (getLogLevel() <= modlog::LogLevel::Debug) {
