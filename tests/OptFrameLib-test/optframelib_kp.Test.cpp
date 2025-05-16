@@ -182,7 +182,7 @@ int main() {
 
   // =====================
 
-  std::string prefix = "OptFrame:";
+  std::string prefix = "";  // default "OptFrame:"
   int list_sz = optframe_api1d_engine_list_components(engine, prefix.c_str());
 
   "optframe_api1d_engine_list_components"_test = [list_sz] {

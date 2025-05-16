@@ -80,12 +80,13 @@ MOD_EXPORT template <typename XES>
 #endif
 class ComponentBuilder : public Component {
  public:
+  using VParameters = std::vector<std::pair<std::string, std::string>>;
   ~ComponentBuilder() override = default;
 
   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                                     std::string family = "") = 0;
 
-  virtual std::vector<std::pair<std::string, std::string>> parameters() = 0;
+  virtual VParameters parameters() = 0;
 
   virtual bool canBuild(std::string) = 0;
 

@@ -338,7 +338,8 @@ OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
 
 OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
                                                          const char* prefix) {
-  std::string_view basePattern{prefix};
+  std::string basePattern{prefix};
+  if (basePattern == "") basePattern = "OptFrame:";
   auto* engine = (FCoreApi1Engine*)_engine;
   std::vector<std::string> vlist =
       engine->loader.factory.listComponents(basePattern);

@@ -577,12 +577,11 @@ class HeuristicFactory {
                  \sa listComponents(std::string)
          */
 
-  std::vector<
-      std::pair<std::string, std::vector<std::pair<std::string, std::string>>>>
-  listBuilders(std::string pattern) {
-    std::vector<std::pair<std::string,
-                          std::vector<std::pair<std::string, std::string>>>>
-        list;
+  using VParameters = std::vector<std::pair<std::string, std::string>>;
+
+  std::vector<std::pair<std::string, VParameters>> listBuilders(
+      std::string pattern) {
+    std::vector<std::pair<std::string, VParameters>> list;
 
     for (unsigned i = 0; i < builders.size(); i++)
       if (ComponentHelper::compareBase(pattern, builders[i]->id()))
