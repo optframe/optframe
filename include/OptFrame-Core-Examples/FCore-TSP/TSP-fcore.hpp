@@ -140,27 +140,68 @@ MOD_EXPORT namespace TSP_fcore {
     }
   };
 
+  class Move2Opt : public Move<ESolutionTSP> {
+   public:
+    int i, j;
+
+    Move2Opt(int _i, int _j) : i{_i}, j{_j} {}
+
+    bool canBeApplied(const ESolutionTSP& se) override {
+      return (::abs(i - j) >= 2) && (i >= 1) && (j >= 1);
+    }
+
+    uptr<Move<ESolutionTSP>> apply(ESolutionTSP& se) override {
+      // perform swap of clients i and j
+      int aux = se.first[j];
+      se.first[j] = se.first[i];
+      se.first[i] = aux;
+      return uptr<Move<ESolutionTSP>>(new Move2Opt{j, i});
+    }
+
+    bool operator==(const Move<ESolutionTSP>& other) const override {
+      auto& fmove = (Move2Opt&)other;
+      return (i == fmove.i) && (j == fmove.j);
+    }
+
+    std::string toString() const override {
+      std::stringstream ss;
+      ss << "Move2Opt(i=" << i << "; j=" << j << ")";
+      return ss.str();
+    }
+  };
+
+  template <typename T>
+  uptr<Move<ESolutionTSP>> makeMove(sref<ProblemContext> pTSP, int i, int j) {
+    return uptr<Move<ESolutionTSP>>(new T{i, j});
+  }
+
+  template <typename T>
+  uptr<Move<ESolutionTSP>> fRandomMove(sref<ProblemContext> pTSP,
+                                       const ESolutionTSP& se) {
+    int i = pTSP->rg->rand(pTSP->n - 3);
+    int j = pTSP->rg->rand(i + 2, pTSP->n - 1);
+    return makeMove<T>(i, j);
+  }
+
   uptr<Move<ESolutionTSP>> makeMoveSwap(sref<ProblemContext> pTSP, int i,
                                         int j) {
-    return uptr<Move<ESolutionTSP>>(new MoveSwap{i, j});
+    return makeMove<MoveSwap>(i, j);
   }
 
   uptr<Move<ESolutionTSP>> fRandomSwap(sref<ProblemContext> pTSP,
                                        const ESolutionTSP& se) {
-    int i = pTSP->rg->rand() % pTSP->n;
-    int j = i;
-    while ((j <= i) || (i == 0)) {
-      i = pTSP->rg->rand() % pTSP->n;
-      j = pTSP->rg->rand() % pTSP->n;
-    }
-
-    return makeMoveSwap(pTSP, i, j);
+    return fRandomMove<MoveSwap>(se);
   }
 
-  // TODO: make MoveSwap inherit from MovePairIntInt...
-  // a "business move" which is general and holds <int,int>.
-  // This helps with castings on all operations and prevents
-  // lots of rework.
+  uptr<Move<ESolutionTSP>> makeMove2Opt(int i,
+                                        int j) {
+    return makeMove<Move2Opt>(i, j);
+  }
+
+  uptr<Move<ESolutionTSP>> fRandom2Opt(sref<ProblemContext> pTSP,
+                                       const ESolutionTSP& se) {
+    return fRandomMove<Move2Opt>(se);
+  }
 
   // ============= MoveSwapDelta ==========
 
