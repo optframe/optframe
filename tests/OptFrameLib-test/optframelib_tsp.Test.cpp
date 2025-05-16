@@ -111,6 +111,10 @@ bool fmove_cba_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
   return fmove_cba_c_base<TSP_fcore::Move2Opt>(p_ptr, m_ptr, s_ptr);
 }
 
+FakePythonObjPtr fIterator_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  return new MoveSwap{0, 0};
+}
+
 template <typename T>
 FakePythonObjPtr fIterator_c_base(FakeProblemPtr, FakeSolutionPtr) {
   return new T{0, 0};
