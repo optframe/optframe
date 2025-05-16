@@ -285,7 +285,7 @@ int main() {
 
   "random_move"_test = [problem, esol] {
     auto m = TSP_fcore::fRandomSwap(problem, esol);
-    expect(m->toString() == std::string("MoveSwap(i=2; j=4)"));
+    expect(m->toString() == std::string("MoveSwap(i=1; j=4)"));
     expect(m->canBeApplied(esol));
   };
 
