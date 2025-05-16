@@ -56,7 +56,7 @@ optframe_api0d_engine_classic_nsgaii_params(FakeEnginePtr _engine,
                                             int maxIter);
 
 OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
-                                                       char* prefix);
+                                                       const char* prefix);
 
 OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
                                                          const char* prefix);

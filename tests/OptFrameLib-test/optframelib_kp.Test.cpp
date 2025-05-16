@@ -182,11 +182,17 @@ int main() {
 
   // =====================
 
-  std::string prefix = "";  // default "OptFrame:"
+  std::string prefix = "";  // default "OptFrame:" with warning
   int list_sz = optframe_api1d_engine_list_components(engine, prefix.c_str());
 
   "optframe_api1d_engine_list_components"_test = [list_sz] {
     expect(list_sz == 6_i);
+  };
+
+  int builders_sz = optframe_api1d_engine_list_builders(engine, prefix.c_str());
+
+  "optframe_api1d_engine_list_builders"_test = [builders_sz] {
+    expect(builders_sz == 34_i);
   };
 
   // =====================

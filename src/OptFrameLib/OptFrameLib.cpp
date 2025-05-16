@@ -320,20 +320,33 @@ optframe_api0d_engine_simulated_annealing(FakeEnginePtr _engine) {
 }
 
 OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
-                                                       char* prefix) {
-  std::string sprefix{prefix};
+                                                       const char* prefix) {
   auto* engine = (FCoreApi1Engine*)_engine;
-  std::vector<
-      std::pair<std::string, std::vector<std::pair<std::string, std::string>>>>
-      vlist = engine->loader.factory.listBuilders(sprefix);
+  using modlog::LogLevel::Info;
+  using modlog::LogLevel::Warning;
+  using VParameters = std::vector<std::pair<std::string, std::string>>;
 
-  // This will be printed, regardless of message level
+  std::string basePattern{prefix};
+  if (basePattern == "") {
+    Log(Warning, engine)
+        << "optframe_api1d_engine_list_builders defaulting empty"
+           " prefix to 'OptFrame:'"
+        << std::endl;
+    basePattern = "OptFrame:";
+  }
+  Log(Info, engine)
+      << "optframe_api1d_engine_list_builders will list builders with prefix '"
+      << basePattern << "'" << std::endl;
+
+  std::vector<std::pair<std::string, VParameters>> vlist =
+      engine->loader.factory.listBuilders(basePattern);
+
   for (auto& p : vlist) {
-    std::cout << "builder: " << p.first << " |params|=" << p.second.size()
-              << std::endl;
+    Log(Info, engine) << " builder: " << p.first
+                      << " |params|=" << p.second.size() << std::endl;
     for (unsigned i = 0; i < p.second.size(); i++)
-      std::cout << "\tparam " << i << " => " << p.second[i].first << " : "
-                << p.second[i].second << std::endl;
+      Log(Info, engine) << "  |   param " << i << " => " << p.second[i].first
+                        << " : " << p.second[i].second << std::endl;
   }
 
   return vlist.size();
@@ -348,7 +361,7 @@ OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
   if (basePattern == "") {
     Log(Warning, engine)
         << "optframe_api1d_engine_list_components defaulting empty"
-           "prefix to 'OptFrame:'"
+           " prefix to 'OptFrame:'"
         << std::endl;
     basePattern = "OptFrame:";
   }

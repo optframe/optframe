@@ -580,7 +580,7 @@ class HeuristicFactory {
   using VParameters = std::vector<std::pair<std::string, std::string>>;
 
   std::vector<std::pair<std::string, VParameters>> listBuilders(
-      std::string pattern) {
+      std::string_view pattern) {
     std::vector<std::pair<std::string, VParameters>> list;
 
     for (unsigned i = 0; i < builders.size(); i++)
