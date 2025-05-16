@@ -59,7 +59,7 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
         eval.get(), scanner, counter);
     auto _hlist = hf.template tryAssignListIf<NS<XES, XSH>>(constructive.get(),
                                                             scanner, counter);
-    auto alpha = hf.tryAssignDoubleIf(_hlist.size() > 0, scanner, counter);
+    auto alpha = hf.tryAssignDoubleIf((bool)_hlist, scanner, counter);
     auto SAmax = hf.tryAssignDoubleIf((bool)alpha, scanner, counter);
     auto Ti = hf.tryAssignDoubleIf((bool)SAmax, scanner, counter);
 
@@ -69,7 +69,7 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
     }
 
     vsref<NS<XES, XSH>> hlist;
-    for (sptr<NS<XES, XSH>> x : _hlist) hlist.push_back(x);
+    for (sptr<NS<XES, XSH>> x : *_hlist) hlist.push_back(x);
 
     if (Component::debug) {
       std::cout << "BasicSA Builder: got all parameters!" << std::endl;

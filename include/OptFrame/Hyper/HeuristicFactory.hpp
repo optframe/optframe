@@ -295,39 +295,34 @@ class HeuristicFactory {
   }
 
   template <class T>
-  vsptr<T> tryAssignListIf(bool condition, Scanner& scanner, int& counter) {
+  op<vsptr<T>> tryAssignListIf(bool condition, Scanner& scanner, int& counter) {
     counter++;
     if (!condition) {
       using modlog::LogLevel::Warning;
       Log(Warning, this) << "tryAssignListIf skipping parameter #" << counter
                          << std::endl;
-      return vsptr<T>{};
+      return std::nullopt;
     }
     vsptr<T> myComponentList;
     if (scanner.hasNext()) {
       std::string sid_0 = scanner.next();
       if (scanner.hasNextInt()) {
         int id_0 = *scanner.nextInt();
-        this->assignList(myComponentList, id_0, sid_0);
+        bool b = this->assignList(myComponentList, id_0, sid_0);
+        if (!b) return std::nullopt;
       }
     }
 
     for (sptr<T> x : myComponentList) {
       if (!x) {
         using modlog::LogLevel::Warning;
-        Log(Warning, this) << "tryAssignListIf failed to load component #"
+        Log(Warning, this) << "tryAssignListIf failed to load internal list "
+                              "component of parameter #"
                            << counter << std::endl;
-        return vsptr<T>{};
+        return std::nullopt;
       }
     }
 
-    // assume non-empty list!
-    if (myComponentList.size() == 0) {
-      using modlog::LogLevel::Warning;
-      Log(Warning, this) << "tryAssignListIf EMPTY LIST" << std::endl;
-      Log(Warning, this) << "tryAssignListIf failed to load component #"
-                         << counter << std::endl;
-    }
     return myComponentList;
   }
 
@@ -412,7 +407,7 @@ class HeuristicFactory {
   }
 
   template <class T>
-  void assignList(std::vector<std::shared_ptr<T>>& cList, unsigned number,
+  bool assignList(std::vector<std::shared_ptr<T>>& cList, unsigned number,
                   std::string _listId) {
     // type checking for safety!
     std::string noList = ComponentHelper::typeOfList(_listId);
@@ -425,7 +420,7 @@ class HeuristicFactory {
                   << T::idComponent() << "]' <- '[" << noList << "]'"
                   << std::endl;
 
-      return;
+      return false;
     }
 
     if (componentLists.count(listId) > 0) {
@@ -438,7 +433,9 @@ class HeuristicFactory {
       if (getLogLevel() <= modlog::LogLevel::Warning)
         std::cout << "'" << listId << " " << number << "' not found!"
                   << std::endl;
+      return false;
     }
+    return true;
   }
 
   // TODO: experimental
