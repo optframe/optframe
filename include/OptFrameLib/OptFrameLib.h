@@ -37,7 +37,7 @@ OPT_MODULE_API void optframe_api1d_engine_rand_set_seed(FakeEnginePtr _engine,
                                                         uint32_t seed);
 
 OPT_MODULE_API bool optframe_api1d_engine_check(
-    FakeEnginePtr _engine, int softTests, int hardTests, bool verbose,
+    FakeEnginePtr _engine, int softTests, int hardTests, bool force_verbose,
     bool (*_fOnFail)(int, FakeEnginePtr));
 
 OPT_MODULE_API LibSearchOutput

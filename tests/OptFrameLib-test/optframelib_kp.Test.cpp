@@ -113,7 +113,7 @@ int main() {
   using namespace boost::ut;
 
   FakeEnginePtr engine =
-      optframe_api1d_create_engine((int)modlog::LogLevel::Disabled);
+      optframe_api1d_create_engine((int)modlog::LogLevel::Info);
 
   auto* eng = (FCoreApi1Engine*)engine;
 

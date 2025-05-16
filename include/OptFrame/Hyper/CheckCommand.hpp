@@ -251,9 +251,9 @@ class CheckCommand : public Component {  // NOLINT
   vector<std::shared_ptr<ADSManager<REP, ADS, S>>> lADSManagerComp;  // optional
 #endif
 
-  // setParameters only works for verbosity ON and OFF (disabled)
-  void setParameters(bool _verbose) {
-    if (_verbose) {
+  // setForceVerbose only works for verbosity ON and OFF (disabled)
+  void setForceVerbose(bool forceVerbose) {
+    if (forceVerbose) {
       this->setMessageLevel(modlog::LogLevel::Debug);
       Log(modlog::LogLevel::Debug)
           << "CheckCommand setParameters to verbose" << std::endl;

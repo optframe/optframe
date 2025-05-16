@@ -299,13 +299,16 @@ OPT_MODULE_API void optframe_api1d_engine_rand_set_seed(FakeEnginePtr _engine,
 }
 
 OPT_MODULE_API bool optframe_api1d_engine_check(
-    FakeEnginePtr _engine, int softTests, int hardTests, bool verbose,
+    FakeEnginePtr _engine, int softTests, int hardTests, bool force_verbose,
     bool (*_fOnFail)(int, FakeEnginePtr)) {
   auto* engine = (FCoreApi1Engine*)_engine;
-  if (verbose) engine->check.setParameters(verbose);
+  if (force_verbose) engine->check.setForceVerbose(force_verbose);
   engine->check.onFail = [_fOnFail, _engine](int code) -> bool {
     return _fOnFail(code, _engine);
   };
+  using modlog::LogLevel::Info;
+  Log(Info, engine) << "optframe_api1d_engine_check (softTests:" << softTests
+                    << "; hardTests:" << hardTests << ")" << std::endl;
   auto data = engine->check.run(softTests, hardTests);
   return true;
 }
@@ -338,15 +341,23 @@ OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
 
 OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
                                                          const char* prefix) {
-  std::string basePattern{prefix};
-  if (basePattern == "") basePattern = "OptFrame:";
+  using modlog::LogLevel::Info;
+  using modlog::LogLevel::Warning;
   auto* engine = (FCoreApi1Engine*)_engine;
+  std::string basePattern{prefix};
+  if (basePattern == "") {
+    Log(Warning, engine)
+        << "optframe_api1d_engine_list_components defaulting empty"
+           "prefix to 'OptFrame:'"
+        << std::endl;
+    basePattern = "OptFrame:";
+  }
+
   std::vector<std::string> vlist =
       engine->loader.factory.listComponents(basePattern);
 
-  using modlog::LogLevel::Info;
   for (unsigned i = 0; i < vlist.size(); i++)
-    Log(Info, engine) << "component " << i << " => " << vlist[i];
+    Log(Info, engine) << "component " << i << " => " << vlist[i] << std::endl;
 
   return vlist.size();
 }
