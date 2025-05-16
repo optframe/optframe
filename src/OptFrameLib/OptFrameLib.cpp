@@ -337,15 +337,15 @@ OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
 }
 
 OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
-                                                         char* prefix) {
-  std::string sprefix{prefix};
+                                                         const char* prefix) {
+  std::string_view basePattern{prefix};
   auto* engine = (FCoreApi1Engine*)_engine;
   std::vector<std::string> vlist =
-      engine->loader.factory.listComponents(sprefix);
+      engine->loader.factory.listComponents(basePattern);
 
-  // This will be printed, regardless of message level
+  using modlog::LogLevel::Info;
   for (unsigned i = 0; i < vlist.size(); i++)
-    std::cout << "component " << i << " => " << vlist[i] << std::endl;
+    Log(Info, engine) << "component " << i << " => " << vlist[i];
 
   return vlist.size();
 }

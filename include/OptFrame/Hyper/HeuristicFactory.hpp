@@ -507,7 +507,7 @@ class HeuristicFactory {
   /*!
                  \sa listComponents(std::string)
          */
-  std::vector<std::string> listComponents(std::string pattern) {
+  std::vector<std::string> listComponents(std::string_view basePattern) {
     std::vector<std::string> list;
 
     std::map<std::string, std::vector<std::shared_ptr<Component>>>::iterator
@@ -519,7 +519,7 @@ class HeuristicFactory {
       // std::vector<Component*> v = iter->second;
 
       for (unsigned int i = 0; i < v.size(); i++)
-        if (ComponentHelper::compareBase(pattern, v[i]->id())) {
+        if (ComponentHelper::compareBase(basePattern, v[i]->id())) {
           std::stringstream ss;
           ss << iter->first << " " << i;
           list.push_back(ss.str());

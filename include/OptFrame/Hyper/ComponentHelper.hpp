@@ -46,7 +46,7 @@ MOD_EXPORT class ComponentHelper {
 
   // Check if 'base' is inherited by 'component'
   // EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
-  static bool compareBase(std::string _base, std::string _component) {
+  static bool compareBase(std::string_view _base, std::string _component) {
     if ((_base.length() < 3) || (_component.length() < 3)) {
       std::cout << "ComponentHelper::compareBase warning: comparing less than "
                    "3 characters! with base='"
@@ -96,10 +96,9 @@ MOD_EXPORT class ComponentHelper {
     return sameBase;
   }
 
-  static std::string typeOfList(std::string listId) {
-    Scanner scanner(listId);
+  static std::string typeOfList(std::string_view listId) {
+    Scanner scanner{std::string{listId}};
     scanner.useSeparators(" \t\n[]");
-
     return scanner.next();
   }
 };

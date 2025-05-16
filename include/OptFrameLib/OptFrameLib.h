@@ -59,7 +59,7 @@ OPT_MODULE_API int optframe_api1d_engine_list_builders(FakeEnginePtr _engine,
                                                        char* prefix);
 
 OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
-                                                         char* prefix);
+                                                         const char* prefix);
 
 OPT_MODULE_API bool optframe_api0d_engine_test(FakeEnginePtr _engine);
 
