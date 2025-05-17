@@ -236,10 +236,10 @@ OPT_MODULE_API bool optframe_api1d_engine_component_set_loglevel(
 // EXPERIMENTAL
 
 OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
-    FakeEnginePtr _engine, char* parameter, char* svalue);
+    FakeEnginePtr _engine, const char* parameter, const char* svalue);
 
 OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
-    FakeEnginePtr _engine, char* parameter);
+    FakeEnginePtr _engine, const char* parameter);
 
 // ============================
 

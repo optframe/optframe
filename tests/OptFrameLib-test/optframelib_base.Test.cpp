@@ -35,6 +35,23 @@ int main() {
   eng->logstream = &std::cout;
   optframe_api0d_engine_welcome(engine);
 
+  using unique_cstr = std::unique_ptr<char[]>;
+
+  std::stringstream ss_log_level;
+  ss_log_level << (int)modlog::LogLevel::Debug;
+  bool b_out = optframe_api1d_engine_experimental_set_parameter(
+      engine, "ENGINE_LOG_LEVEL", ss_log_level.str().c_str());
+  "optframe_api1d_engine_experimental_set_parameter"_test = [b_out] {
+    expect(b_out);
+  };
+
+  unique_cstr s_out{optframe_api1d_engine_experimental_get_parameter(
+      engine, "ENGINE_LOG_LEVEL")};
+  std::string_view view_sout{s_out.get()};
+  "optframe_api1d_engine_experimental_get_parameter"_test = [view_sout] {
+    expect(view_sout == "\"-1\"");
+  };
+
   "first_rand"_test = [eng] {
     eng->loader.factory.getRandGen()->setSeed(9999);
     expect(eng->loader.factory.getRandGen()->rand() % 100 == 5_i);

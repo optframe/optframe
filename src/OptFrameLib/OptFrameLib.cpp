@@ -1969,7 +1969,7 @@ OPT_MODULE_API bool optframe_api1d_engine_component_set_loglevel(
 }
 
 OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
-    FakeEnginePtr _engine, char* _parameter, char* _svalue) {
+    FakeEnginePtr _engine, const char* _parameter, const char* _svalue) {
   auto* engine = (FCoreApi1Engine*)_engine;
 
   std::string parameter{_parameter};
@@ -2044,11 +2044,16 @@ OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
 }
 
 OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
-    FakeEnginePtr _engine, char* _parameter) {
+    FakeEnginePtr _engine, const char* _parameter) {
+  using modlog::LogLevel::Debug;
+  using modlog::LogLevel::Warning;
   auto* engine = (FCoreApi1Engine*)_engine;
 
   std::string parameter{_parameter};
   auto cleanParam = scannerpp::Scanner::trim(parameter);
+  Log(Debug, engine)
+      << "optframe_api1d_engine_experimental_get_parameter for param='"
+      << cleanParam << "'" << std::endl;
 
   auto& m = engine->experimentalParams;
 
@@ -2075,20 +2080,22 @@ OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
   }
 
   if ((cleanParam.length() < 3) || (cleanParam.length() > 100)) {
-    std::cout << "WARNING: invalid call "
-                 "optframe_api1d_engine_experimental_get_parameter(...):"
-              << std::endl;
-    std::cout << "parameter: '" << parameter << "'" << std::endl;
+    Log(Warning, engine)
+        << "WARNING: invalid call "
+           "optframe_api1d_engine_experimental_get_parameter(...):"
+        << std::endl;
+    Log(Warning, engine) << "parameter: '" << parameter << "'" << std::endl;
     char* c_sout = new char[1];
     c_sout[0] = '\0';
     return c_sout;
   }
 
   if (m.find(cleanParam) == m.end()) {
-    std::cout << "WARNING: non-existing parameter "
-                 "optframe_api1d_engine_experimental_get_parameter(...):"
-              << std::endl;
-    std::cout << "parameter: '" << parameter << "'" << std::endl;
+    Log(Warning, engine)
+        << "WARNING: non-existing parameter "
+           "optframe_api1d_engine_experimental_get_parameter(...):"
+        << std::endl;
+    Log(Warning, engine) << "parameter: '" << parameter << "'" << std::endl;
     char* c_sout = new char[1];
     c_sout[0] = '\0';
     return c_sout;
@@ -2097,6 +2104,9 @@ OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
     std::stringstream ss;
     ss << "\"" << svalue << "\"";
     std::string sout = ss.str();
+    Log(Debug, engine)
+        << "optframe_api1d_engine_experimental_get_parameter returns '" << sout
+        << "'" << std::endl;
     char* c_sout = new char[sout.length()];
     ::strcpy(c_sout, sout.c_str());
     return c_sout;
