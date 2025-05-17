@@ -47,17 +47,11 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
     using modlog::LogLevel::Debug;
     using modlog::LogLevel::Warning;
     Log(Debug, &hf) << "BasicSA Builder" << std::endl;
-    auto eval = hf.template tryAssign<GeneralEvaluator<XES>>(scanner);
-    if (!eval.get()) {
-      Log(Warning, &hf) << "BasicSA Builder failed" << std::endl;
-      return nullptr;
-    }
-    sptr<GeneralEvaluator<XES>> ge{eval};
-
     int counter = 0;
-    auto constructive = hf.template tryAssignIf<InitialSearch<XES>>(
-        eval.get(), scanner, counter);
-    auto _hlist = hf.template tryAssignListIf<NS<XES, XSH>>(constructive.get(),
+    auto ge = hf.template tryAssign<GeneralEvaluator<XES>>(scanner);
+    auto constructive =
+        hf.template tryAssignIf<InitialSearch<XES>>((bool)ge, scanner, counter);
+    auto _hlist = hf.template tryAssignListIf<NS<XES, XSH>>((bool)constructive,
                                                             scanner, counter);
     auto alpha = hf.tryAssignDoubleIf((bool)_hlist, scanner, counter);
     auto SAmax = hf.tryAssignDoubleIf((bool)alpha, scanner, counter);
@@ -89,15 +83,8 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
     std::vector<std::pair<std::string, std::string>> params;
-    // params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
-    // "evaluation function"));
-    params.push_back(
-        std::make_pair(Evaluator<typename XES::first_type,
-                                 typename XES::second_type, XES>::idComponent(),
-                       "evaluation function"));
-    //
-    // params.push_back(std::make_pair(Constructive<S>::idComponent(),
-    // "constructive heuristic"));
+    params.push_back(std::make_pair(GeneralEvaluator<XES>::idComponent(),
+                                    "general evaluation function"));
     params.push_back(std::make_pair(InitialSearch<XES>::idComponent(),
                                     "constructive heuristic"));
     std::stringstream ss;

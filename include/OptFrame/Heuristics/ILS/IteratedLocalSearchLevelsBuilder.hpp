@@ -35,57 +35,37 @@ class IteratedLocalSearchLevelsBuilder : public ILS,
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               std::string family = "") override {
-    sptr<GeneralEvaluator<XES>> eval = nullptr;
-    std::string sid_0 = scanner.next();
-    int id_0 = *scanner.nextInt();
-    hf.assign(eval, id_0, sid_0);
-    if (!eval) return nullptr;
+    using modlog::LogLevel::Debug;
+    using modlog::LogLevel::Warning;
+    Log(Debug, &hf) << "ILSL Builder" << std::endl;
+    int counter = 0;
+    auto eval = hf.template tryAssign<GeneralEvaluator<XES>>(scanner);
+    auto constructive = hf.template tryAssignIf<InitialSearch<XES>>(
+        eval.get(), scanner, counter);
 
-    // Constructive<S>* constructive = nullptr;
-    sptr<InitialSearch<XES>> constructive = nullptr;
-    std::string sid_1 = scanner.next();
-    int id_1 = *scanner.nextInt();
-    hf.assign(constructive, id_1, sid_1);
-    if (!constructive) return nullptr;
+    if (!constructive) {
+      Log(Warning, &hf) << "ILSL Builder failed" << std::endl;
+      return nullptr;
+    }
 
     std::string rest = scanner.rest();
-
     std::pair<sptr<LocalSearch<XES>>, std::string> method;
     method = hf.createLocalSearch(rest);
-
     sptr<LocalSearch<XES>> h = method.first;
-
     scanner = Scanner(method.second);
-    if (!h) return nullptr;
+    //
+    auto pert = hf.template tryAssignIf<ILSLPerturbation<XES>>((bool)h, scanner,
+                                                               counter);
+    auto iterMax = hf.tryAssignIntIf((bool)pert, scanner, counter);
+    auto levelMax = hf.tryAssignIntIf((bool)iterMax, scanner, counter);
 
-    sptr<ILSLPerturbation<XES>> pert;
-    std::string sid_3 = scanner.next();
-    int id_3 = *scanner.nextInt();
-    hf.assign(pert, id_3, sid_3);
-    if (!pert) return nullptr;
-
-    int iterMax = -1;
-
-    auto oiterMax = scanner.nextInt();
-
-    if (!oiterMax) {
+    if (!levelMax) {
+      Log(Warning, &hf) << "ILSL Builder failed" << std::endl;
       return nullptr;
     }
-
-    iterMax = *oiterMax;
-
-    int levelMax = -1;
-
-    auto olevelMax = scanner.nextInt();
-
-    if (!olevelMax) {
-      return nullptr;
-    }
-
-    levelMax = *olevelMax;
 
     return new IteratedLocalSearchLevels<XES>(eval, constructive, h, pert,
-                                              iterMax, levelMax);
+                                              *iterMax, *levelMax);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
