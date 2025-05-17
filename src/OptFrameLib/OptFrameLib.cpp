@@ -2107,7 +2107,7 @@ OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
     Log(Debug, engine)
         << "optframe_api1d_engine_experimental_get_parameter returns '" << sout
         << "'" << std::endl;
-    char* c_sout = new char[sout.length()];
+    char* c_sout = new char[sout.length() + 1];
     ::strcpy(c_sout, sout.c_str());
     return c_sout;
   }

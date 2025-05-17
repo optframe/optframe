@@ -16,13 +16,13 @@ test_lib: test_lib_base test_lib_kp test_lib_tsp
 	./build/test_lib_tsp
 
 test_lib_base: OptFrameLib-test/optframelib_base.Test.cpp
-	g++ --coverage -g -O3 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 
 test_lib_kp: OptFrameLib-test/optframelib_kp.Test.cpp
-	g++ --coverage -g -O3 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 
 test_lib_tsp: OptFrameLib-test/optframelib_tsp.Test.cpp
-	g++ --coverage -g -O3 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 
 
 OptFrame_test : OptFrame.Test.cpp 
