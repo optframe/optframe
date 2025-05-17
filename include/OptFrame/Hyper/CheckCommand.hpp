@@ -2319,7 +2319,7 @@ class CheckCommand : public Component {  // NOLINT
     (*this->logdata) << "|" << type << "|=" << nComponents << "\t" << title
                      << std::endl;
     printf("---------------------------------\n");
-    printf("#id\ttitle\t#tests\ttotal\tavg\tstd\tmin\tmax\n");
+    printf("#id\ttitle\t#tests{#IQR}\ttotal\tavg\tstd\tmin\tmax\n");
     double avg = 0;
     int validValues = 0;
     for (unsigned id = 0; id < nComponents; id++) {
@@ -2332,6 +2332,7 @@ class CheckCommand : public Component {  // NOLINT
             accumulate(vMoveSamplesIDDouble.begin(), vMoveSamplesIDDouble.end(),
                        init, KahanSummation::KahanSum);
         auto vtarget = removeOutliersIQR(vMoveSamplesIDDouble);
+        int nSamplesIQR = vtarget.size();
         pair<double, double> avgStd = KahanSummation::calculateAvgStd(vtarget);
         double fmin = 999999999.0;
         double fmax = -fmin;
@@ -2339,9 +2340,9 @@ class CheckCommand : public Component {  // NOLINT
           if (x < fmin) fmin = x;
           if (x > fmax) fmax = x;
         }
-        printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", ((int)id),
-               vcomp[id]->toString().c_str(), nSamples, kahanSum.sum,
-               avgStd.first, avgStd.second, fmin, fmax);
+        printf("#%d\t%s\t%d{%d}\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", ((int)id),
+               vcomp[id]->toString().c_str(), nSamples, nSamplesIQR,
+               kahanSum.sum, avgStd.first, avgStd.second, fmin, fmax);
         avg += avgStd.first;
         validValues++;
       } else
@@ -2390,12 +2391,13 @@ class CheckCommand : public Component {  // NOLINT
     printf("---------------------------------\n");
     (*this->logdata) << component << "\t" << title << std::endl;
     printf("---------------------------------\n");
-    printf("title\t#tests\tavg(ms)\tsd(ms)\tmin(ms)\tmax(ms)\n");
+    printf("title\t#tests{#IQR}\tavg(ms)\tsd(ms)\tmin(ms)\tmax(ms)\n");
     double avg = 0;
     int validValues = 0;
     int nSamples = vTimeSamples.size();
     if (nSamples > 0) {
       auto vtarget = removeOutliersIQR(vTimeSamples);
+      int nSamplesIQR = vtarget.size();
       pair<double, double> avgStd = KahanSummation::calculateAvgStd(vtarget);
       double fmin = 999999999.0;
       double fmax = -fmin;
@@ -2403,8 +2405,8 @@ class CheckCommand : public Component {  // NOLINT
         if (x < fmin) fmin = x;
         if (x > fmax) fmax = x;
       }
-      printf("%s\t%d\t%.4f\t%.4f\t%.4f\t%.4f\n", component.c_str(), nSamples,
-             avgStd.first, avgStd.second, fmin, fmax);
+      printf("%s\t%d{%d}\t%.4f\t%.4f\t%.4f\t%.4f\n", component.c_str(),
+             nSamples, nSamplesIQR, avgStd.first, avgStd.second, fmin, fmax);
       avg += avgStd.first;
       validValues++;
     } else
@@ -2422,13 +2424,14 @@ class CheckCommand : public Component {  // NOLINT
     (*this->logdata) << "|" << type << "|=" << nTests << "\t" << title
                      << std::endl;
     printf("---------------------------------\n");
-    printf("#id\ttitle\t#tests\tavg(ms)\tsd(ms)\tmin(ms)\tmax(ms)\n");
+    printf("#id\ttitle\t#tests{#IQR}\tavg(ms)\tsd(ms)\tmin(ms)\tmax(ms)\n");
     double avg = 0;
     int validValues = 0;
     for (unsigned id = 0; id < nTests; id++) {
       int nSamples = vTimeSamples[id].size();
       if (nSamples > 0) {
         auto vtarget = removeOutliersIQR(vTimeSamples[id]);
+        int nSamplesIQR = vtarget.size();
         pair<double, double> avgStd =
             KahanSummation::calculateAvgStd(removeOutliersIQR(vtarget));
         double fmin = 999999999.0;
@@ -2437,9 +2440,9 @@ class CheckCommand : public Component {  // NOLINT
           if (x < fmin) fmin = x;
           if (x > fmax) fmax = x;
         }
-        printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\t%.4f\n", ((int)id),
-               vcomp[id]->toString().c_str(), nSamples, avgStd.first,
-               avgStd.second, fmin, fmax);
+        printf("#%d\t%s\t%d{%d}\t%.4f\t%.4f\t%.4f\t%.4f\n", ((int)id),
+               vcomp[id]->toString().c_str(), nSamples, nSamplesIQR,
+               avgStd.first, avgStd.second, fmin, fmax);
         avg += avgStd.first;
         validValues++;
       } else {
