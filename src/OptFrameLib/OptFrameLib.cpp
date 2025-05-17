@@ -2113,4 +2113,8 @@ OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
   }
 }
 
+OPT_MODULE_API void optframe_api1d_free_string(const char* sptr) {
+  delete[] sptr;
+}
+
 // ==============================================

@@ -241,6 +241,8 @@ OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
 OPT_MODULE_API char* optframe_api1d_engine_experimental_get_parameter(
     FakeEnginePtr _engine, const char* parameter);
 
+OPT_MODULE_API void optframe_api1d_free_string(const char* p);
+
 // ============================
 
 #endif  // OPTFRAME_PYTHON_LIB_H
