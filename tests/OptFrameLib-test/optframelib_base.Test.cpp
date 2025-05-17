@@ -37,10 +37,10 @@ int main() {
 
   using unique_cstr = std::unique_ptr<char[]>;
 
-  std::stringstream ss_log_level;
-  ss_log_level << (int)modlog::LogLevel::Debug;
+  std::stringstream ss_debug_level;
+  ss_debug_level << (int)modlog::LogLevel::Debug;
   bool b_out = optframe_api1d_engine_experimental_set_parameter(
-      engine, "ENGINE_LOG_LEVEL", ss_log_level.str().c_str());
+      engine, "ENGINE_LOG_LEVEL", ss_debug_level.str().c_str());
   "optframe_api1d_engine_experimental_set_parameter"_test = [b_out] {
     expect(b_out);
   };
@@ -51,6 +51,11 @@ int main() {
   "optframe_api1d_engine_experimental_get_parameter"_test = [view_sout] {
     expect(view_sout == "\"-1\"");
   };
+
+  std::stringstream ss_info_level;
+  ss_info_level << (int)modlog::LogLevel::Info;
+  optframe_api1d_engine_experimental_set_parameter(engine, "ENGINE_LOG_LEVEL",
+                                                   ss_info_level.str().c_str());
 
   "first_rand"_test = [eng] {
     eng->loader.factory.getRandGen()->setSeed(9999);

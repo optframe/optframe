@@ -54,7 +54,7 @@ class FCoreApi1Engine {
     else if (l == modlog::LogLevel::Debug)
       debug = true;
     if (debug) slevel = "debug";
-    os << "level=" << slevel;
+    os << "level=" << slevel << " from=lib";
     if (debug) os << " caller=" << short_file << ":" << line;
     os << " msg=";
     return os;

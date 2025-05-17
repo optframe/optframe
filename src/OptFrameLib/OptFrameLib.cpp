@@ -24,6 +24,7 @@
 #include <OptFrame/Heuristics/MultiObjective/ClassicNSGAII.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
+#include <OptFrame/Hyper/RunExperimentsCommand.hpp>
 #include <OptFrame/Timer.hpp>
 // C/C++ Library implementation
 #include <OptFrameLib/FCoreApi1Engine.hpp>
@@ -376,8 +377,8 @@ OPT_MODULE_API int optframe_api1d_engine_list_components(FakeEnginePtr _engine,
 }
 
 OPT_MODULE_API int  // index of ComponentList
-optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
-                                     char* list_type) {
+optframe_api1d_create_component_list(FakeEnginePtr _engine, const char* clist,
+                                     const char* list_type) {
   auto* engine = (FCoreApi1Engine*)_engine;
   if (engine->loader.factory.getLogLevel() <= modlog::LogLevel::Debug)
     std::cout << "DEBUG: create_component_list" << std::endl;
@@ -689,6 +690,31 @@ optframe_api1d_build_local_search(FakeEnginePtr _engine, char* builder,
   int id =
       engine->loader.factory.addComponent(sptrLocal, "OptFrame:LocalSearch");
   return id;
+}
+
+OPT_MODULE_API int  // error?
+optframe_api1d_run_experiments(FakeEnginePtr _engine, int numRuns,
+                               const char* buildersLines, int firstSeed,
+                               const char* outfile, double timelimit) {
+  using modlog::LogLevel::Debug;
+  auto* engine = (FCoreApi1Engine*)_engine;
+
+  // builders must come as a set of lines  Builder1 \n Builder2 \n
+  std::vector<std::string> builders;
+  std::string blist{buildersLines};
+  Scanner scanner{blist};
+  while (scanner.hasNext()) {
+    std::string builder = scanner.nextLine();
+    Log(Debug, engine) << "Got builder = '" << builder << "'" << std::endl;
+    builders.push_back(builder);
+  }
+
+  optframe::RunExperimentsCommand<FCoreLibESolution> exp;
+
+  auto data = exp.run(numRuns, builders, engine->loader.factory, timelimit,
+                      std::nullopt);
+
+  return -1;
 }
 
 OPT_MODULE_API int  // index of Component
@@ -1970,6 +1996,8 @@ OPT_MODULE_API bool optframe_api1d_engine_component_set_loglevel(
 
 OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
     FakeEnginePtr _engine, const char* _parameter, const char* _svalue) {
+  using modlog::LogLevel::Debug;
+  using modlog::LogLevel::Warning;
   auto* engine = (FCoreApi1Engine*)_engine;
 
   std::string parameter{_parameter};
@@ -1978,23 +2006,29 @@ OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
   auto cleanParam = scannerpp::Scanner::trim(parameter);
   auto cleanValue = scannerpp::Scanner::trim(svalue);
 
+  Log(Debug, engine)
+      << "optframe_api1d_engine_experimental_set_parameter for param='"
+      << cleanParam << "' and value='" << cleanValue << "'" << std::endl;
+
   if ((cleanParam.length() < 3) || (cleanParam.length() > 100) ||
       (cleanValue.length() < 0) || (cleanValue.length() > 100)) {
-    std::cout << "WARNING: invalid call "
-                 "optframe_api1d_engine_experimental_set_parameter(...):"
-              << std::endl;
-    std::cout << "parameter: '" << parameter << "'" << std::endl;
-    std::cout << "value: '" << svalue << "'" << std::endl;
+    Log(Warning, engine)
+        << "WARNING: invalid call "
+           "optframe_api1d_engine_experimental_set_parameter(...):"
+        << std::endl;
+    Log(Warning, engine) << "parameter: '" << parameter << "'" << std::endl;
+    Log(Warning, engine) << "value: '" << svalue << "'" << std::endl;
     return false;
   }
 
   if ((cleanParam != "NS_VALID_RANDOM_MOVE_MAX_TRIES") &&
       (cleanParam != "ENGINE_LOG_LEVEL") &&
       (cleanParam != "COMPONENT_LOG_LEVEL")) {
-    std::cout << "WARNING: non-existing parameter "
-                 "optframe_api1d_engine_experimental_set_parameter(...):"
-              << std::endl;
-    std::cout << "parameter: '" << parameter << "'" << std::endl;
+    Log(Warning, engine)
+        << "WARNING: non-existing parameter "
+           "optframe_api1d_engine_experimental_set_parameter(...):"
+        << std::endl;
+    Log(Warning, engine) << "parameter: '" << parameter << "'" << std::endl;
     return false;
   }
 
@@ -2004,9 +2038,10 @@ OPT_MODULE_API bool optframe_api1d_engine_experimental_set_parameter(
     if (!scan.hasNextInt()) return false;
     auto op_x = scan.nextInt();
     if (!op_x || *op_x <= 0 || *op_x >= 2'000'000) {
-      std::cout << "WARNING: optframe_api1d_engine_experimental_set_parameter:";
-      std::cout << "bad value '" << cleanValue << "' for param '" << cleanParam
-                << "'" << std::endl;
+      Log(Warning, engine)
+          << "WARNING: optframe_api1d_engine_experimental_set_parameter:";
+      Log(Warning, engine) << "bad value '" << cleanValue << "' for param '"
+                           << cleanParam << "'" << std::endl;
       return false;
     }
   }

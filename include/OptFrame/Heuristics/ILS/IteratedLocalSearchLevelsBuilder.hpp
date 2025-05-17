@@ -47,12 +47,10 @@ class IteratedLocalSearchLevelsBuilder : public ILS,
       Log(Warning, &hf) << "ILSL Builder failed" << std::endl;
       return nullptr;
     }
-
-    std::string rest = scanner.rest();
-    std::pair<sptr<LocalSearch<XES>>, std::string> method;
-    method = hf.createLocalSearch(rest);
-    sptr<LocalSearch<XES>> h = method.first;
-    scanner = Scanner(method.second);
+    // reload scanner for newer local search
+    auto method = hf.createLocalSearch(scanner.rest());
+    auto h = method.first;
+    scanner = Scanner{method.second};
     //
     auto pert = hf.template tryAssignIf<ILSLPerturbation<XES>>((bool)h, scanner,
                                                                counter);

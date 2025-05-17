@@ -165,11 +165,16 @@ optframe_api1d_add_rk_decoder(
 OPT_MODULE_API int  // error or not
 optframe_api0_set_array_double(int, double[], LibArrayDouble*);
 
+OPT_MODULE_API int  // error?
+optframe_api1d_run_experiments(FakeEnginePtr _engine, int numRuns,
+                               const char* buildersLines, int firstSeed,
+                               const char* outfile, double timelimit);
+
 // CREATE
 
 OPT_MODULE_API int  // index of ComponentList
-optframe_api1d_create_component_list(FakeEnginePtr _engine, char* clist,
-                                     char* list_type);
+optframe_api1d_create_component_list(FakeEnginePtr _engine, const char* clist,
+                                     const char* list_type);
 
 OPT_MODULE_API int  // index of InitialSearch
 optframe_api1d_create_initial_search(FakeEnginePtr _engine, int ev_idx,

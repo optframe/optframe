@@ -127,7 +127,32 @@ class HeuristicFactory {
   // output stream (defaults to std::cout)
   std::ostream* logdata{&std::cout};
 
-  modlog::LogConfig log() { return {logdata, loglevel}; }
+  using FuncLogPrefix = typename modlog::LogConfig::FuncLogPrefix;
+  FuncLogPrefix fprefixlogs{[](std::ostream& os, modlog::LogLevel l,
+                               std::tm local_tm, std::chrono::microseconds us,
+                               std::uintptr_t tid, std::string_view short_file,
+                               int line, bool debug) -> std::ostream& {
+    std::string slevel;
+    if (l == modlog::LogLevel::Info)
+      slevel = "info";
+    else if (l == modlog::LogLevel::Warning)
+      slevel = "warn";
+    else if (l == modlog::LogLevel::Error)
+      slevel = "error";
+    else if (l == modlog::LogLevel::Debug)
+      debug = true;
+    if (debug) slevel = "debug";
+    os << "level=" << slevel << " from=HF";
+    if (debug) os << " caller=" << short_file << ":" << line;
+    os << " msg=";
+    return os;
+  }};
+
+  std::ostream* logstream{&std::cout};
+
+  modlog::LogConfig log() {
+    return {.os = logdata, .minlog = loglevel, .fprefixdata{fprefixlogs}};
+  }
 
  public:
   std::map<std::string, std::vector<sptr<Component>>> components;

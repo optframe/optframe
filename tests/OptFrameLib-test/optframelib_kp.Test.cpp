@@ -10,6 +10,9 @@
 
 #include "OptFrameLib/LibCTypes.h"
 
+//
+#include <OptFrame/Hyper/RunExperimentsCommand.hpp>
+
 using KP_fcore::ESolutionKP;
 using KP_fcore::MoveBitFlip;
 
@@ -182,6 +185,13 @@ int main() {
 
   // =====================
 
+  int idx_listns = optframe_api1d_create_component_list(
+      engine, "[ OptFrame:NS 0 ]", "OptFrame:NS[]");
+
+  "optframe_api1d_create_component_list"_test = [idx_listns] {
+    expect(idx_listns == 0_i);
+  };
+
   std::string prefix = "";  // default "OptFrame:" with warning
   int list_sz = optframe_api1d_engine_list_components(engine, prefix.c_str());
 
@@ -214,6 +224,27 @@ int main() {
         return true;
       });
   "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
+
+  // ==================================
+  // Run some demonstration experiments
+
+  /*
+  optframe::RunExperimentsCommand<FCoreLibESolution> exp;
+  std::vector<std::string> builders{
+      "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
+      "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
+      "OptFrame:NS[] 0 0.99 100 99999"};
+  int numRuns = 1;
+  auto data =
+      exp.run(numRuns, builders, eng->loader.factory, 5.0, std::nullopt);
+*/
+
+  int out_run = optframe_api1d_run_experiments(
+      engine, 1,
+      "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
+      "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
+      "OptFrame:NS[] 0 0.99 100 99999",
+      0, "", 5.0);
 
   // =====================
 
