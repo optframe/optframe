@@ -72,15 +72,15 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
     for (sptr<NS<XES, XSH>> x : *_hlist) hlist.push_back(x);
 
     if (Component::debug) {
-      std::cout << "BasicSA Builder: got all parameters!" << std::endl;
-      std::cout << "BasicSimulatedAnnealing with:" << std::endl;
-      std::cout << "\teval=" << ge->id() << std::endl;
-      std::cout << "\tconstructive=" << constructive->id() << std::endl;
-      std::cout << "\t|hlist|=" << hlist.size() << std::endl;
-      std::cout << "\thlist[0]=" << hlist[0]->id() << std::endl;
-      std::cout << "\talpha=" << *alpha << std::endl;
-      std::cout << "\tSAmax=" << *SAmax << std::endl;
-      std::cout << "\tTi=" << *Ti << std::endl;
+      Log(Debug, &hf) << "BasicSA Builder: got all parameters!" << std::endl;
+      Log(Debug, &hf) << "BasicSimulatedAnnealing with:" << std::endl;
+      Log(Debug, &hf) << "\teval=" << ge->id() << std::endl;
+      Log(Debug, &hf) << "\tconstructive=" << constructive->id() << std::endl;
+      Log(Debug, &hf) << "\t|hlist|=" << hlist.size() << std::endl;
+      Log(Debug, &hf) << "\thlist[0]=" << hlist[0]->id() << std::endl;
+      Log(Debug, &hf) << "\talpha=" << *alpha << std::endl;
+      Log(Debug, &hf) << "\tSAmax=" << *SAmax << std::endl;
+      Log(Debug, &hf) << "\tTi=" << *Ti << std::endl;
     }
 
     return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, *alpha,

@@ -198,6 +198,11 @@ int main() {
   // =====================
 
   // test check module
+  std::vector<double> vtest{1, 2, 3, 4, 5, 100.0};
+  auto vtest2 =
+      optframe::CheckCommand<FCoreLibESolution>::removeOutliersIQR(vtest);
+  // vtest2: vector(5) [1 , 2 , 3 , 4 , 5]
+  "test_outliers_removal_iqr"_test = [vtest2] { expect(vtest2.size() == 5_i); };
 
   bool expr = optframe_api1d_engine_check(
       engine, 10, 5, false, [](int, FakeEnginePtr eng) -> bool {

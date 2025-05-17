@@ -2319,7 +2319,7 @@ class CheckCommand : public Component {  // NOLINT
     (*this->logdata) << "|" << type << "|=" << nComponents << "\t" << title
                      << std::endl;
     printf("---------------------------------\n");
-    printf("#id\ttitle\t#tests\ttotal\tavg\tstd \n");
+    printf("#id\ttitle\t#tests\ttotal\tavg\tstd\tmin\tmax\n");
     double avg = 0;
     int validValues = 0;
     for (unsigned id = 0; id < nComponents; id++) {
@@ -2331,11 +2331,17 @@ class CheckCommand : public Component {  // NOLINT
         KahanAccumulation kahanSum =
             accumulate(vMoveSamplesIDDouble.begin(), vMoveSamplesIDDouble.end(),
                        init, KahanSummation::KahanSum);
-        pair<double, double> avgStd =
-            KahanSummation::calculateAvgStd(vMoveSamplesIDDouble);
-        printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\n", ((int)id),
+        auto vtarget = removeOutliersIQR(vMoveSamplesIDDouble);
+        pair<double, double> avgStd = KahanSummation::calculateAvgStd(vtarget);
+        double fmin = 999999999.0;
+        double fmax = -fmin;
+        for (auto x : vtarget) {
+          if (x < fmin) fmin = x;
+          if (x > fmax) fmax = x;
+        }
+        printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", ((int)id),
                vcomp[id]->toString().c_str(), nSamples, kahanSum.sum,
-               avgStd.first, avgStd.second);
+               avgStd.first, avgStd.second, fmin, fmax);
         avg += avgStd.first;
         validValues++;
       } else
@@ -2347,21 +2353,58 @@ class CheckCommand : public Component {  // NOLINT
     (*this->logdata) << std::endl;
   }
 
+ public:
+  static std::vector<double> removeOutliersIQR(const std::vector<double>& v) {
+    if (v.size() < 4) return v;
+
+    auto sorted = v;
+    std::sort(sorted.begin(), sorted.end());
+
+    auto quantile = [&](double q) -> double {
+      double pos = q * (sorted.size() - 1);
+      size_t idx = (size_t)(pos);
+      double frac = pos - idx;
+      if (idx + 1 < sorted.size())
+        return sorted[idx] * (1 - frac) + sorted[idx + 1] * frac;
+      else
+        return sorted[idx];
+    };
+
+    double q1 = quantile(0.25);
+    double q3 = quantile(0.75);
+    double IQR = q3 - q1;
+
+    double lower = q1 - 1.5 * IQR;
+    double upper = q3 + 1.5 * IQR;
+
+    std::vector<double> vout;
+    for (double x : v)
+      if (x >= lower && x <= upper) vout.push_back(x);
+    return vout;
+  }
+
+ private:
   void printSingleSummarySamples(string component,
                                  const vector<double> vTimeSamples,
                                  string title) {
     printf("---------------------------------\n");
     (*this->logdata) << component << "\t" << title << std::endl;
     printf("---------------------------------\n");
-    printf("title\t#tests\tavg(ms)\tstd(ms)\n");
+    printf("title\t#tests\tavg(ms)\tsd(ms)\tmin(ms)\tmax(ms)\n");
     double avg = 0;
     int validValues = 0;
     int nSamples = vTimeSamples.size();
     if (nSamples > 0) {
-      pair<double, double> avgStd =
-          KahanSummation::calculateAvgStd(vTimeSamples);
-      printf("%s\t%d\t%.4f\t%.4f\n", component.c_str(), nSamples, avgStd.first,
-             avgStd.second);
+      auto vtarget = removeOutliersIQR(vTimeSamples);
+      pair<double, double> avgStd = KahanSummation::calculateAvgStd(vtarget);
+      double fmin = 999999999.0;
+      double fmax = -fmin;
+      for (auto x : vtarget) {
+        if (x < fmin) fmin = x;
+        if (x > fmax) fmax = x;
+      }
+      printf("%s\t%d\t%.4f\t%.4f\t%.4f\t%.4f\n", component.c_str(), nSamples,
+             avgStd.first, avgStd.second, fmin, fmax);
       avg += avgStd.first;
       validValues++;
     } else
@@ -2379,22 +2422,37 @@ class CheckCommand : public Component {  // NOLINT
     (*this->logdata) << "|" << type << "|=" << nTests << "\t" << title
                      << std::endl;
     printf("---------------------------------\n");
-    printf("#id\ttitle\t#tests\tavg(ms)\tstd(ms)\n");
+    printf("#id\ttitle\t#tests\tavg(ms)\tsd(ms)\tmin(ms)\tmax(ms)\n");
     double avg = 0;
     int validValues = 0;
     for (unsigned id = 0; id < nTests; id++) {
       int nSamples = vTimeSamples[id].size();
       if (nSamples > 0) {
+        auto vtarget = removeOutliersIQR(vTimeSamples[id]);
         pair<double, double> avgStd =
-            KahanSummation::calculateAvgStd(vTimeSamples[id]);
-        printf("#%d\t%s\t%d\t%.4f\t%.4f\n", ((int)id),
+            KahanSummation::calculateAvgStd(removeOutliersIQR(vtarget));
+        double fmin = 999999999.0;
+        double fmax = -fmin;
+        for (auto x : vtarget) {
+          if (x < fmin) fmin = x;
+          if (x > fmax) fmax = x;
+        }
+        printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\t%.4f\n", ((int)id),
                vcomp[id]->toString().c_str(), nSamples, avgStd.first,
-               avgStd.second);
+               avgStd.second, fmin, fmax);
         avg += avgStd.first;
         validValues++;
-      } else
+      } else {
         printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id),
                vcomp[id]->toString().c_str(), 0);
+      }
+      /*
+      if (this->debug) {
+        printf("all_times: [");
+        for (auto k : vTimeSamples[id]) printf("%.4f,", k);
+        printf("]\n");
+      }
+      */
     }
     printf("---------------------------------\n");
     printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
