@@ -164,7 +164,15 @@ class RunExperimentsCommand : public Component {  // NOLINT
         if (single) single->print();
         Log(Info, &factory)
             << "Running method for max " << timelimit << " secs" << std::endl;
+        Timer tRun;
         auto sout = single->search({timelimit});
+        data.timeData.runTimes[exp][method] = tBuild.now();
+        Log(Info, &factory)
+            << "Run Method in " << tRun.now() << " secs" << std::endl;
+        delete single;
+        data.timeData.fullTimes[exp][method] = tFull.now();
+        Log(Info, &factory) << "Finished experiment " << exp << " in "
+                            << tFull.now() << " secs" << std::endl;
       }
     }
 
