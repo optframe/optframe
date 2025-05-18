@@ -351,7 +351,7 @@ int main() {
   // get problem pointer as void*
   FakeProblemPtr p_ptr = (void*)(&problem.get());
   eng->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"] = "50";
-  eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
+  // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
   eng->updateParameters();
 
   int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, true, p_ptr);
@@ -420,7 +420,7 @@ int main() {
                    " OptFrame:ILS:LevelPert 0 "
                 << iterMax << " " << levelMax;
 
-  eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
+  // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
   // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "0";  // info
   eng->updateParameters();
 

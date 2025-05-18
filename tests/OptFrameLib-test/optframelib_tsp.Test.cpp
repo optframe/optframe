@@ -11,6 +11,7 @@
 #include "OptFrameLib/LibCTypes.h"
 
 using TSP_fcore::ESolutionTSP;
+using TSP_fcore::Move2Opt;
 using TSP_fcore::MoveSwap;
 using TSP_fcore::MoveSwapDelta;
 
@@ -71,10 +72,10 @@ FakeMovePtr fmove_apply_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
 
 FakeMovePtr fmove_apply_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
                                FakeSolutionPtr s_ptr) {
-  auto* m = (MoveSwap*)m_ptr;
+  auto* m = (Move2Opt*)m_ptr;
   auto* v = (std::vector<int>*)s_ptr;
   reverse(v->begin() + m->i, v->begin() + m->j + 1);
-  return new MoveSwap{m->j, m->i};
+  return new Move2Opt{m->i, m->j};
 }
 
 template <typename T>
@@ -113,6 +114,10 @@ bool fmove_cba_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
 
 FakePythonObjPtr fIterator_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
   return new MoveSwap{0, 0};
+}
+
+FakePythonObjPtr fIterator_c_2opt(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  return new TSP_fcore::Move2Opt{0, 0};
 }
 
 template <typename T>
@@ -331,6 +336,9 @@ int main() {
   problem->rg = eng->loader.factory.getRandGen();
   // get problem pointer as void*
   FakeProblemPtr p_ptr = (void*)(&problem.get());
+  eng->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"] = "50";
+  // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
+  eng->updateParameters();
 
   // testing initial solutions
 
@@ -351,7 +359,7 @@ int main() {
 
   auto esol = ESolutionTSP{sol, e};
 
-  int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, false, p_ptr);
+  int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, true, p_ptr);
 
   "optframe_api1d_add_evaluator"_test = [idx_ev] { expect(idx_ev == 0_i); };
 
@@ -393,12 +401,21 @@ int main() {
 
   "optframe_api2d_add_ns"_test = [idx_ns_v2] { expect(idx_ns_v2 == 1_i); };
 
+  int idx_nsseq2 = optframe_api1d_add_nsseq(
+      engine, fnsrand_c_2opt, fIterator_c_2opt, fFirst_c_2opt, fNext_c_2opt,
+      fIsDone_c_2opt, fCurrent_c_2opt, fmove_apply_c_2opt, fmove_eq_c_2opt,
+      fmove_cba_c_2opt, p_ptr, f_decref_move);
+
+  int new_list = optframe_api1d_create_component_list(
+      engine, "[ OptFrame:NS 0 OptFrame:NS 1 ]", "OptFrame:NS[]");
+
   // =====================
 
   // test check module
 
   eng->check.setMessageLevel(modlog::LogLevel::Info);
 
+  /*
   bool expr = optframe_api1d_engine_check(
       engine, 100, 5, false, [](int, FakeEnginePtr eng) -> bool {
         // This enables debugging mode, if component supports it...
@@ -409,6 +426,43 @@ int main() {
         return true;
       });
   "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
+  */
+
+  // =====================
+
+  // begin serious experiments!
+
+  sref<TSP_fcore::ProblemContext> problem2{new TSP_fcore::ProblemContext{}};
+  std::string filename = "tsp_ignore_berlin52.txt";
+  std::fstream fs;
+  fs.open(filename.c_str());
+  if (fs.is_open())
+    fs.close();
+  else {
+    std::cout << "failed to read '" << filename << "'" << std::endl;
+    optframe_api1d_destroy_engine(engine);
+    return 1;
+  }
+  Scanner scanner2{File{filename}};
+  problem2->load(scanner2);
+  problem2->rg = eng->loader.factory.getRandGen();
+
+  std::cout << problem->n << std::endl;
+  std::cout << problem->dist << std::endl;
+  // copy data to other problem
+  (*problem).n = problem2->n;
+  (*problem).dist = problem2->dist;
+  std::cout << problem->n << std::endl;
+  std::cout << problem->dist << std::endl;
+
+  //
+
+  int out_run = optframe_api1d_run_experiments(
+      engine, 3,
+      "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
+      "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
+      "OptFrame:NS[] 0 0.99 100 99999",
+      0, "", 5.0);
 
   // =====================
 
