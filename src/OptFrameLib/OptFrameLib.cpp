@@ -595,8 +595,8 @@ optframe_api1d_build_global(FakeEnginePtr _engine, char* builder,
 }
 
 OPT_MODULE_API int  // index of SingleObjSearch
-optframe_api1d_build_single(FakeEnginePtr _engine, char* builder,
-                            char* build_string) {
+optframe_api1d_build_single(FakeEnginePtr _engine, const char* builder,
+                            const char* build_string) {
   auto* engine = (FCoreApi1Engine*)_engine;
   // =============================
   //     build_single (TESTING)

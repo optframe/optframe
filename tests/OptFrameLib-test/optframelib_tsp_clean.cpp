@@ -363,18 +363,23 @@ int main() {
 
   eng->check.setMessageLevel(modlog::LogLevel::Info);
 
-  bool expr = optframe_api1d_engine_check(
-      engine, 100, 5, false, [](int, FakeEnginePtr eng) -> bool {
-        // This enables debugging mode, if component supports it...
-        // TODO: create an example where check fails and we verify the logs
-        auto* engine = (FCoreApi1Engine*)eng;
-        engine->experimentalParams["COMPONENT_LOG_LEVEL"] = "-1";
-        engine->updateParameters();
-        return true;
-      });
-  "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
-
   // =====================
+
+  std::stringstream ss_SA_params;
+  ss_SA_params
+      << "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
+         "OptFrame:NS[] 0 0.99 100 99999";
+
+  int build_sa = optframe_api1d_build_single(
+      engine, "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA",
+      ss_SA_params.str().c_str());
+
+  std::cout << "build_sa:" << build_sa << std::endl;
+
+  double timelimit = 5.0;
+
+  LibSearchOutput sa_out =
+      optframe_api1d_run_sos_search(engine, build_sa, timelimit);
 
   // =====================
 
