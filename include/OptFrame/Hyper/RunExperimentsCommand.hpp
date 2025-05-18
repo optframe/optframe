@@ -176,6 +176,7 @@ class RunExperimentsCommand : public Component {  // NOLINT
         Log(Info, &factory)
             << "Running method for max " << timelimit << " secs" << std::endl;
         Timer tRun;
+        single->setMessageLevelR(modlog::LogLevel::Disabled);
         auto sout = single->search({timelimit});
         data.timeData.runTimes[exp][method] = tBuild.now();
         data.timeData.timeToBestTimes[exp][method] = sout.timeBest;
