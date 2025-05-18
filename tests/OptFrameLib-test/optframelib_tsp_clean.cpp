@@ -11,6 +11,7 @@
 #include "OptFrameLib/LibCTypes.h"
 
 using TSP_fcore::ESolutionTSP;
+using TSP_fcore::Move2Opt;
 using TSP_fcore::MoveSwap;
 using TSP_fcore::MoveSwapDelta;
 
@@ -71,10 +72,10 @@ FakeMovePtr fmove_apply_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
 
 FakeMovePtr fmove_apply_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
                                FakeSolutionPtr s_ptr) {
-  auto* m = (MoveSwap*)m_ptr;
+  auto* m = (Move2Opt*)m_ptr;
   auto* v = (std::vector<int>*)s_ptr;
   reverse(v->begin() + m->i, v->begin() + m->j + 1);
-  return new MoveSwap{m->j, m->i};
+  return new Move2Opt{m->i, m->j};
 }
 
 template <typename T>
@@ -113,6 +114,10 @@ bool fmove_cba_c_2opt(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
 
 FakePythonObjPtr fIterator_c(FakeProblemPtr, FakePythonObjPtr it_ptr) {
   return new MoveSwap{0, 0};
+}
+
+FakePythonObjPtr fIterator_c_2opt(FakeProblemPtr, FakePythonObjPtr it_ptr) {
+  return new TSP_fcore::Move2Opt{0, 0};
 }
 
 template <typename T>
@@ -347,6 +352,11 @@ int main() {
   int idx_nsseq = optframe_api1d_add_nsseq(
       engine, fnsrand_c, fIterator_c, fFirst_c, fNext_c, fIsDone_c, fCurrent_c,
       fmove_apply_c, fmove_eq_c, fmove_cba_c, p_ptr, f_decref_move);
+
+  int idx_nsseq2 = optframe_api1d_add_nsseq(
+      engine, fnsrand_c_2opt, fIterator_c_2opt, fFirst_c_2opt, fNext_c_2opt,
+      fIsDone_c_2opt, fCurrent_c_2opt, fmove_apply_c_2opt, fmove_eq_c_2opt,
+      fmove_cba_c_2opt, p_ptr, f_decref_move);
 
   eng->check.setMessageLevel(modlog::LogLevel::Info);
 
