@@ -10,7 +10,8 @@ all: test
 
 test: clean test_lib OptFrame_test 
 
-test_lib: test_lib_kp test_lib_base test_lib_kp test_lib_tsp
+test_lib: test_lib_tsp_clean test_lib_base test_lib_kp test_lib_tsp
+	./build/test_lib_tsp_clean
 	./build/test_lib_base
 	./build/test_lib_kp
 	./build/test_lib_tsp
@@ -22,6 +23,9 @@ test_lib_kp: OptFrameLib-test/optframelib_kp.Test.cpp
 	g++ -g -O3 -std=c++20 -pedantic  -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 
 test_lib_tsp: OptFrameLib-test/optframelib_tsp.Test.cpp
+	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+
+test_lib_tsp_clean: OptFrameLib-test/optframelib_tsp_clean.cpp
 	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 
 
