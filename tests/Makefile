@@ -27,6 +27,7 @@ test_lib_tsp: OptFrameLib-test/optframelib_tsp.Test.cpp
 
 test_lib_tsp_clean: OptFrameLib-test/optframelib_tsp_clean.cpp
 	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+	cp ./OptFrameLib-test/*.txt ./build/
 
 
 OptFrame_test : OptFrame.Test.cpp 
