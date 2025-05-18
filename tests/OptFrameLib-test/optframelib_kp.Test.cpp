@@ -240,7 +240,7 @@ int main() {
 */
 
   int out_run = optframe_api1d_run_experiments(
-      engine, 1,
+      engine, 3,
       "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
       "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
       "OptFrame:NS[] 0 0.99 100 99999",

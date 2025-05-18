@@ -709,10 +709,12 @@ optframe_api1d_run_experiments(FakeEnginePtr _engine, int numRuns,
     builders.push_back(builder);
   }
 
+  std::string_view sv_outfile{outfile};
+
   optframe::RunExperimentsCommand<FCoreLibESolution> exp;
 
   auto data = exp.run(numRuns, builders, engine->loader.factory, timelimit,
-                      std::nullopt);
+                      std::nullopt, sv_outfile, firstSeed);
 
   return -1;
 }

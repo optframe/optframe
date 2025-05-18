@@ -33,21 +33,23 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class SearchOutput {
- public:
+struct SearchOutput {
   SearchStatus status;
   std::optional<XSH> best;
+  double timeBest{-1.0};  // time to find 'best'
 
   // two real elements (copy best)
-  SearchOutput(SearchStatus status, std::optional<XSH>& best)
-      : status{status}, best{best} {}
+  SearchOutput(SearchStatus status, std::optional<XSH>& best,
+               double timeBest = -1)
+      : status{status}, best{best}, timeBest{timeBest} {}
 
   // move semantics or nothing (DO NOT MAKE IT explicit!)
   // NOLINTNEXTLINE
-  SearchOutput(SearchStatus status, std::optional<XSH>&& best = std::nullopt)
-      : status{status}, best{best} {}
-};  // SearchOutput
+  SearchOutput(SearchStatus status, std::optional<XSH>&& best = std::nullopt,
+               double timeBest = -1)
+      : status{status}, best{best}, timeBest{timeBest} {}
 
+};  // SearchOutput
 }  // namespace optframe
 
 #endif  // OPTFRAME_SEARCH_SEARCHOUTPUT_HPP_

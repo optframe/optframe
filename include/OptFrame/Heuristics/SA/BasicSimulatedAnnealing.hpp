@@ -182,7 +182,10 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     // abort if no star exists
     if (!star) return SearchStatus::NO_SOLUTION;  // cannot continue!
 
+    double timeBest = sosc.getTime();
+
     if (Component::verbose) {
+      std::cout << "time best: " << timeBest << std::endl;
       std::cout << "star value: " << star->second.evaluation() << std::endl;
 #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
       if constexpr (XOStreamable<XES>)
@@ -273,8 +276,10 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
         if (evaluator->betterStrict(se.second, star->second)) {
           star = make_optional(se);
+          timeBest = sosc.getTime();
 
           if (Component::information) {
+            std::cout << "time best: " << timeBest << std::endl;
             std::cout << "Best fo: " << se.second.evaluation()
                       << " Found on Iter = " << ctx.iterT
                       << " and T = " << ctx.T;
@@ -302,7 +307,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     }
 
     // return best solution
-    return {SearchStatus::NO_REPORT, star};
+    return {SearchStatus::NO_REPORT, star, timeBest};
   }
 
   // =======================================

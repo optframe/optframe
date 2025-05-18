@@ -128,8 +128,7 @@ class RunExperimentsCommand : public Component {  // NOLINT
                                         HeuristicFactory<XES>& factory,
                                         double timelimit, op<XEv> targetValue,
                                         std::string_view outputFile = "",
-                                        int firstSeed = -1,
-                                        sref<RandGen> rg = new RandGen{}) {
+                                        int firstSeed = -1) {
     using modlog::LogLevel::Info;
     AllDataRunExperimentsCommand<XES> data;
 
@@ -145,10 +144,20 @@ class RunExperimentsCommand : public Component {  // NOLINT
       data.timeData.fullTimes[exp] = std::vector<double>(numMethods);
       data.timeData.buildTimes[exp] = std::vector<double>(numMethods);
       data.timeData.runTimes[exp] = std::vector<double>(numMethods);
+      data.timeData.timeToBestTimes[exp] = std::vector<double>(numMethods);
 
       for (int method = 0; method < numMethods; method++) {
         Log(Info, &factory)
             << "begin method '" << builders[method] << "'" << std::endl;
+
+        if (firstSeed >= 0) {
+          Log(Info, &factory)
+              << "setting seed = " << (firstSeed + exp) << std::endl;
+          factory.getRandGen()->setSeed(firstSeed + exp);
+        } else {
+          Log(Info, &factory) << "do not changing seed!" << std::endl;
+        }
+
         Timer tFull;
         Timer tBuild;
         Scanner scanner{builders[method]};
@@ -167,8 +176,13 @@ class RunExperimentsCommand : public Component {  // NOLINT
         Timer tRun;
         auto sout = single->search({timelimit});
         data.timeData.runTimes[exp][method] = tBuild.now();
+        data.timeData.timeToBestTimes[exp][method] = sout.timeBest;
         Log(Info, &factory)
             << "Run Method in " << tRun.now() << " secs" << std::endl;
+        if (sout.best)
+          Log(Info, &factory)
+              << "Method best = " << sout.best->second.evaluation() << " in "
+              << sout.timeBest << " secs" << std::endl;
         delete single;
         data.timeData.fullTimes[exp][method] = tFull.now();
         Log(Info, &factory) << "Finished experiment " << exp << " in "
