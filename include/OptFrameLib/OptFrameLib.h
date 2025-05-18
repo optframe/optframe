@@ -176,7 +176,8 @@ optframe_api0_set_array_double(int, double[], LibArrayDouble*);
 OPT_MODULE_API int  // error?
 optframe_api1d_run_experiments(FakeEnginePtr _engine, int numRuns,
                                const char* buildersLines, int firstSeed,
-                               const char* outfile, double timelimit);
+                               const char* outfile, double timelimit,
+                               int componentLogLevel);
 
 // CREATE
 

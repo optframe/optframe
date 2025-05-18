@@ -696,7 +696,12 @@ optframe_api1d_build_local_search(FakeEnginePtr _engine, const char* builder,
 OPT_MODULE_API int  // error?
 optframe_api1d_run_experiments(FakeEnginePtr _engine, int numRuns,
                                const char* buildersLines, int firstSeed,
-                               const char* outfile, double timelimit) {
+                               const char* outfile, double timelimit,
+                               int componentLogLevel) {
+  assert(componentLogLevel >= -1);
+  assert(componentLogLevel <= 4);
+  std::cout << "optframe_api1d_run_experiments componentLogLevel = "
+            << componentLogLevel << std::endl;
   using modlog::LogLevel::Debug;
   auto* engine = (FCoreApi1Engine*)_engine;
 
@@ -715,7 +720,8 @@ optframe_api1d_run_experiments(FakeEnginePtr _engine, int numRuns,
   optframe::RunExperimentsCommand<FCoreLibESolution> exp;
 
   auto data = exp.run(numRuns, builders, engine->loader.factory, timelimit,
-                      std::nullopt, sv_outfile, firstSeed);
+                      std::nullopt, sv_outfile, firstSeed,
+                      (modlog::LogLevel)componentLogLevel);
 
   return -1;
 }

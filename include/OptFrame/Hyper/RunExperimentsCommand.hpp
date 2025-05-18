@@ -123,12 +123,11 @@ class RunExperimentsCommand : public Component {  // NOLINT
   std::string toString() const override { return "RunExperimentsCommand"; }
 
  public:
-  AllDataRunExperimentsCommand<XES> run(int numRuns,
-                                        std::vector<std::string> builders,
-                                        HeuristicFactory<XES>& factory,
-                                        double timelimit, op<XEv> targetValue,
-                                        std::string_view outputFile = "",
-                                        int firstSeed = -1) {
+  AllDataRunExperimentsCommand<XES> run(
+      int numRuns, std::vector<std::string> builders,
+      HeuristicFactory<XES>& factory, double timelimit, op<XEv> targetValue,
+      std::string_view outputFile = "", int firstSeed = -1,
+      modlog::LogLevel componentLogLevel = modlog::LogLevel::Disabled) {
     using modlog::LogLevel::Info;
     AllDataRunExperimentsCommand<XES> data;
 
@@ -176,7 +175,7 @@ class RunExperimentsCommand : public Component {  // NOLINT
         Log(Info, &factory)
             << "Running method for max " << timelimit << " secs" << std::endl;
         Timer tRun;
-        single->setMessageLevelR(modlog::LogLevel::Disabled);
+        single->setMessageLevelR(componentLogLevel);
         auto sout = single->search({timelimit});
         data.timeData.runTimes[exp][method] = tBuild.now();
         data.timeData.timeToBestTimes[exp][method] = sout.timeBest;

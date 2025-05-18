@@ -202,7 +202,7 @@ int main() {
   eng->updateParameters();
 
   int out_run = optframe_api1d_run_experiments(
-      engine, 3, ssRunAll.str().c_str(), 0, "", problem2->n / 5.0);
+      engine, 3, ssRunAll.str().c_str(), 0, "", problem2->n / 5.0, 4);
 
   // =====================
 

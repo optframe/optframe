@@ -146,7 +146,7 @@ int main() {
       "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
       "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
       "OptFrame:NS[] 0 0.99 100 99999",
-      0, "", 5.0);
+      0, "", 5.0, 4);
 
   // =====================
 
