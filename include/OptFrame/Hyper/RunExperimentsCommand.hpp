@@ -207,7 +207,7 @@ class RunExperimentsCommand : public Component {  // NOLINT
     std::cout << std::endl;
     std::cout << "#exp\t";
     for (int method = 0; method < numMethods; method++) {
-      std::cout << "best" << "\t";
+      std::cout << "bestValue" << "\t";
       std::cout << "timeBest" << "\t";
       std::cout << "timeRun" << "\t";
       std::cout << "timeFull" << "\t";
