@@ -334,7 +334,16 @@ int main() {
   eng->loader.factory.getRandGen()->setSeed(0);
 
   sref<TSP_fcore::ProblemContext> problem{new TSP_fcore::ProblemContext{}};
-  Scanner scanner{File{"tsp_small.txt"}};
+  std::string filename = "tsp_small.txt";
+  std::fstream fs;
+  fs.open(filename.c_str());
+  if (fs.is_open())
+    fs.close();
+  else {
+    std::cout << "failed to read '" << filename << "'" << std::endl;
+    return 1;
+  }
+  Scanner scanner{File{filename}};
   problem->load(scanner);
   problem->rg = eng->loader.factory.getRandGen();
   assert(problem->n == 5);
