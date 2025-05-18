@@ -137,10 +137,12 @@ class RunExperimentsCommand : public Component {  // NOLINT
 
     int numMethods = builders.size();
 
+    data.solData.opResults = std::vector<std::vector<op<XES>>>(numRuns);
+    data.timeData.initialize(numRuns);
     for (int exp = 0; exp < numRuns; exp++) {
       Log(Info, &factory) << "begin experiment " << exp << " .. "
                           << (numRuns - 1) << std::endl;
-      data.timeData.initialize(numRuns);
+      data.solData.opResults[exp] = std::vector<op<XES>>(numMethods);
       data.timeData.fullTimes[exp] = std::vector<double>(numMethods);
       data.timeData.buildTimes[exp] = std::vector<double>(numMethods);
       data.timeData.runTimes[exp] = std::vector<double>(numMethods);
@@ -179,10 +181,12 @@ class RunExperimentsCommand : public Component {  // NOLINT
         data.timeData.timeToBestTimes[exp][method] = sout.timeBest;
         Log(Info, &factory)
             << "Run Method in " << tRun.now() << " secs" << std::endl;
-        if (sout.best)
+        if (sout.best) {
           Log(Info, &factory)
               << "Method best = " << sout.best->second.evaluation() << " in "
               << sout.timeBest << " secs" << std::endl;
+          data.solData.opResults[exp][method] = sout.best;
+        }
         delete single;
         data.timeData.fullTimes[exp][method] = tFull.now();
         Log(Info, &factory) << "Finished experiment " << exp << " in "
@@ -190,6 +194,37 @@ class RunExperimentsCommand : public Component {  // NOLINT
       }
     }
 
+    std::cout << std::endl;
+    std::cout << "============= results =============" << std::endl;
+
+    std::cout << "#exp\t";
+    for (int method = 0; method < numMethods; method++) {
+      std::cout << "method_" << method << "\t";
+      std::cout << "method_" << method << "\t";
+      std::cout << "method_" << method << "\t";
+      std::cout << "method_" << method << "\t";
+    }
+    std::cout << std::endl;
+    std::cout << "#exp\t";
+    for (int method = 0; method < numMethods; method++) {
+      std::cout << "best" << "\t";
+      std::cout << "timeBest" << "\t";
+      std::cout << "timeRun" << "\t";
+      std::cout << "timeFull" << "\t";
+    }
+    std::cout << std::endl;
+
+    for (int exp = 0; exp < numRuns; exp++) {
+      std::cout << "#" << exp << "\t";
+      for (int method = 0; method < numMethods; method++) {
+        std::cout << data.solData.opResults[exp][method]->second.evaluation()
+                  << "\t";
+        std::cout << data.timeData.timeToBestTimes[exp][method] << "\t";
+        std::cout << data.timeData.runTimes[exp][method] << "\t";
+        std::cout << data.timeData.fullTimes[exp][method] << "\t";
+      }
+      std::cout << std::endl;
+    }
     return data;
   }
 };
