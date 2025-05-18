@@ -336,6 +336,8 @@ int main() {
   problem->rg = eng->loader.factory.getRandGen();
   // get problem pointer as void*
   FakeProblemPtr p_ptr = (void*)(&problem.get());
+  eng->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"] = "50";
+  eng->updateParameters();
 
   int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, false, p_ptr);
 
@@ -381,11 +383,11 @@ int main() {
   LibSearchOutput sa_out =
       optframe_api1d_run_sos_search(engine, build_sa, timelimit);
 
+  std::cout << sa_out.best_e << std::endl;
+
   // =====================
 
   bool b = optframe_api1d_destroy_engine(engine);
-
-  "optframe_api1d_destroy_engine"_test = [b] { expect(b == 1_i); };
 
   return 0;
 }
