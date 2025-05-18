@@ -226,6 +226,81 @@ class RunExperimentsCommand : public Component {  // NOLINT
       }
       std::cout << std::endl;
     }
+
+    std::cout << " ============================ " << std::endl;
+
+    for (int method = 0; method < numMethods; method++) {
+      std::cout << "final method_" << method << ":" << std::endl;
+      //
+      std::vector<double> vTimeToBestTimes;
+      for (int run = 0; run < numRuns; run++)
+        vTimeToBestTimes.push_back(data.timeData.runTimes[run][method]);
+      std::cout << "timeToBestTimes: ";
+      {
+        pair<double, double> avgStd =
+            KahanSummation::calculateAvgStd(vTimeToBestTimes);
+        double fmin = 999999999.0;
+        double fmax = -fmin;
+        for (auto x : vTimeToBestTimes) {
+          if (x < fmin) fmin = x;
+          if (x > fmax) fmax = x;
+        }
+        std::cout << " avg=" << avgStd.first << " sd=" << avgStd.second
+                  << " min=" << fmin << " max=" << fmax << std::endl;
+      }
+      //
+      std::vector<double> vFullTimes;
+      for (int run = 0; run < numRuns; run++)
+        vFullTimes.push_back(data.timeData.fullTimes[run][method]);
+      std::cout << "fullTimes:\t";
+      {
+        pair<double, double> avgStd =
+            KahanSummation::calculateAvgStd(vFullTimes);
+        double fmin = 999999999.0;
+        double fmax = -fmin;
+        for (auto x : vFullTimes) {
+          if (x < fmin) fmin = x;
+          if (x > fmax) fmax = x;
+        }
+        std::cout << " avg=" << avgStd.first << " sd=" << avgStd.second
+                  << " min=" << fmin << " max=" << fmax << std::endl;
+      }
+      //
+      std::vector<double> vRunTimes;
+      for (int run = 0; run < numRuns; run++)
+        vRunTimes.push_back(data.timeData.runTimes[run][method]);
+      std::cout << "runTimes:\t";
+      {
+        pair<double, double> avgStd =
+            KahanSummation::calculateAvgStd(vRunTimes);
+        double fmin = 999999999.0;
+        double fmax = -fmin;
+        for (auto x : vFullTimes) {
+          if (x < fmin) fmin = x;
+          if (x > fmax) fmax = x;
+        }
+        std::cout << " avg=" << avgStd.first << " sd=" << avgStd.second
+                  << " min=" << fmin << " max=" << fmax << std::endl;
+      }
+      //
+      std::vector<double> vBest;
+      for (int run = 0; run < numRuns; run++)
+        vBest.push_back(
+            data.solData.opResults[run][method]->second.evaluation());
+      std::cout << "best_ev:\t";
+      {
+        pair<double, double> avgStd = KahanSummation::calculateAvgStd(vBest);
+        double fmin = 999999999.0;
+        double fmax = -fmin;
+        for (auto x : vBest) {
+          if (x < fmin) fmin = x;
+          if (x > fmax) fmax = x;
+        }
+        std::cout << " avg=" << avgStd.first << " sd=" << avgStd.second
+                  << " min=" << fmin << " max=" << fmax << std::endl;
+      }
+    }
+
     return data;
   }
 };
