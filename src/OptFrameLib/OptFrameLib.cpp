@@ -273,6 +273,7 @@ OPT_MODULE_API FakeEnginePtr optframe_api1d_create_engine(int ll) {
   if (ll >= 4) ll = 4;
   auto* engine = new FCoreApi1Engine{};
   engine->experimentalParams["ENGINE_LOG_LEVEL"] = std::to_string(ll);
+  engine->experimentalParams["COMPONENT_LOG_LEVEL"] = std::to_string(ll);
   engine->updateParameters();
   return (FakeEnginePtr)engine;
 }
@@ -1031,6 +1032,76 @@ optframe_api1d_add_constructive(
                          f_utils_decref);
     // std::cout << "'optframe_api1d_add_constructive' -> solution created!"
     // << std::endl;
+    return sol;
+  };
+
+  auto* c_ptr = new optframe::FConstructive<FCoreLibSolution>{fconstructive};
+
+  sref<optframe::Constructive<FCoreLibSolution>> fc2(c_ptr);
+  sref<optframe::Component> fc(fc2);
+
+  // std::cout << "'optframe_api1d_add_constructive' will add component on hf"
+  // << std::endl;
+
+  int id = engine->loader.factory.addComponent(fc, "OptFrame:Constructive");
+
+  // std::cout << "c_id = " << id << std::endl;
+  //  ========== add to check module ==========
+  using MyEval =
+      optframe::Evaluator<FCoreLibSolution, optframe::Evaluation<double>,
+                          FCoreLibESolution>;
+
+  // will try to get evaluator to build InitialSolution component...
+  std::shared_ptr<MyEval> ev;
+  engine->loader.factory.assign(ev, 0, "OptFrame:GeneralEvaluator:Evaluator");
+  assert(ev);
+
+  using MyIEval = optframe::IEvaluator<FCoreLibESolution>;
+
+  sref<MyEval> ref_ev{ev};
+  sref<MyIEval> iev{ref_ev};
+  //
+  if (!ev)
+    std::cout << "WARNING: No Evaluator! Cannot build InitialSearch for "
+                 "Constructive id="
+              << id << "!" << std::endl;
+  else {
+    // auto ev = std::make_shared<optframe::Evaluator<FCoreLibSolution,
+    // optframe::Evaluation<double>, FCoreLibESolution>>(
+    //   gev);
+    // std::shared_ptr<MyEval>
+    //   ev(
+    //     std::static_pointer_cast<MyEval>(gev));
+
+    sref<optframe::InitialSearch<FCoreLibESolution>> initSol{
+        new optframe::BasicInitialSearch<FCoreLibESolution>(fc2, iev)};
+    engine->check.add(initSol);
+  }
+  // fc->print();
+  return id;
+}
+
+// Method 'optframe_api1d_add_constructive_dangling' accepts a 'dangling' memory
+// generator, which is the opposite of optframe_api1d_add_constructive, that
+// receives managed memory.
+
+OPT_MODULE_API int  // index of constructive
+optframe_api1d_add_constructive_dangling(
+    FakeEnginePtr _engine, FakeSolutionPtr (*_fconstructive)(FakeProblemPtr),
+    FakeProblemPtr problem_view,
+    FakePythonObjPtr (*f_sol_deepcopy)(FakePythonObjPtr),
+    size_t (*f_sol_tostring)(FakeSolutionPtr, char*, size_t),
+    int (*f_utils_decref)(FakePythonObjPtr)) {
+  auto* engine = (FCoreApi1Engine*)_engine;
+
+  auto fconstructive = [_fconstructive, problem_view, f_sol_deepcopy,
+                        f_sol_tostring, f_utils_decref]() -> FCoreLibSolution {
+    FakePythonObjPtr vobj_dangling = _fconstructive(problem_view);
+    assert(vobj_dangling);
+    FCoreLibSolution sol(f_sol_deepcopy(vobj_dangling), f_sol_deepcopy,
+                         f_sol_tostring, f_utils_decref);
+    // delete dangling memory
+    f_utils_decref(vobj_dangling);
     return sol;
   };
 

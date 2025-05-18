@@ -341,6 +341,7 @@ int main() {
     fs.close();
   else {
     std::cout << "failed to read '" << filename << "'" << std::endl;
+    optframe_api1d_destroy_engine(engine);
     return 1;
   }
   Scanner scanner{File{filename}};

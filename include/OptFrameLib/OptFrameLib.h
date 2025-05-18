@@ -87,6 +87,14 @@ optframe_api1d_add_constructive(
     size_t (*f_sol_tostring)(FakePythonObjPtr, char*, size_t),
     int (*f_utils_decref)(FakePythonObjPtr));
 
+OPT_MODULE_API int  // index of constructive
+optframe_api1d_add_constructive_dangling(
+    FakeEnginePtr _engine, FakeSolutionPtr (*_fconstructive)(FakeProblemPtr),
+    FakeProblemPtr problem_view,
+    FakePythonObjPtr (*f_sol_deepcopy)(FakePythonObjPtr),
+    size_t (*f_sol_tostring)(FakeSolutionPtr, char*, size_t),
+    int (*f_utils_decref)(FakePythonObjPtr));
+
 OPT_MODULE_API int  // index of general crossover
 optframe_api0d_add_general_crossover(
     FakeEnginePtr _engine,
