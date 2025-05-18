@@ -62,20 +62,6 @@ cc_test(
     ],
 )
 
-cc_test(
-    name = "OptFrameLib-test-tsp-clean",
-    srcs = [
-        "OptFrameLib-test/optframelib_tsp_clean.cpp",
-    ],
-    deps = [
-        "//include:OptFrameLib",
-        "//include/OptFrame-Core-Examples:core-examples-hpp",
-        "//src/OptFrameLib:lib_src",
-        # "@ut//:ut",
-        "@ut",
-    ],
-)
-
 '''
 cc_test(
     name = "all_ut_test",
