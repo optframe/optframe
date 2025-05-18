@@ -75,6 +75,8 @@ class IteratedLocalSearch : public ILS,
     if (Component::debug) std::cout << "ILS::begin() has debug!" << std::endl;
     if (Component::information)
       std::cout << "ILS::begin() has info!" << std::endl;
+
+    double timeBest = -1;
     if (Component::information)
       std::cout << "ILS::searchBy(" << stopCriteria.timelimit << ")"
                 << std::endl;
@@ -124,6 +126,7 @@ class IteratedLocalSearch : public ILS,
         if (Component::information)
           std::cout << "ILS::improvement! star <= new bound at time="
                     << stopCriteria.getTime() << std::endl;
+        timeBest = stopCriteria.getTime();
         star = p1;  // copy-based
       }
       if (Component::debug) std::cout << "ILS::SHOULD STOP?" << std::endl;
@@ -150,7 +153,7 @@ class IteratedLocalSearch : public ILS,
       }
     }
 
-    return {SearchStatus::NO_REPORT, star};
+    return {SearchStatus::NO_REPORT, star, timeBest};
   }
 
   static std::string idComponent() {

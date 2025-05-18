@@ -149,14 +149,55 @@ int main() {
   std::cout << problem->n << std::endl;
   std::cout << problem->dist << std::endl;
 
-  //
+  // ============================
+
+  int ls_0 = optframe_api1d_build_local_search(
+      engine, "OptFrame:ComponentBuilder:LocalSearch:BI",
+      "OptFrame:GeneralEvaluator 0 OptFrame:NS:NSFind:NSSeq 0");
+
+  int ls_1 = optframe_api1d_build_local_search(
+      engine, "OptFrame:ComponentBuilder:LocalSearch:BI",
+      "OptFrame:GeneralEvaluator 0 OptFrame:NS:NSFind:NSSeq 1");
+
+  int list_vnd_idx = optframe_api1d_create_component_list(
+      engine, "[ OptFrame:LocalSearch 0 OptFrame:LocalSearch 1 ]",
+      "OptFrame:LocalSearch[]");
+
+  int id_pert = optframe_api1d_build_component(
+      engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus2",
+      "OptFrame:GeneralEvaluator 0 OptFrame:NS 0", "OptFrame:ILS:LevelPert");
+
+  int iterMax = problem->n * 10;  // 520 in berlin52
+  int levelMax = problem->n / 5;  // 10 in berlin52
+
+  std::stringstream ss_ILS_params;
+  ss_ILS_params << "OptFrame:GeneralEvaluator:Evaluator 0 "
+                   "OptFrame:InitialSearch 0  OptFrame:LocalSearch 0 "
+                   " OptFrame:ILS:LevelPert 0 "
+                << iterMax << " " << levelMax;
+
+  // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
+  // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "0";  // info
+  // eng->updateParameters();
+
+  int build_ils = optframe_api1d_build_single(
+      engine, "OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels",
+      ss_ILS_params.str().c_str());
+
+  std::cout << "build_ils:" << build_ils << std::endl;
+
+  std::stringstream ssRunAll;
+  ssRunAll << "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA ";
+  ssRunAll << "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
+              "OptFrame:NS[] 0 0.99 100 99999";
+  ssRunAll << "\n";
+  ssRunAll << "OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels ";
+  ssRunAll << ss_ILS_params.str();
+
+  // ============================
 
   int out_run = optframe_api1d_run_experiments(
-      engine, 3,
-      "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
-      "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
-      "OptFrame:NS[] 0 0.99 100 99999",
-      0, "", 5.0);
+      engine, 3, ssRunAll.str().c_str(), 0, "", 5.0);
 
   // =====================
 
