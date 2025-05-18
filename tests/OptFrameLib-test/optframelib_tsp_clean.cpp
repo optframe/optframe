@@ -358,6 +358,9 @@ int main() {
       fIsDone_c_2opt, fCurrent_c_2opt, fmove_apply_c_2opt, fmove_eq_c_2opt,
       fmove_cba_c_2opt, p_ptr, f_decref_move);
 
+  int new_list = optframe_api1d_create_component_list(
+      engine, "[ OptFrame:NS 0 OptFrame:NS 1 ]", "OptFrame:NS[]");
+
   eng->check.setMessageLevel(modlog::LogLevel::Info);
 
   bool expr = optframe_api1d_engine_check(
