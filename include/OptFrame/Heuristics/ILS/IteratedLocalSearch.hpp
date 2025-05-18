@@ -72,6 +72,9 @@ class IteratedLocalSearch : public ILS,
   // default search method (no initial solution passed)
   SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
                              std::optional<XES> opstar) override {
+    if (Component::debug) std::cout << "ILS::begin() has debug!" << std::endl;
+    if (Component::information)
+      std::cout << "ILS::begin() has info!" << std::endl;
     if (Component::information)
       std::cout << "ILS::searchBy(" << stopCriteria.timelimit << ")"
                 << std::endl;
@@ -83,9 +86,6 @@ class IteratedLocalSearch : public ILS,
     if (!opstar) return SearchStatus::NO_SOLUTION;
 
     XES& star = *opstar;
-    if (Component::information)
-      std::cout << "ILS::searchBy(" << stopCriteria.timelimit << ")"
-                << std::endl;
 
     XEv& eStar = star.second;
     if (Component::information) {
@@ -110,21 +110,33 @@ class IteratedLocalSearch : public ILS,
       eStar.print();
     }
 
+    bool stopByHistory = false;
+    bool stopByGeneral = false;
     do {
-      if (Component::debug) std::cout << "ILS::begin loop" << std::endl;
+      // if (Component::information) std::cout << "ILS::begin loop" <<
+      // std::endl;
       XES p1 = star;  // derive new incumbent solution (copy-based solution, for
                       // generality)
       perturbation(p1, stopCriteria, *history);
       localSearch(p1, stopCriteria);
       bool improvement = acceptanceCriterion(p1.second, star.second, *history);
       if (improvement) {
-        if (Component::debug)
-          std::cout << "ILS::improvement! star <= new bound" << std::endl;
+        if (Component::information)
+          std::cout << "ILS::improvement! star <= new bound at time="
+                    << stopCriteria.getTime() << std::endl;
         star = p1;  // copy-based
       }
       if (Component::debug) std::cout << "ILS::SHOULD STOP?" << std::endl;
-    } while (!terminationCondition(*history) &&
-             !stopCriteria.shouldStop(star.second));
+      stopByHistory = terminationCondition(*history);
+      stopByGeneral = stopCriteria.shouldStop(star.second);
+      if (Component::information)
+        if (stopByHistory || stopByGeneral) {
+          std::cout << "info ILS::stop! time=" << stopCriteria.getTime();
+          std::cout << " stopByHistory=" << stopByHistory;
+          std::cout << " stopByGeneral=" << stopByGeneral;
+          std::cout << std::endl;
+        }
+    } while (!stopByHistory && !stopByGeneral);
 
     if (!stopCriteria.target_f.isOutdated()) {
       if (Component::debug)

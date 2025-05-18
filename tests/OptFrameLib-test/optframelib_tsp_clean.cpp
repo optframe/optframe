@@ -320,8 +320,8 @@ int f_decref_move(FakeMovePtr m_ptr) {
 }
 
 int main() {
-  bool run_SA = true;
-  bool run_ILS = false;
+  bool run_SA = false;
+  bool run_ILS = true;
 
   using namespace boost::ut;
 
@@ -334,7 +334,7 @@ int main() {
   eng->loader.factory.getRandGen()->setSeed(0);
 
   sref<TSP_fcore::ProblemContext> problem{new TSP_fcore::ProblemContext{}};
-  std::string filename = "tsp_small.txt";
+  std::string filename = "tsp_ignore_berlin52.txt";
   std::fstream fs;
   fs.open(filename.c_str());
   if (fs.is_open())
@@ -346,7 +346,6 @@ int main() {
   Scanner scanner{File{filename}};
   problem->load(scanner);
   problem->rg = eng->loader.factory.getRandGen();
-  assert(problem->n == 5);
 
   // get problem pointer as void*
   FakeProblemPtr p_ptr = (void*)(&problem.get());
@@ -354,7 +353,7 @@ int main() {
   eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
   eng->updateParameters();
 
-  int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, false, p_ptr);
+  int idx_ev = optframe_api1d_add_evaluator(engine, fevaluate_c, true, p_ptr);
 
   int idx_c = optframe_api1d_add_constructive(engine, fconstructive_c, p_ptr,
                                               f_sol_deepcopy, f_sol_tostring,
@@ -411,10 +410,18 @@ int main() {
       engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus2",
       "OptFrame:GeneralEvaluator 0 OptFrame:NS 0", "OptFrame:ILS:LevelPert");
 
+  int iterMax = problem->n * 10;  // 520 in berlin52
+  int levelMax = problem->n / 5;  // 10 in berlin52
+
   std::stringstream ss_ILS_params;
   ss_ILS_params << "OptFrame:GeneralEvaluator:Evaluator 0 "
                    "OptFrame:InitialSearch 0  OptFrame:LocalSearch 0 "
-                   " OptFrame:ILS:LevelPert 0 1000 10";
+                   " OptFrame:ILS:LevelPert 0 "
+                << iterMax << " " << levelMax;
+
+  eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
+  // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "0";  // info
+  eng->updateParameters();
 
   int build_ils = optframe_api1d_build_single(
       engine, "OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels",
@@ -424,15 +431,19 @@ int main() {
 
   // ====================
 
-  double timelimit = 5.0;
+  double timelimit = problem->n / 1.0;  // 5.0;
 
-  LibSearchOutput sa_out =
-      optframe_api1d_run_sos_search(engine, build_sa, timelimit);
-  std::cout << sa_out.best_e << std::endl;
+  if (run_SA) {
+    LibSearchOutput sa_out =
+        optframe_api1d_run_sos_search(engine, build_sa, timelimit);
+    std::cout << sa_out.best_e << std::endl;
+  }
 
-  LibSearchOutput ils_out =
-      optframe_api1d_run_sos_search(engine, build_ils, timelimit);
-  std::cout << ils_out.best_e << std::endl;
+  if (run_ILS) {
+    LibSearchOutput ils_out =
+        optframe_api1d_run_sos_search(engine, build_ils, timelimit);
+    std::cout << ils_out.best_e << std::endl;
+  }
 
   // =====================
 

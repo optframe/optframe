@@ -94,8 +94,14 @@ class IteratedLocalSearchLevels
     // nivel atual: 'level'
     p->perturb(se, stopCriteria, level);
 
+    if ((Component::information) && (iter == iterMax - 1))
+      std::cout << "info ILSL::perturbation() last iteration iter= " << iter
+                << std::endl;
+
     // Incrementa a iteracao
     iter++;
+    // if ((Component::information))
+    //  std::cout << "ILSL::perturbation() new iter= " << iter << std::endl;
 
     if (Component::debug)
       std::cout << "ILSL::perturbation() iter " << iter << std::endl;
@@ -123,7 +129,7 @@ class IteratedLocalSearchLevels
     // if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1,
     // e2)) if (e1.betterStrict(e2))
     if (Component::debug)
-      std::cout << "ILSL::acceptanceCriterion() will compare(outdated="
+      std::cout << "debug ILSL::acceptanceCriterion() will compare(outdated="
                 << e1.isOutdated() << " e=" << e1.evaluation()
                 << "; outdated=" << e2.isOutdated() << " e=" << e2.evaluation()
                 << ")" << std::endl;
@@ -131,9 +137,9 @@ class IteratedLocalSearchLevels
     if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator->betterStrict(
             e1, e2)) {
       if (Component::information) {
-        std::cout << "ILSL::acceptanceCriterion() Best fo: on [iter "
-                  << history.first.first << " of level " << history.first.second
-                  << "] => ";
+        std::cout << "info ILSL::acceptanceCriterion() ";
+        std::cout << "Best fo: on [iter " << history.first.first << " of level "
+                  << history.first.second << "] => ";
         e1.print();
       }
 
@@ -158,6 +164,10 @@ class IteratedLocalSearchLevels
     // std::cout << "terminationCondition(.)" << std::endl;
     int level = history.first.second;
     int levelMax = history.second.second;
+    if ((Component::information) && (level >= levelMax)) {
+      std::cout << "ILSL::terminationCondition() ";
+      std::cout << "level=" << level << " levelMax=" << levelMax << std::endl;
+    }
 
     return (level >= levelMax);
   }
