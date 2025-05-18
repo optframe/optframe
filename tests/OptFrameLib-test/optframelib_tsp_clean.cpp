@@ -366,7 +366,7 @@ int main() {
   int new_list = optframe_api1d_create_component_list(
       engine, "[ OptFrame:NS 0 OptFrame:NS 1 ]", "OptFrame:NS[]");
 
-  eng->check.setMessageLevel(modlog::LogLevel::Info);
+  // eng->check.setMessageLevel(modlog::LogLevel::Info);
 
   // =====================
 
@@ -396,7 +396,7 @@ int main() {
       "OptFrame:LocalSearch[]");
 
   int id_pert = optframe_api1d_build_component(
-      engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus",
+      engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus2",
       "OptFrame:GeneralEvaluator 0 OptFrame:NS 0", "OptFrame:ILS:LevelPert");
 
   std::stringstream ss_ILS_params;
