@@ -162,6 +162,10 @@ int main() {
       engine, "[ OptFrame:LocalSearch 0 OptFrame:LocalSearch 1 ]",
       "OptFrame:LocalSearch[]");
 
+  int id_vnd = optframe_api1d_build_local_search(
+      engine, "OptFrame:ComponentBuilder:LocalSearch:VND",
+      "OptFrame:GeneralEvaluator 0 OptFrame:LocalSearch[] 0");
+
   int id_pert = optframe_api1d_build_component(
       engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus2",
       "OptFrame:GeneralEvaluator 0 OptFrame:NS 0", "OptFrame:ILS:LevelPert");
@@ -171,9 +175,8 @@ int main() {
 
   std::stringstream ss_ILS_params;
   ss_ILS_params << "OptFrame:GeneralEvaluator:Evaluator 0 "
-                   "OptFrame:InitialSearch 0  OptFrame:LocalSearch 0 "
-                   " OptFrame:ILS:LevelPert 0 "
-                << iterMax << " " << levelMax;
+                << "OptFrame:InitialSearch 0  OptFrame:LocalSearch " << id_vnd
+                << " OptFrame:ILS:LevelPert 0 " << iterMax << " " << levelMax;
 
   // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "4";  // disabled
   // eng->experimentalParams["COMPONENT_LOG_LEVEL"] = "0";  // info
@@ -188,7 +191,7 @@ int main() {
   std::stringstream ssRunAll;
   ssRunAll << "OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA ";
   ssRunAll << "OptFrame:GeneralEvaluator:Evaluator 0  OptFrame:InitialSearch 0 "
-              "OptFrame:NS[] 0 0.99 100 99999";
+              "OptFrame:NS[] 0 0.995 1000 10000";
   ssRunAll << "\n";
   ssRunAll << "OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels ";
   ssRunAll << ss_ILS_params.str();
