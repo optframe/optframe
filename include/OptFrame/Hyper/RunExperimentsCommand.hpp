@@ -234,7 +234,7 @@ class RunExperimentsCommand : public Component {  // NOLINT
       //
       std::vector<double> vTimeToBestTimes;
       for (int run = 0; run < numRuns; run++)
-        vTimeToBestTimes.push_back(data.timeData.runTimes[run][method]);
+        vTimeToBestTimes.push_back(data.timeData.timeToBestTimes[run][method]);
       std::cout << "timeToBestTimes: ";
       {
         pair<double, double> avgStd =
