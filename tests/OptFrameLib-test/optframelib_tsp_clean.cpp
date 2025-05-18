@@ -337,6 +337,8 @@ int main() {
   Scanner scanner{File{"tsp_small.txt"}};
   problem->load(scanner);
   problem->rg = eng->loader.factory.getRandGen();
+  assert(problem->n == 5);
+
   // get problem pointer as void*
   FakeProblemPtr p_ptr = (void*)(&problem.get());
   eng->experimentalParams["NS_VALID_RANDOM_MOVE_MAX_TRIES"] = "50";
