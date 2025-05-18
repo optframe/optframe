@@ -381,12 +381,46 @@ int main() {
 
   std::cout << "build_sa:" << build_sa << std::endl;
 
+  // =====================
+
+  int ls_0 = optframe_api1d_build_local_search(
+      engine, "OptFrame:ComponentBuilder:LocalSearch:BI",
+      "OptFrame:GeneralEvaluator 0 OptFrame:NS:NSFind:NSSeq 0");
+
+  int ls_1 = optframe_api1d_build_local_search(
+      engine, "OptFrame:ComponentBuilder:LocalSearch:BI",
+      "OptFrame:GeneralEvaluator 0 OptFrame:NS:NSFind:NSSeq 1");
+
+  int list_vnd_idx = optframe_api1d_create_component_list(
+      engine, "[ OptFrame:LocalSearch 0 OptFrame:LocalSearch 1 ]",
+      "OptFrame:LocalSearch[]");
+
+  int id_pert = optframe_api1d_build_component(
+      engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus",
+      "OptFrame:GeneralEvaluator 0 OptFrame:NS 0", "OptFrame:ILS:LevelPert");
+
+  std::stringstream ss_ILS_params;
+  ss_ILS_params << "OptFrame:GeneralEvaluator:Evaluator 0 "
+                   "OptFrame:InitialSearch 0  OptFrame:LocalSearch 0 "
+                   " OptFrame:ILS:LevelPert 0 1000 10";
+
+  int build_ils = optframe_api1d_build_single(
+      engine, "OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels",
+      ss_ILS_params.str().c_str());
+
+  std::cout << "build_ils:" << build_ils << std::endl;
+
+  // ====================
+
   double timelimit = 5.0;
 
   LibSearchOutput sa_out =
       optframe_api1d_run_sos_search(engine, build_sa, timelimit);
-
   std::cout << sa_out.best_e << std::endl;
+
+  LibSearchOutput ils_out =
+      optframe_api1d_run_sos_search(engine, build_ils, timelimit);
+  std::cout << ils_out.best_e << std::endl;
 
   // =====================
 

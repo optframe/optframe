@@ -191,12 +191,13 @@ optframe_api1d_build_single(FakeEnginePtr _engine, const char* builder,
                             const char* build_string);
 
 OPT_MODULE_API int  // index of LocalSearch
-optframe_api1d_build_local_search(FakeEnginePtr _engine, char* builder,
-                                  char* build_string);
+optframe_api1d_build_local_search(FakeEnginePtr _engine, const char* builder,
+                                  const char* build_string);
 
 OPT_MODULE_API int  // index of Component
-optframe_api1d_build_component(FakeEnginePtr _engine, char* builder,
-                               char* build_string, char* component_type);
+optframe_api1d_build_component(FakeEnginePtr _engine, const char* builder,
+                               const char* build_string,
+                               const char* component_type);
 
 // ================
 
