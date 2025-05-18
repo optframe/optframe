@@ -320,6 +320,9 @@ int f_decref_move(FakeMovePtr m_ptr) {
 }
 
 int main() {
+  bool run_SA = true;
+  bool run_ILS = false;
+
   using namespace boost::ut;
 
   FakeEnginePtr engine =
