@@ -21,9 +21,15 @@ OptFrame
 
 ## OptFrame - C++ Optimization Framework
 
+> OptFrame is a multi-language combinatorial optimization framework for metaheuristics written in modern C++.
+
+Ongoing version: development optframe v6 pre-release
+
 OptFrame `5.1.0` is released.
 
-For optframe python, just `pip install optframe`. See [github.com/optframe/pyoptframe](https://github.com/optframe/pyoptframe-dev)
+- Python version: For optframe python, just `pip install optframe`. See [github.com/optframe/pyoptframe](https://github.com/optframe/pyoptframe-dev)
+- Rust version: See OptFrame Rust (under construction)
+- Java version: See JOptFrame on sourceforge
 
 Project uses semantic versioning, so to patch it, run: `bumpver update --patch`
 
