@@ -127,6 +127,7 @@ int main() {
       });
   "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
 
+  return 1;
   // ==================================
   // Run some demonstration experiments
 

@@ -108,19 +108,6 @@ int main() {
 
   eng->check.setMessageLevel(modlog::LogLevel::Info);
 
-  /*
-  bool expr = optframe_api1d_engine_check(
-      engine, 100, 5, false, [](int, FakeEnginePtr eng) -> bool {
-        // This enables debugging mode, if component supports it...
-        // TODO: create an example where check fails and we verify the logs
-        auto* engine = (FCoreApi1Engine*)eng;
-        engine->experimentalParams["COMPONENT_LOG_LEVEL"] = "-1";
-        engine->updateParameters();
-        return true;
-      });
-  "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
-  */
-
   // =====================
 
   // begin serious experiments!
@@ -169,6 +156,19 @@ int main() {
   int id_pert = optframe_api1d_build_component(
       engine, "OptFrame:ComponentBuilder:ILS:LevelPert:LPlus2",
       "OptFrame:GeneralEvaluator 0 OptFrame:NS 0", "OptFrame:ILS:LevelPert");
+
+  bool expr = optframe_api1d_engine_check(
+      engine, 1000, 5, false, [](int, FakeEnginePtr eng) -> bool {
+        // This enables debugging mode, if component supports it...
+        // TODO: create an example where check fails and we verify the logs
+        auto* engine = (FCoreApi1Engine*)eng;
+        engine->experimentalParams["COMPONENT_LOG_LEVEL"] = "-1";
+        engine->updateParameters();
+        return true;
+      });
+  "optframe_api1d_engine_check"_test = [expr] { expect(expr); };
+
+  return 1;
 
   int iterMax = problem->n * 10;  // 520 in berlin52
   int levelMax = problem->n / 5;  // 10 in berlin52
