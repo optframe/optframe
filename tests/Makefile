@@ -11,10 +11,10 @@ all: test
 test: clean test_lib OptFrame_test 
 
 test_lib: copy_txt_lib_instances test_lib_tsp_clean test_lib_base test_lib_kp test_lib_tsp
-	./build/test_lib_tsp_clean
-	./build/test_lib_base
-	./build/test_lib_kp
-	./build/test_lib_tsp
+	(cd build && ./test_lib_tsp_clean)
+	(cd build && ./test_lib_base)
+	(cd build && ./test_lib_kp)
+	(cd build && ./test_lib_tsp)
 
 copy_txt_lib_instances:
 	mkdir -p build
