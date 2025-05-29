@@ -294,10 +294,10 @@ MODLOG_MOD_EXPORT class LogConfig {
   int vlevel{0};
   bool prefix{true};
   NullOStream no;
-  std::function<std::ostream&(std::ostream&, LogLevel, std::tm,
-                              std::chrono::microseconds, std::uintptr_t,
-                              std::string_view, int, bool)>
-      fprefixdata{default_prefix_data};
+  using FuncLogPrefix = std::function<std::ostream&(
+      std::ostream&, LogLevel, std::tm, std::chrono::microseconds,
+      std::uintptr_t, std::string_view, int, bool)>;
+  FuncLogPrefix fprefixdata{default_prefix_data};
 
   std::ostream& fprefix(std::ostream* os, LogLevel l, std::string_view path,
                         int line, bool debug) {
@@ -418,10 +418,10 @@ inline std::ostream& Log(
 #endif
   return (sev < lo->log().minlog)
              ? modlog_default.no
-             : (lo->log().prefix ? modlog_default.fprefix(
-                                       lo->log().os, sev, location.file_name(),
-                                       location.line(), false)
-                                 : *lo->log().os);
+             : (lo->log().prefix
+                    ? lo->log().fprefix(lo->log().os, sev, location.file_name(),
+                                        location.line(), false)
+                    : *lo->log().os);
 }
 
 // ================================
