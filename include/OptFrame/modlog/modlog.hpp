@@ -62,7 +62,18 @@ inline uintptr_t get_tid() {
 #ifdef _WIN32
   return static_cast<uintptr_t>(::GetCurrentThreadId());
 #else
-  return reinterpret_cast<uintptr_t>(pthread_self());
+  pthread_t tid = pthread_self();
+// On ARM, pthread_t is 'long unsigned int', uintptr_t is 'unsigned int'
+// On Mac, pthread_t is '_opaque_pthread_t *', uintptr_t is 'unsigned long'
+// On linux, pthread_t is 'unsigned long', uintptr_t is 'unsigned long'
+#if defined(__APPLE__)
+  return reinterpret_cast<uintptr_t>(tid);  // mac (but Linux ok too...)
+#elif defined(__arm__) || defined(__aarch64__)
+  return static_cast<uintptr_t>(tid);  // ARM! (but Linux ok too...)
+#else
+  return static_cast<uintptr_t>(tid);  // default...
+#endif
+
 #endif
 }
 
@@ -276,9 +287,6 @@ MODLOG_MOD_EXPORT inline std::ostream& json_prefix(
 
 MODLOG_MOD_EXPORT class LogConfig {
  public:
-  using FuncLogPrefix = std::function<std::ostream&(
-      std::ostream&, LogLevel, std::tm, std::chrono::microseconds,
-      std::uintptr_t, std::string_view, int, bool)>;
   std::ostream* os{&std::cerr};
   // OBS: could host a unique_ptr here, if necessary for thirdparty streams
   // OBS 2: not necessary for the moment... if you need it, just let us know!
@@ -286,7 +294,10 @@ MODLOG_MOD_EXPORT class LogConfig {
   int vlevel{0};
   bool prefix{true};
   NullOStream no;
-  FuncLogPrefix fprefixdata{default_prefix_data};
+  std::function<std::ostream&(std::ostream&, LogLevel, std::tm,
+                              std::chrono::microseconds, std::uintptr_t,
+                              std::string_view, int, bool)>
+      fprefixdata{default_prefix_data};
 
   std::ostream& fprefix(std::ostream* os, LogLevel l, std::string_view path,
                         int line, bool debug) {
@@ -407,10 +418,10 @@ inline std::ostream& Log(
 #endif
   return (sev < lo->log().minlog)
              ? modlog_default.no
-             : (lo->log().prefix
-                    ? lo->log().fprefix(lo->log().os, sev, location.file_name(),
-                                        location.line(), false)
-                    : *lo->log().os);
+             : (lo->log().prefix ? modlog_default.fprefix(
+                                       lo->log().os, sev, location.file_name(),
+                                       location.line(), false)
+                                 : *lo->log().os);
 }
 
 // ================================
