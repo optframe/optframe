@@ -18,9 +18,6 @@ jobs:
       run: |
         mkdir -p build/
         make
-    - name: bazel
-      working-directory: ./Examples/LTS/HFMVRP/
-      run: bazel build ...
     - name: cmake
       working-directory: ./Examples/LTS/HFMVRP/
       run: pip install cmake --break-system-packages && rm -rf build && mkdir -p build && cd build && cmake .. -GNinja && ninja
