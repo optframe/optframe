@@ -11,7 +11,7 @@ add_executable(mainOptHScheduling src/mainOptHScheduling.cpp )    # main
 add_executable(Example.Test tests/Example.Test.cpp )
 # begin dependencies from cxxdeps.txt
 # cxxdeps dependency OptFrame
-set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../cmake")
+set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../../cmake")
 find_package(OptFrame REQUIRED)
 include_directories("${OptFrame_INCLUDE_DIRS}")
 # cxxdeps dependency Catch2
