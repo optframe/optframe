@@ -7,11 +7,10 @@ package(
 cc_binary(
     name = "app_MiTSP",
     srcs = glob([
-        "src/**/*.h", 
         "src/**/*.cpp"
     ]),
     data = glob([
         "instances/*.tsp",
     ]),
-    deps = ["@OptFrame//include:OptFrame"]
+    deps = ["@optframe//include:OptFrame"]
 )

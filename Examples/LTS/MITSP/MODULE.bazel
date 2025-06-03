@@ -1,4 +1,4 @@
-module(name = "optframe_kp")
+module(name = "optframe_mitsp")
 
 bazel_dep(name = "optframe")
 local_path_override(
