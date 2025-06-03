@@ -16,4 +16,10 @@ jobs:
     - name: make
       working-directory: ./Examples/LTS/EternityII/
       run: make
+    - name: bazel
+      working-directory: ./Examples/LTS/EternityII/
+      run: bazel build ...
+    - name: cmake
+      working-directory: ./Examples/LTS/EternityII/
+      run: cxxbuild
 
