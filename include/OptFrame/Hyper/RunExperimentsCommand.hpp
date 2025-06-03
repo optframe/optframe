@@ -132,8 +132,10 @@ class RunExperimentsCommand : public Component {  // NOLINT
     using modlog::LogLevel::Info;
     AllDataRunExperimentsCommand<XES> data;
 
+#if 0
     bool printStdOut = false;
     if (outputFile.empty()) printStdOut = true;
+#endif
 
     int numMethods = builders.size();
 
