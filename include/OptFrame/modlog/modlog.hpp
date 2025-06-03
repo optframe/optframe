@@ -28,7 +28,7 @@
 #define USE_STD_SRC_LOC 1
 #endif
 #include <string>
-#include <thread>
+#include <thread>  // for std::terminate
 
 #if __cplusplus >= 202002L && __has_include(<concepts>)
 #include <concepts>
@@ -309,6 +309,18 @@ MODLOG_MOD_EXPORT class LogConfig {
       std::uintptr_t, std::string_view, int, bool)>;
   FuncLogPrefix fprefixdata{default_prefix_data};
 
+  std::string getFilename(std::string_view vpath) {
+    std::string path{vpath};
+    auto pos = path.find_last_of("/\\");
+    if (pos != std::string::npos)
+      return path.substr(pos + 1);
+    else
+      return path;
+#if 0
+    return std::filesystem::path(vpath).filename().string();
+#endif
+  }
+
   std::ostream& fprefix(std::ostream* os, LogLevel l, std::string_view path,
                         int line, bool debug) {
     // add line break before, since we cannot control what's done after...
@@ -321,8 +333,7 @@ MODLOG_MOD_EXPORT class LogConfig {
     auto us = duration_cast<microseconds>(now.time_since_epoch()) % 1'000'000;
     auto tid = get_tid();
     std::string short_file = "";
-    if (!path.empty())
-      short_file = std::filesystem::path(path).filename().string();
+    if (!path.empty()) short_file = getFilename(path);
 
     // =====================================
     // use personalized prefix data function
