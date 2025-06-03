@@ -37,7 +37,8 @@ namespace optframe {
 // 'XSH' is the primary search type ('best' has type XSH)
 // 'XES2' is the "base concept" for the secondary search component.
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES,
                      XESolution XES2 = XES>
 #else
@@ -63,7 +64,8 @@ class IPopulational {  // do not inherit here!
 // 'XES2' is the "base concept" for the secondary search component.
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES,
                      XESolution XES2 = XES, XSearch<XES> XSH2 = XSH>
 #else

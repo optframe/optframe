@@ -35,7 +35,8 @@ MOD_EXPORT class FCore {
   static std::string welcome() {
     std::string s =
         "Welcome to OptFrame Functional Core (FCore) - version " + version();
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     s.append(" (built with c++20 concepts)");
 #else
     s.append(" (built without c++20 concepts)");

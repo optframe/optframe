@@ -17,7 +17,8 @@
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
           XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 #else

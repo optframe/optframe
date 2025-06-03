@@ -38,7 +38,8 @@ namespace optframe {
 // - onLoop(SCTX, StopCriteria)
 // - onUpdateLoop(SCTX)
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <class SCTX, XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <class SCTX, typename XES, typename XSH = XES>

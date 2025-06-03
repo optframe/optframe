@@ -42,7 +42,8 @@ namespace optframe {
 
 // This is  NEx: Neighborhood Exploration
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 template <typename XES, typename XSH = XES>
@@ -67,7 +68,8 @@ struct RichMove {
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 template <typename XES, typename XSH = XES>
@@ -121,7 +123,8 @@ class NeighborhoodExploration : public LocalSearch<XES, XSH> {
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>,
           X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>

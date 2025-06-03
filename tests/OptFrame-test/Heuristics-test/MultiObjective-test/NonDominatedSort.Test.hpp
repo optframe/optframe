@@ -32,7 +32,8 @@ using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT
 
 using TestS = int;
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 static_assert(XEvaluation<MultiEvaluation<int>>);
 #endif
 using TestXMES = std::pair<TestS, MultiEvaluation<int>>;

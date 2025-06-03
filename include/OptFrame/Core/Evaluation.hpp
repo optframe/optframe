@@ -17,6 +17,7 @@
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+#include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/SemStreams.hpp>
 #include <OptFrame/Values/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
 #include <OptFrame/Values/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
@@ -121,7 +122,8 @@ class Evaluation final : public Component {
   explicit Evaluation(const ObjType& obj, const ObjType& inf,
                       const evtype& w = 1)
       : objFunction(obj), infMeasure(inf) {
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 #endif
@@ -135,7 +137,8 @@ class Evaluation final : public Component {
 
   // NOLINTNEXTLINE // no explicit here
   Evaluation(const ObjType& obj) : objFunction(obj) {
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 #endif
@@ -149,7 +152,8 @@ class Evaluation final : public Component {
   }
 
   explicit Evaluation() {
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 #endif
@@ -173,7 +177,8 @@ class Evaluation final : public Component {
         ,
         outdated(e.outdated),
         estimated(e.estimated) {
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 #endif
@@ -376,7 +381,8 @@ class Evaluation final : public Component {
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 // compilation test (for concepts)
 // debugging error on XEvaluation for IsEvaluation<int>
 static_assert(optframe::evgoal<Evaluation<>>);
@@ -401,7 +407,8 @@ struct basic_ev_test_copy {
 
 // CANNOT TEST HERE ANYMORE!
 /*
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 // Compilation tests for XEvaluation concepts
 // These are NOT unit tests... Unit Tests are on tests/ folder
 #include <OptFrame/Evaluation.test.hpp>

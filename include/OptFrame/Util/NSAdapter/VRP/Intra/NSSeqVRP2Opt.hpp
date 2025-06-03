@@ -16,7 +16,8 @@
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
 #else
 template <typename XES, class P = OPTFRAME_DEFAULT_PROBLEM>
@@ -94,7 +95,8 @@ class MoveVRP2Opt : public Move<XES> {
   // void print() const override { std::cout << toString() << std::endl; }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRP2Opt<XES, P>>
 #else
@@ -162,7 +164,8 @@ class NSIteratorVRP2Opt : public NSIterator<XES> {
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM,
           class MOVE = MoveVRP2Opt<XES, P>,
           class NSITERATOR = NSIteratorVRP2Opt<XES, P, MOVE>>
@@ -186,7 +189,8 @@ class NSSeqVRP2Opt : public NSSeq<XES> {
  public:
 // (0) automatic when no conversion is needed
 #ifndef _MSC_VER  // NO USE IN MSVC
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   explicit NSSeqVRP2Opt(P* p = nullptr)
     requires std::is_same_v<typename XES::first_type, Routes>
       : getRoutes{[](const XES& se) -> Routes& {

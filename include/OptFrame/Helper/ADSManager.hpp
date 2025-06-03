@@ -35,21 +35,20 @@
 
 namespace optframe {
 
-//template<class R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
-// force manual passing (for safety)
+// template<class R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
+//  force manual passing (for safety)
 //
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+//  #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <class R, class ADS, XBaseSolution<R, ADS> S>
-#else 
+#else
 template <class R, class ADS, typename S>
 #endif
 class ADSManager : public Component {
  public:
-  ADSManager() {
-  }
+  ADSManager() {}
 
-  virtual ~ADSManager() {
-  }
+  virtual ~ADSManager() {}
 
   virtual void initializeADS(const R& rep, ADS& _ads) = 0;
 
@@ -75,9 +74,7 @@ class ADSManager : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
     std::stringstream ss;

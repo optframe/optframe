@@ -51,7 +51,8 @@ namespace optframe {
 // X2ES is the REAL TYPE
 // By default, VEPopulation is std::vector<XES>
 //
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
 #else
 MOD_EXPORT template <typename XES, typename X2ES = VEPopulation<XES>>
@@ -96,7 +97,8 @@ class InitialEPopulation : public Component {
 // X2S is the REAL TYPE
 // By default, VPopulation is std::vector<XS>
 //
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XSolution S, X2Solution<S> X2S = VPopulation<S>>
 #else
 MOD_EXPORT template <typename S, typename X2S = VPopulation<S>>
@@ -119,7 +121,8 @@ class InitialPopulation : public Component {
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XSolution S, X2Solution<S> X2S = VPopulation<S>>
 #else
 template <typename S, typename X2S = VPopulation<S>>

@@ -41,7 +41,8 @@ namespace optframe {
 // differs from GlobalSearch, that manages primary/best types and eventually
 // some secondary/incumbent types.
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES2, XSearch<XES2> XSH2 = XES2>
 #else
 MOD_EXPORT template <typename XES2, typename XSH2 = XES2>

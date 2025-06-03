@@ -284,7 +284,8 @@ public:
 };
 */
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 using TestIsMultiEv = MultiEvaluation<double>;
 using TestIsSolutionMultiEv = std::vector<int>;

@@ -17,7 +17,8 @@
 #include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
 // Check if C++20 Concepts is supported
-// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// // #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #ifdef OPTFRAME_USE_STD_CONCEPTS
 
 namespace optframe {
 
@@ -81,7 +82,7 @@ class MoveVRPSwap1_1Adapter : public Move<XES> {
   void print() const override {
     std::cout << "MoveVRPSwap1_1( ";
     std::cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2
-         << "] client " << c2 << ")";
+              << "] client " << c2 << ")";
     std::cout << std::endl;
   }
 

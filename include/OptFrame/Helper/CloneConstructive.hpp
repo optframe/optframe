@@ -70,7 +70,8 @@ class CloneConstructive : public Constructive<S> {
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>

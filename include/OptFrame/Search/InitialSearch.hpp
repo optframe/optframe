@@ -35,7 +35,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
@@ -70,7 +71,8 @@ class InitialSearch : public Component {
   std::string toString() const override { return id(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 template <typename XES, typename XSH = XES>
@@ -101,7 +103,8 @@ class BasicInitialSearch : public InitialSearch<XES, XSH> {
 
     if (!sol) return make_pair(std::nullopt, SearchStatus::NO_REPORT);
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     if constexpr (XOStreamable<S>)
       if (Component::verbose)
         std::cout << "BasicInitialSearch: sol => " << *sol << std::endl;
@@ -110,7 +113,8 @@ class BasicInitialSearch : public InitialSearch<XES, XSH> {
     XEv e = evaluator->evaluate(*sol);
     XES se(*sol, e);
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     if constexpr (XOStreamable<XES>)
       if (Component::verbose)
         std::cout << "BasicInitialSearch: se => " << se.first << ";"

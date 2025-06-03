@@ -463,7 +463,8 @@ XSH::first_type::typeR>);
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XESolution XES2,
                      X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #else

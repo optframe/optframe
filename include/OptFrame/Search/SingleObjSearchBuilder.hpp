@@ -23,7 +23,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESSolution XESS>  // single objective type XESSOlution
 #else
 MOD_EXPORT template <typename XESS>
@@ -64,7 +65,8 @@ class SingleObjSearchBuilder : public ComponentBuilder<XESS> {
 // template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S =
 // CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>> template<XESolution XES,
 // XEvaluation XEv = Evaluation<>>
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES>
 #else
 template <typename XES>

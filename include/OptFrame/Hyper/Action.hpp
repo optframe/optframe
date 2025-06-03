@@ -44,7 +44,8 @@ namespace optframe {
 
 using scannerpp::Scanner;
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 class HeuristicFactory;
 #else
@@ -52,7 +53,8 @@ MOD_EXPORT template <typename XES>
 class HeuristicFactory;
 #endif
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
@@ -137,7 +139,8 @@ class Action {
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES>
 #else
 template <typename XES>

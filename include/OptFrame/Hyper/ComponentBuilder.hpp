@@ -58,7 +58,8 @@ using scannerpp::Scanner;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 class HeuristicFactory;
 #else
@@ -73,7 +74,8 @@ class HeuristicFactory;
 //
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>

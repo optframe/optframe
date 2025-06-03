@@ -179,7 +179,8 @@ class MultiESolution : public Component {
 // DO NOT DO THESE TESTS INSIDE MODULES!
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 // TODO: only in unit tests (or somehow prevent #include "printable.h")
 #include "MultiESolution.ctest.hpp"
 

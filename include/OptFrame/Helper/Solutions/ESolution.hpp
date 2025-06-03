@@ -268,7 +268,8 @@ class ESolution final
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XRepresentation R, class ADS = int, XEvaluation XEv = Evaluation<>>
 void static_check() {
   static_assert(XSolution<ESolution<R, ADS, XEv>>);

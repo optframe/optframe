@@ -34,7 +34,8 @@ namespace optframe {
 
 // evtype is default (double?)
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <optframe::objval ObjType = evtype>
 #else
 MOD_EXPORT template <typename ObjType = evtype>
@@ -43,7 +44,8 @@ class MultiEvaluation : public Component {
  public:
   // internal Evaluation type
   using XEv = Evaluation<ObjType>;
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   static_assert(basic_arithmetics<XEv>);
   static_assert(objval<typename XEv::objType>);
 #endif
@@ -64,14 +66,16 @@ class MultiEvaluation : public Component {
 
  public:
   MultiEvaluation() {
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     static_assert(XEvaluation<MultiEvaluation<ObjType>>);
 #endif
   }
 
   explicit MultiEvaluation(Evaluation<ObjType> ev) {
     vev.push_back(ev);
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     static_assert(XEvaluation<MultiEvaluation<ObjType>>);
 #endif
   }
@@ -235,7 +239,8 @@ class MultiEvaluation : public Component {
   }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 /*
 optframe::evgoal<Self>&&
    HasClone<Self>&&

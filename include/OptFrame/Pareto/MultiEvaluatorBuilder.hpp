@@ -20,7 +20,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
@@ -76,7 +77,8 @@ class MultiEvaluatorBuilder : public ComponentBuilder<XES> {
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = std::pair<S, XMEv>,
           X2ESolution<XMES> X2MES = VEPopulation<XMES>>
@@ -134,7 +136,8 @@ class MultiEvaluatorMultiBuilder
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES, XEMSolution XMES>
 #else
 template <typename XES, typename XMES>

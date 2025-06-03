@@ -26,7 +26,8 @@
 
 // IMPORTANT STUFF TO TEST!
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 static_assert(Domain::getNamedDomain<void*>() == std::string_view{"<XS>"});
 #else
 static_assert(Domain::getNamedDomain<void*>() == std::string_view{"<X?>"});
@@ -57,7 +58,8 @@ static_assert(Domain::getNamedDomain<TestXES1>() ==
 static_assert(
     Domain::getNamedDomain<std::pair<void*, optframe::Evaluation<int64_t>>>() ==
     std::string_view("<XESi64>"));
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 static_assert(
     Domain::getNamedDomain<std::pair<void*, optframe::Evaluation<int>>>() ==
     std::string_view("<XES>"));

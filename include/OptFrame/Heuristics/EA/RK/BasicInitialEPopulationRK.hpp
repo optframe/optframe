@@ -32,7 +32,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, class KeyType = double,
                      X2ESolution<XES> X2ES = VEPopulation<XES>>
 #else
@@ -90,7 +91,8 @@ class BasicInitialEPopulationRK
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>

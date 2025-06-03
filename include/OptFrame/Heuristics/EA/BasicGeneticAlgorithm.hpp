@@ -288,7 +288,8 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
   std::string id() const override { return idComponent(); }
 };
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <XESolution XES>
 #else
 template <typename XES>

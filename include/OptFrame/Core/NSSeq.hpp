@@ -33,7 +33,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
@@ -195,7 +196,8 @@ class NSSeq : public NSFind<XES, XSH> {
 
 // SHOULD NOT DO CTESTS HERE!
 /*
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>

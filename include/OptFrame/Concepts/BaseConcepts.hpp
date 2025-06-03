@@ -19,7 +19,14 @@
 #include <string>
 
 // Check if C++20 Concepts is supported
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+
+#if __cplusplus >= 202002L && __has_include(<concepts>) && defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#define OPTFRAME_USE_STD_CONCEPTS 1
+// #warning "DEFINED CONCEPTS!"
+#endif
+
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 // this is NOT official c++20 concepts... just some for OptFrame! (based on lite
 // concepts g++ 7)
@@ -49,7 +56,8 @@ MOD_EXPORT using OptFrameADS = OPTFRAME_DEFAULT_ADS;  // more beautiful :)
 MOD_EXPORT using _ADS = OPTFRAME_DEFAULT_ADS;         // more beautiful :)
 
 // Check if C++20 Concepts is supported
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 namespace optframe {
 

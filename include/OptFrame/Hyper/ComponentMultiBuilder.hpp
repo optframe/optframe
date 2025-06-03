@@ -41,7 +41,8 @@ using scannerpp::Scanner;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>
 class HeuristicFactory;
 #else
@@ -49,7 +50,8 @@ MOD_EXPORT template <typename XES>
 class HeuristicFactory;
 #endif
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
                      XESolution XMES = std::pair<S, XMEv>,
                      X2ESolution<XMES> X2MES = VEPopulation<XMES>>

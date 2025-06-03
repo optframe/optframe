@@ -63,12 +63,14 @@ class Pareto {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   static_assert(XEvaluation<typename XMEv::XEv>);
 #endif
 
   using XEv = typename XMEv::XEv;
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   static_assert(XEvaluation<XEv>);
 #endif
   using XES = DEFAULT_PARETO_XES;
@@ -674,7 +676,8 @@ class Pareto {
 
 }  // namespace optframe
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 namespace optframe {
 using ParetoSolTest = std::vector<int>;

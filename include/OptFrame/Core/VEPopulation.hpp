@@ -51,7 +51,8 @@ using VEPopulation = std::vector<XES>;
 
 // NO TEST HERE!
 /*
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 #include "VEPopulation.test.hpp"
 

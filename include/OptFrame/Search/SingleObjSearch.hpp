@@ -43,7 +43,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 template <class Self>
 concept XSingleObjSearch =
@@ -56,7 +57,8 @@ concept XSingleObjSearch =
 // (Primary) Search space (implicit XSH) is decided by XES
 // Secondary search space XSH2 is undecided... could be trajectory-based (as
 // default) or population-based
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESSolution XESS, XESSolution XESS2 = XESS,
                      XSearch<XESS2> XSH2 = XESS2>
 #else

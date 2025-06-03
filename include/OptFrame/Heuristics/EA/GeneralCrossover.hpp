@@ -47,7 +47,8 @@ class GeneralCrossover : public Component {
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GeneralCrossover"
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
        << Domain::getAlternativeDomain<S>("<XS>");
 #else
        << Domain::getAlternativeDomain<S>("<X?>");

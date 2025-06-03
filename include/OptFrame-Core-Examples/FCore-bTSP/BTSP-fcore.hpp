@@ -79,7 +79,8 @@ MOD_EXPORT namespace BTSP_fcore {
   // optframe::evgoal auto global_ev = MultiEvaluation<int>();
   auto global_ev = MultiEvaluation<int>();
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   static_assert(optframe::evgoal<MultiEvaluation<int>>);
   static_assert(XEvaluation<MultiEvaluation<int>>);
   static_assert(XEvaluation<typename ESolutionBTSP::second_type>);

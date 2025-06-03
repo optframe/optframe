@@ -9,18 +9,19 @@
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // Check if C++20 Concepts is supported
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#if __cplusplus >= 202002L && __has_include(<concepts>) && defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#define OPTFRAME_USE_STD_CONCEPTS 1
+// #warning "DEFINED CONCEPTS!"
+#endif
 
-#if __cplusplus <= 201703L  // after c++20, #include<concepts>
+// Include concepts headers, if available
+#ifndef OPTFRAME_USE_STD_CONCEPTS
 // no concepts library, yet...
 #define AUTO_CONCEPTS
 #else
-
 #include <concepts>
 #define AUTO_CONCEPTS auto
 #endif
-
-#endif  // cpp_concepts
 
 #include <memory>    // unique_ptr
 #include <optional>  // optional
@@ -97,7 +98,8 @@ using op = std::optional<T>;
 MOD_EXPORT using id_type = std::size_t;
 
 // ================ BEGIN CONCEPTS ================
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 // https://en.cppreference.com/w/cpp/concepts/boolean
 
@@ -252,7 +254,7 @@ concept ostreamable = requires(std::ostream& os, const Self& obj) {
   { os << obj.toString() };
 };
 
-#endif  // cpp_concepts
+#endif  // OPTFRAME_USE_STD_CONCEPTS
 
 }  // namespace optframe
 
@@ -261,7 +263,8 @@ concept ostreamable = requires(std::ostream& os, const Self& obj) {
 // (disable with NDEBUG)
 // ====================
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 
 #ifndef NDEBUG
 // class that passes total order

@@ -41,7 +41,8 @@ namespace optframe {
 // template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
 // template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH =
 // XES> // defaults to single obj.
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES,
                      XSearch<XES> XSH = XES>  // defaults to single obj.
 #else

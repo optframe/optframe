@@ -100,7 +100,8 @@ namespace optframe {
 // Extra types can be passed here for alternative supported spaces, such as RK
 // Keep-it-simple for now, and just assume defaults
 //
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>  // do not put XESSolution here... not only
                                       // Single!
 #else

@@ -187,7 +187,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     if (Component::verbose) {
       std::cout << "time best: " << timeBest << std::endl;
       std::cout << "star value: " << star->second.evaluation() << std::endl;
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
       if constexpr (XOStreamable<XES>)
         std::cout << "star: " << star->first << std::endl;
 #endif
@@ -247,7 +248,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
       move->applyUpdate(current);
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
       if constexpr (XOStreamable<XES>)
         if (Component::verbose)
           std::cout << "SA(verbose): will reevaluate. current.first="
@@ -258,7 +260,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
       assert(!current.second.isOutdated());  // CXX CONTRACT C++26
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
       if constexpr (XOStreamable<XES>)
         if (Component::verbose)
           std::cout << "SA(verbose): after reevaluate. current=" << current

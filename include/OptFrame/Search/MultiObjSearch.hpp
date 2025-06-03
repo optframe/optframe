@@ -43,7 +43,8 @@ import optframe.concepts;
 
 namespace optframe {
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 template <class Self, class XES>
 concept XMultiObjSearch = requires(Self a) {
   requires XESolution<XES>;
@@ -54,7 +55,8 @@ concept XMultiObjSearch = requires(Self a) {
 // EASY ON XMES2... FOR NOW! NOT REQUIRING XEMSolution, BUT WE SHOULD...
 // MUST FIX IndividualNSGAII and other problematic implementations...
 // BASE TYPE XMES IS NOW FINALLY REQUIRED TO BE XEMSolution!
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XEMSolution XMES, XESolution XMES2 = XMES,
                      XSearch<XMES2> XMSH2 = XMES2>
 #else
@@ -66,11 +68,13 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
   //
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   static_assert(XEvaluation<typename XMEv::XEv>);
 #endif
   using XEv = typename XMEv::XEv;
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
   static_assert(XEvaluation<XEv>);
 #endif
 

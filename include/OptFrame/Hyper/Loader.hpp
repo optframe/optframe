@@ -153,7 +153,8 @@ MOD_EXPORT template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
 // = VEPopulation<XES2> vs = MultiESolution<XES2>
 // ==============================================
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES,
                      XESolution XES2 = XES,
                      X2ESolution<XES2> X2ES = VEPopulation<XES2>>

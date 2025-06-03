@@ -88,7 +88,8 @@ MOD_EXPORT class Domain {
   template <typename XES>
   struct is_XESf32<XES, std::void_t<typename XES::second_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XES> &&
 #endif
             is_f32<typename XES::second_type::objType>::value> {
@@ -101,7 +102,8 @@ MOD_EXPORT class Domain {
   template <typename XES>
   struct is_XESf64<XES, std::void_t<typename XES::second_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XES> &&
 #endif
             is_f64<typename XES::second_type::objType>::value> {
@@ -114,7 +116,8 @@ MOD_EXPORT class Domain {
   template <typename XES>
   struct is_XESi64<XES, std::void_t<typename XES::second_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XES> &&
 #endif
             is_i64<typename XES::second_type::objType>::value> {
@@ -134,7 +137,8 @@ MOD_EXPORT class Domain {
                     std::void_t<typename X2ES::value_type::second_type>>
       :  // for type deduction
          std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
              X2ESolution<X2ES, typename X2ES::value_type> &&
 #endif
              is_f64<typename X2ES::value_type::second_type::objType>::value> {
@@ -150,7 +154,8 @@ MOD_EXPORT class Domain {
   struct is_XMESf64<XMES, std::void_t<typename XMES::second_type>,
                     std::void_t<typename XMES::second_type::XEv>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XMES> &&
 #endif
             is_f64<typename XMES::second_type::XEv::objType>::value> {
@@ -165,7 +170,8 @@ MOD_EXPORT class Domain {
   struct is_XMESi32<XMES, std::void_t<typename XMES::second_type>,
                     std::void_t<typename XMES::second_type::XEv>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XMES> &&
 #endif
             is_i32<typename XMES::second_type::XEv::objType>::value> {
@@ -182,7 +188,8 @@ MOD_EXPORT class Domain {
                      std::void_t<typename X2MES::value_type::second_type>,
                      std::void_t<typename X2MES::value_type::second_type::XEv>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             X2ESolution<X2MES, typename X2MES::value_type> &&
 #endif
             is_f64<
@@ -200,7 +207,8 @@ MOD_EXPORT class Domain {
   template <typename X2S>
   struct is_X2S<X2S, std::void_t<typename X2S::value_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             X2Solution<X2S, typename X2S::value_type>
 #else
             true
@@ -218,7 +226,8 @@ MOD_EXPORT class Domain {
   template <typename XES>
   struct is_XRKf64Ef64<XES, std::void_t<typename XES::second_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XES> &&
 #endif
             is_rkf64<typename XES::first_type>::value &&
@@ -232,7 +241,8 @@ MOD_EXPORT class Domain {
   template <typename XES>
   struct is_XRKf64Ei32<XES, std::void_t<typename XES::second_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XES> &&
 #endif
             is_rkf64<typename XES::first_type>::value &&
@@ -246,7 +256,8 @@ MOD_EXPORT class Domain {
   template <typename XES>
   struct is_XRKf64EMi32<XES, std::void_t<typename XES::second_type>>
       : std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
             XESolution<XES> &&
 #endif
             is_rkf64<typename XES::first_type>::value &&
@@ -265,7 +276,8 @@ MOD_EXPORT class Domain {
                         std::void_t<typename X2ES::value_type::second_type>>
       :  // for type deduction
          std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
              X2ESolution<X2ES, typename X2ES::value_type> &&
 #endif
              is_XRKf64Ef64<typename X2ES::value_type>::value> {
@@ -283,7 +295,8 @@ MOD_EXPORT class Domain {
                         std::void_t<typename X2ES::value_type::second_type>>
       :  // for type deduction
          std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
              X2ESolution<X2ES, typename X2ES::value_type> &&
 #endif
              is_XRKf64Ei32<typename X2ES::value_type>::value> {
@@ -301,7 +314,8 @@ MOD_EXPORT class Domain {
                          std::void_t<typename X2ES::value_type::second_type>>
       :  // for type deduction
          std::bool_constant<
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
              X2ESolution<X2ES, typename X2ES::value_type> &&
 #endif
              is_XRKf64EMi32<typename X2ES::value_type>::value> {
@@ -341,7 +355,8 @@ MOD_EXPORT class Domain {
     else if constexpr (is_X2MESf64<X>::value)
       return "<X2MESf64>";
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
     else if constexpr (XESolution<X>)
       return "<XES>";
     else if constexpr (is_X2S<X>::value)

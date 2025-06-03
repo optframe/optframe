@@ -50,7 +50,8 @@ class Constructive : public Component {
     std::string s = Component::idComponent();
 
     ss << s << ":Constructive"
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
        << Domain::getAlternativeDomain<S>("<XS>");
 #else
        << Domain::getAlternativeDomain<S>("<X?>");

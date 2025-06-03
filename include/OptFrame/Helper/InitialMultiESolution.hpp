@@ -40,7 +40,8 @@ namespace optframe {
 // IMPORTANT: by default, MultiESolution is generating VEPopulation types
 // Because MultiESolution class is currently broken... Too bad!
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
 #else
 MOD_EXPORT template <XESolution XES, typename X2ES = VEPopulation<XES>>
@@ -126,7 +127,8 @@ class BasicInitialMultiESolution : public InitialMultiESolution<XES> {
 // MultiESolution = VEPopulation
 // This has nothing to do with MultiObjective stuff...
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES>  // XEMSolution XMES
 #else
 MOD_EXPORT template <typename XES>  // TODO: make MultiBuilder for XMES ?
@@ -194,7 +196,8 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<XES> {
 // However, this is a ComponentMultiBuilder, so it's intended for XMES.
 // ===================================================================
 
-#if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+// #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
+#ifdef OPTFRAME_USE_STD_CONCEPTS
 MOD_EXPORT template <XESolution XES, XEMSolution XMES>
 #else
 MOD_EXPORT template <typename XES, typename XMES>
