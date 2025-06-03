@@ -72,8 +72,9 @@ inline uintptr_t get_tid() {
 // On ARM, pthread_t is 'long unsigned int', uintptr_t is 'unsigned int'
 // On Mac, pthread_t is '_opaque_pthread_t *', uintptr_t is 'unsigned long'
 // On linux, pthread_t is 'unsigned long', uintptr_t is 'unsigned long'
-#if defined(__APPLE__)
-  return reinterpret_cast<uintptr_t>(tid);  // mac (but Linux ok too...)
+#if defined(__APPLE__) || defined(__FreeBSD__)
+  return reinterpret_cast<uintptr_t>(
+      tid);  // mac and freebsd (but Linux ok too...)
 #elif defined(__arm__) || defined(__aarch64__)
   return static_cast<uintptr_t>(tid);  // ARM! (but Linux ok too...)
 #else
