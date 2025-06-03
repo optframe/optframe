@@ -1,4 +1,7 @@
-all: build/app_Example
+all: create_build build/app_Example
+
+create_build:
+	mkdir -p build/
 
 CC=g++
 CXXFLAGS= -I../../../include -I../../../libs -Iinclude  -fno-exceptions -O3 -Wall --std=c++20 #-fno-exceptions -fno-rtti #TODO: disable exceptions

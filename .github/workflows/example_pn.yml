@@ -7,13 +7,13 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  Examples-LTS-PN:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: make
-      working-directory: ./Examples/LTS/PN/
+      working-directory: ./Examples/LTS/  PN/
       run: make
 
