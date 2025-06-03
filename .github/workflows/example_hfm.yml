@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  Examples-LTS-HFM:
 
     runs-on: ubuntu-latest
 
@@ -18,4 +18,11 @@ jobs:
     - name: make
       working-directory: ./Examples/LTS/HFM/
       run: make
+    - name: bazel
+      working-directory: ./Examples/LTS/HFM/
+      run: bazel build ...
+    - name: cmake
+      working-directory: ./Examples/LTS/HFM/
+      run: pip install cmake --break-system-packages && rm -rf build && mkdir -p build && cd build && cmake .. -GNinja && ninja
+
 
