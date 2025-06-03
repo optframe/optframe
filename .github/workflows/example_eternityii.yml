@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  Examples-LTS-EternityII:
 
     runs-on: ubuntu-latest
 
@@ -21,5 +21,5 @@ jobs:
       run: bazel build ...
     - name: cmake
       working-directory: ./Examples/LTS/EternityII/
-      run: cxxbuild
+      run: rm -rf build && mkdir -p build && cd build && cmake .. -GNinja && ninja
 
