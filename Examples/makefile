@@ -1,53 +1,16 @@
-all: pmedcap examples kp tsp hfvrpmt
+all: lts
 
-examples: mitsp kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
+lts:
+	cd LTS && make
 
-mitsp:
-	#g++ --std=c++20 mainMImpTSP.cpp -o app_MiTSP 2> error-gcc.err 
-	cd MITSP && make
+legacy:
+	cd Legacy && make
 
-fix_examples: svrpdsp modm
+fix_examples: svrpdsp
 
-tsp:
-	cd TSP && make
-
-kp:
-	cd KP && make
-
-kp2:
-	make -f makeKP2.mk
-
-hfm:
-	cd HFM && make
-
-#pn:
-#	make -f makePN.mk
-
-opths:
-	cd OptHS && make
-
-etii:
-	cd EternityII && make
-
-pmedcap:
-	cd PMedCap && make
-
-svrpdsp:
-	make -f makeSVRPDSP.mk
-
-opmop:
-	make -f makeOPMOP.mk
-
-gfp:
-	cd HFM && make -f makeGFP.mk
-
-hfvrpmt:
-	cd HFMVRP && make
-
-modm:
-	cd MODM && make
-
-clean:
+clean: clean_lts
 	rm -f app_*
 	rm -f *.o
-	./clean_all.sh
+
+clean_lts:
+	cd LTS && ./clean_all.sh

@@ -16,6 +16,6 @@ jobs:
     - name: install libsndfile1-dev
       run: sudo apt install libsndfile1-dev
     - name: make
-      working-directory: ./Examples/HFM/
+      working-directory: ./Examples/LTS/HFM/
       run: make
 

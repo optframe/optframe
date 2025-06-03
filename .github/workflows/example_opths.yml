@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      working-directory: ./Examples/OptHS/
+      working-directory: ./Examples/LTS/OptHS/
       run: make
 
