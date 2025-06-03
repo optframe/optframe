@@ -19,7 +19,3 @@ jobs:
     - name: bazel
       working-directory: ./Examples/LTS/MITSP/
       run: bazel build ...
-    - name: cmake
-      working-directory: ./Examples/LTS/MITSP/
-      run: pip install cmake --break-system-packages && rm -rf build && mkdir -p build && cd build && cmake .. -GNinja && ninja
-
