@@ -18,6 +18,7 @@
 #include <filesystem>
 #if __cplusplus >= 202002L && __has_include(<format>)
 #include <format>
+#define MODLOG_USE_STD_FORMAT 1
 #endif
 #include <functional>
 #include <iostream>
@@ -28,6 +29,11 @@
 #endif
 #include <string>
 #include <thread>
+
+#if __cplusplus >= 202002L && __has_include(<concepts>)
+#include <concepts>
+#define MODLOG_USE_STD_CONCEPTS 1
+#endif
 
 #ifdef MODLOG_STACKTRACE
 #if __has_include(<stacktrace>)
@@ -209,7 +215,8 @@ MODLOG_MOD_EXPORT inline std::ostream& default_prefix_data(
 
   // add line break before, since we cannot control what's done after...
   os << std::endl;
-#if defined(__cpp_lib_format)
+// #if defined(__cpp_lib_format)
+#ifdef MODLOG_USE_STD_FORMAT
   os << std::format("{}{:04}{:02}{:02} {:02}:{:02}:{:02}.{:06} {:}", level,
                     now_tm.tm_year + 1900, now_tm.tm_mon + 1, now_tm.tm_mday,
                     now_tm.tm_hour, now_tm.tm_min, now_tm.tm_sec, us.count(),
@@ -224,7 +231,8 @@ MODLOG_MOD_EXPORT inline std::ostream& default_prefix_data(
      << std::setfill('0') << us.count() << ' ' << tid;
 #endif
 
-#if defined(__cpp_lib_format)
+// #if defined(__cpp_lib_format)
+#ifdef MODLOG_USE_STD_FORMAT
 
   if (!short_file.empty())
     os << std::format(" {}:{}] ", short_file, line);
@@ -258,7 +266,8 @@ MODLOG_MOD_EXPORT inline std::ostream& json_prefix(
     slevel = "fatal";
   if (debug) slevel = "debug";
 
-#if defined(__cpp_lib_format)
+// #if defined(__cpp_lib_format)
+#ifdef MODLOG_USE_STD_FORMAT
   std::string stime =
       std::format("{:04}{:02}{:02} {:02}:{:02}:{:02}.{:06}",
                   now_tm.tm_year + 1900, now_tm.tm_mon + 1, now_tm.tm_mday,
@@ -330,7 +339,8 @@ MODLOG_MOD_EXPORT class LogConfig {
 
 MODLOG_MOD_EXPORT inline LogConfig modlog_default;
 
-#ifdef __cpp_concepts
+// #ifdef __cpp_concepts
+#ifdef MODLOG_USE_STD_CONCEPTS
 template <typename Self>
 concept Loggable = requires(Self obj) {
   { obj.stream() } -> std::same_as<std::ostream&>;
