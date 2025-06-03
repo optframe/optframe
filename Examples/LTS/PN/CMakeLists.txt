@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 4.0)
 project(my-project LANGUAGES CXX VERSION 0.0.1)
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,7 +7,7 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Include(FetchContent)
 add_definitions(-DOPTFRAME_AC)
 # add all executables
-add_executable(mainPN src/mainPN.cpp )
+add_executable(mainPN src/mainPN.cpp )    # main
 add_executable(Example.Test tests/Example.Test.cpp )
 add_library(my_headers0 INTERFACE)
 target_include_directories(my_headers0 INTERFACE include)
@@ -15,7 +15,7 @@ target_link_libraries(mainPN PRIVATE my_headers0)
 target_link_libraries(Example.Test PRIVATE my_headers0)
 # begin dependencies from cxxdeps.txt
 # cxxdeps dependency OptFrame
-set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../cmake")
+set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../../cmake")
 find_package(OptFrame REQUIRED)
 include_directories("${OptFrame_INCLUDE_DIRS}")
 # cxxdeps dependency Catch2

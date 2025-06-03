@@ -3,7 +3,7 @@ module(name = "optframe_opths")
 bazel_dep(name = "optframe")
 local_path_override(
     module_name = "optframe",
-    path = "../../",
+    path = "../../../",
 )
 
 bazel_dep(name = "rules_cc", version = "0.1.1")
