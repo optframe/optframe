@@ -9,7 +9,8 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: '1.7'
-      - name: Instantiate Environment
-        run: julia --project=binarybuilder -e 'import Pkg; Pkg.instantiate()'
+      - uses: julia-actions/julia-buildpkg@v1
+        with:
+          project: binarybuilder
       - name: Run `build_tarballs.jl`
         run: julia --project=binarybuilder binarybuilder/build_tarballs.jl
