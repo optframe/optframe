@@ -170,9 +170,11 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
     // dummy check: no fitness should be -1
     // =====================================
 
+#ifndef NDEBUG
     for (auto& fitInd : P) {
       assert(fitInd.fitness != -1);
     }
+#endif
 
     // ====================================
     // Fix original population Pop

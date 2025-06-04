@@ -8,9 +8,15 @@ all: optframe_lib_test   test    optframe_lib_test_gcc_clang19
 
 OPTFRAME_ROOT=.
 
+RELEASE_FLAGS=-O3 -DNDEBUG   # Darwin x86_64 does not support -g
+DEBUG_FLAGS=-O3 -g           
+
 optframe_lib: ./src/OptFrameLib/OptFrameLib.cpp
-	chmod +x ./build_lib_all_platforms.sh
-	./build_lib_all_platforms.sh
+	c++ --std=c++20 -Wall -pedantic ${RELEASE_FLAGS} -shared -fPIC -I./include ./src/OptFrameLib/OptFrameLib.cpp -o build/optframe_lib.so
+
+optframe_lib_debug: ./src/OptFrameLib/OptFrameLib.cpp
+	c++ --std=c++20 -Wall -pedantic ${DEBUG_FLAGS}   -shared -fPIC -I./include ./src/OptFrameLib/OptFrameLib.cpp -o build/optframe_lib.so
+	readelf -Ws build/optframe_lib.so | c++filt  | grep welcome
 
 optframe_lib_gcc_clang19: ./src/OptFrameLib/OptFrameLib.cpp
 	mkdir -p build/
