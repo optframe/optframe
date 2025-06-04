@@ -1,0 +1,15 @@
+name: Binary Builder
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@latest
+        with:
+          version: '1.7'
+      - name: Instantiate Environment
+        run: julia --project=binarybuilder -e 'import Pkg; Pkg.instantiate()'
+      - name: Run `build_tarballs.jl`
+        run: julia --project=binarybuilder binarybuilder/build_tarballs.jl
