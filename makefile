@@ -9,9 +9,8 @@ all: optframe_lib_test   test    optframe_lib_test_gcc_clang19
 OPTFRAME_ROOT=.
 
 optframe_lib: ./src/OptFrameLib/OptFrameLib.cpp
-	mkdir -p build/
-	@echo "TEST BUILD LIBRARY WITH ${CXX}"
-	$(CXX) --std=c++20 -g -I${OPTFRAME_ROOT}/include   -Wall -pedantic -O3  --shared  $< -o build/optframe_lib.so -fPIC
+	chmod +x ./build_lib_all_platforms.sh
+	./build_lib_all_platforms.sh
 
 optframe_lib_gcc_clang19: ./src/OptFrameLib/OptFrameLib.cpp
 	mkdir -p build/
