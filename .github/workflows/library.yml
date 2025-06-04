@@ -63,6 +63,10 @@ jobs:
         cmake -S. -Bbuild_out -GNinja
         ninja -Cbuild_out
         mv build/optframe_lib.dll build/optframe_lib.so 
+    - name: make optframe_lib
+      if: contains(matrix.os, 'ubuntu')
+      shell: bash
+      run: make optframe_lib
     - name: make optframe_lib_cmake
       shell: bash
       run: |
