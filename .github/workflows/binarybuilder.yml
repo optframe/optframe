@@ -1,6 +1,9 @@
 name: Binary Builder
 on:
   workflow_dispatch:
+permissions: # needed to allow julia-actions/cache to delete old caches that it has created
+  actions: write
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,10 +12,11 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: '1.7'
+      - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
         with:
-          project: binarybuilder
+          project: support/binarybuilder
       - name: Run `build_tarballs.jl`
-        run: |
-          julia -e 'import Pkg; Pkg.add("BinaryBuilder")'
-          BINARYBUILDER_AUTOMATIC_APPLE=true julia --project=binarybuilder support/binarybuilder/build_tarballs.jl
+        run: julia --project=support/binarybuilder support/binarybuilder/build_tarballs.jl
+        env:
+          BINARYBUILDER_AUTOMATIC_APPLE: true
