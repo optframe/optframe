@@ -1,6 +1,9 @@
 name: Binary Builder
 on:
   workflow_dispatch:
+permissions: # needed to allow julia-actions/cache to delete old caches that it has created
+  actions: write
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,6 +12,7 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: '1.7'
+      - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
         with:
           project: binarybuilder
