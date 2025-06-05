@@ -13,4 +13,6 @@ jobs:
         with:
           project: binarybuilder
       - name: Run `build_tarballs.jl`
-        run: julia --project=binarybuilder support/binarybuilder/build_tarballs.jl
+        run: |
+          julia -e 'import Pkg; Pkg.add("BinaryBuilder")'
+          julia --project=binarybuilder support/binarybuilder/build_tarballs.jl
