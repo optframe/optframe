@@ -15,4 +15,4 @@ jobs:
       - name: Run `build_tarballs.jl`
         run: |
           julia -e 'import Pkg; Pkg.add("BinaryBuilder")'
-          julia --project=binarybuilder support/binarybuilder/build_tarballs.jl
+          BINARYBUILDER_AUTOMATIC_APPLE=true julia --project=binarybuilder support/binarybuilder/build_tarballs.jl
