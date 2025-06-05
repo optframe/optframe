@@ -15,7 +15,7 @@ target_link_libraries(mainPN PRIVATE my_headers0)
 target_link_libraries(Example.Test PRIVATE my_headers0)
 # begin dependencies from cxxdeps.txt
 # cxxdeps dependency OptFrame
-set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../../cmake")
+set(OptFrame_DIR "${CMAKE_SOURCE_DIR}/../../../support/cmake")
 find_package(OptFrame REQUIRED)
 include_directories("${OptFrame_INCLUDE_DIRS}")
 # cxxdeps dependency Catch2

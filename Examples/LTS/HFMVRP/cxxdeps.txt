@@ -1,5 +1,5 @@
 # OptFrame == "master" [ OptFrame::OptFrameAll ]  git *  https://github.com/optframe/optframe.git
-OptFrame == * [ ]  local * ../../../cmake
+OptFrame == * [ ]  local * ../../../support/cmake
 Catch2 == "v3.5.1" [ Catch2::Catch2WithMain ] cmake+git test https://github.com/catchorg/Catch2.git
 !define LEGACY_ADS
 !std c++20
