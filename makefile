@@ -12,9 +12,11 @@ RELEASE_FLAGS=-O3 -DNDEBUG   # Darwin x86_64 does not support -g
 DEBUG_FLAGS=-O3 -g           
 
 optframe_lib: ./src/OptFrameLib/OptFrameLib.cpp
+	mkdir -p build
 	c++ --std=c++20 -Wall -pedantic ${RELEASE_FLAGS} -shared -fPIC -I./include ./src/OptFrameLib/OptFrameLib.cpp -o build/optframe_lib.so
 
 optframe_lib_debug: ./src/OptFrameLib/OptFrameLib.cpp
+	mkdir -p build
 	c++ --std=c++20 -Wall -pedantic ${DEBUG_FLAGS}   -shared -fPIC -I./include ./src/OptFrameLib/OptFrameLib.cpp -o build/optframe_lib.so
 	readelf -Ws build/optframe_lib.so | c++filt  | grep welcome
 
