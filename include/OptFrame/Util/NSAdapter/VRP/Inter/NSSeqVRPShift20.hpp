@@ -174,7 +174,7 @@ class NSSeqVRPShift20 : public NSSeq<vector<vector<T>>, ADS, DS> {
   }
 
   virtual void print() {
-    std::cout << "NSSeqVRPShift20 with move: " << MOVE::idComponent();
+    std::cout << "NSSeqVRPShift20 with move: " << MOVE::idMoveComponent();
   }
 };
 

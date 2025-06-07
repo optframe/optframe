@@ -19,6 +19,8 @@
 #include <OptFrame/Search/InitialSearch.hpp>
 #include <OptFrame/Search/SearchOutput.hpp>
 #include <OptFrame/Search/StopCriteria.hpp>
+//
+#include <OptFrame/boost/static_string.hpp>
 
 #define MOD_EXPORT
 #else
@@ -102,7 +104,7 @@ class GlobalSearch : public Component {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static std::string idComponent() {
+  constexpr static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GlobalSearch"
 
@@ -112,9 +114,25 @@ class GlobalSearch : public Component {
     return ss.str();
   }
 
+  constexpr static boost::static_string<128> idComponentStatic() {
+    constexpr auto stid = Component::idComponentStatic();
+    constexpr auto stid2 = stid + ":GlobalSearch";
+    constexpr auto stid3 =
+        stid2 + Domain::getAlternativeDomain<XES>("<XESf64>");
+    return stid3;
+  }
+
   std::string toString() const override { return id(); }
 
-  std::string id() const override { return idComponent(); }
+  std::string id() const override {
+// cannot be constexpr in c++17... only in c++20
+#ifdef OPTFRAME_USE_STD_CONCEPTS
+    constexpr auto stid = idComponentStatic();
+#else
+    auto stid = idComponent();
+#endif
+    return std::string{stid.data(), stid.length()};
+  }
 };
 
 }  // namespace optframe

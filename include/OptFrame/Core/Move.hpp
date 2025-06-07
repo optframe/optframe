@@ -36,8 +36,28 @@ namespace optframe {
 // Note that, for XSH, we envision possible IncumbentType like EPopulation or
 // EPareto applications, which is not existing for the moment (only BestType
 // XES-based move operators)
+// In this case, XES is Base Type, and XSH is Primary type.
+// Example: XES and XSH=Pareto<XES>.
+// Should move occur on base type or only in primary type?
 //
 // Future will tell if this was indeed necessary.
+
+// ============== Is Move a Component? =================
+// defining move as component brings larger costs...
+// do we want that?
+// - If defined, then Move id() is: "OptFrame:Move"
+// - Otherwise, its id() hierarchy begins on move: "Move"
+//
+// #define MOVE_IS_COMPONENT
+//
+// =====================================================
+
+#ifdef MOVE_IS_COMPONENT
+#warning "Move is Component!"
+#define MOVE_COMPONENT_OVERRIDE override
+#else
+#define MOVE_COMPONENT_OVERRIDE
+#endif
 
 // #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 #ifdef OPTFRAME_USE_STD_CONCEPTS
@@ -45,12 +65,16 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class Move : public Component {
+class Move
+#ifdef MOVE_IS_COMPONENT
+    : public Component
+#endif
+{
   using XEv = typename XES::second_type;
   using mvObjType = typename XEv::objType;
 
  public:
-  ~Move() override = default;
+  virtual ~Move() MOVE_COMPONENT_OVERRIDE = default;
 
   // move id
   virtual id_type mid() { return 0; }
@@ -94,63 +118,12 @@ class Move : public Component {
     return rev;
   }
 
-  /*
-   // TODO: remove and unify on a single method (just varying XEv)
-   virtual Move<XES, XSH>* applyMEV(MultiEvaluation<>& mev, XES& s)
-   {
-      // boolean 'outdated' indicates that Evaluation needs update (after
-   Solution change)
-      // note that even if the reverse move is applied, the Evaluation will
-   continue with
-      // the outdated status set to true. So more efficient approaches may
-   rewrite this
-      // method, or implement efficient re-evaluation by means of the 'cost'
-   method. for (unsigned nE = 0; nE < mev.size(); nE++) mev.setOutdated(nE,
-   true);
-      // apply the move to R and ADS, saving the reverse (or undo) move
-      Move<XES, XSH>* rev = apply(s);
-      // update neighborhood local optimum status TODO:deprecated
-      updateNeighStatus(s);
-      // return reverse move (or null)
-      return rev;
-   }
-*/
-
-  /*
-   // TODO: remove and unify on a single method (just varying XEv)
-   virtual uptr<Move<XES, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, XES&
-   se)
-   {
-      for (unsigned nE = 0; nE < mev.size(); nE++)
-         mev.at(nE).outdated = true;
-      // apply the move to R and ADS, saving the reverse (or undo) move
-      uptr<Move<XES, XSH>> rev = apply(se);
-      // update neighborhood local optimum status TODO:deprecated
-      updateNeighStatus(se);
-
-      // return reverse move (or null)
-      return rev;
-   }
-*/
-
-  // TODO: coming in one of the next versions..
-  // virtual pair<Move<XES, XSH>&, MoveCost<>*> apply(const Evaluation<>&
-  // e, R& r, ADS& ads) = 0;
-
   // ================== cost calculation
 
   // Returns a XEvaluation object containing the difference
   virtual op<XEv> cost(const XES& se, bool allowEstimated) {
     return std::nullopt;
   }
-
-  // experiment for multi objective problems
-  // ABANDONED! MUST SUPPORT SAME 'cost()' OF SINGLE-OBJ
-  /*
-  virtual MultiMoveCost<mvObjType>* costMEV(const MultiEvaluation<mvObjType>&
-  mev, const XES& se, bool allowEstimated) { return nullptr;
-  }
-  */
 
   // ================== move independence and local search marking
 
@@ -192,18 +165,44 @@ class Move : public Component {
 
   bool operator!=(const Move<XES, XSH>& m) const { return !(*this == m); }
 
-  static std::string idComponent() {
+  // support basic debugging
+#ifndef MOVE_IS_COMPONENT
+  modlog::LogLevel verboseLevel;
+
+  virtual void setMoveVerbose() { verboseLevel = modlog::LogLevel::Debug; }
+#else
+  virtual void setMoveVerbose() { this->setVerbose(); }
+#endif
+
+  static std::string idMoveComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":Move";
+#ifdef MOVE_IS_COMPONENT
+    ss << Component::idComponent() << ":";
+#endif
+    ss << "Move";
     return ss.str();
   }
 
-  std::string id() const override { return idComponent(); }
+#ifdef MOVE_IS_COMPONENT
+  static std::string idComponent() { return idMoveComponent(); }
+#endif
 
-  std::string toString() const override { return id(); }
+  virtual std::string id() const MOVE_COMPONENT_OVERRIDE {
+    return idMoveComponent();
+  }
 
-  // default NO PRINT (WHY??)
-  void print() const override { (*this->logdata) << toString() << std::endl; }
+  virtual std::string toString() const MOVE_COMPONENT_OVERRIDE { return id(); }
+
+  // TODO: remove print()? forcing std::cout is bad idea... use toStream()!
+  // [[deprecated]]
+  virtual void print() const MOVE_COMPONENT_OVERRIDE {
+    std::cout << toString() << std::endl;
+  }
+
+  virtual bool toStream(std::ostream& os) const MOVE_COMPONENT_OVERRIDE {
+    os << toString();
+    return true;  // returns 'false' if unsupported
+  }
 };
 
 }  // namespace optframe

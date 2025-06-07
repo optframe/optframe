@@ -90,7 +90,7 @@ class MoveVRPSwap1_1Adapter : public Move<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Move<XES>::idComponent() << ":MoveVRPSwap1_1Adapter";
+    ss << Move<XES>::idMoveComponent() << ":MoveVRPSwap1_1Adapter";
     return ss.str();
   }
 };
@@ -243,7 +243,7 @@ class NSSeqVRPSwap1_1 : public NSSeq<XES> {
   std::string toString() const override {
     std::stringstream ss;
     ss << "NSSeqVRPSwap1_1(ADAPTER=" << ADAPTER
-       << ") with move: " << MOVE::idComponent();
+       << ") with move: " << MOVE::idMoveComponent();
     return ss.str();
   }
 

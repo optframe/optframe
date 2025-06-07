@@ -10,18 +10,25 @@ all: test
 
 test: clean test_lib OptFrame_test 
 
-test_lib: copy_txt_lib_instances test_lib_tsp_clean test_lib_base test_lib_kp test_lib_tsp
-	(cd build && ./test_lib_tsp_clean)
+test_lib: copy_txt_lib_instances test_lib_base test_lib_base_cpp17
 	(cd build && ./test_lib_base)
-	(cd build && ./test_lib_kp)
-	(cd build && ./test_lib_tsp)
+	(cd build && ./test_lib_base_cpp17)
 
 copy_txt_lib_instances:
 	mkdir -p build
 	cp ./OptFrameLib-test/*.txt ./build/
 
 test_lib_base: OptFrameLib-test/optframelib_base.Test.cpp
-	g++ -g -O3 -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+	g++ -g -O0 -std=c++20 -Wfatal-errors -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
+	
+test_lib_base_cpp17: OptFrameLib-test/optframelib_base_cpp17.Test.cpp
+	g++-15 -g -O0 -std=c++17 -Wfatal-errors -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@ -DMOVE_IS_COMPONENT
+
+test_lib_long: copy_txt_lib_instances test_lib_base test_lib_tsp_clean test_lib_kp test_lib_tsp
+	(cd build && ./test_lib_base)
+	(cd build && ./test_lib_tsp_clean)
+	(cd build && ./test_lib_kp)
+	(cd build && ./test_lib_tsp)
 
 test_lib_kp: OptFrameLib-test/optframelib_kp.Test.cpp
 	g++ -g -O3 -std=c++20 -pedantic  -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
@@ -32,7 +39,6 @@ test_lib_tsp: OptFrameLib-test/optframelib_tsp.Test.cpp
 test_lib_tsp_clean: OptFrameLib-test/optframelib_tsp_clean.cpp
 	g++ -g -O3 -Wfatal-errors -std=c++20 -pedantic -fsanitize=address -I$(INC_PATH) -I$(LIBS_PATH) -Ithirdparty ../src/OptFrameLib/OptFrameLib.cpp $<  -o ./build/$@   
 	
-
 
 OptFrame_test : OptFrame.Test.cpp 
 	g++ --coverage -g -O0 -fmax-errors=5 -std=c++20 -pedantic -I$(INC_PATH) -I$(LIBS_PATH) $(CATCH2_MAIN_PART) $<  -o ./build/$@   

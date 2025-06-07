@@ -17,6 +17,8 @@
 // important stuff
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
+//
+#include <OptFrame/boost/static_string.hpp>
 
 #define MOD_EXPORT
 #else
@@ -324,7 +326,7 @@ MOD_EXPORT class Domain {
   // ===============
 
   template <typename X>
-  constexpr static std::string_view getNamedDomain() {
+  constexpr static boost::static_string<16> getNamedDomain() {
     if constexpr (is_rkf64<X>::value) return "<XRKf64>";
     if constexpr (is_rkf32<X>::value)
       return "<XRKf32>";
@@ -370,8 +372,11 @@ MOD_EXPORT class Domain {
   }
 
   template <typename X>
-  static std::string_view getAlternativeDomain(std::string_view defaultDom) {
-    constexpr std::string_view named = getNamedDomain<X>();
+  constexpr static boost::static_string<16> getAlternativeDomain(
+      boost::static_string<16> defaultDom) {
+    // cannot be constexpr in c++17, only in c++20
+    // constexpr
+    auto named = getNamedDomain<X>();
     if (defaultDom == named)
       return "";
     else

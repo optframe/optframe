@@ -396,6 +396,10 @@ class CheckCommand : public Component {  // NOLINT
 
   void addNSEnum(sref<NSEnum<XES, XSH>> c) { add(c); }
 
+  void message(Move<XES, XSH>* moveComponent, int iter, string text) {
+    if (verbose) message(moveComponent->id(), iter, text);
+  }
+
   void message(Component* c, int iter, string text) {
     if (verbose) message(c->id(), iter, text);
   }
@@ -425,6 +429,14 @@ class CheckCommand : public Component {  // NOLINT
   }
 
   bool parseBool(string b) { return b == "true"; }
+
+  static void safe_move_print(std::ostream& os, Move<XES, XSH>* moveComponent) {
+    // assert(c);
+    if (moveComponent)
+      moveComponent->toStream(os);
+    else
+      os << "nullptr Component" << std::endl;
+  }
 
  private:
   // bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XSH>> ns, int id_ns,
@@ -503,7 +515,7 @@ class CheckCommand : public Component {  // NOLINT
                    iter, " conflict between apply result and hasReverse()");
           onFail(CMERR_MOVE_HASREVERSE);
           if (retryDebug) {
-            move.setVerboseR();
+            move.setMoveVerbose();
             // force debug message printing on move apply
             move.apply(se_backup);
           }
@@ -607,20 +619,21 @@ class CheckCommand : public Component {  // NOLINT
         if (ini && (*ini != move)) {
           errormsg(moveFrom, CMERR_MOVE_EQUALS, "CMERR_MOVE_EQUALS", iter,
                    "reverse of reverse is not the original move!");
-          move.print();
+          if (!move.toStream((*this->logdata)))
+            move.print();  // TODO: remove print()
           (*this->logdata) << "move: ";
           move.print();
           (*this->logdata) << "rev: ";
-          Component::safe_print((*this->logdata), rev.get());
+          safe_move_print((*this->logdata), rev.get());
           (*this->logdata) << "ini (reverse of rev): ";
-          Component::safe_print((*this->logdata), ini.get());
+          safe_move_print((*this->logdata), ini.get());
           //
           onFail(CMERR_MOVE_EQUALS);
           // retry with verbose flags set on moves
           if (retryDebug) {
-            move.setVerboseR();
+            move.setMoveVerbose();
             auto seBackup = sOriginal;
-            rev->setVerboseR();
+            rev->setMoveVerbose();
             uptr<Move<XES>> ini = rev->apply(se);
             // compare and let operator== raise debug messages
             if (*ini != move) return false;  // must use bool result here

@@ -120,7 +120,7 @@ class NSSeqTSPOrOptk : public NSSeq<XES> {
 
   std::string toString() const override {
     std::stringstream ss;
-    ss << "NSSeqTSPOrOpt{K=" << k << "} with move: " << MOVE::idComponent();
+    ss << "NSSeqTSPOrOpt{K=" << k << "} with move: " << MOVE::idMoveComponent();
     return ss.str();
   }
 };

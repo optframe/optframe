@@ -42,7 +42,7 @@ class Constructive : public Component {
   virtual std::optional<S> generateSolution(double timelimit) = 0;
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (Component::compatible(s));
+    return (s == id()) || (Component::compatible(s));
   }
 
   static std::string idComponent() {

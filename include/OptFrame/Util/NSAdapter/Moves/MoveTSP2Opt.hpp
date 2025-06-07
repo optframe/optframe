@@ -82,7 +82,7 @@ class MoveTSP2Opt : public Move<XES> {
   }
 
   static std::string idComponent() {
-    string idComp = Move<XES>::idComponent();
+    string idComp = Move<XES>::idMoveComponent();
     idComp.append("MoveTSP2Opt");
     return idComp;
   }

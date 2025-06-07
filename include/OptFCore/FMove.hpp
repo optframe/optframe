@@ -92,7 +92,7 @@ class FMove final : public Move<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Move<XES>::idComponent() << ":FMove";
+    ss << Move<XES>::idMoveComponent() << ":FMove";
     return ss.str();
   }
 
@@ -176,7 +176,7 @@ class FMoveP final : public Move<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Move<XES>::idComponent() << ":FMove";
+    ss << Move<XES>::idMoveComponent() << ":FMove";
     return ss.str();
   }
 

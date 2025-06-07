@@ -105,7 +105,7 @@ class MoveVRPShift10Adapter : public Move<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Move<XES>::idComponent() << ":MoveVRPShift10Adapter";
+    ss << Move<XES>::idMoveComponent() << ":MoveVRPShift10Adapter";
     return ss.str();
   }
 };
@@ -281,7 +281,7 @@ class NSSeqVRPShift10 : public NSSeq<XES> {
   std::string toString() const override {
     std::stringstream ss;
     ss << "NSSeqVRPShift10(ADAPTER=" << ADAPTER
-       << ") with move: " << MOVE::idComponent();
+       << ") with move: " << MOVE::idMoveComponent();
     return ss.str();
   }
 

@@ -154,11 +154,16 @@ class ComponentAction : public Action<XES> {
   }
 
   virtual bool handleComponent(std::string type) {
-    return ComponentHelper::compareBase(Component::idComponent(), type);
+    auto cid = Component::idComponent();
+    std::string base{cid.data(), cid.length()};
+    return ComponentHelper::compareBase(base, type);
   }
 
   virtual bool handleComponent(Component& component) {
-    return component.compatible(Component::idComponent());
+    // cannot use constexpr here in c++17, only in c++20
+    auto cid = Component::idComponent();
+    std::string s{cid.data(), cid.length()};
+    return component.compatible(s);
   }
 
   virtual bool handleAction(std::string action) {

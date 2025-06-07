@@ -154,7 +154,7 @@ class NSSeqTSP2Opt : public NSSeq<XES> {
 
   std::string toString() const override {
     std::stringstream ss;
-    ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
+    ss << "NSSeqTSP2Opt with move: " << MOVE::idMoveComponent();
 
     return ss.str();
   }

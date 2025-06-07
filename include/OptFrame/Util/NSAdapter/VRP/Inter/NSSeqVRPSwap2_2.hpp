@@ -91,8 +91,8 @@ class MoveVRPSwap2_2 : public Move<vector<vector<T>>, ADS, DS> {
 
   void print() const override {
     std::cout << "MoveVRPSwap2_2( ";
-    std::cout << r1 << ", " << r2 << ", " << c1 << ", " << c2 << ", " << reverseR1
-         << ", " << reverseR2 << " )";
+    std::cout << r1 << ", " << r2 << ", " << c1 << ", " << c2 << ", "
+              << reverseR1 << ", " << reverseR2 << " )";
     std::cout << std::endl;
   }
 };
@@ -214,7 +214,7 @@ class NSSeqVRPSwap2_2 : public NSSeq<vector<vector<T>>> {
   }
 
   virtual void print() {
-    std::cout << "NSSeqVRPSwap2_2 with move: " << MOVE::idComponent();
+    std::cout << "NSSeqVRPSwap2_2 with move: " << MOVE::idMoveComponent();
   }
 };
 

@@ -88,7 +88,7 @@ class MoveTSPOrOptk : public Move<XES> {
   }
 
   static std::string idComponent() {
-    string idComp = Move<XES>::idComponent();
+    string idComp = Move<XES>::idMoveComponent();
     idComp.append("MoveTSPOrOptk");
     return idComp;
   }

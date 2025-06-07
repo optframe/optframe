@@ -7,6 +7,7 @@
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <cstdlib>
+//
 #include <iostream>
 #include <memory>  // for shared_ptr
 #include <sstream>
@@ -16,6 +17,8 @@
 //
 // #include <OptFrame/SemStream.hpp>
 #include <OptFrame/modlog/modlog.hpp>
+//
+#include <OptFrame/boost/static_string.hpp>
 
 #define MOD_EXPORT
 #else
@@ -103,6 +106,18 @@ MOD_EXPORT class Component {
       c->print();
     else
       os << "nullptr Component" << std::endl;
+  }
+
+  static
+#if __cpp_consteval >= 201811L
+      consteval auto
+      ceval(auto value)
+#else
+      auto&
+      ceval(auto& value)
+#endif
+  {
+    return value;
   }
 
  public:
@@ -238,8 +253,18 @@ MOD_EXPORT class Component {
 #endif
 
   static std::string idComponent() { return "OptFrame"; }
+  static constexpr boost::static_string<8> idComponentStatic() {
+    return "OptFrame";
+  }
 
-  virtual std::string id() const { return idComponent(); }
+  virtual std::string id() const {
+#ifdef OPTFRAME_USE_STD_CONCEPTS
+    constexpr auto stid = idComponentStatic();
+#else
+    auto stid = idComponent();
+#endif
+    return std::string{stid.data(), stid.length()};
+  }
 
   virtual std::string defaultDomain() const { return ""; }
 
