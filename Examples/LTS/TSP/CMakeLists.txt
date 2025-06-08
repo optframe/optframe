@@ -6,6 +6,7 @@ set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Include(FetchContent)
 add_definitions(-DOPTFRAME_AC)
+add_definitions(-DMOVE_IS_COMPONENT)
 # add all executables
 add_executable(mainTSP src/mainTSP.cpp )    # main
 add_executable(Example.Test tests/Example.Test.cpp )
