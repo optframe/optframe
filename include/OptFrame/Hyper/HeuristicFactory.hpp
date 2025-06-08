@@ -36,23 +36,23 @@
 // Heuristics
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/HC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VNDUpdateADS.hpp>
 //
 #include <OptFrame/Heuristics/LocalSearches/BuilderBI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderFI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BuilderHC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderRVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderVND.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BuilderVNDUpdateADS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
 #include <OptFrame/Heuristics/LocalSearches/CircularSearchBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/EmptyBuilder.hpp>
-#include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
-#include <OptFrame/Heuristics/LocalSearches/HillClimbingBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethodBuilder.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADSBuilder.hpp>
 // #include "Heuristics/LocalSearches/RVND.hpp"
 
 // Metaheuristics

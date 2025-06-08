@@ -70,11 +70,11 @@
 #include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
-#include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
-#include <OptFrame/Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp>
+#include <OptFrame/Heuristics/LocalSearches/HC.hpp>
+#include <OptFrame/Heuristics/LocalSearches/LAHC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VNDUpdateADS.hpp>
 #include <OptFrame/Heuristics/SingleObjSearchToLocalSearch.hpp>
 
 // general builders
@@ -222,12 +222,11 @@ class Loader {
     factory.builders.push_back(new BuilderVND<XES>);
     factory.builders.push_back(new BuilderRVND<XES>);
 #ifdef OPTFRAME_LEGACY_R_ADS
-    factory.builders.push_back(
-        new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);
+    factory.builders.push_back(new BuilderVNDUpdateADS<R, ADS, S, XEv>);
 #endif
     // factory.builders.push_back(new RVNDBuilder<XES> );
-    factory.builders.push_back(new HillClimbingBuilder<XES>);
-    factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<XES>);
+    factory.builders.push_back(new BuilderHC<XES>);
+    factory.builders.push_back(new BuilderLAHC<XES>);
     factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<XES>);
 
     // SingleObjSearch + Parameters

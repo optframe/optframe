@@ -4,6 +4,9 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_LATEACCEPTANCEHILLCLIMBING_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_LATEACCEPTANCEHILLCLIMBING_HPP_
 
+// This is Late Acceptance Hill Climbing (LAHC)
+// It is listed as Local Search, but should be moved to Global Search!
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
@@ -40,7 +43,7 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class LateAcceptanceHillClimbing : public LocalSearch<XES> {
+class LAHC : public LocalSearch<XES> {
   using XEv = typename XES::second_type;
 
  private:
@@ -50,24 +53,16 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES> {
   int iterMax;  // max iterations without improvement
 
  public:
-  LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES>> _ev, sref<NS<XES>> _ns,
-                             int _L, int _iterMax)
+  LAHC(sref<GeneralEvaluator<XES>> _ev, sref<NS<XES>> _ns, int _L, int _iterMax)
       : ev(_ev), L(_L), iterMax(_iterMax) {
     lns.push_back(&_ns);
   }
 
-  LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES>> _ev,
-                             vsref<NS<XES>> _lns, int _L, int _iterMax)
+  LAHC(sref<GeneralEvaluator<XES>> _ev, vsref<NS<XES>> _lns, int _L,
+       int _iterMax)
       : ev(_ev), lns(_lns), L(_L), iterMax(_iterMax) {}
 
-  virtual ~LateAcceptanceHillClimbing() = default;
-
-  // DEPRECATED
-  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-  //{
-  //	Evaluation<> e = std::move(ev->evaluate(s));
-  //	exec(s, e, stopCriteria);
-  //}
+  ~LAHC() override = default;
 
   SearchStatus searchFrom(XES& seBest, const StopCriteria<XEv>& sosc) override {
     using S = typename XES::first_type;
@@ -205,12 +200,12 @@ template <XESolution XES>
 #else
 template <typename XES>
 #endif
-class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
+class BuilderLAHC : public LocalSearchBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
  public:
-  virtual ~LateAcceptanceHillClimbingBuilder() = default;
+  virtual ~BuilderLAHC() = default;
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -233,7 +228,7 @@ class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
     int iterMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new LateAcceptanceHillClimbing<XES>(eval, nslist, L, iterMax);
+    return new LAHC<XES>(eval, nslist, L, iterMax);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -251,7 +246,7 @@ class LateAcceptanceHillClimbingBuilder : public LocalSearchBuilder<XES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == LateAcceptanceHillClimbing<XES>::idComponent();
+    return component == LAHC<XES>::idComponent();
   }
 
   static std::string idComponent() {

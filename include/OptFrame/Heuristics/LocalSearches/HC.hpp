@@ -4,6 +4,13 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
 
+// =========================================================================
+// This is Hill Climbing (HC)
+// A classic neighborhood exploration technique, typically used with BI
+//   to perform Steepest Descent.
+// Reference paper: unknown (classic)
+// =========================================================================
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
@@ -33,29 +40,20 @@ import optframe.concepts;
 namespace optframe {
 
 MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class HillClimbing : public LocalSearch<XES> {
+class HC : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES>> evaluator;
   sref<LocalSearch<XES>> ls;
 
  public:
-  HillClimbing(sref<GeneralEvaluator<XES>> _ev, sref<LocalSearch<XES>> _ls)
+  HC(sref<GeneralEvaluator<XES>> _ev, sref<LocalSearch<XES>> _ls)
       : evaluator(_ev), ls(_ls) {}
 
-  virtual ~HillClimbing() = default;
+  ~HC() override = default;
 
-  // DEPRECATED
-  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-  //{
-  //	Evaluation<> e = std::move(ev.evaluate(s));
-  //	exec(s, e, stopCriteria);
-  //}
-
-  virtual SearchStatus searchFrom(XES& se,
-                                  const StopCriteria<XEv>& sosc) override {
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stop) override {
     if (Component::information)
-      std::cout << "HillClimbing (ls=" << ls->toString() << ") starts."
-                << std::endl;
+      std::cout << "HC (ls=" << ls->toString() << ") starts." << std::endl;
     // S& s = se.first;
     XEv& e = se.second;
     //
@@ -66,8 +64,8 @@ class HillClimbing : public LocalSearch<XES> {
     XEv e0(e);  // avoid that using return status on 'exec'
 
     if (Component::information)
-      std::cout << "HillClimbing invoking ls=" << ls->toString() << std::endl;
-    ls->searchFrom(se, sosc);
+      std::cout << "HC invoking ls=" << ls->toString() << std::endl;
+    ls->searchFrom(se, stop);
 
     // long tnow = time(nullptr);
 
@@ -75,14 +73,14 @@ class HillClimbing : public LocalSearch<XES> {
     // while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
     // while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
     while ((evaluator->betterStrict(e, e0)) &&
-           !sosc.shouldStop(e)) {  // ((tnow - tini) < timelimit)) {
+           !stop.shouldStop(e)) {  // ((tnow - tini) < timelimit)) {
       // delete e0;
       // e0 = &e.clone();
 
       //   (*e0) = e;
       e0 = e;
 
-      ls->searchFrom(se, sosc);
+      ls->searchFrom(se, stop);
 
       // tnow = time(nullptr);
     }

@@ -29,12 +29,12 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class HillClimbingBuilder : public LocalSearchBuilder<XES> {
+class BuilderHC : public LocalSearchBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
  public:
-  virtual ~HillClimbingBuilder() = default;
+  ~BuilderHC() override = default;
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -54,7 +54,7 @@ class HillClimbingBuilder : public LocalSearchBuilder<XES> {
     scanner = Scanner(method.second);
 
     // NOLINTNEXTLINE
-    return new HillClimbing<XES>(eval, h);
+    return new HC<XES>(eval, h);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -68,7 +68,7 @@ class HillClimbingBuilder : public LocalSearchBuilder<XES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == HillClimbing<XES, XEv>::idComponent();
+    return component == HC<XES, XEv>::idComponent();
   }
 
   static std::string idComponent() {

@@ -25,27 +25,22 @@ template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
 template <typename R, typename ADS, typename S, typename XEv = Evaluation<>,
           typename XES = pair<S, XEv>>
 #endif
-class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
+class VNDUpdateADS : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES>> ev;
   sref<ADSManager<R, ADS, S>> adsMan;
   vsref<LocalSearch<XES>> lsList;
 
  public:
-  VariableNeighborhoodDescentUpdateADS(sref<GeneralEvaluator<XES>> _ev,
-                                       sref<ADSManager<R, ADS, S>> _adsMan,
-                                       vsref<LocalSearch<XES>> _lsList)
+  VNDUpdateADS(sref<GeneralEvaluator<XES>> _ev,
+               sref<ADSManager<R, ADS, S>> _adsMan,
+               vsref<LocalSearch<XES>> _lsList)
       : ev(_ev), adsMan(_adsMan), lsList(_lsList) {}
 
-  virtual ~VariableNeighborhoodDescentUpdateADS() = default;
+  ~VNDUpdateADS() override = default;
 
-  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
-    // S& s = se.first;
-    // XEv& e = se.second;
-    //
-    double timelimit = sosc.timelimit;
-
-    // XEv target_f(sosc.target_f); // 'target_f' will break... removing
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stop) override {
+    double timelimit = stop.timelimit;
 
     long tini = time(nullptr);
 
@@ -64,7 +59,7 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES> {
       // XEv e0(e);
       pair<S, XEv> p0 = se;  // enough to clone?
 
-      lsList[k - 1]->searchFrom(p0, sosc);
+      lsList[k - 1]->searchFrom(p0, stop);
 
       // if (ev.betterThan(p0, se)) {
       // if (p0.second.betterStrict(se.second)) {

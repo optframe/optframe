@@ -11,10 +11,9 @@ template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
 template <typename R, class ADS, typename S, typename XEv = Evaluation<>,
           typename XES = pair<S, XEv>, typename X2ES = MultiESolution<XES>>
 #endif
-class VariableNeighborhoodDescentUpdateADSBuilder
-    : public LocalSearchBuilder<XES> {
+class BuilderVNDUpdateADS : public LocalSearchBuilder<XES> {
  public:
-  virtual ~VariableNeighborhoodDescentUpdateADSBuilder() = default;
+  ~BuilderVNDUpdateADS() override = default;
 
   // NOLINTNEXTLINE
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -37,8 +36,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder
     for (auto x : _hlist) hlist.push_back(x);
 
     // NOLINTNEXTLINE
-    return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(
-        eval, adsMan, hlist);
+    return new VNDUpdateADS<R, ADS, S, XEv>(eval, adsMan, hlist);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -57,8 +55,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder
   }
 
   bool canBuild(std::string component) override {
-    return component ==
-           VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>::idComponent();
+    return component == VNDUpdateADS<R, ADS, S, XEv>::idComponent();
   }
 
   static std::string idComponent() {
