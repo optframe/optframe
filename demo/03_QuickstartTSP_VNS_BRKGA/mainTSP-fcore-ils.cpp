@@ -14,8 +14,8 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
 // import everything on main()
@@ -75,29 +75,29 @@ int main() {
           pTSP, fevaluate};
   GeneralEvaluator<ESolutionTSP>* gev2 = (GeneralEvaluator<ESolutionTSP>*)ev2;
   sref<GeneralEvaluator<ESolutionTSP>> eval2(gev2);
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval2, demo.nsseqSwap));
+  ns_list.push_back(new BI<ESolutionTSP>(eval2, demo.nsseqSwap));
 
-  VariableNeighborhoodDescent<ESolutionTSP> VND(demo.eval, ns_list);
+  VND<ESolutionTSP> VND(demo.eval, ns_list);
   // VND.setVerbose();//
-ILSLPerturbationLPlus2<ESolutionTSP> pert(demo.eval, demo.nsSwap, rg2);
+  ILSLPerturbationLPlus2<ESolutionTSP> pert(demo.eval, demo.nsSwap, rg2);
 
-IteratedLocalSearchLevels<ESolutionTSP> ils(demo.eval, nnptr::copy(initRand),
-                                            nnptr::copy(VND), nnptr::copy(pert),
-                                            10, 5);
-// ils.setVerbose();
+  IteratedLocalSearchLevels<ESolutionTSP> ils(demo.eval, nnptr::copy(initRand),
+                                              nnptr::copy(VND),
+                                              nnptr::copy(pert), 10, 5);
+  // ils.setVerbose();
 
-std::cout << "will start ILS for 10 seconds" << std::endl;
+  std::cout << "will start ILS for 10 seconds" << std::endl;
 
-optframe::Timer t;
-ils.setVerbose();
-auto status = ils.search(
-    StopCriteria<ESolutionTSP::second_type>{10.0});  // 3.0 seconds max
-ESolutionTSP best = *status.best;
-std::cout << "spent time: " << t.now() << "s" << std::endl;
-// best solution value
-best.second.print();
-std::cout << "solution: " << best.first << std::endl;
+  optframe::Timer t;
+  ils.setVerbose();
+  auto status = ils.search(
+      StopCriteria<ESolutionTSP::second_type>{10.0});  // 3.0 seconds max
+  ESolutionTSP best = *status.best;
+  std::cout << "spent time: " << t.now() << "s" << std::endl;
+  // best solution value
+  best.second.print();
+  std::cout << "solution: " << best.first << std::endl;
 
-std::cout << "FINISHED" << std::endl;
-return 0;
+  std::cout << "FINISHED" << std::endl;
+  return 0;
 }

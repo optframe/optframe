@@ -83,9 +83,9 @@
 
 // local search
 #include "Heuristics/Empty.hpp"
-#include "Heuristics/LocalSearches/BestImprovement.hpp"
+#include "Heuristics/LocalSearches/BI.hpp"
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
-#include "Heuristics/LocalSearches/FirstImprovement.hpp"
+#include "Heuristics/LocalSearches/FI.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 #include "Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
 #include "Heuristics/LocalSearches/RandomDescentMethod.hpp"

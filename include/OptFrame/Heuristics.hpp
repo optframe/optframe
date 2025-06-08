@@ -15,7 +15,7 @@
 // LocalSearches
 #include "OptFrame/Heuristics/LocalSearches/Empty.hpp"
 //
-#include "OptFrame/Heuristics/LocalSearches/BestImprovement.hpp"
+#include "OptFrame/Heuristics/LocalSearches/BI.hpp"
 
 // Global Search
 #include "OptFrame/Heuristics/EmptySingleObjSearch.hpp"

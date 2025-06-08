@@ -12,8 +12,8 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 //

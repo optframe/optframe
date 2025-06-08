@@ -82,9 +82,9 @@ class GlobalSearch : public Component {
   // onFinish should run ALWAYS before returning!
   // Useful for post-processing!
   // Unused bool as return... for now!
-  bool (*onFinish)(GlobalSearch<XES, BestType>& self,
-                   SearchOutput<XES, BestType>&,
-                   const StopCriteria<_XEv>& stop) =
+  bool (*onFinishGlobal)(GlobalSearch<XES, BestType>& self,
+                         SearchOutput<XES, BestType>&,
+                         const StopCriteria<_XEv>& stop) =
       [](GlobalSearch<XES, BestType>& self, SearchOutput<XES, BestType>&,
          const StopCriteria<_XEv>& stop) { return true; };
 

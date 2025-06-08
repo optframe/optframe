@@ -13,7 +13,7 @@
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
-#include "VND.h"
+#include "FamilyVND.hpp"
 
 namespace optframe {
 

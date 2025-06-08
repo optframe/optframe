@@ -58,10 +58,9 @@ class GeneralVNS : public VariableNeighborhoodSearch<XES> {
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
     std::vector<LocalSearch<XES>*> vls;
     for (unsigned i = 0; i < super::vsearch.size(); i++)
-      vls.push_back(
-          new BestImprovement<XES>(super::evaluator, *super::vsearch.at(i)));
+      vls.push_back(new BI<XES>(super::evaluator, *super::vsearch.at(i)));
 
-    return *new VariableNeighborhoodDescent<XES>(super::evaluator, vls);
+    return *new VND<XES>(super::evaluator, vls);
   }
 
   std::string id() const override { return idComponent(); }

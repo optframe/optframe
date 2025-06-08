@@ -225,6 +225,23 @@ Multi-Objective metaheuristics:
 - 2PPLS
 - ...
 
+### Finding and naming new techniques
+
+Naming strategy for techniques
+1) always follow consolidade literature regarding naming and use classic naming
+   1.1) if necessary, create TWO equal methods (same implementation) with DIFFERENT naming, if this helps community to understand it (optimization community is "tribal", so each "tribe" must be equally represented)
+2) use short names to prevent unnecessary coding pollution, e.g., Simulated Annealing (SA)
+3) use metaheuristic names for FAMILIES, not methods: remember that each specific implementation of a metaheuristic is, in fact, an heuristic!
+   3.1) use prefixes like "BasicXX", "ClassicXX", to direct to classic or simple implementations of known metaheuristics
+   3.2) if method already has some consolidated name, use it! e.g., General VNS (GVNS)
+4) avoid two implementations of same method having the same name: must differentiate classes somehow! e.g., BI and LegacyBI
+5) builders should match the name of the target method, e.g., BI and BuilderBI
+   5.1) if method has multiple ways of being built, use suffix _0, _1, etc, on builders, e.g., BI and BuilderBI_0, BuilderBI_1, etc.
+6) always write the original paper of the method in the beggining of .hpp file, and try to provide pseudocode on docs for each proposed method
+7) final advice: avoid marketing names for methods like "SmartXX", etc... these are good on papers, not a general framework! Always find some bold and explicative names for the method, and avoid adding implementations of "unknown" or "strange" metaheuristics... if you don't understand what I mean, read the article "Metaheuristics: the Metaphor Exposed" by Sorensen
+
+
+
 
 ## Installation
 

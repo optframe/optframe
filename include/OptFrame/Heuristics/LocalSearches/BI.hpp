@@ -1,5 +1,12 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
-// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+// Copyright (C) 2007-2025 - OptFrame - https://github.com/optframe/optframe
+
+// =========================================================================
+// This is Best Improvement (BI)
+// A classic neighborhood exploration technique, typically used as part of
+//   Hill Climbing to perform Steepest Descent.
+// Reference paper: unknown (classic)
+// =========================================================================
 
 #ifndef OPTFRAME_BI_HPP_
 #define OPTFRAME_BI_HPP_
@@ -29,76 +36,49 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT template <XESolution XES,
-                     XEvaluation XEv = typename XES::second_type,
-                     XESolution XSH = XES>
-class BestImprovement : public LocalSearch<XES> {
+MOD_EXPORT template <XESolution XES, XESolution XSH = XES>
+class BI : public LocalSearch<XES, XSH> {
+  using XEv = typename XSH::second_type;
+
  private:
   sref<GeneralEvaluator<XES>> eval;
   sref<NSSeq<XES, XSH>> nsSeq;
 
-  // logs
+ public:
+  // internal logs
   double sum_time;
   int num_calls;
 
  public:
-  BestImprovement(sref<GeneralEvaluator<XES>> _eval,
-                  sref<NSSeq<XES, XSH>> _nsSeq)
+  BI(sref<GeneralEvaluator<XES>> _eval, sref<NSSeq<XES, XSH>> _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {
     sum_time = 0.0;
     num_calls = 0;
   }
 
-  virtual ~BestImprovement() = default;
+  ~BI() override = default;
 
-  // DEPRECATED
-  // virtual void exec(S& s, const StopCriteria<XEv>& sosc) override
-  //{
-  //	Evaluation<> e = eval.evaluate(s);
-  //	exec(s, e, sosc);
-  //}
-
-  virtual SearchStatus searchFrom(XSH& se,
-                                  const StopCriteria<XEv>& sosc) override {
-    // XSolution& s = se.first;
-    // XEv& e = se.second;
-
-    // double timelimit = sosc.timelimit;
-    // double target_f = sosc.target_f;
-
+  SearchStatus searchFrom(XSH& se, const StopCriteria<XEv>& stop) override {
     if (Component::information)
       std::cout << "BI::starts for " << nsSeq->toString() << std::endl;
 
     num_calls++;
     Timer t;
 
-    // TODO: verify if it's not null
-    // uptr<NSIterator<XES, XSH>> it = nsSeq.getIterator(s);
+    if (Component::debug) std::cout << "BI::getIterator()" << std::endl;
     uptr<NSIterator<XES, XSH>> it = nsSeq->getIterator(se);
+    if (!it) return this->onFinishLocal(*this, SearchStatus::FAILED, se, stop);
     //
-    if (!it) return SearchStatus::FAILED;  // poor implementation
-    //
-    if (Component::information) std::cout << "BI::first()" << std::endl;
-    //
+    if (Component::debug) std::cout << "BI::first()" << std::endl;
     it->first();
 
     if (it->isDone()) {
       sum_time += t.inMilliSecs();
-      return SearchStatus::NO_REPORT;  // Is it LOCAL_OPT?
+      // Nothing to do? Empty iterator? Is it LOCAL_OPT? Or NO_REPORT?
+      return this->onFinishLocal(*this, SearchStatus::LOCAL_OPT, se, stop);
     }
 
     uptr<Move<XES, XSH>> bestMove = it->current();
-
-    /*if(e.getLocalOptimumStatus(bestMove->id()))
-                {
-                        delete &it;
-                        delete bestMove;
-
-                        sum_time += t.inMilliSecs();
-                        return;
-                }*/
-
-    // MoveCost<>* bestCost = nullptr;
     op<XEv> bestCost = std::nullopt;
 
     while (true) {
@@ -108,7 +88,10 @@ class BestImprovement : public LocalSearch<XES> {
           bestMove = it->current();
         } else {
           sum_time += t.inMilliSecs();
-          return SearchStatus::NO_REPORT;  // Is it LOCAL_OPT ?
+          // Nothing to do? Non-appliable moves? Is it LOCAL_OPT? Or NO_REPORT?
+          // Maybe it's the end of search, with previously improving moves...
+          // Maybe check if bestCost is std::nullopt here?
+          return this->onFinishLocal(*this, SearchStatus::NO_REPORT, se, stop);
         }
       }
 
@@ -119,26 +102,22 @@ class BestImprovement : public LocalSearch<XES> {
         break;
       } else {
         it->next();
-
         if (!it->isDone()) {
           bestMove = it->current();
         } else {
           sum_time += t.inMilliSecs();
-          return SearchStatus::NO_REPORT;  // Is it LOCAL_OPT ?
+          // Nothing to do? No improvement move? Is it LOCAL_OPT? Or NO_REPORT?
+          // Maybe check if bestCost is std::nullopt here?
+          return this->onFinishLocal(*this, SearchStatus::NO_REPORT, se, stop);
         }
       }
     }
 
-    // it.next();
     while (!it->isDone()) {
       uptr<Move<XES, XSH>> move = it->current();
-      // if (move->canBeApplied(s))
       if (move->canBeApplied(se)) {
-        /// MoveCost<>* cost = eval.moveCost(*move, se);
         op<XEv> cost = eval->moveCost(*move, se);
 
-        // if (eval.betterThan(*cost, *bestCost))
-        // if (cost->betterStrict(*bestCost))
         if (eval->betterStrict(*cost, *bestCost)) {
           bestMove = std::move(move);
           move = nullptr;
@@ -153,32 +132,27 @@ class BestImprovement : public LocalSearch<XES> {
       it->next();
     }
 
-    if (eval->isStrictImprovement(*bestCost)) {
-      // std::cout << "MOVE IS IMPROVEMENT! cost=";
-      // bestCost->print();
+    // ===============================================
+    // finalize local search: IMPROVEMENT OR LOCAL_OPT
+    // ===============================================
 
+    if (eval->isStrictImprovement(*bestCost)) {
       if (bestCost->isEstimated()) {
         // TODO: have to test if bestMove is ACTUALLY an improvement move...
       }
 
       bestMove->applyUpdate(se);
 
-      eval->reevaluate(se);  // updates 'e'
-                             // e.setLocalOptimumStatus(bestMove->id(), false);
-                             // //set NS 'id' out of Local Optimum
+      eval->reevaluate(se);
+
       sum_time += t.inMilliSecs();
-      return SearchStatus::IMPROVEMENT;
+      // has improvement: this is an IMPROVEMENT situation!
+      return this->onFinishLocal(*this, SearchStatus::IMPROVEMENT, se, stop);
     } else {
-      // bestMove->updateNeighStatus(s.getADS());
-      // e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local
-      // Optimum
       sum_time += t.inMilliSecs();
-      return SearchStatus::LOCAL_OPT;
+      // no improvement: this is a LOCAL_OPT situation!
+      return this->onFinishLocal(*this, SearchStatus::LOCAL_OPT, se, stop);
     }
-    // std::cout << "#" << num_calls << " out_bi:";
-    // bestMove->print();
-    // nsSeq.print();
-    // e.print();
   }
 
   bool compatible(std::string s) override {

@@ -24,10 +24,10 @@
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
-#include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
 #include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Timer.hpp>
@@ -191,12 +191,12 @@ int main(int argc, char** argv) {
   // vector<LocalSearch<ESolutionHFMVRP>*> vLS;
   vsref<LocalSearch<ESolutionHFMVRP>> vLS;
   /*
-   BestImprovement<ESolutionHFMVRP> fiI(eval, nsseq_deltaIterator_delta_2opt);
-   BestImprovement<ESolutionHFMVRP> fiII(eval, nsseq_deltaIterator_delta_or1);
-   BestImprovement<ESolutionHFMVRP> fiIII(eval, nsseq_deltaIterator_delta_or2);
-   BestImprovement<ESolutionHFMVRP> fiIV(eval,
-   nsseq_deltaIterator_delta_exchange); BestImprovement<ESolutionHFMVRP>
-   fiV(eval, nsseq_deltaIterator_swap11); BestImprovement<ESolutionHFMVRP>
+   BI<ESolutionHFMVRP> fiI(eval, nsseq_deltaIterator_delta_2opt);
+   BI<ESolutionHFMVRP> fiII(eval, nsseq_deltaIterator_delta_or1);
+   BI<ESolutionHFMVRP> fiIII(eval, nsseq_deltaIterator_delta_or2);
+   BI<ESolutionHFMVRP> fiIV(eval,
+   nsseq_deltaIterator_delta_exchange); BI<ESolutionHFMVRP>
+   fiV(eval, nsseq_deltaIterator_swap11); BI<ESolutionHFMVRP>
    fiVI(eval, nsseq_deltaIterator_shift10); vLS.push_back(&fiI);
    vLS.push_back(&fiII);
    vLS.push_back(&fiIII);
@@ -205,18 +205,13 @@ int main(int argc, char** argv) {
    vLS.push_back(&fiVI);
    */
 
-  vLS.push_back(new BestImprovement<ESolutionHFMVRP>(
-      eval, nsseq_deltaIterator_delta_2opt));
-  vLS.push_back(new BestImprovement<ESolutionHFMVRP>(
-      eval, nsseq_deltaIterator_delta_or1));
-  vLS.push_back(new BestImprovement<ESolutionHFMVRP>(
-      eval, nsseq_deltaIterator_delta_or2));
-  vLS.push_back(new BestImprovement<ESolutionHFMVRP>(
-      eval, nsseq_deltaIterator_delta_exchange));
+  vLS.push_back(new BI<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_2opt));
+  vLS.push_back(new BI<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_or1));
+  vLS.push_back(new BI<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_or2));
   vLS.push_back(
-      new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_swap11));
-  vLS.push_back(
-      new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_shift10));
+      new BI<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_exchange));
+  vLS.push_back(new BI<ESolutionHFMVRP>(eval, nsseq_deltaIterator_swap11));
+  vLS.push_back(new BI<ESolutionHFMVRP>(eval, nsseq_deltaIterator_shift10));
 
   //
   // CheckCommand<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
@@ -255,8 +250,8 @@ int main(int argc, char** argv) {
   sref<GeneralEvaluator<ESolutionHFMVRP>> _ev = eval;
   vsref<LocalSearch<ESolutionHFMVRP>> _lsList = vLS;
   sptr<RandGen> _rg = rg.sptr();
-  // VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg);
-  VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg.sptr());
+  // VND<ESolutionHFMVRP> newVND(eval, vLS, rg);
+  VND<ESolutionHFMVRP> newVND(eval, vLS, rg.sptr());
   // VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
   // newVNDUpdateADS(*eval, *adsMan, vLS);
 

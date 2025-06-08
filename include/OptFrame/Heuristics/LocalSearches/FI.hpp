@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
+// =========================================================================
+// This is First Improvement (FI)
+// A classic neighborhood exploration technique, typically used as part of
+//   Hill Climbing to perform a quick descent (small steps)
+// Reference paper: unknown (classic)
+// =========================================================================
+
 #ifndef OPTFRAME_FI_HPP_
 #define OPTFRAME_FI_HPP_
 
@@ -28,35 +35,25 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>,
-                     XESolution XSH = XES>
-class FirstImprovement : public LocalSearch<XES> {
+MOD_EXPORT template <XESolution XES, XESolution XSH = XES>
+class FI : public LocalSearch<XES> {
+  using XEv = typename XSH::second_type;
+
  private:
   sref<GeneralEvaluator<XES, XSH>> eval;
   sref<NSSeq<XES, XSH>> nsSeq;
 
  public:
-  FirstImprovement(sref<GeneralEvaluator<XES>> _eval,
-                   sref<NSSeq<XES, XSH>> _nsSeq)
+  FI(sref<GeneralEvaluator<XES>> _eval, sref<NSSeq<XES, XSH>> _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~FirstImprovement() = default;
+  ~FI() override = default;
 
-  // DEPRECATED
-  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-  //{
-  //	Evaluation<> e = std::move(ev.evaluate(s));
-  //	exec(s, e, stopCriteria);
-  //}
-
-  SearchStatus searchFrom(XES& se,
-                          const StopCriteria<XEv>& stopCriteria) override {
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stop) override {
     if (Component::verbose) {
       std::cout << "FI: searchFrom begins" << std::endl;
       std::cout << eval->id() << std::endl;
     }
-    // XSolution& s = se.first;
-    // XEv& e = se.second;
 
     if (Component::verbose) std::cout << "FI: getIterator" << std::endl;
     uptr<NSIterator<XES>> it = nsSeq->getIterator(se);
@@ -87,27 +84,13 @@ class FirstImprovement : public LocalSearch<XES> {
         return SearchStatus::FAILED;  // poor implementation
       }
 
-      // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-      /*
-                        if(e.getLocalOptimumStatus(move->id()))
-                        {
-                                delete &it;
-                                delete move;
-                                return;
-                        }
-                        */
-
-      //			bestMoveId = move->id();
-
       if (Component::verbose)
         std::cout << "FI: move->canBeApplied()" << std::endl;
       if (move->canBeApplied(se)) {
         if (this->acceptsImprove(*move, se)) {
-          // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-          // e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of
-          // Local Optimum
-
-          return SearchStatus::IMPROVEMENT;
+          // has improvement: this is an IMPROVEMENT situation!
+          return this->onFinishLocal(*this, SearchStatus::IMPROVEMENT, se,
+                                     stop);
         }
       }
 
@@ -115,21 +98,15 @@ class FirstImprovement : public LocalSearch<XES> {
       it->next();
     } while (!it->isDone());
 
-    // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-    // if(bestMoveId != "")
-    //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local
-    // Optimum
-    return SearchStatus::LOCAL_OPT;
+    // no improvement: this is a LOCAL_OPT situation!
+    return this->onFinishLocal(*this, SearchStatus::LOCAL_OPT, se, stop);
   }
 
   // used on FirstImprovement
   // Accept and apply move if it improves parameter moveCost
-  /// bool acceptsImprove(Move<XES, XSH>& m, XSH& se, MoveCost<>* mc = nullptr,
-  /// bool allowEstimated = false)
   bool acceptsImprove(Move<XES, XSH>& m, XSH& se, bool allowEstimated = false) {
     if (Component::verbose)
       std::cout << "FI: begin acceptsImprove()" << std::endl;
-    // XSolution& s = se.first;
     XEv& e = se.second;
 
     // try to get a cost
@@ -138,7 +115,6 @@ class FirstImprovement : public LocalSearch<XES> {
     // if p not null => much faster (using cost)
     if (p) {
       // verify if m is an improving move
-      // if (p->isStrictImprovement()) {
       if (eval->isStrictImprovement(*p)) {
         // apply move and get reverse
         uptr<Move<XES, XSH>> rev = m.apply(se);
@@ -174,22 +150,6 @@ class FirstImprovement : public LocalSearch<XES> {
       }
 
       // must return to original situation
-
-      // apply reverse move in order to get the original solution back
-      // TODO - Vitor, Why apply Move with e is not used???
-      //			Even when reevaluate is implemented, It would be
-      // hard to design a strategy that is faster than copying previous
-      // evaluation
-      //==================================================================
-      // pair<Move<S, XEv>*, XEv> ini = applyMove(*rev, s);
-
-      // if XEv wasn't 'outdated' before, restore its previous status
-      //			if (!outdated)
-      //				e.outdated = outdated;
-
-      // go back to original evaluation
-      //			e = ini.second;
-      //			delete ini.first;
 
       if (Component::verbose)
         std::cout << "FI: No improvement. Will reverse." << std::endl;

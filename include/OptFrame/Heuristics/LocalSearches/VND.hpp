@@ -4,6 +4,13 @@
 #ifndef OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 #define OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 
+// =========================================================================
+// This is Variable Neighborhood Descent (VND)
+// A classic neighborhood exploration technique, typically used with
+//   Hill Climbing to perform Steepest Descent on multiple neighborhoods.
+// Reference paper: see Nenad Mladenovic and Pierre Hansen 1997
+// =========================================================================
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <vector>
@@ -13,7 +20,7 @@
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
 
-#include "VND.h"
+#include "FamilyVND.hpp"
 
 #define MOD_EXPORT
 #else
@@ -39,32 +46,20 @@ namespace optframe {
 
 MOD_EXPORT template <XESolution XES,
                      XEvaluation XEv = typename XES::second_type>
-class VariableNeighborhoodDescent : public LocalSearch<XES> {
+class VND : public LocalSearch<XES> {
  private:
   sref<GeneralEvaluator<XES>> ev;
   vsref<LocalSearch<XES>> lsList;
   sptr<RandGen> rg;
 
  public:
-  VariableNeighborhoodDescent(sref<GeneralEvaluator<XES>> _ev,
-                              vsref<LocalSearch<XES>> _lsList,
-                              sptr<RandGen> _rg = nullptr)
+  VND(sref<GeneralEvaluator<XES>> _ev, vsref<LocalSearch<XES>> _lsList,
+      sptr<RandGen> _rg = nullptr)
       : ev(_ev), lsList(_lsList), rg(_rg) {}
 
-  virtual ~VariableNeighborhoodDescent() {}
+  ~VND() override = default;
 
-  // DEPRECATED
-  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-  //{
-  //	Evaluation<> e = std::move(ev.evaluate(s));
-  //	exec(s, e, stopCriteria);
-  //}
-
-  SearchStatus searchFrom(XES& se,
-                          const StopCriteria<XEv>& stopCriteria) override {
-    // S& s = se.first;
-    // XEv& e = se.second;
-
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stop) override {
     if (Component::information) std::cout << "VND::starts" << std::endl;
 
     Timer tNow;
@@ -79,13 +74,12 @@ class VariableNeighborhoodDescent : public LocalSearch<XES> {
     // Evaluation<> eCurrent(e);
     //'target_f' will crash if not provided... removing
     while ((k <= r) &&
-           !stopCriteria
-                .shouldStop())  // && (ev.betterThan(stopCriteria.target_f, e))
+           !stop.shouldStop())  // && (ev.betterThan(stopCriteria.target_f, e))
     {
       // eCurrent = e; // backup
       current = se;  // TODO: remove this copy
 
-      StopCriteria<XEv> stopCriteriaNextLS = stopCriteria;
+      StopCriteria<XEv> stopCriteriaNextLS = stop;
       stopCriteriaNextLS.updateTimeLimit(tNow.now());
       lsList[k - 1]->searchFrom(se, stopCriteriaNextLS);
 

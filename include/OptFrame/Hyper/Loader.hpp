@@ -66,14 +66,14 @@
 #include <OptFrame/Helper/CloneConstructive.hpp>
 
 // local search
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
-#include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
 #include <OptFrame/Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
 #include <OptFrame/Heuristics/SingleObjSearchToLocalSearch.hpp>
 
@@ -215,11 +215,11 @@ class Loader {
 
     // LocalSearch
     factory.builders.push_back(new EmptyLocalSearchBuilder<XES>);
-    factory.builders.push_back(new BestImprovementBuilder<XES>);
-    factory.builders.push_back(new FirstImprovementBuilder<XES>);
+    factory.builders.push_back(new BuilderBI<XES>);
+    factory.builders.push_back(new BuilderFI<XES>);
     factory.builders.push_back(new RandomDescentMethodBuilder<XES>);
     factory.builders.push_back(new CircularSearchBuilder<XES>);
-    factory.builders.push_back(new VariableNeighborhoodDescentBuilder<XES>);
+    factory.builders.push_back(new BuilderVND<XES>);
 #ifdef OPTFRAME_LEGACY_R_ADS
     factory.builders.push_back(
         new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);

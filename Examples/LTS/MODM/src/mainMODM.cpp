@@ -208,9 +208,9 @@ int main(int argc, char** argv) {
          getchar();*/
 
   // ================ END OF CHECK MODULE ================
-  FirstImprovement<ESolutionMODM> fiSwap(geval, nsseq_swap);
-  FirstImprovement<ESolutionMODM> fiSwapInter(geval, nsseq_swapInter);
-  FirstImprovement<ESolutionMODM> fiInvert(geval, nsseq_invert);
+  FI<ESolutionMODM> fiSwap(geval, nsseq_swap);
+  FI<ESolutionMODM> fiSwapInter(geval, nsseq_swapInter);
+  FI<ESolutionMODM> fiInvert(geval, nsseq_invert);
 
   int nMovesRDM = 500000;
   RandomDescentMethod<ESolutionMODM> rdmSwap(geval, nsseq_swap, nMovesRDM);
@@ -236,9 +236,8 @@ int main(int argc, char** argv) {
 
   // vLS.push_back(&rdmARProduct);
 
-  VariableNeighborhoodDescent<ESolutionMODM> vnd(geval, vLS);
-  sref<LocalSearch<ESolutionMODM>> vnd2{
-      new VariableNeighborhoodDescent<ESolutionMODM>(geval, vLS)};
+  VND<ESolutionMODM> vnd(geval, vLS);
+  sref<LocalSearch<ESolutionMODM>> vnd2{new VND<ESolutionMODM>(geval, vLS)};
 
   // ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert,
   // rg);

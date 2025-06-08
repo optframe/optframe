@@ -12,8 +12,8 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/Heuristics/EA/PSO.hpp>
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/Util/NSAdapter/VRP/Intra/NSSeqVRP2Opt.hpp>
@@ -229,7 +229,7 @@ int main() {
   // nsseq_deltaIterator_delta_2opt->randomMove(esolTest);
 
   sref<LocalSearch<ESolutionVRP>> bi_2opt =
-      new BestImprovement<ESolutionVRP>(demo.evalVRP, nsseq_2opt);
+      new BI<ESolutionVRP>(demo.evalVRP, nsseq_2opt);
   bi_2opt->setVerboseR();
   SearchStatus st = bi_2opt->searchFrom(se, {10});
   std::cout << "status = " << (int)st << std::endl;
@@ -238,14 +238,12 @@ int main() {
 
   vsref<LocalSearch<ESolutionVRP>> ls_vnd;
   ls_vnd.push_back(bi_2opt);
-  ls_vnd.push_back(
-      new BestImprovement<ESolutionVRP>(demo.evalVRP, nsseq_exchange));
-  ls_vnd.push_back(new BestImprovement<ESolutionVRP>(demo.evalVRP, nsseq_or1));
-  ls_vnd.push_back(new BestImprovement<ESolutionVRP>(demo.evalVRP, nsseq_or2));
+  ls_vnd.push_back(new BI<ESolutionVRP>(demo.evalVRP, nsseq_exchange));
+  ls_vnd.push_back(new BI<ESolutionVRP>(demo.evalVRP, nsseq_or1));
+  ls_vnd.push_back(new BI<ESolutionVRP>(demo.evalVRP, nsseq_or2));
 
   sref<LocalSearch<ESolutionVRP>> vnd =
-      new VariableNeighborhoodDescent<ESolutionVRP>(demo.evalVRP, ls_vnd,
-                                                    myRandGen.sptr());
+      new VND<ESolutionVRP>(demo.evalVRP, ls_vnd, myRandGen.sptr());
 
   vnd->setVerboseR();
   SearchStatus st2 = vnd->searchFrom(se, {10});

@@ -50,7 +50,7 @@ int main() {
           pTSP, fevaluate};
   GeneralEvaluator<ESolutionTSP>* gev2 = (GeneralEvaluator<ESolutionTSP>*)ev2;
   sref<GeneralEvaluator<ESolutionTSP>> eval2(gev2);
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval2, demo.nsseqSwap));
+  ns_list.push_back(new BI<ESolutionTSP>(eval2, demo.nsseqSwap));
 
-  VariableNeighborhoodDescent<ESolutionTSP> VND(demo.eval, ns_list);
+  VND<ESolutionTSP> VND(demo.eval, ns_list);
   // VND.setVerbose();

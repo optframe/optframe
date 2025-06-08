@@ -26,9 +26,9 @@
 #include <OptFrame/Heuristics/ILS/MO/MOILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
-#include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/GPLS.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MOBestImprovement.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MORandomImprovement.hpp>
@@ -90,7 +90,7 @@ class ForecastClass {
 
   vsref<LocalSearch<ESolutionHFM>> vLS;
 
-  // sptr<VariableNeighborhoodDescent<ESolutionHFM>> vnd;
+  // sptr<VND<ESolutionHFM>> vnd;
   sptr<LocalSearch<ESolutionHFM>> vnd;
   sptr<IteratedLocalSearchLevels<ESolutionHFM>> ils;
 
@@ -218,8 +218,7 @@ class ForecastClass {
     vLS.push_back(rdmAdd);
     // vLS.push_back(fiModifyFuzzyRules);
     // vLS.push_back(fiChangeSingleInput);
-    vnd = sptr<VariableNeighborhoodDescent<ESolutionHFM>>{
-        new VariableNeighborhoodDescent<ESolutionHFM>(eval, vLS)};
+    vnd = sptr<VND<ESolutionHFM>>{new VND<ESolutionHFM>(eval, vLS)};
     // vnd->setVerbose();
 
     // ilsPert = new

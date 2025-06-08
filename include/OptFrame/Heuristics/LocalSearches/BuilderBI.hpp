@@ -29,9 +29,9 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BestImprovementBuilder : public LocalSearchBuilder<XES> {
+class BuilderBI : public LocalSearchBuilder<XES> {
  public:
-  virtual ~BestImprovementBuilder() {}
+  ~BuilderBI() override = default;
 
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           std::string family = "") override {
@@ -51,7 +51,7 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
     int nsseq_id = *scanner.nextInt();
     hf.assign(nsseq, nsseq_id, comp_nsseq_id);
 
-    return new BestImprovement<XES>(eval, nsseq);
+    return new BI<XES>(eval, nsseq);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -65,7 +65,7 @@ class BestImprovementBuilder : public LocalSearchBuilder<XES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == BestImprovement<XES>::idComponent();
+    return component == BI<XES>::idComponent();
   }
 
   static std::string idComponent() {

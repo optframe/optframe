@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 //
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 
@@ -60,8 +60,8 @@ class BasicVNS : public VariableNeighborhoodSearch<XES> {
   virtual ~BasicVNS() = default;
 
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
-    return sref<LocalSearch<XES>>{nnptr::copy(
-        BestImprovement<XES>(super::evaluator, super::vsearch.at(k_search)))};
+    return sref<LocalSearch<XES>>{
+        nnptr::copy(BI<XES>(super::evaluator, super::vsearch.at(k_search)))};
   }
 
   std::string id() const override { return idComponent(); }

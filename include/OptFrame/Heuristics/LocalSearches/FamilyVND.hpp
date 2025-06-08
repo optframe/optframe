@@ -29,11 +29,11 @@ using namespace std;
 
 namespace optframe {
 
-class VND {
+class FamilyVND {
  public:
   static std::string family() { return "VND(UNUSED):"; }
 
-  virtual ~VND() {}
+  virtual ~FamilyVND() {}
 };
 
 }  // namespace optframe

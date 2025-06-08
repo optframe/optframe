@@ -339,15 +339,14 @@ std::endl; #endif
    */
 
   vsref<LocalSearch<ESolutionTSP>> ns_list;
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tsp2opt));
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor1));
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor2));
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
-  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
+  ns_list.push_back(new BI<ESolutionTSP>(eval, tsp2opt));
+  ns_list.push_back(new BI<ESolutionTSP>(eval, tspor1));
+  ns_list.push_back(new BI<ESolutionTSP>(eval, tspor2));
+  ns_list.push_back(new BI<ESolutionTSP>(eval, tspor3));
+  ns_list.push_back(new BI<ESolutionTSP>(eval, tspswap));
 
-  // VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
-  sref<LocalSearch<ESolutionTSP>> VND{
-      new VariableNeighborhoodDescent<ESolutionTSP>(eval, ns_list)};
+  // VND<ESolutionTSP> VND(eval, ns_list);
+  sref<LocalSearch<ESolutionTSP>> VND{new VND<ESolutionTSP>(eval, ns_list)};
 
   // VND.setVerbose();
 

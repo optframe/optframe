@@ -15,8 +15,8 @@ using namespace optframe;
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
-#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
-#include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
@@ -140,8 +140,8 @@ int main(int argc, char** argv) {
   ////////////////////////////////////////////////////////////////////////////
   std::cout << "\nHill Climbing Search:";
 
-  BestImprovement<ESolutionKP> bi(_evaluator, _nsseq1);
-  FirstImprovement<ESolutionKP> fi(_evaluator, _nsseq1);
+  BI<ESolutionKP> bi(_evaluator, _nsseq1);
+  FI<ESolutionKP> fi(_evaluator, _nsseq1);
   HillClimbing<ESolutionKP> sd(_evaluator, sref_copy(bi));
   HillClimbing<ESolutionKP> pm(_evaluator, sref_copy(fi));
   RandomDescentMethod<ESolutionKP> rdm(_evaluator, _ns1, 10);

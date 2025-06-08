@@ -68,31 +68,32 @@ class LocalSearch : public Component {
     return p2;
   }
 
-  virtual SearchStatus searchFrom(XSH2& se,
-                                  const StopCriteria<XEv>& stopCriteria) = 0;
+  virtual SearchStatus searchFrom(XSH2& se, const StopCriteria<XEv>& stop) = 0;
+
+  // callback types
+  using OnLocalOptimumType = std::function<SearchStatus(
+      LocalSearch<XES2, XSH2>&, SearchStatus, XSH2&, const StopCriteria<XEv>&)>;
+  using OnFinishLocalType = std::function<SearchStatus(
+      LocalSearch<XES2, XSH2>&, SearchStatus, XSH2&, const StopCriteria<XEv>&)>;
 
   // onFinish should run ALWAYS before returning!
   // Useful for flagging LOS status directly on solution!
   // Currently invoked by onLocalOptimum()!
-  // Unused bool as return... for now!
-  bool (*onLocalOptimum)(LocalSearch<XES2, XSH2>& self, SearchStatus&, XSH2& se,
-                         const StopCriteria<XEv>& stop) =
-      [](LocalSearch<XES2, XSH2>& self, SearchStatus&, XSH2& se,
-         const StopCriteria<XEv>& stop) { return true; };
+  OnLocalOptimumType onLocalOptimum =
+      [](LocalSearch<XES2, XSH2>& self, SearchStatus st, XSH2& se,
+         const StopCriteria<XEv>& stop) { return st; };
 
   // onFinish should run ALWAYS before returning!
   // Useful for post-processing!
   // Currently used to invoke onLocalOptimum()!
-  // Unused bool as return... for now!
-  bool (*onFinish)(LocalSearch<XES2, XSH2>& self, SearchStatus&, XSH2& se,
-                   const StopCriteria<XEv>& stop) =
-      [](LocalSearch<XES2, XSH2>& self, SearchStatus& st, XSH2& se,
-         const StopCriteria<XEv>& stop) {
-        if (st == SearchStatus::LOCAL_OPT)
-          return self.onLocalOptimum(self, st, se, stop);
-        else
-          return true;
-      };
+  OnFinishLocalType onFinishLocal = [](LocalSearch<XES2, XSH2>& self,
+                                       const SearchStatus st, XSH2& se,
+                                       const StopCriteria<XEv>& stop) {
+    if (st == SearchStatus::LOCAL_OPT)
+      return self.onLocalOptimum(self, st, se, stop);
+    else
+      return st;
+  };
 
   // ====================================================================
   // LOS IS A BAD IDEA AFTERALL... Use onLocalOptimum() Callback instead!

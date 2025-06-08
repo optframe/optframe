@@ -29,9 +29,9 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<XES> {
+class BuilderVND : public LocalSearchBuilder<XES> {
  public:
-  virtual ~VariableNeighborhoodDescentBuilder() {}
+  ~BuilderVND() override = default;
 
   LocalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                           std::string family = "") override {
@@ -51,7 +51,7 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<XES> {
     vsref<LocalSearch<XES>> hlist;
     for (auto x : _hlist) hlist.push_back(x);
 
-    return new VariableNeighborhoodDescent<XES>(eval, hlist);
+    return new VND<XES>(eval, hlist);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -66,7 +66,7 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<XES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == VariableNeighborhoodDescent<XES>::idComponent();
+    return component == VND<XES>::idComponent();
   }
 
   static std::string idComponent() {

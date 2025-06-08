@@ -15,7 +15,6 @@ export import std;
 
 #define OPTFRAME_CXX_MODULES 1
 
-
 #include "OptFrame/Hyper/ComponentBuilder.hpp"
 //
 #include "OptFrame/Hyper/ComponentMultiBuilder.hpp"
@@ -38,11 +37,11 @@ export import std;
 #include "OptFrame/Helper/InitialMultiESolution.hpp"
 #include "OptFrame/Heuristics/CompareLocalSearch.hpp"
 #include "OptFrame/Heuristics/LocalSearches/BestImprovementBuilder.hpp"
+#include "OptFrame/Heuristics/LocalSearches/BuilderFI.hpp"
 #include "OptFrame/Heuristics/LocalSearches/CircularSearch.hpp"  // todo: move to heuristics module
 #include "OptFrame/Heuristics/LocalSearches/CircularSearchBuilder.hpp"
 #include "OptFrame/Heuristics/LocalSearches/EmptyBuilder.hpp"
-#include "OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp"  // todo: move to heuristics module
-#include "OptFrame/Heuristics/LocalSearches/FirstImprovementBuilder.hpp"
+#include "OptFrame/Heuristics/LocalSearches/FI.hpp"  // todo: move to heuristics module
 #include "OptFrame/Heuristics/LocalSearches/HillClimbing.hpp"  // todo: move to heuristics module
 #include "OptFrame/Heuristics/LocalSearches/HillClimbingBuilder.hpp"
 #include "OptFrame/Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
