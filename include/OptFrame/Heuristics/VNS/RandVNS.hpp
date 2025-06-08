@@ -11,8 +11,8 @@
 #include <vector>
 //
 #include "../LocalSearches/RVND.hpp"
-#include "VNS.h"
-#include "VariableNeighborhoodSearch.hpp"
+#include "FamilyVNS.h"
+#include "VNS.hpp"
 
 namespace optframe {
 
@@ -44,7 +44,7 @@ class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VariableNeighborhoodSearch<R, ADS, DS>::idComponent() << "RandVNS";
+    ss << VNS<XES>::idComponent() << "RandVNS";
     return ss.str();
   }
 
@@ -54,9 +54,10 @@ class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
 
 template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
           class DS = OPTFRAME_DEFAULT_DS>
-class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
+class BuilderRandVNS : public FamilyVNS,
+                       public SingleObjSearchBuilder<R, ADS, DS> {
  public:
-  virtual ~RandVNSBuilder() = default;
+  ~BuilderRandVNS() override = default;
 
   SingleObjSearch<R, ADS, DS>* build(Scanner& scanner,
                                      HeuristicFactory<R, ADS, DS>& hf,

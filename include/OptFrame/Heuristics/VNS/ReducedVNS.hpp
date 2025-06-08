@@ -12,8 +12,8 @@
 #include <utility>
 #include <vector>
 //
-#include "VNS.h"
-#include "VariableNeighborhoodSearch.hpp"
+#include "FamilyVNS.h"
+#include "VNS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -39,19 +39,18 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class ReducedVNS : public VariableNeighborhoodSearch<XES> {
+class ReducedVNS : public VNS<XES> {
   using XEv = typename XES::second_type;
 
  public:
-  typedef VariableNeighborhoodSearch<XES> super;
+  typedef VNS<XES> super;
 
-  ReducedVNS(sref<Evaluator<XES, XEv>> evaluator,
+  ReducedVNS(sref<GeneralEvaluator<XES>> gevaluator,
              sref<InitialSearch<XES>> constructive, vsref<NS<XES>> vshake,
              vsref<NSSeq<XES>> vsearch)
-      : VariableNeighborhoodSearch<XES>(evaluator, constructive, vshake,
-                                        vsearch) {}
+      : VNS<XES>(gevaluator, constructive, vshake, vsearch) {}
 
-  virtual ~ReducedVNS() {}
+  ~ReducedVNS() override = default;
 
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
     return new EmptyLS<XES>();
@@ -61,7 +60,7 @@ class ReducedVNS : public VariableNeighborhoodSearch<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VariableNeighborhoodSearch<XES, XEv>::idComponent() << "RVNS";
+    ss << VNS<XES>::idComponent() << ":ReducedVNS";
     return ss.str();
   }
 };
@@ -72,16 +71,16 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
+class BuilderReducedVNS : public ILS, public SingleObjSearchBuilder<XES> {
  public:
-  virtual ~ReducedVNSBuilder() {}
+  virtual ~BuilderReducedVNS() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               std::string family = "") override {
-    sptr<GeneralEvaluator<XES>> eval;
+    sptr<GeneralEvaluator<XES>> geval;
     std::string comp_id1 = scanner.next();
     int id1 = *scanner.nextInt();
-    hf.assign(eval, id1, comp_id1);
+    hf.assign(geval, id1, comp_id1);
 
     sptr<InitialSearch<XES>> constructive;
     std::string comp_id2 = scanner.next();
@@ -102,7 +101,7 @@ class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
     vsref<NSSeq<XES>> searchlist;
     for (auto x : _searchlist) searchlist.push_back(x);
 
-    return new BasicVNS<XES>(eval, constructive, shakelist, searchlist);
+    return new ReducedVNS<XES>(geval, constructive, shakelist, searchlist);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -131,7 +130,8 @@ class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family() << "RVNS";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << FamilyVNS::family()
+       << "ReducedVNS";
     return ss.str();
   }
 

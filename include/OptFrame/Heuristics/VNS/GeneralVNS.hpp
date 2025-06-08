@@ -14,8 +14,11 @@
 #include <vector>
 //
 
-#include "VNS.h"
-#include "VariableNeighborhoodSearch.hpp"
+#include <OptFrame/Heuristics/LocalSearches/BI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
+
+#include "FamilyVNS.h"
+#include "VNS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -41,33 +44,35 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class GeneralVNS : public VariableNeighborhoodSearch<XES> {
+class GeneralVNS : public VNS<XES> {
  public:
-  typedef VariableNeighborhoodSearch<XES> super;
+  typedef VNS<XES> super;
 
-  // GeneralVNS(Evaluator<S>& evaluator, Constructive<S>& constructive,
-  // vector<NS<XES, XSH>*> vshake, vector<NSSeq<S>*> vsearch) :
   GeneralVNS(sref<GeneralEvaluator<XES>> evaluator,
              sref<InitialSearch<XES>> constructive, vsref<NS<XES, XSH>> vshake,
              vsref<NSSeq<XES>> vsearch)
-      : VariableNeighborhoodSearch<XES>(evaluator, constructive, vshake,
-                                        vsearch) {}
+      : VNS<XES>(evaluator, constructive, vshake, vsearch) {}
 
   virtual ~GeneralVNS() {}
 
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
-    std::vector<LocalSearch<XES>*> vls;
-    for (unsigned i = 0; i < super::vsearch.size(); i++)
-      vls.push_back(new BI<XES>(super::evaluator, *super::vsearch.at(i)));
-
-    return *new VND<XES>(super::evaluator, vls);
+    vsref<LocalSearch<XES>> vls;
+    sref<GeneralEvaluator<XES>> geval = super::evaluator;
+    for (unsigned i = 0; i < super::vsearch.size(); i++) {
+      sref<NSSeq<XES>> nsseq = super::vsearch.at(i);
+      sptr<LocalSearch<XES>> bi{new BI<XES>{geval, nsseq}};
+      vls.push_back(bi);
+    }
+    LocalSearch<XES>* ptr_vnd = new VND<XES>{geval, vls};
+    sref<LocalSearch<XES>> vnd{ptr_vnd};
+    return vnd;
   }
 
   std::string id() const override { return idComponent(); }
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VariableNeighborhoodSearch<XES>::idComponent() << "GVNS";
+    ss << VNS<XES>::idComponent() << "GeneralVNS";
     return ss.str();
   }
 };
@@ -78,11 +83,11 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
+class BuilderGeneralVNS : public FamilyVNS, public SingleObjSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~GeneralVNSBuilder() {}
+  ~BuilderGeneralVNS() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               std::string family = "") override {
@@ -110,7 +115,7 @@ class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
     vsref<NSSeq<XES>> searchlist;
     for (auto x : _searchlist) searchlist.push_back(x);
 
-    return new BasicVNS<XES, XSH>(eval, constructive, shakelist, searchlist);
+    return new GeneralVNS<XES, XSH>(eval, constructive, shakelist, searchlist);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -139,7 +144,8 @@ class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family() << "GVNS";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << FamilyVNS::family()
+       << "GVNS";
     return ss.str();
   }
 

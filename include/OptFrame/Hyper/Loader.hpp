@@ -100,7 +100,7 @@
 #include <OptFrame/Heuristics/VNS/BasicVNS.hpp>
 #include <OptFrame/Heuristics/VNS/GeneralVNS.hpp>
 #include <OptFrame/Heuristics/VNS/ReducedVNS.hpp>
-#include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
+#include <OptFrame/Heuristics/VNS/VNS.hpp>
 
 // TODO ERROR on DecoderNSGAII
 // #include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
@@ -247,9 +247,9 @@ class Loader {
     factory.builders.push_back(new ILSLPerturbationLPlus2Builder<XES>);
     factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<XES>);
     factory.builders.push_back(new BasicGRASPBuilder<XES>);
-    factory.builders.push_back(new BasicVNSBuilder<XES>);
-    factory.builders.push_back(new ReducedVNSBuilder<XES>);
-    factory.builders.push_back(new GeneralVNSBuilder<XES>);
+    factory.builders.push_back(new BuilderBasicVNS<XES>);
+    factory.builders.push_back(new BuilderReducedVNS<XES>);
+    factory.builders.push_back(new BuilderGeneralVNS<XES>);
 
     // RK family (random keys)
     // static_assert(X2ESolution<XES, MultiESolution<XES>>);

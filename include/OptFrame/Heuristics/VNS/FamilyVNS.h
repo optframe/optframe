@@ -26,11 +26,11 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT class VNS {
+MOD_EXPORT class FamilyVNS {
  public:
   static std::string family() { return "VNS:"; }
 
-  virtual ~VNS() {}
+  virtual ~FamilyVNS() {}
 };
 
 }  // namespace optframe

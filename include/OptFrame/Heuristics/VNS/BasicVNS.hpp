@@ -4,6 +4,9 @@
 #ifndef OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_
 #define OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_
 
+// This is BasicVNS, or Basic Variable Neighborhood Search
+// See papers from Nenad Mladenovic and Pierre Hansen
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
@@ -14,10 +17,10 @@
 #include <vector>
 //
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
-#include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
+#include <OptFrame/Heuristics/VNS/VNS.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 
-#include "VNS.h"
+#include "FamilyVNS.h"
 
 #define MOD_EXPORT
 #else
@@ -43,19 +46,18 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class BasicVNS : public VariableNeighborhoodSearch<XES> {
+class BasicVNS : public VNS<XES> {
   using XEv = typename XES::second_type;
 
  public:
-  typedef VariableNeighborhoodSearch<XES> super;
+  typedef VNS<XES> super;
 
   // BasicVNS(Evaluator<XES>& evaluator, Constructive<S>& constructive,
   // vector<NS<XES, XSH>*> vshake, vector<NSSeq<S>*> vsearch) :
   BasicVNS(sref<GeneralEvaluator<XES>> evaluator,
            sref<InitialSearch<XES>> constructive, vsref<NS<XES, XSH>> vshake,
            vsref<NSSeq<XES>> vsearch)
-      : VariableNeighborhoodSearch<XES>(evaluator, constructive, vshake,
-                                        vsearch) {}
+      : VNS<XES>(evaluator, constructive, vshake, vsearch) {}
 
   virtual ~BasicVNS() = default;
 
@@ -68,7 +70,7 @@ class BasicVNS : public VariableNeighborhoodSearch<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VariableNeighborhoodSearch<XES>::idComponent() << "BVNS";
+    ss << VNS<XES>::idComponent() << "BVNS";
     return ss.str();
   }
 };
@@ -79,11 +81,11 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
+class BuilderBasicVNS : public ILS, public SingleObjSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  ~BasicVNSBuilder() override = default;
+  ~BuilderBasicVNS() override = default;
 
   // NOLINTNEXTLINE
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -142,7 +144,7 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << VNS::family()
+    ss << SingleObjSearchBuilder<XES>::idComponent() << FamilyVNS::family()
        << "BasicVNS";
     return ss.str();
   }

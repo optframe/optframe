@@ -10,7 +10,7 @@
 #include "OptFrame/Heuristics/EA/EA.hpp"
 #include "OptFrame/Heuristics/EA/RK/RK.hpp"
 #include "OptFrame/Heuristics/TS/TS.h"
-#include "OptFrame/Heuristics/VNS/VNS.h"
+#include "OptFrame/Heuristics/VNS/FamilyVNS.h"
 
 // LocalSearches
 #include "OptFrame/Heuristics/LocalSearches/EmptyLS.hpp"
