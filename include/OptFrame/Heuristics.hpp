@@ -26,7 +26,7 @@
 #include "OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp"
 //
 // ILS family
-#include "OptFrame/Heuristics/ILS/ILS.hpp"
+#include "OptFrame/Heuristics/ILS/FamilyILS.hpp"
 //
 
 #include "OptFrame/Heuristics/ILS/IteratedLocalSearch.hpp"

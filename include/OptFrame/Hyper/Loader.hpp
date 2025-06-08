@@ -99,8 +99,8 @@
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/Heuristics/VNS/BasicVNS.hpp>
 #include <OptFrame/Heuristics/VNS/GeneralVNS.hpp>
+#include <OptFrame/Heuristics/VNS/MetaVNS.hpp>
 #include <OptFrame/Heuristics/VNS/ReducedVNS.hpp>
-#include <OptFrame/Heuristics/VNS/VNS.hpp>
 
 // TODO ERROR on DecoderNSGAII
 // #include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"

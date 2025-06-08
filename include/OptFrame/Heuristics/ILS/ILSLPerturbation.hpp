@@ -17,7 +17,7 @@
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Search/StopCriteria.hpp>
 
-#include "ILS.hpp"
+#include "FamilyILS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -39,7 +39,7 @@ namespace optframe {
 
 MOD_EXPORT template <XESolution XES,
                      XEvaluation XEv = typename XES::second_type>
-class ILSLPerturbation : public Component, public ILS {
+class ILSLPerturbation : public Component, public FamilyILS {
  public:
   ~ILSLPerturbation() override = default;
 
@@ -56,7 +56,7 @@ class ILSLPerturbation : public Component, public ILS {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << ILS::family() << "LevelPert";
+    ss << Component::idComponent() << ":" << FamilyILS::family() << "LevelPert";
     return ss.str();
   }
 };

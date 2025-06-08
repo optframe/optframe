@@ -36,7 +36,7 @@ class MOILSLPerturbation : public Component, public MOILS {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << MOILS::family() << "LevelPert";
+    ss << Component::idComponent() << MOFamilyILS::family() << "LevelPert";
     return ss.str();
   }
 };

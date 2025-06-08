@@ -12,7 +12,7 @@
 //
 #include "../LocalSearches/RVND.hpp"
 #include "FamilyVNS.h"
-#include "VNS.hpp"
+#include "MetaVNS.hpp"
 
 namespace optframe {
 
@@ -44,7 +44,7 @@ class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VNS<XES>::idComponent() << "RandVNS";
+    ss << MetaVNS<XES>::idComponent() << "RandVNS";
     return ss.str();
   }
 

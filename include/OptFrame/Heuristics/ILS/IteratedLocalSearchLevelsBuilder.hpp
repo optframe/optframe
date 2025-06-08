@@ -29,7 +29,7 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class IteratedLocalSearchLevelsBuilder : public ILS,
+class IteratedLocalSearchLevelsBuilder : public FamilyILS,
                                          public SingleObjSearchBuilder<XES> {
  public:
   ~IteratedLocalSearchLevelsBuilder() override = default;
@@ -92,8 +92,8 @@ class IteratedLocalSearchLevelsBuilder : public ILS,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << ILS::family()
-       << "ILSLevels";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":"
+       << FamilyILS::family() << "ILSLevels";
     return ss.str();
   }
 

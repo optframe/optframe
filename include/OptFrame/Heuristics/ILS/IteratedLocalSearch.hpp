@@ -20,7 +20,7 @@
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 #include <OptFrame/Timer.hpp>
 
-#include "ILS.hpp"
+#include "FamilyILS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -42,7 +42,7 @@ namespace optframe {
 
 MOD_EXPORT template <class H, XESolution XES,
                      XEvaluation XEv = typename XES::second_type>
-class IteratedLocalSearch : public ILS,
+class IteratedLocalSearch : public FamilyILS,
                             public SingleObjSearch<XES>,
                             public ITrajectory<XES> {
  protected:
@@ -158,7 +158,7 @@ class IteratedLocalSearch : public ILS,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << ILS::family();
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilyILS::family();
     return ss.str();
   }
 

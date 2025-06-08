@@ -4,6 +4,8 @@
 #ifndef OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 
+// This is MetaVNS, a template foi building VNS algorithms
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
@@ -42,7 +44,7 @@ import optframe.concepts;
 namespace optframe {
 
 MOD_EXPORT template <XESolution XES, XESolution XSH = XES>
-class VNS : public FamilyVNS, public SingleObjSearch<XES> {
+class MetaVNS : public FamilyVNS, public SingleObjSearch<XES> {
   using XEv = typename XSH::second_type;
 
  protected:
@@ -52,15 +54,15 @@ class VNS : public FamilyVNS, public SingleObjSearch<XES> {
   vsref<NSSeq<XES, XSH>> vsearch;
 
  public:
-  VNS(sref<GeneralEvaluator<XES>> _evaluator,
-      sref<InitialSearch<XES>> _constructive, vsref<NS<XES, XSH>> _vNS,
-      vsref<NSSeq<XES, XSH>> _vNSSeq)
+  MetaVNS(sref<GeneralEvaluator<XES>> _evaluator,
+          sref<InitialSearch<XES>> _constructive, vsref<NS<XES, XSH>> _vNS,
+          vsref<NSSeq<XES, XSH>> _vNSSeq)
       : evaluator(_evaluator),
         constructive(_constructive),
         vshake(_vNS),
         vsearch(_vNSSeq) {}
 
-  ~VNS() override = default;
+  ~MetaVNS() override = default;
 
   virtual void shake(XES& se, unsigned int k_shake,
                      const StopCriteria<XEv>& sosc) {
@@ -117,7 +119,7 @@ class VNS : public FamilyVNS, public SingleObjSearch<XES> {
     auto& eStar = star->second;
 
     if (Component::information)
-      std::cout << "VNS starts: " << eStar.evaluation() << std::endl;
+      std::cout << "MetaVNS starts: " << eStar.evaluation() << std::endl;
 
     while (
         (tnow.now() < timelimit))  //  && evaluator.betterThan(target_f, eStar))
@@ -149,14 +151,14 @@ class VNS : public FamilyVNS, public SingleObjSearch<XES> {
     }
 
     if (evaluator->betterStrict(star->second, sosc.target_f)) {
-      std::cout << "VNS exit by target_f: " << star->second.evaluation()
+      std::cout << "MetaVNS exit by target_f: " << star->second.evaluation()
                 << " better than " << sosc.target_f.evaluation() << std::endl;
       // std::cout << "isMin: " << evaluator.isMinimization() << std::endl;
       //  std::cout << "isMin: " << star->second.isMini << std::endl;
     }
 
     if (((tnow.now()) >= timelimit)) {
-      std::cout << "VNS exit by timelimit: " << timelimit << std::endl;
+      std::cout << "MetaVNS exit by timelimit: " << timelimit << std::endl;
     }
 
     return {SearchStatus::NO_REPORT, star};
@@ -164,7 +166,8 @@ class VNS : public FamilyVNS, public SingleObjSearch<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << FamilyVNS::family() << "VNS";
+    ss << SingleObjSearch<XES>::idComponent() << FamilyVNS::family()
+       << "MetaVNS";
     return ss.str();
   }
 

@@ -70,7 +70,7 @@ class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << ILS::family()
+    ss << ComponentBuilder<XES>::idComponent() << FamilyILS::family()
        << "LevelPert:LPlus2";
     return ss.str();
   }
@@ -125,7 +125,7 @@ class ILSLPerturbationLPlus2ProbBuilder : public ComponentBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << ILS::family()
+    ss << ComponentBuilder<XES>::idComponent() << FamilyILS::family()
        << "LevelPert:LPlus2Prob";
     return ss.str();
   }

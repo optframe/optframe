@@ -18,7 +18,7 @@
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 
 #include "FamilyVNS.h"
-#include "VNS.hpp"
+#include "MetaVNS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -44,14 +44,14 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class GeneralVNS : public VNS<XES> {
+class GeneralVNS : public MetaVNS<XES> {
  public:
-  typedef VNS<XES> super;
+  typedef MetaVNS<XES> super;
 
   GeneralVNS(sref<GeneralEvaluator<XES>> evaluator,
              sref<InitialSearch<XES>> constructive, vsref<NS<XES, XSH>> vshake,
              vsref<NSSeq<XES>> vsearch)
-      : VNS<XES>(evaluator, constructive, vshake, vsearch) {}
+      : MetaVNS<XES>(evaluator, constructive, vshake, vsearch) {}
 
   virtual ~GeneralVNS() {}
 
@@ -72,7 +72,7 @@ class GeneralVNS : public VNS<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VNS<XES>::idComponent() << "GeneralVNS";
+    ss << MetaVNS<XES>::idComponent() << "GeneralVNS";
     return ss.str();
   }
 };

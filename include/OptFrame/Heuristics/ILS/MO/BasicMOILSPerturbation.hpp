@@ -106,7 +106,8 @@ class BasicMOILSPerturbation : public MOILS, public Component {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << ILS::family() << "MObasic_pert";
+    ss << Component::idComponent() << ":" << FamilyILS::family()
+       << "MObasic_pert";
     return ss.str();
   }
 };

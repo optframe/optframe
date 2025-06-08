@@ -16,7 +16,7 @@
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "BasicILSPerturbation.hpp"
-#include "ILS.hpp"
+#include "FamilyILS.hpp"
 #include "IteratedLocalSearch.hpp"
 
 #define MOD_EXPORT
@@ -135,7 +135,7 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BasicIteratedLocalSearchBuilder : public ILS,
+class BasicIteratedLocalSearchBuilder : public FamilyILS,
                                         public SingleObjSearchBuilder<XES> {
  public:
   ~BasicIteratedLocalSearchBuilder() override = default;
@@ -195,8 +195,8 @@ class BasicIteratedLocalSearchBuilder : public ILS,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << ILS::family()
-       << "BasicILS";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":"
+       << FamilyILS::family() << "BasicILS";
     return ss.str();
   }
 

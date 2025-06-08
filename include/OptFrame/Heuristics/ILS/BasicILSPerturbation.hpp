@@ -16,7 +16,7 @@
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 
-#include "ILS.hpp"
+#include "FamilyILS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -37,7 +37,7 @@ import optframe.concepts;
 namespace optframe {
 
 MOD_EXPORT template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class BasicILSPerturbation : public ILS, public Component {
+class BasicILSPerturbation : public FamilyILS, public Component {
   using XSH = XES;  // primary-based search type only (BestType)
 
  private:
@@ -115,7 +115,8 @@ class BasicILSPerturbation : public ILS, public Component {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << ILS::family() << "basic_pert";
+    ss << Component::idComponent() << ":" << FamilyILS::family()
+       << "basic_pert";
     return ss.str();
   }
 };
@@ -176,7 +177,8 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << ILS::family() << "basic_pert";
+    ss << ComponentBuilder<XES>::idComponent() << FamilyILS::family()
+       << "basic_pert";
     return ss.str();
   }
 

@@ -17,7 +17,7 @@
 #include <vector>
 //
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
-#include <OptFrame/Heuristics/VNS/VNS.hpp>
+#include <OptFrame/Heuristics/VNS/MetaVNS.hpp>
 #include <OptFrame/Hyper/HeuristicFactory.hpp>
 
 #include "FamilyVNS.h"
@@ -46,18 +46,18 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class BasicVNS : public VNS<XES> {
+class BasicVNS : public MetaVNS<XES> {
   using XEv = typename XES::second_type;
 
  public:
-  typedef VNS<XES> super;
+  typedef MetaVNS<XES> super;
 
   // BasicVNS(Evaluator<XES>& evaluator, Constructive<S>& constructive,
   // vector<NS<XES, XSH>*> vshake, vector<NSSeq<S>*> vsearch) :
   BasicVNS(sref<GeneralEvaluator<XES>> evaluator,
            sref<InitialSearch<XES>> constructive, vsref<NS<XES, XSH>> vshake,
            vsref<NSSeq<XES>> vsearch)
-      : VNS<XES>(evaluator, constructive, vshake, vsearch) {}
+      : MetaVNS<XES>(evaluator, constructive, vshake, vsearch) {}
 
   virtual ~BasicVNS() = default;
 
@@ -70,7 +70,7 @@ class BasicVNS : public VNS<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VNS<XES>::idComponent() << "BVNS";
+    ss << MetaVNS<XES>::idComponent() << "BVNS";
     return ss.str();
   }
 };
@@ -81,7 +81,7 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BuilderBasicVNS : public ILS, public SingleObjSearchBuilder<XES> {
+class BuilderBasicVNS : public FamilyILS, public SingleObjSearchBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:

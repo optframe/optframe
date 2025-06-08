@@ -13,7 +13,7 @@
 #include <vector>
 //
 #include "FamilyVNS.h"
-#include "VNS.hpp"
+#include "MetaVNS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -39,16 +39,16 @@ MOD_EXPORT template <XESolution XES, XSearch<XES> XSH = XES>
 #else
 MOD_EXPORT template <typename XES, typename XSH = XES>
 #endif
-class ReducedVNS : public VNS<XES> {
+class ReducedVNS : public MetaVNS<XES> {
   using XEv = typename XES::second_type;
 
  public:
-  typedef VNS<XES> super;
+  typedef MetaVNS<XES> super;
 
   ReducedVNS(sref<GeneralEvaluator<XES>> gevaluator,
              sref<InitialSearch<XES>> constructive, vsref<NS<XES>> vshake,
              vsref<NSSeq<XES>> vsearch)
-      : VNS<XES>(gevaluator, constructive, vshake, vsearch) {}
+      : MetaVNS<XES>(gevaluator, constructive, vshake, vsearch) {}
 
   ~ReducedVNS() override = default;
 
@@ -60,7 +60,7 @@ class ReducedVNS : public VNS<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << VNS<XES>::idComponent() << ":ReducedVNS";
+    ss << MetaVNS<XES>::idComponent() << ":ReducedVNS";
     return ss.str();
   }
 };
@@ -71,7 +71,7 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BuilderReducedVNS : public ILS, public SingleObjSearchBuilder<XES> {
+class BuilderReducedVNS : public FamilyILS, public SingleObjSearchBuilder<XES> {
  public:
   virtual ~BuilderReducedVNS() {}
 

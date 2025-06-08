@@ -16,7 +16,7 @@
 
 #include "./ILSLPerturbation.hpp"
 #include "./IteratedLocalSearch.hpp"
-#include "ILS.hpp"
+#include "FamilyILS.hpp"
 
 #define MOD_EXPORT
 #else

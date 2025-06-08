@@ -26,11 +26,11 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT class ILS {
+MOD_EXPORT class FamilyILS {
  public:
   static std::string family() { return "ILS:"; }
 
-  virtual ~ILS() {}
+  virtual ~FamilyILS() {}
 };
 
 }  // namespace optframe
