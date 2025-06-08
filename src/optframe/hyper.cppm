@@ -38,6 +38,7 @@ export import std;
 #include "OptFrame/Heuristics/CompareLocalSearch.hpp"
 #include "OptFrame/Heuristics/LocalSearches/BestImprovementBuilder.hpp"
 #include "OptFrame/Heuristics/LocalSearches/BuilderFI.hpp"
+#include "OptFrame/Heuristics/LocalSearches/BuilderRDM.hpp"
 #include "OptFrame/Heuristics/LocalSearches/CircularSearch.hpp"  // todo: move to heuristics module
 #include "OptFrame/Heuristics/LocalSearches/CircularSearchBuilder.hpp"
 #include "OptFrame/Heuristics/LocalSearches/EmptyBuilder.hpp"
@@ -45,8 +46,7 @@ export import std;
 #include "OptFrame/Heuristics/LocalSearches/HillClimbing.hpp"  // todo: move to heuristics module
 #include "OptFrame/Heuristics/LocalSearches/HillClimbingBuilder.hpp"
 #include "OptFrame/Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
-#include "OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp"
-#include "OptFrame/Heuristics/LocalSearches/RandomDescentMethodBuilder.hpp"
+#include "OptFrame/Heuristics/LocalSearches/RDM.hpp"
 #include "OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"  // todo: move to heuristics module
 #include "OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentBuilder.hpp"
 #include "OptFrame/Heuristics/SA/BasicSimulatedAnnealingBuilder.hpp"

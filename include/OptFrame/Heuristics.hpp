@@ -13,7 +13,7 @@
 #include "OptFrame/Heuristics/VNS/VNS.h"
 
 // LocalSearches
-#include "OptFrame/Heuristics/LocalSearches/Empty.hpp"
+#include "OptFrame/Heuristics/LocalSearches/EmptyLS.hpp"
 //
 #include "OptFrame/Heuristics/LocalSearches/BI.hpp"
 

@@ -39,6 +39,7 @@
 #include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HC.hpp>
+#include <OptFrame/Heuristics/LocalSearches/RDM.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VNDUpdateADS.hpp>
@@ -48,11 +49,10 @@
 #include <OptFrame/Heuristics/LocalSearches/BuilderEmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderFI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderHC.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BuilderRDM.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderRVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderVNDUpdateADS.hpp>
-#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
-#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethodBuilder.hpp>
 // #include "Heuristics/LocalSearches/RVND.hpp"
 
 // Metaheuristics

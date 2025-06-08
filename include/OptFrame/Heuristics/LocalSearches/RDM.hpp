@@ -4,6 +4,11 @@
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 
+// This is Random Descent Method (RDM)
+// A similar variant of stochastic best improvement, but
+//  with limited number of moves.
+// This works on NS, and does not require NSSeq.
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <string>
@@ -33,7 +38,7 @@ import optframe.concepts;
 namespace optframe {
 
 MOD_EXPORT template <XESolution XES>
-class RandomDescentMethod : public LocalSearch<XES> {
+class RDM : public LocalSearch<XES> {
  private:
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
@@ -42,23 +47,18 @@ class RandomDescentMethod : public LocalSearch<XES> {
   unsigned int iterMax;
 
  public:
-  RandomDescentMethod(sref<GeneralEvaluator<XES>> _eval, sref<NS<XES, XSH>> _ns,
-                      unsigned int _iterMax)
+  RDM(sref<GeneralEvaluator<XES>> _eval, sref<NS<XES, XSH>> _ns,
+      unsigned int _iterMax)
       : evaluator(_eval), ns(_ns), iterMax(_iterMax) {}
 
-  virtual ~RandomDescentMethod() = default;
+  virtual ~RDM() = default;
 
-  SearchStatus searchFrom(XES& se,
-                          const StopCriteria<XEv>& stopCriteria) override {
-    // XSolution& s = se.first;
-    // XEv& e = se.second;
-    // Timer tNow;
-
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stop) override {
     unsigned int iter = 0;
 
     // TODO: de-referentiation of 'target_f' WILL crash, if not provided!!
     // removing 'target_f'
-    while ((iter < iterMax) && !stopCriteria.shouldStop(se.second)) {
+    while ((iter < iterMax) && !stop.shouldStop(se.second)) {
       // uptr<Move<XES, XSH>> move = ns.randomMove(s);
       uptr<Move<XES, XSH>> move = ns->randomMove(se);
 

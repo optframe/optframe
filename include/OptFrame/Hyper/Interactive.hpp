@@ -88,7 +88,7 @@
 #include "Heuristics/LocalSearches/FI.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 #include "Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
-#include "Heuristics/LocalSearches/RandomDescentMethod.hpp"
+#include "Heuristics/LocalSearches/RDM.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
 

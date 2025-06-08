@@ -18,7 +18,7 @@ using namespace optframe;
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HC.hpp>
-#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
+#include <OptFrame/Heuristics/LocalSearches/RDM.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
 #include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>

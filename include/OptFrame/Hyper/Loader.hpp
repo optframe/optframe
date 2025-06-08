@@ -72,7 +72,7 @@
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/LAHC.hpp>
-#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
+#include <OptFrame/Heuristics/LocalSearches/RDM.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VNDUpdateADS.hpp>
 #include <OptFrame/Heuristics/SingleObjSearchToLocalSearch.hpp>
@@ -217,7 +217,7 @@ class Loader {
     factory.builders.push_back(new BuilderEmptyLS<XES>);
     factory.builders.push_back(new BuilderBI<XES>);
     factory.builders.push_back(new BuilderFI<XES>);
-    factory.builders.push_back(new RandomDescentMethodBuilder<XES>);
+    factory.builders.push_back(new BuilderRDM<XES>);
     factory.builders.push_back(new BuilderCS<XES>);
     factory.builders.push_back(new BuilderVND<XES>);
     factory.builders.push_back(new BuilderRVND<XES>);

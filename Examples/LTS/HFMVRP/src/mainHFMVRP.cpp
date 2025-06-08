@@ -25,7 +25,7 @@
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
-#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>

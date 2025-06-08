@@ -23,10 +23,10 @@
 #include <OptFrame/Heuristics/ILS/MO/BasicMOILS.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLevels.hpp>
-#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FamilyVND.hpp>
-#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
+#include <OptFrame/Heuristics/LocalSearches/RDM.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/GPLS.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/MOBestImprovement.hpp>

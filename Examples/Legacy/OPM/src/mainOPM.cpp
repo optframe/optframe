@@ -12,7 +12,7 @@
 // #include "./OPM.h"
 // #include "./OPM/NSEnumLD.hpp"
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp>
-#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 
 #include "NSEnumLD.hpp"
 
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
   if (argc != 6) {
     std::cout << "Parametros incorretos!" << std::endl;
     std::cout << "Os parametros esperados sao: instance time targetObj "
-            "batchOfTheSameInstance ESMutationRate";
+                 "batchOfTheSameInstance ESMutationRate";
     exit(1);
   }
 
@@ -102,7 +102,8 @@ int main(int argc, char** argv) {
 
   FILE* arquivo = fopen("./Results/log.txt", "a");
   if (!arquivo) {
-    std::cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\"" << std::endl;
+    std::cout << "ERRO: falha ao criar arquivo \"./Results/log.txt\""
+              << std::endl;
   } else {
     fprintf(arquivo, "%s\t%f\t%f\t%ld\n", instanceName.c_str(), mutationRate,
             finalSol->second.evaluation(), seed);
