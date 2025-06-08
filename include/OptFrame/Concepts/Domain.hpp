@@ -18,7 +18,9 @@
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 //
+#ifdef OPTFRAME_USE_STATIC_STRINGS
 #include <OptFrame/boost/static_string.hpp>
+#endif
 
 #define MOD_EXPORT
 #else
@@ -326,63 +328,73 @@ MOD_EXPORT class Domain {
   // ===============
 
   template <typename X>
-  constexpr static boost::static_string<16> getNamedDomain() {
-    if constexpr (is_rkf64<X>::value) return "<XRKf64>";
-    if constexpr (is_rkf32<X>::value)
-      return "<XRKf32>";
-    else if constexpr (is_XRKf64Ef64<X>::value)
-      return "<XRKf64Ef64>";
-    else if constexpr (is_X2RKf64Ef64<X>::value)
-      return "<X2RKf64Ef64>";
-    else if constexpr (is_XRKf64Ei32<X>::value)
-      return "<XRKf64Ei32>";
-    else if constexpr (is_X2RKf64Ei32<X>::value)
-      return "<X2RKf64Ei32>";
-    else if constexpr (is_XRKf64EMi32<X>::value)
-      return "<XRKf64EMi32>";
-    else if constexpr (is_X2RKf64EMi32<X>::value)
-      return "<X2RKf64EMi32>";
-    else if constexpr (is_XESf64<X>::value)
-      return "<XESf64>";
-    else if constexpr (is_XESf32<X>::value)
-      return "<XESf32>";
-    else if constexpr (is_XESi64<X>::value)
-      return "<XESi64>";
-    else if constexpr (is_X2ESf64<X>::value)
-      return "<X2ESf64>";
-    else if constexpr (is_XMESf64<X>::value)
-      return "<XMESf64>";
-    else if constexpr (is_XMESi32<X>::value)
-      return "<XMESi32>";
-    else if constexpr (is_X2MESf64<X>::value)
-      return "<X2MESf64>";
+#ifdef OPTFRAME_USE_STATIC_STRINGS
+  static constexpr boost::static_string<16> getNamedDomain(){
+#else
+  static std::string_view getNamedDomain() {
+#endif
+      if constexpr (is_rkf64<X>::value) return "<XRKf64>";
+  if constexpr (is_rkf32<X>::value)
+    return "<XRKf32>";
+  else if constexpr (is_XRKf64Ef64<X>::value)
+    return "<XRKf64Ef64>";
+  else if constexpr (is_X2RKf64Ef64<X>::value)
+    return "<X2RKf64Ef64>";
+  else if constexpr (is_XRKf64Ei32<X>::value)
+    return "<XRKf64Ei32>";
+  else if constexpr (is_X2RKf64Ei32<X>::value)
+    return "<X2RKf64Ei32>";
+  else if constexpr (is_XRKf64EMi32<X>::value)
+    return "<XRKf64EMi32>";
+  else if constexpr (is_X2RKf64EMi32<X>::value)
+    return "<X2RKf64EMi32>";
+  else if constexpr (is_XESf64<X>::value)
+    return "<XESf64>";
+  else if constexpr (is_XESf32<X>::value)
+    return "<XESf32>";
+  else if constexpr (is_XESi64<X>::value)
+    return "<XESi64>";
+  else if constexpr (is_X2ESf64<X>::value)
+    return "<X2ESf64>";
+  else if constexpr (is_XMESf64<X>::value)
+    return "<XMESf64>";
+  else if constexpr (is_XMESi32<X>::value)
+    return "<XMESi32>";
+  else if constexpr (is_X2MESf64<X>::value)
+    return "<X2MESf64>";
 
 // #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 #ifdef OPTFRAME_USE_STD_CONCEPTS
-    else if constexpr (XESolution<X>)
-      return "<XES>";
-    else if constexpr (is_X2S<X>::value)
-      return "<X2S>";
-    else if constexpr (XSolution<X>)
-      return "<XS>";
-    return "";
+  else if constexpr (XESolution<X>)
+    return "<XES>";
+  else if constexpr (is_X2S<X>::value)
+    return "<X2S>";
+  else if constexpr (XSolution<X>)
+    return "<XS>";
+  return "";
 #else
     return "<X?>";
 #endif
-  }
+}
 
-  template <typename X>
-  constexpr static boost::static_string<16> getAlternativeDomain(
-      boost::static_string<16> defaultDom) {
-    // cannot be constexpr in c++17, only in c++20
-    // constexpr
-    auto named = getNamedDomain<X>();
-    if (defaultDom == named)
-      return "";
-    else
-      return named;
-  }
-};
+template <typename X>
+#ifdef OPTFRAME_USE_STATIC_STRINGS
+static constexpr boost::static_string<16> getAlternativeDomain(
+    boost::static_string<16> defaultDom)
+#else
+  static constexpr std::string_view getAlternativeDomain(
+      std::string_view defaultDom)
+#endif
+{
+  // cannot be constexpr in c++17, only in c++20
+  // constexpr
+  auto named = getNamedDomain<X>();
+  if (defaultDom == named)
+    return "";
+  else
+    return named;
+}
+};  // namespace optframe
 
 }  // namespace optframe
 

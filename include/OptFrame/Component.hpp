@@ -4,6 +4,11 @@
 #ifndef OPTFRAME_COMPONENT_HPP_
 #define OPTFRAME_COMPONENT_HPP_
 
+#if defined(OPTFRAME_USE_STD_CONCEPTS) && defined(__EXCEPTIONS)
+// boost::static_string requires -fexceptions and c++20!
+#define OPTFRAME_USE_STATIC_STRINGS 1
+#endif
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 #include <cstdlib>
@@ -18,7 +23,9 @@
 // #include <OptFrame/SemStream.hpp>
 #include <OptFrame/modlog/modlog.hpp>
 //
+#ifdef OPTFRAME_USE_STATIC_STRINGS
 #include <OptFrame/boost/static_string.hpp>
+#endif
 
 #define MOD_EXPORT
 #else
@@ -253,12 +260,14 @@ MOD_EXPORT class Component {
 #endif
 
   static std::string idComponent() { return "OptFrame"; }
+#ifdef OPTFRAME_USE_STATIC_STRINGS
   static constexpr boost::static_string<8> idComponentStatic() {
     return "OptFrame";
   }
+#endif
 
   virtual std::string id() const {
-#ifdef OPTFRAME_USE_STD_CONCEPTS
+#ifdef OPTFRAME_USE_STATIC_STRINGS
     constexpr auto stid = idComponentStatic();
 #else
     auto stid = idComponent();

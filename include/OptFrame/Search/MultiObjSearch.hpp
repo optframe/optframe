@@ -25,7 +25,9 @@
 #include <OptFrame/Pareto/ParetoDominanceWeak.hpp>
 #include <OptFrame/Search/GlobalSearch.hpp>  // Base class
 //
+#ifdef OPTFRAME_USE_STATIC_STRINGS
 #include <OptFrame/boost/static_string.hpp>
+#endif
 
 #define MOD_EXPORT
 #else
@@ -110,13 +112,15 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
     return ss.str();
   }
 
+#ifdef OPTFRAME_USE_STATIC_STRINGS
   static constexpr boost::static_string<128> idComponentStatic() {
     return Component::idComponentStatic() + ":MultiObjSearch" +
            Domain::getAlternativeDomain<XMSH>("<X2MESf64>") + ":";
   }
+#endif
 
   std::string id() const override {
-#ifdef OPTFRAME_USE_STD_CONCEPTS
+#ifdef OPTFRAME_USE_STATIC_STRINGS
     constexpr auto stid = MultiObjSearch::idComponentStatic();
 #else
     auto stid = MultiObjSearch::idComponent();
