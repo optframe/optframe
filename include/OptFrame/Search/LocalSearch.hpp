@@ -71,11 +71,40 @@ class LocalSearch : public Component {
   virtual SearchStatus searchFrom(XSH2& se,
                                   const StopCriteria<XEv>& stopCriteria) = 0;
 
+  // onFinish should run ALWAYS before returning!
+  // Useful for flagging LOS status directly on solution!
+  // Currently invoked by onLocalOptimum()!
+  // Unused bool as return... for now!
+  bool (*onLocalOptimum)(LocalSearch<XES2, XSH2>& self, SearchStatus&, XSH2& se,
+                         const StopCriteria<XEv>& stop) =
+      [](LocalSearch<XES2, XSH2>& self, SearchStatus&, XSH2& se,
+         const StopCriteria<XEv>& stop) { return true; };
+
+  // onFinish should run ALWAYS before returning!
+  // Useful for post-processing!
+  // Currently used to invoke onLocalOptimum()!
+  // Unused bool as return... for now!
+  bool (*onFinish)(LocalSearch<XES2, XSH2>& self, SearchStatus&, XSH2& se,
+                   const StopCriteria<XEv>& stop) =
+      [](LocalSearch<XES2, XSH2>& self, SearchStatus& st, XSH2& se,
+         const StopCriteria<XEv>& stop) {
+        if (st == SearchStatus::LOCAL_OPT)
+          return self.onLocalOptimum(self, st, se, stop);
+        else
+          return true;
+      };
+
+  // ====================================================================
+  // LOS IS A BAD IDEA AFTERALL... Use onLocalOptimum() Callback instead!
+  // ====================================================================
+
   // optional: set local optimum status (LOS)
   virtual void setLOS(LOS los, std::string nsid, XSH2& se) {}
 
   // optional: get local optimum status (LOS)
   virtual LOS getLOS(std::string nsid, XSH2& se) { return los_unknown; }
+
+  // ====================================================================
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));

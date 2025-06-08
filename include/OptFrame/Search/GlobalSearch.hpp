@@ -79,6 +79,15 @@ class GlobalSearch : public Component {
         return true;
       };
 
+  // onFinish should run ALWAYS before returning!
+  // Useful for post-processing!
+  // Unused bool as return... for now!
+  bool (*onFinish)(GlobalSearch<XES, BestType>& self,
+                   SearchOutput<XES, BestType>&,
+                   const StopCriteria<_XEv>& stop) =
+      [](GlobalSearch<XES, BestType>& self, SearchOutput<XES, BestType>&,
+         const StopCriteria<_XEv>& stop) { return true; };
+
   // strict or non-strict search
   bool strict{true};
 
