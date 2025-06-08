@@ -54,7 +54,7 @@ class ReducedVNS : public VariableNeighborhoodSearch<XES> {
   virtual ~ReducedVNS() {}
 
   sref<LocalSearch<XES>> buildSearch(unsigned k_search) override {
-    return new EmptyLocalSearch<XES>();
+    return new EmptyLS<XES>();
   }
 
   std::string id() const override { return idComponent(); }

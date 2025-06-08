@@ -67,8 +67,8 @@
 
 // local search
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
-#include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
-#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/CS.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/LAHC.hpp>
@@ -214,11 +214,11 @@ class Loader {
     factory.builders.push_back(new BasicMOPopulationManagementBuilder<XES>);
 
     // LocalSearch
-    factory.builders.push_back(new EmptyLocalSearchBuilder<XES>);
+    factory.builders.push_back(new BuilderEmptyLS<XES>);
     factory.builders.push_back(new BuilderBI<XES>);
     factory.builders.push_back(new BuilderFI<XES>);
     factory.builders.push_back(new RandomDescentMethodBuilder<XES>);
-    factory.builders.push_back(new CircularSearchBuilder<XES>);
+    factory.builders.push_back(new BuilderCS<XES>);
     factory.builders.push_back(new BuilderVND<XES>);
     factory.builders.push_back(new BuilderRVND<XES>);
 #ifdef OPTFRAME_LEGACY_R_ADS

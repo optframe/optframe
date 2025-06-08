@@ -20,7 +20,7 @@
 #include <OptFrame/Core/MultiSolution.hpp>
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/Solution.hpp>
-#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Hyper/Action.hpp>
 #include <OptFrame/Hyper/ComponentHelper.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
@@ -35,6 +35,8 @@
 
 // Heuristics
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/CS.hpp>
+#include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RVND.hpp>
@@ -42,15 +44,13 @@
 #include <OptFrame/Heuristics/LocalSearches/VNDUpdateADS.hpp>
 //
 #include <OptFrame/Heuristics/LocalSearches/BuilderBI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BuilderCS.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BuilderEmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderFI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderHC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderRVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BuilderVNDUpdateADS.hpp>
-#include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
-#include <OptFrame/Heuristics/LocalSearches/CircularSearchBuilder.hpp>
-#include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
-#include <OptFrame/Heuristics/LocalSearches/EmptyBuilder.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethodBuilder.hpp>
 // #include "Heuristics/LocalSearches/RVND.hpp"
@@ -817,15 +817,15 @@ class HeuristicFactory {
       assign(mtd, id, LocalSearch<XES>::idComponent());
 
       if (!mtd)
-        return std::pair<sptr<LocalSearch<XES>>, std::string>(
-            new EmptyLocalSearch<XES>, scanner.rest());
+        return std::pair<sptr<LocalSearch<XES>>, std::string>(new EmptyLS<XES>,
+                                                              scanner.rest());
 
       return make_pair(mtd, scanner.rest());
     }
 
-    if (h == EmptyLocalSearch<XES>::idComponent())
-      return std::pair<sptr<LocalSearch<XES>>, std::string>(
-          new EmptyLocalSearch<XES>, scanner.rest());
+    if (h == EmptyLS<XES>::idComponent())
+      return std::pair<sptr<LocalSearch<XES>>, std::string>(new EmptyLS<XES>,
+                                                            scanner.rest());
 
     for (unsigned i = 0; i < builders.size(); i++) {
       // build local search directly by builder name
