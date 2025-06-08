@@ -92,7 +92,9 @@
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealingBuilder.hpp>
 #include <OptFrame/Heuristics/SA/GeometricSimulatedAnnealing.hpp>
+#ifdef MOVE_IS_COMPONENT
 #include <OptFrame/Heuristics/SA/SimulatedAnnealingAC.hpp>
+#endif
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/Heuristics/VNS/BasicVNS.hpp>
@@ -233,8 +235,10 @@ class Loader {
         new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(
         new GeometricSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
+#ifdef MOVE_IS_COMPONENT
     factory.builders.push_back(
         new SimulatedAnnealingACBuilder<XSH, XES2, X2ES>);
+#endif
     factory.builders.push_back(new MultiStartBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(new BasicTabuSearchBuilder<XES>);
     factory.builders.push_back(new BasicIteratedLocalSearchBuilder<XES>);
