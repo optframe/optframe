@@ -174,7 +174,11 @@ class MoveSwapSide : public Move<ESolutionEtII> {
               << y2 << ")" << std::endl;
   }
 
-  std::string id() const override { return "OptFrame:Move:MoveSwapSide"; }
+  static std::string idComponent() {
+    return Move::idMoveComponent() + ":MoveSwapSide";
+  }
+
+  std::string id() const override { return idComponent(); }
 };
 
 class NSIteratorSwapSide : public NSIterator<ESolutionEtII> {

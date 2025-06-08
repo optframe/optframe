@@ -72,8 +72,8 @@ class DeltaMoveVRPShift10 : public Move<ESolutionHFMVRP> {
       bool is_Comp = hfmvrp->getComp(vType2, rep[r1][cli]);
 
       /*
-       std::cout << "newAds.cumulativeDemand" << ads.cumulativeDemand << std::endl;
-       std::cout << "newAds.maxDemand" << ads.maxDemand << std::endl;
+       std::cout << "newAds.cumulativeDemand" << ads.cumulativeDemand <<
+       std::endl; std::cout << "newAds.maxDemand" << ads.maxDemand << std::endl;
        std::cout << "newAds.minDemand" << ads.minDemand << std::endl;
        std::cout << "newAds.maxPairDemand" << ads.maxPairDemand << std::endl;
        std::cout << "newAds.minPairDemand" << ads.minPairDemand << std::endl;
@@ -270,28 +270,29 @@ class DeltaMoveVRPShift10 : public Move<ESolutionHFMVRP> {
      std::cout << "route1[" << ak1 << "[ = " << route1[ak1] << std::endl;
      std::cout << "route2[" << bk2 << "[ = " << route2[bk2] << std::endl;
      std::cout << "route2[" << k2 << "[ = " << route2[k2] << std::endl;
-     std::cout << "route2[" << ak2 << "[ = " << route2[ak2] << std::endl << std::endl;
-     std::cout << "getDist(0,0) : =" << hfmvrp->getDist(0, 0) << std::endl;
+     std::cout << "route2[" << ak2 << "[ = " << route2[ak2] << std::endl <<
+     std::endl; std::cout << "getDist(0,0) : =" << hfmvrp->getDist(0, 0) <<
+     std::endl;
      */
     f -= hfmvrp->getDist(route1[bk1], route1[k1]) * vTDC1;
-    // std::cout << "-d(" << route[bk1] << "," << route[k1] << ") \t f= " << f <<
-    // std::endl;
+    // std::cout << "-d(" << route[bk1] << "," << route[k1] << ") \t f= " << f
+    // << std::endl;
     f -= hfmvrp->getDist(route1[k1], route1[ak1]) * vTDC1;
-    // std::cout << "-d(" << route[k1] << "," << route[ak1] << ") \t f= " << f <<
-    // std::endl;
+    // std::cout << "-d(" << route[k1] << "," << route[ak1] << ") \t f= " << f
+    // << std::endl;
     f -= hfmvrp->getDist(route2[bk2], route2[k2]) * vTDC2;
-    // std::cout << "-d(" << route[k2] << "," << route[ak2] << ") \t f= " << f <<
-    // std::endl;
+    // std::cout << "-d(" << route[k2] << "," << route[ak2] << ") \t f= " << f
+    // << std::endl;
 
     f += hfmvrp->getDist(route1[bk1], route1[ak1]) * vTDC1;
-    // std::cout << "+d(" << route[bk1] << "," << route[k2] << ") \t f= " << f <<
-    // std::endl;
+    // std::cout << "+d(" << route[bk1] << "," << route[k2] << ") \t f= " << f
+    // << std::endl;
     f += hfmvrp->getDist(route2[bk2], route1[k1]) * vTDC2;
-    // std::cout << "+d(" << route[k2] << "," << route[ak1] << ") \t f= " << f <<
-    // std::endl;
+    // std::cout << "+d(" << route[k2] << "," << route[ak1] << ") \t f= " << f
+    // << std::endl;
     f += hfmvrp->getDist(route1[k1], route2[k2]) * vTDC2;
-    // std::cout << "+d(" << route[bk2] << "," << route[k1] << ") \t f= " << f <<
-    // std::endl;
+    // std::cout << "+d(" << route[bk2] << "," << route[k1] << ") \t f= " << f
+    // << std::endl;
 
     if (routeSize1 <= 3) {
       f -= hfmvrp->vehiclesTypeFixedCost[vType1];
@@ -303,13 +304,13 @@ class DeltaMoveVRPShift10 : public Move<ESolutionHFMVRP> {
   }
 
   static std::string idComponent() {
-    string idComp = Move<ESolutionHFMVRP>::idComponent();
+    string idComp = Move<ESolutionHFMVRP>::idMoveComponent();
     idComp.append(":DeltaMoveVRPShift10");
     return idComp;
   }
 
   bool operator==(const Move<ESolutionHFMVRP>& _m) const override {
-    const DeltaMoveVRPShift10& m1 = (const DeltaMoveVRPShift10&)_m;
+    auto& m1 = (const DeltaMoveVRPShift10&)_m;
     return ((r1 == m1.r1) && (r2 == m1.r2) && (cli == m1.cli) &&
             (pos == m1.pos));
   }

@@ -24,15 +24,15 @@ class MoveBitFlip : public Move<ESolutionKP> {
 
   void print() const override {
     std::cout << id() << " with params: '"
-         << "item=" << item << "'" << std::endl;
+              << "item=" << item << "'" << std::endl;
   }
 
   std::string id() const override {
-    return Move<ESolutionKP>::idComponent().append(":MoveBitFlip");
+    return Move<ESolutionKP>::idMoveComponent().append(":MoveBitFlip");
   }
 
   bool operator==(const Move<ESolutionKP>& _m) const override {
-    const MoveBitFlip& m = (const MoveBitFlip&)_m;
+    auto& m = (const MoveBitFlip&)_m;
     return item == m.item;
   }
 

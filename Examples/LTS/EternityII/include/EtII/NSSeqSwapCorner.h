@@ -132,7 +132,7 @@ class MoveSwapCorner : public Move<ESolutionEtII> {
   }
 
   bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
-    const MoveSwapCorner& m = (const MoveSwapCorner&)_m;
+    auto& m = (const MoveSwapCorner&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
   }
 
@@ -141,7 +141,11 @@ class MoveSwapCorner : public Move<ESolutionEtII> {
               << "," << y2 << ")" << std::endl;
   }
 
-  std::string id() const override { return "OptFrame:Move:MoveSwapCorner"; }
+  static std::string idComponent() {
+    return Move::idMoveComponent() + ":MoveSwapCorner";
+  }
+
+  std::string id() const override { return idComponent(); }
 };
 
 class NSIteratorSwapCorner : public NSIterator<ESolutionEtII> {

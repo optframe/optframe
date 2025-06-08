@@ -595,7 +595,7 @@ class CheckCommand : public Component {  // NOLINT
           (*this->logdata)
               << "checkcommand error: ADS not updated correctly! Compared "
                  "brand new initializeADS with update from reverse move => ";
-          Component::safe_print((*this->logdata), rev.get());
+          safe_move_print((*this->logdata), rev.get());
           (*this->logdata) << "S (sOriginal.getADS()): " << std::endl;
           adsMan->printADS(sOriginal.getADS());
           (*this->logdata) << "WRONG (s.getADS()): " << std::endl;

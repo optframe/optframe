@@ -33,11 +33,11 @@ class MoveSwap : public Move<ESolutionPN> {
   }
 
   std::string id() const override {
-    return Move<ESolutionPN>::idComponent().append(":MoveSwap");
+    return Move<ESolutionPN>::idMoveComponent().append(":MoveSwap");
   }
 
   bool operator==(const Move<ESolutionPN>& _m) const {
-    const MoveSwap& m = (const MoveSwap&)_m;
+    auto& m = (const MoveSwap&)_m;
     return (i == m.i) && (j == m.j);
   }
 

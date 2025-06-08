@@ -81,7 +81,7 @@ class MoveRotate : public Move<ESolutionEtII> {
   }
 
   bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
-    const MoveRotate& m = (const MoveRotate&)_m;
+    auto& m = (const MoveRotate&)_m;
     return (m.nRot == nRot) && (m.x == x) && (m.y == y);
   }
 
@@ -90,7 +90,11 @@ class MoveRotate : public Move<ESolutionEtII> {
               << ")" << std::endl;
   }
 
-  std::string id() const override { return "OptFrame:Move:MoveRotate"; }
+  static std::string idComponent() {
+    return Move::idMoveComponent() + ":MoveRotate";
+  }
+
+  std::string id() const override { return idComponent(); }
 };
 
 class NSIteratorRotate : public NSIterator<ESolutionEtII> {

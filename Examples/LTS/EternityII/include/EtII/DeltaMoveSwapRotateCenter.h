@@ -54,7 +54,7 @@ class DeltaMoveSwapRotateCenter : public MoveSwapRotateCenter {
 
   // virtual bool operator==(const DeltaMoveSwapRotateCenter& _m) const {
   bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
-    const DeltaMoveSwapRotateCenter& m = (const DeltaMoveSwapRotateCenter&)_m;
+    auto& m = (const DeltaMoveSwapRotateCenter&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) &&
            (m.r1 == r1) && (m.r2 == r2);
   }

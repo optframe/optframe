@@ -33,11 +33,11 @@ class MoveShift : public Move<ESolutionPN> {
   }
 
   std::string id() const override {
-    return Move<ESolutionPN>::idComponent().append(":MoveShift");
+    return Move<ESolutionPN>::idMoveComponent().append(":MoveShift");
   }
 
   bool operator==(const Move<ESolutionPN>& _m) const {
-    const MoveShift& m = (const MoveShift&)_m;
+    auto& m = (const MoveShift&)_m;
     return (i == m.i);
   }
 

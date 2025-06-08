@@ -87,7 +87,7 @@ class DeltaMoveRotate : public MoveRotate {
 
   // virtual bool operator==(const DeltaMoveRotate& _m) const {
   bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
-    const DeltaMoveRotate& m = (const DeltaMoveRotate&)_m;
+    auto& m = (const DeltaMoveRotate&)_m;
     return (m.nRot == nRot) && (m.x == x) && (m.y == y);
   }
 

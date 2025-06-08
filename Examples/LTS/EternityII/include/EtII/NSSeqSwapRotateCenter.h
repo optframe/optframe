@@ -191,7 +191,7 @@ class MoveSwapRotateCenter : public Move<ESolutionEtII> {
   }
 
   bool operator==(const optframe::Move<ESolutionEtII>& _m) const override {
-    const MoveSwapRotateCenter& m = (const MoveSwapRotateCenter&)_m;
+    auto& m = (const MoveSwapRotateCenter&)_m;
     return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) &&
            (m.r1 == r1) && (m.r2 == r2);
   }
@@ -201,9 +201,11 @@ class MoveSwapRotateCenter : public Move<ESolutionEtII> {
               << " <=> (" << x2 << "," << y2 << ") r=" << r2 << std::endl;
   }
 
-  std::string id() const override {
-    return "OptFrame:Move:MoveSwapRotateCenter";
+  static std::string idComponent() {
+    return Move::idMoveComponent() + ":MoveSwapRotateCenter";
   }
+
+  std::string id() const override { return idComponent(); }
 };
 
 class NSIteratorSwapRotateCenter : public NSIterator<ESolutionEtII> {
