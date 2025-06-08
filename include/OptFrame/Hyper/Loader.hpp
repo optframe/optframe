@@ -220,6 +220,7 @@ class Loader {
     factory.builders.push_back(new RandomDescentMethodBuilder<XES>);
     factory.builders.push_back(new CircularSearchBuilder<XES>);
     factory.builders.push_back(new BuilderVND<XES>);
+    factory.builders.push_back(new BuilderRVND<XES>);
 #ifdef OPTFRAME_LEGACY_R_ADS
     factory.builders.push_back(
         new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);

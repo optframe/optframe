@@ -14,8 +14,6 @@
 #include <vector>
 //
 
-#include <OptFrame/Heuristics/LocalSearches/VND.h>
-
 #include <OptFrame/Core/GeneralEvaluator.hpp>
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
@@ -27,6 +25,7 @@
 #include <OptFrame/Heuristics/ILS/MO/MOILSLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/Empty.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FamilyVND.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/MOLocalSearches/GPLS.hpp>
