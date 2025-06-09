@@ -59,13 +59,20 @@ Note that OptFrame website may have obsolete documentation and examples:
 
 ~Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)~
 
+### Intended changes for Major 6
+
+- standard component names (DONE!)
+- tested c library (DONE!)
+- support c++23 import std and cxx modules (ongoing!)
+- fix formatter and ostream for cxxmodules
+
 ### Intended changes for Major 5
 
-- support global library for multiple languages
+- support global library for multiple languages (DONE!)
 - fix multiple inheritance (DONE!)
 - rename src/ to include/ and follow C++ package standards (DONE!)
-- no 'using namespace std' 
-- change to more compact and consistent formatting style (using cpplint tool)
+- no 'using namespace std' (DONE!)
+- change to more compact and consistent formatting style (using cpplint tool) - DONE!
 
 ## Project Structure
 
