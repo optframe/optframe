@@ -40,8 +40,8 @@ class DecoderRandomKeysNoEvaluation : public Component {
  public:
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":" << RK::family()
-       << "DecoderRandomKeysNoEvaluation";
+    ss << Component::idComponent() << ":" << FamilyEA::family() << ":"
+       << FamilyRK::family() << "DecoderRandomKeysNoEvaluation";
     return ss.str();
   }
 

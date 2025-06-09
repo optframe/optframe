@@ -14,8 +14,8 @@
 // #include "../../../Solutions/CopySolution.hpp"
 #include <OptFrame/Core/Evaluator.hpp>
 #include <OptFrame/Core/VEPopulation.hpp>
-#include <OptFrame/Heuristics/EA/EA.hpp>
-#include <OptFrame/Heuristics/EA/RK/RK.hpp>
+#include <OptFrame/Heuristics/EA/FamilyEA.hpp>
+#include <OptFrame/Heuristics/EA/RK/FamilyRK.hpp>
 
 #define MOD_EXPORT
 #else
@@ -83,8 +83,8 @@ class DecoderRandomKeys : public Component {
  public:
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":" << RK::family()
-       << "DecoderRandomKeys";
+    ss << Component::idComponent() << ":" << FamilyEA::family() << ":"
+       << FamilyRK::family() << "DecoderRandomKeys";
     return ss.str();
   }
 

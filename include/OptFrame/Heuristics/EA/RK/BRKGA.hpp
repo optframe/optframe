@@ -12,7 +12,7 @@
 //
 #include <OptFrame/Concepts/MyConcepts.hpp>
 #include <OptFrame/Core/EPopulation.hpp>
-#include <OptFrame/Heuristics/EA/RK/RK.hpp>
+#include <OptFrame/Heuristics/EA/RK/FamilyRK.hpp>
 #include <OptFrame/Heuristics/EA/RK/RKGA.hpp>
 #include <OptFrame/Search/GlobalSearch.hpp>
 #include <OptFrame/Search/GlobalSearchBuilder.hpp>

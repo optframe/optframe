@@ -7,8 +7,8 @@
 // Heuristics Module: inclusion of common heuristic strategies
 
 // families
-#include "OptFrame/Heuristics/EA/EA.hpp"
-#include "OptFrame/Heuristics/EA/RK/RK.hpp"
+#include "OptFrame/Heuristics/EA/FamilyEA.hpp"
+#include "OptFrame/Heuristics/EA/RK/FamilyRK.hpp"
 #include "OptFrame/Heuristics/TS/FamilyTS.h"
 #include "OptFrame/Heuristics/VNS/FamilyVNS.h"
 
@@ -35,9 +35,9 @@
 #include "OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 //
 // EA family
-#include "OptFrame/Heuristics/EA/EA.hpp"
+#include "OptFrame/Heuristics/EA/FamilyEA.hpp"
 // RK family
-#include "OptFrame/Heuristics/EA/RK/RK.hpp"
+#include "OptFrame/Heuristics/EA/RK/FamilyRK.hpp"
 //
 #include "OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp"
 //

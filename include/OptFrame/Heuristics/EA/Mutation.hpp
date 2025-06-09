@@ -17,7 +17,7 @@
 #include <OptFrame/Core/RandGen.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
-#include "EA.hpp"
+#include "FamilyEA.hpp"
 
 #ifndef _OPTFRAME_DBG_MUTATION_
 #ifdef OPTFRAME_DEBUG
@@ -31,7 +31,7 @@ namespace optframe {
 
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
-class Mutation : public Component, public EA {
+class Mutation : public Component, public FamilyEA {
  public:
   virtual ~Mutation() {}
 
@@ -39,7 +39,7 @@ class Mutation : public Component, public EA {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":Mutation";
+    ss << Component::idComponent() << ":" << FamilyEA::family() << ":Mutation";
     return ss.str();
   }
 
@@ -77,7 +77,7 @@ class BasicMutation : public Mutation<S, XEv> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":Mutation";
+    ss << Component::idComponent() << ":" << FamilyEA::family() << ":Mutation";
     return ss.str();
   }
 
@@ -126,7 +126,7 @@ class BasicMutationBuilder : public ComponentBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << "" << EA::family()
+    ss << ComponentBuilder<XES>::idComponent() << "" << FamilyEA::family()
        << ":BasicMutation";
     return ss.str();
   }

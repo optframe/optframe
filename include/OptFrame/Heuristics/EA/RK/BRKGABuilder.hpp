@@ -99,8 +99,8 @@ class BRKGABuilder : public GlobalSearchBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << GlobalSearchBuilder<XES>::idComponent() << EA::family() << ":"
-       << RK::family() << "BRKGA";
+    ss << GlobalSearchBuilder<XES>::idComponent() << FamilyEA::family() << ":"
+       << FamilyRK::family() << "BRKGA";
     return ss.str();
   }
 

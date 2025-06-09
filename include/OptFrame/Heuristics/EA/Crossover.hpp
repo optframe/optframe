@@ -29,7 +29,7 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
-#include "EA.hpp"
+#include "FamilyEA.hpp"
 
 #ifndef _OPTFRAME_DBG_CROSSOVER_
 #ifdef OPTFRAME_DEBUG
@@ -43,7 +43,7 @@ namespace optframe {
 
 template <XSolution S, XEvaluation XEv = Evaluation<>,
           XESolution XES = pair<S, XEv>>
-class Crossover : public Component, public EA {
+class Crossover : public Component, public FamilyEA {
  public:
   virtual ~Crossover() {}
 
@@ -55,7 +55,7 @@ class Crossover : public Component, public EA {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":Crossover";
+    ss << Component::idComponent() << ":" << FamilyEA::family() << ":Crossover";
     return ss.str();
   }
 

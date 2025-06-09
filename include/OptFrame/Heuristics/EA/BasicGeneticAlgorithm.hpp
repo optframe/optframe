@@ -15,7 +15,7 @@
 #include "../../RandGen.hpp"
 #include "BinarySelection.hpp"
 #include "Crossover.hpp"
-#include "EA.hpp"
+#include "FamilyEA.hpp"
 #include "InitialMultiSolution.hpp"
 #include "Mutation.hpp"
 #include "Selection.hpp"
@@ -23,7 +23,7 @@
 namespace optframe {
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
+class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public FamilyEA {
  protected:
   typedef S Chromossome;
   typedef MultiSolution<S> MSPopulation;
@@ -280,7 +280,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << EA::family()
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilyEA::family()
        << ":BasicGeneticAlgorithm";
     return ss.str();
   }
@@ -375,8 +375,8 @@ class BasicGeneticAlgorithmBuilder : public EA,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << EA::family()
-       << ":BasicGeneticAlgorithm";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":"
+       << FamilyEA::family() << ":BasicGeneticAlgorithm";
     return ss.str();
   }
 

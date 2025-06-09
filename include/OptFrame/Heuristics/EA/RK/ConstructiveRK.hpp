@@ -11,8 +11,8 @@
 //
 #include <OptFrame/Core/Constructive.hpp>
 
-#include "../EA.hpp"
-#include "RK.hpp"
+#include "../FamilyEA.hpp"
+#include "FamilyRK.hpp"
 
 #define MOD_EXPORT
 #else
@@ -47,8 +47,8 @@ class ConstructiveRK : public Constructive<std::vector<KeyType>> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Constructive<S>::idComponent() << ":" << EA::family() << ":"
-       << RK::family() << "ConstructiveRK";
+    ss << Constructive<S>::idComponent() << ":" << FamilyEA::family() << ":"
+       << FamilyRK::family() << "ConstructiveRK";
     return ss.str();
   }
 

@@ -132,8 +132,8 @@ class BasicInitialEPopulationRKBuilder : public ComponentBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << ComponentBuilder<XES>::idComponent() << EA::family() << ":"
-       << RK::family() << "BasicInitialEPopulationRKBuilder";
+    ss << ComponentBuilder<XES>::idComponent() << FamilyEA::family() << ":"
+       << FamilyRK::family() << "BasicInitialEPopulationRKBuilder";
     return ss.str();
   }
 

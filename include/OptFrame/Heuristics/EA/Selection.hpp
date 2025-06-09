@@ -31,7 +31,7 @@
 #include <OptFrame/Core/MultiSolution.hpp>
 #include <OptFrame/Pareto/MultiEvaluation.hpp>
 
-#include "EA.hpp"
+#include "FamilyEA.hpp"
 
 // #include "../../printable/printable.h" // this should not be required here
 
@@ -46,7 +46,7 @@
 namespace optframe {
 
 template <XSolution S>
-class Selection : public Component, public EA {
+class Selection : public Component, public FamilyEA {
  public:
   virtual ~Selection() {}
 
@@ -87,7 +87,7 @@ class Selection : public Component, public EA {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":Selection";
+    ss << Component::idComponent() << ":" << FamilyEA::family() << ":Selection";
     return ss.str();
   }
 

@@ -12,9 +12,9 @@
 #include <vector>
 //
 #include <OptFrame/Core/Constructive.hpp>
-#include <OptFrame/Heuristics/EA/EA.hpp>
+#include <OptFrame/Heuristics/EA/FamilyEA.hpp>
 #include <OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp>
-#include <OptFrame/Heuristics/EA/RK/RK.hpp>
+#include <OptFrame/Heuristics/EA/RK/FamilyRK.hpp>
 
 #define MOD_EXPORT
 #else

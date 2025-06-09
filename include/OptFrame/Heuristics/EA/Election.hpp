@@ -33,7 +33,7 @@
 #include "../../MultiEvaluation.hpp"
 #include "../../MultiSolution.hpp"
 #include "../../Util/printable.h"
-#include "EA.hpp"
+#include "FamilyEA.hpp"
 
 #ifndef _OPTFRAME_DBG_ELECTION_
 #ifdef OPTFRAME_DEBUG

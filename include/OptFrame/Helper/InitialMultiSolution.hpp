@@ -31,7 +31,7 @@
 #include <OptFrame/Core/Evaluation.hpp>
 #include <OptFrame/Core/MultiSolution.hpp>
 
-// #include "EA.hpp"
+// #include "FamilyEA.hpp"
 
 // using namespace std;
 
