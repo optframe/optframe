@@ -160,6 +160,8 @@ class NeighborhoodExplorationBuilder : public ComponentBuilder<XES> {
 
 }  // namespace optframe
 
+#ifndef NDEBUG
+
 #include <OptFrame/Concepts/BaseConcepts.ctest.hpp>
 #include <OptFrame/Concepts/BaseConcepts.hpp>
 
@@ -201,5 +203,7 @@ struct TestCompilationRichMove {
 };
 
 }  // namespace optframe
+
+#endif  // NDEBUG tests
 
 #endif /* OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_ */

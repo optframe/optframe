@@ -3,6 +3,7 @@ OptFrame == * [ ]  local * ../../../support/cmake
 Catch2 == "v3.5.1" [ Catch2::Catch2WithMain ] cmake+git test https://github.com/catchorg/Catch2.git
 !define OPTFRAME_AC
 !define MOVE_IS_COMPONENT
+!define NDEBUG
 !std c++20
 !version 1.6.3
 !build cmake
