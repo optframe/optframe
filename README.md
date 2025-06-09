@@ -65,6 +65,11 @@ Note that OptFrame website may have obsolete documentation and examples:
 - tested c library (DONE!)
 - support c++23 import std and cxx modules (ongoing!)
 - fix formatter and ostream for cxxmodules
+- support callbacks in metaheuristic and local search implementations (DONE!)
+   * onBest
+   * onLocalOptimum
+   * onFinishLocal
+   * onFinishGlobal
 
 ### Intended changes for Major 5
 

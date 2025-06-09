@@ -81,12 +81,13 @@ class GlobalSearch : public Component {
 
   // onFinish should run ALWAYS before returning!
   // Useful for post-processing!
-  // Unused bool as return... for now!
-  bool (*onFinishGlobal)(GlobalSearch<XES, BestType>& self,
-                         SearchOutput<XES, BestType>&,
-                         const StopCriteria<_XEv>& stop) =
-      [](GlobalSearch<XES, BestType>& self, SearchOutput<XES, BestType>&,
-         const StopCriteria<_XEv>& stop) { return true; };
+  using OnFinishGlobalType = std::function<SearchOutput<XES, BestType>(
+      GlobalSearch<XES, BestType>&, SearchOutput<XES, BestType>,
+      const StopCriteria<_XEv>&)>;
+
+  OnFinishGlobalType onFinishGlobal =
+      [](GlobalSearch<XES, BestType>& self, SearchOutput<XES, BestType> sout,
+         const StopCriteria<_XEv>& stop) { return sout; };
 
   // strict or non-strict search
   bool strict{true};

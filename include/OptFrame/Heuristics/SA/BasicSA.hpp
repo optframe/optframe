@@ -148,10 +148,10 @@ class BasicSA : public SingleObjSearch<XES>,
   }
 
   // ITrajectory
-  SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& sosc,
+  SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& stop,
                                   std::optional<XSH> _best) override {
     if (Component::information)
-      std::cout << "BasicSA search(" << sosc.timelimit << ")" << std::endl;
+      std::cout << "BasicSA search(" << stop.timelimit << ")" << std::endl;
 
     std::optional<XSH> star = _best;
 
@@ -163,7 +163,7 @@ class BasicSA : public SingleObjSearch<XES>,
 
     // disable 'constructive' if star is given
     std::optional<XSH> incumbent =
-        star ? star : constructive->initialSearch(sosc).first;
+        star ? star : constructive->initialSearch(stop).first;
 
     if (Component::verbose)
       std::cout << "BasicSA: post build initialSearch" << std::endl;
@@ -182,9 +182,11 @@ class BasicSA : public SingleObjSearch<XES>,
     }
 
     // abort if no star exists
-    if (!star) return SearchStatus::NO_SOLUTION;  // cannot continue!
+    if (!star)
+      return this->onFinishGlobal(*this, SearchStatus::NO_SOLUTION,
+                                  stop);  // cannot continue!
 
-    double timeBest = sosc.getTime();
+    double timeBest = stop.getTime();
 
     if (Component::verbose) {
       std::cout << "time best: " << timeBest << std::endl;
@@ -221,7 +223,7 @@ class BasicSA : public SingleObjSearch<XES>,
 
     assert(!se.second.isOutdated());  // CXX CONTRACT C++26
 
-    while (onLoop(ctx, sosc)) {
+    while (onLoop(ctx, stop)) {
       if (Component::verbose)
         std::cout << "BasicSA(verbose): after onLoop" << std::endl;
       int n = rg->rand(neighbors.size());
@@ -233,7 +235,8 @@ class BasicSA : public SingleObjSearch<XES>,
           std::cout << "BasicSA warning: no move in iter=" << ctx.iterT
                     << " T=" << ctx.T << "! cannot continue..." << std::endl;
         // This is not normal... but not catastrophic stop either.
-        return {SearchStatus::EARLY_STOP, star};
+        return this->onFinishGlobal(*this, {SearchStatus::EARLY_STOP, star},
+                                    stop);
       }
 
       if (Component::verbose)
@@ -282,7 +285,7 @@ class BasicSA : public SingleObjSearch<XES>,
 
         if (evaluator->betterStrict(se.second, star->second)) {
           star = make_optional(se);
-          timeBest = sosc.getTime();
+          timeBest = stop.getTime();
 
           if (Component::information) {
             std::cout << "time best: " << timeBest << std::endl;
@@ -313,7 +316,8 @@ class BasicSA : public SingleObjSearch<XES>,
     }
 
     // return best solution
-    return {SearchStatus::NO_REPORT, star, timeBest};
+    return this->onFinishGlobal(
+        *this, {SearchStatus::NO_REPORT, star, timeBest}, stop);
   }
 
   // =======================================
