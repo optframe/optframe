@@ -213,13 +213,11 @@ int main(int argc, char** argv) {
   FI<ESolutionMODM> fiInvert(geval, nsseq_invert);
 
   int nMovesRDM = 500000;
-  RandomDescentMethod<ESolutionMODM> rdmSwap(geval, nsseq_swap, nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmSwapInter(geval, nsseq_swapInter,
-                                                  nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmInvert(geval, nsseq_invert, nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmARProduct(geval, nsseq_arProduct,
-                                                  nMovesRDM);
-  RandomDescentMethod<ESolutionMODM> rdmADD(geval, nsseq_add, 1);
+  RDM<ESolutionMODM> rdmSwap(geval, nsseq_swap, nMovesRDM);
+  RDM<ESolutionMODM> rdmSwapInter(geval, nsseq_swapInter, nMovesRDM);
+  RDM<ESolutionMODM> rdmInvert(geval, nsseq_invert, nMovesRDM);
+  RDM<ESolutionMODM> rdmARProduct(geval, nsseq_arProduct, nMovesRDM);
+  RDM<ESolutionMODM> rdmADD(geval, nsseq_add, 1);
 
   // vector<LocalSearch<ESolutionMODM>*> vLS;
   //
@@ -260,9 +258,8 @@ int main(int argc, char** argv) {
 
   pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;
 
-  EmptyLocalSearch<ESolutionMODM> emptyLS;
-  sref<LocalSearch<ESolutionMODM>> emptyLS2{
-      new EmptyLocalSearch<ESolutionMODM>{}};
+  EmptyLS<ESolutionMODM> emptyLS;
+  sref<LocalSearch<ESolutionMODM>> emptyLS2{new EmptyLS<ESolutionMODM>{}};
 
   BasicGRASP<ESolutionMODM> g(geval, grC2, emptyLS2, alphaBuilder, 100000);
 

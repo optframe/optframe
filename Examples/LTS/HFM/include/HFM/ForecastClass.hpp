@@ -75,9 +75,8 @@ class ForecastClass {
   //
   vector<NSSeq<ESolutionHFM>*> vNS;
 
-  EmptyLocalSearch<ESolutionHFM> emptyLS;
-  sref<LocalSearch<ESolutionHFM>> emptyLS2{
-      new EmptyLocalSearch<ESolutionHFM>{}};
+  EmptyLS<ESolutionHFM> emptyLS;
+  sref<LocalSearch<ESolutionHFM>> emptyLS2{new EmptyLS<ESolutionHFM>{}};
   // vector<NSSeq<ESolutionHFM>*>* vNSeq;
   vsref<NSSeq<ESolutionHFM>> vNSeq;
   // vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>* vNSeqMO;
@@ -199,20 +198,18 @@ class ForecastClass {
     // FirstImprovement<SolutionHFM>(*eval, *nsModifyFuzzyRules);
     // FirstImprovement<SolutionHFM>* fiChangeSingleInput = new
     // FirstImprovement<SolutionHFM>(*eval, *nsChangeSingleInput);
-    sref<RandomDescentMethod<ESolutionHFM>> rdmRemove =
-        new RandomDescentMethod<ESolutionHFM>(
-            eval, nsRemoveSingleInput,
-            500);  // FirstImprovement<RepEFP>* fiVAlpha = new
-                   //  FirstImprovement<RepEFP>(*eval, *nsVAlpha);
-    sref<RandomDescentMethod<ESolutionHFM>> rdmAdd =
-        new RandomDescentMethod<ESolutionHFM>(
-            eval, nsAddSingleInput,
-            500);  // FirstImprovement<RepEFP>* fiVAlpha = new
-                   //  FirstImprovement<RepEFP>(*eval, *nsVAlpha);
-                   //  int maxRDM = 100;
-                   //
-                   // //rdm->setMessageLevel(3);
-                   // vLS.push_back(fiVAlpha);
+    sref<RDM<ESolutionHFM>> rdmRemove = new RDM<ESolutionHFM>(
+        eval, nsRemoveSingleInput,
+        500);  // FirstImprovement<RepEFP>* fiVAlpha = new
+               //  FirstImprovement<RepEFP>(*eval, *nsVAlpha);
+    sref<RDM<ESolutionHFM>> rdmAdd =
+        new RDM<ESolutionHFM>(eval, nsAddSingleInput,
+                              500);  // FirstImprovement<RepEFP>* fiVAlpha = new
+                                     //  FirstImprovement<RepEFP>(*eval,
+                                     //  *nsVAlpha); int maxRDM = 100;
+                                     //
+                                     // //rdm->setMessageLevel(3);
+                                     // vLS.push_back(fiVAlpha);
     vLS.push_back(rdmRemove);
     vLS.push_back(rdmAdd);
     // vLS.push_back(fiModifyFuzzyRules);

@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
   NSEnumTP* ns_tp = new NSEnumTP(opm, rg);
   NSEnumTT* ns_tt = new NSEnumTT(opm, rg);
 
-  EmptyLocalSearch<RepOPM> emptyLS;
+  EmptyLS<RepOPM> emptyLS;
   vector<NSSeq<RepOPM>*> vNSeq;
   vNSeq.push_back(ns_ld);
   vNSeq.push_back(ns_nt);

@@ -89,8 +89,8 @@
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 #include "Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
 #include "Heuristics/LocalSearches/RDM.hpp"
+#include "Heuristics/LocalSearches/VNDUpdateADS.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
-#include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
 
 // single obj search
 #include "Heuristics/GRASP/GRASP.hpp"
@@ -549,14 +549,13 @@ class Interactive {
     factory.builders.push_back(new CloneConstructiveBuilder<R, ADS>);
 
     // LocalSearch
-    factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS>);
+    factory.builders.push_back(new EmptyLSBuilder<R, ADS>);
     factory.builders.push_back(new BestImprovementBuilder<R, ADS>);
     factory.builders.push_back(new FirstImprovementBuilder<R, ADS>);
     factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS>);
     factory.builders.push_back(new CircularSearchBuilder<R, ADS>);
     factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS>);
-    factory.builders.push_back(
-        new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS>);
+    factory.builders.push_back(new VNDUpdateADSBuilder<R, ADS>);
     factory.builders.push_back(new RVNDBuilder<R, ADS>);
     factory.builders.push_back(new HillClimbingBuilder<R, ADS>);
     factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<R, ADS>);

@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
   FI<ESolutionKP> fi(_evaluator, _nsseq1);
   HC<ESolutionKP> sd(_evaluator, sref_copy(bi));
   HC<ESolutionKP> pm(_evaluator, sref_copy(fi));
-  RandomDescentMethod<ESolutionKP> rdm(_evaluator, _ns1, 10);
+  RDM<ESolutionKP> rdm(_evaluator, _ns1, 10);
   //
   // pair<SolutionKP, Evaluation<>> se(s, e);
   std::cout << "Best Improvement Search: ";

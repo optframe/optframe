@@ -28,7 +28,7 @@
 #include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
-#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VNDUpdateADS.hpp>
 #include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Timer.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
@@ -252,23 +252,22 @@ int main(int argc, char** argv) {
   sptr<RandGen> _rg = rg.sptr();
   // VND<ESolutionHFMVRP> newVND(eval, vLS, rg);
   VND<ESolutionHFMVRP> newVND(eval, vLS, rg.sptr());
-  // VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
+  // VNDUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
   // newVNDUpdateADS(*eval, *adsMan, vLS);
 
-  VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
-      newVNDUpdateADS(eval, adsMan2, _lsList);
+  VNDUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> newVNDUpdateADS(
+      eval, adsMan2, _lsList);
 
   sref<LocalSearch<ESolutionHFMVRP>> newVNDUpdateADS2{
-      new VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP,
-                                               SolutionHFMVRP>(eval, adsMan2,
-                                                               _lsList)};
+      new VNDUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>(eval, adsMan2,
+                                                             _lsList)};
 
   // BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>
   // basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
   BasicGRASP<ESolutionHFMVRP> basicGrasp(geval, is2, newVNDUpdateADS2, alpha,
                                          1000);
 
-  EmptyLocalSearch<ESolutionHFMVRP> emptyLS;
+  EmptyLS<ESolutionHFMVRP> emptyLS;
   // vector<NSSeq<ESolutionHFMVRP>*> vNSeq;
   vsref<NSSeq<ESolutionHFMVRP>> vNSeq;
   vNSeq.push_back(nsseq_deltaIterator_delta_2opt);
@@ -324,8 +323,7 @@ int main(int argc, char** argv) {
   sref<InitialSearch<ESolutionHFMVRP>> _constructive = initConstructive;
   vsref<NS<ESolutionHFMVRP>> _vNS;
   // sref<LocalSearch<ESolutionHFMVRP>> _ls = emptyLS;
-  sref<LocalSearch<ESolutionHFMVRP>> _ls{
-      new EmptyLocalSearch<ESolutionHFMVRP>{}};
+  sref<LocalSearch<ESolutionHFMVRP>> _ls{new EmptyLS<ESolutionHFMVRP>{}};
 
   // sref<RandGen> _rg = rg;
 
