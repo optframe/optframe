@@ -9,7 +9,7 @@
 // families
 #include "OptFrame/Heuristics/EA/EA.hpp"
 #include "OptFrame/Heuristics/EA/RK/RK.hpp"
-#include "OptFrame/Heuristics/TS/TS.h"
+#include "OptFrame/Heuristics/TS/FamilyTS.h"
 #include "OptFrame/Heuristics/VNS/FamilyVNS.h"
 
 // LocalSearches
@@ -23,7 +23,7 @@
 // SA family
 #include "OptFrame/Heuristics/SA/FamilySA.hpp"
 //
-#include "OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp"
+#include "OptFrame/Heuristics/SA/BasicSA.hpp"
 //
 // ILS family
 #include "OptFrame/Heuristics/ILS/FamilyILS.hpp"

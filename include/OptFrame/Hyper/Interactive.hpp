@@ -98,7 +98,7 @@
 #include "Heuristics/ILS/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/ILS/ILSLPerturbation.hpp"
 #include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
-#include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
+#include "Heuristics/SA/BasicSA.hpp"
 #include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/VNS/BasicVNS.hpp"
 #include "Heuristics/VNS/GeneralVNS.hpp"
@@ -562,7 +562,7 @@ class Interactive {
 
     // SingleObjSearch + Parameters
     factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS>);
-    factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS>);
+    factory.builders.push_back(new BuilderBasicSA<R, ADS>);
     factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS>);
     factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS>);
     factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS>);

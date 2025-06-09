@@ -160,8 +160,7 @@ int main(int argc, char** argv) {
 
   std::cout << "WILL START SIMULATED ANNEALING!" << std::endl;
 
-  BasicSimulatedAnnealing<ESolutionTSP> sa(geval, randomTSP, enumswap, 0.98,
-                                           100, 99999, rg2);
+  BasicSA<ESolutionTSP> sa(geval, randomTSP, enumswap, 0.98, 100, 99999, rg2);
 
   auto status = sa.search(
       StopCriteria<ESolutionTSP::second_type>{10.0});  // 10.0 seconds max

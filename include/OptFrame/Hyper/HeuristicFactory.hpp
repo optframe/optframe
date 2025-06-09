@@ -68,7 +68,7 @@
 // TODO ERROR on BasicGeneticAlgorithm
 // #include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
 #include <OptFrame/Heuristics/EmptyMultiObjSearch.hpp>
-#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/BasicSA.hpp>
 // #include "Heuristics/VNS/MOVNS.hpp"
 
 // #include <OptFrame/Helper/Solutions/CopySolution.hpp>

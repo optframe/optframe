@@ -87,8 +87,7 @@ int solver_kp01_generic(int format, const char* config, char* output) {
   BasicInitialSearch<ESolutionKP> initRand(construtivoAleatorio, avaliador);
   // Instancia um Simulated Annealing com alpha=98%, iterações na temp = 100,
   // temperatura inicial = 99999
-  BasicSimulatedAnnealing<ESolutionKP> sa{avaliador, initRand, nsFlip, alpha,
-                                          iterT,     Tmax,     rg};
+  BasicSA<ESolutionKP> sa{avaliador, initRand, nsFlip, alpha, iterT, Tmax, rg};
 
   Timer spentTime;
   // executa o SA e coleta o 'status' de saída

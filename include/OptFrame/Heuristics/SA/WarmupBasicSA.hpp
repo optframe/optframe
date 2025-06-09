@@ -8,8 +8,8 @@
 #include <OptFrame/Heuristics/SA/SA.hpp>
 #include <OptFrame/Hyper/WarmupBuilder.hpp>
 
-#include "BasicSimulatedAnnealing.hpp"
-#include "BasicSimulatedAnnealingBuilder.hpp"
+#include "BasicSA.hpp"
+#include "BuilderBasicSA.hpp"
 #include "HelperSA.hpp"
 
 #define MOD_EXPORT
@@ -38,15 +38,14 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>,
-                                      public FamilySA {
+class WarmupBasicSA : public WarmupBuilder<XES>, public FamilySA {
   using VParameters = std::vector<std::pair<std::string, std::string>>;
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~BasicSimulatedAnnealingWarmup() {}
+  virtual ~WarmupBasicSA() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             std::string family = "") override {
@@ -56,7 +55,7 @@ class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>,
       return nullptr;
     } else {
       Scanner scanner2{*wo.config};
-      BasicSimulatedAnnealingBuilder<XES, XES2, X2ES> builder;
+      BuilderBasicSA<XES, XES2, X2ES> builder;
       return builder.build(scanner2, hf, family);
     }
   }
@@ -93,7 +92,7 @@ class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>,
 
     if (Component::debug) {
       std::cout << "BasicSA Builder: got all parameters!" << std::endl;
-      std::cout << "BasicSimulatedAnnealing with:" << std::endl;
+      std::cout << "BasicSA with:" << std::endl;
       std::cout << "\teval=" << ge->id() << std::endl;
       std::cout << "\tconstructive=" << constructive->id() << std::endl;
       std::cout << "\t|hlist|=" << hlist.size() << std::endl;
@@ -103,8 +102,8 @@ class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>,
       std::cout << "\tTi=" << *Ti << std::endl;
     }
 
-    return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha,
-                                            SAmax, Ti, hf.getRandGen());
+    return new BasicSA<XES>(ge, constructive, hlist, alpha, SAmax, Ti,
+                            hf.getRandGen());
   }
 
   VParameters parameters() override {
@@ -129,7 +128,7 @@ class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>,
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicSimulatedAnnealing<XES>::idComponent();
+    return component == BasicSA<XES>::idComponent();
   }
 
   static std::string idComponent() {

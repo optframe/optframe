@@ -26,11 +26,11 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT class TS {
+MOD_EXPORT class FamilyTS {
  public:
   static std::string family() { return "TS"; }
 
-  virtual ~TS() {}
+  virtual ~FamilyTS() {}
 };
 
 }  // namespace optframe

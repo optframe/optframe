@@ -4,6 +4,9 @@
 #ifndef OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_SA_SIMULATEDANNEALINGAC_HPP_  // NOLINT
 
+// Simulated Annealing with Algo Comprehension
+// SA_AC
+
 #ifndef MOVE_IS_COMPONENT
 #error "SimulatedAnnealingSA requires MOVE_IS_COMPONENT"
 #endif
@@ -47,11 +50,11 @@ namespace optframe {
 
 // forward declaration
 MOD_EXPORT template <XESolution XES>
-class SimulatedAnnealingAC;
+class SA_AC;
 
 MOD_EXPORT template <XESolution XES>
 struct SearchContextSA_AC {
-  SimulatedAnnealingAC<XES>& self;
+  SA_AC<XES>& self;
   std::optional<XES>& best;
   std::optional<XES>& incumbent;
   //
@@ -60,10 +63,10 @@ struct SearchContextSA_AC {
 };
 
 MOD_EXPORT template <XESolution XES>
-class SimulatedAnnealingAC : public SingleObjSearch<XES>,
-                             public FamilySA,
-                             public ILoop<SearchContextSA_AC<XES>, XES>,
-                             public ITrajectory<XES> {
+class SA_AC : public SingleObjSearch<XES>,
+              public FamilySA,
+              public ILoop<SearchContextSA_AC<XES>, XES>,
+              public ITrajectory<XES> {
  public:
   using XEv = typename XES::second_type;
   using XSH = XES;  // XSearch
@@ -76,10 +79,9 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
   int SAmax;
   double Ti;
 
-  SimulatedAnnealingAC(sref<GeneralEvaluator<XES>> _evaluator,
-                       sref<InitialSearch<XES>> _constructive,
-                       vsref<NS<XES, XSH>> _neighbors, double _alpha,
-                       int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
+  SA_AC(sref<GeneralEvaluator<XES>> _evaluator,
+        sref<InitialSearch<XES>> _constructive, vsref<NS<XES, XSH>> _neighbors,
+        double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
       : evaluator(_evaluator),
         constructive(_constructive),
         neighbors(_neighbors),
@@ -89,7 +91,7 @@ class SimulatedAnnealingAC : public SingleObjSearch<XES>,
     Ti = (_Ti);
   }
 
-  virtual ~SimulatedAnnealingAC() = default;
+  ~SA_AC() override = default;
 
   // callback to handle main loop and stop criteria
   bool (*onLoopCtx)(const SearchContextSA_AC<XES>& ctx,
@@ -462,7 +464,7 @@ XSH::first_type::typeR>);
   static std::string idComponent() {
     std::stringstream ss;
     ss << SingleObjSearch<XES>::idComponent() << ":" << FamilySA::family()
-       << "SimulatedAnnealingAC";
+       << "SA_AC";
     return ss.str();
   }
 };
@@ -475,16 +477,15 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, XESolution XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class SimulatedAnnealingACBuilder : public FamilySA,
-                                    public GlobalSearchBuilder<XES> {
-  // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
+class BuilderSA_AC : public FamilySA, public GlobalSearchBuilder<XES> {
+  // using XM = BasicSA<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~SimulatedAnnealingACBuilder() = default;
+  ~BuilderSA_AC() override = default;
 
   // has sptr instead of sref, is that on purpose or legacy class?
   GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -580,8 +581,8 @@ class SimulatedAnnealingACBuilder : public FamilySA,
       std::cout << "\tTi=" << Ti << std::endl;
     }
 
-    return new SimulatedAnnealingAC<XES>(ge, constructive, hlist, alpha, SAmax,
-                                         Ti, hf.getRandGen());
+    return new SA_AC<XES>(ge, constructive, hlist, alpha, SAmax, Ti,
+                          hf.getRandGen());
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -609,13 +610,13 @@ class SimulatedAnnealingACBuilder : public FamilySA,
   }
 
   bool canBuild(std::string component) override {
-    return component == SimulatedAnnealingAC<XES>::idComponent();
+    return component == SA_AC<XES>::idComponent();
   }
 
   static std::string idComponent() {
     std::stringstream ss;
     ss << GlobalSearchBuilder<XES>::idComponent() << FamilySA::family()
-       << "SimulatedAnnealingAC";
+       << "SA_AC";
     return ss.str();
   }
 

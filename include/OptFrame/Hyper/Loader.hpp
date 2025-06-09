@@ -89,11 +89,11 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevelsBuilder.hpp>
 #include <OptFrame/Heuristics/MultiStart.hpp>
-#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
-#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealingBuilder.hpp>
-#include <OptFrame/Heuristics/SA/GeometricSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/BasicSA.hpp>
+#include <OptFrame/Heuristics/SA/BuilderBasicSA.hpp>
+#include <OptFrame/Heuristics/SA/GeometricSA.hpp>
 #ifdef MOVE_IS_COMPONENT
-#include <OptFrame/Heuristics/SA/SimulatedAnnealingAC.hpp>
+#include <OptFrame/Heuristics/SA/SA_AC.hpp>
 #endif
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
@@ -231,16 +231,13 @@ class Loader {
 
     // SingleObjSearch + Parameters
     factory.builders.push_back(new SimpleLocalSearchBuilder<XES>);
-    factory.builders.push_back(
-        new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
-    factory.builders.push_back(
-        new GeometricSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
+    factory.builders.push_back(new BuilderBasicSA<XSH, XES2, X2ES>);
+    factory.builders.push_back(new BuilderGeometricSA<XSH, XES2, X2ES>);
 #ifdef MOVE_IS_COMPONENT
-    factory.builders.push_back(
-        new SimulatedAnnealingACBuilder<XSH, XES2, X2ES>);
+    factory.builders.push_back(new BuilderSA_AC<XSH, XES2, X2ES>);
 #endif
     factory.builders.push_back(new MultiStartBuilder<XSH, XES2, X2ES>);
-    factory.builders.push_back(new BasicTabuSearchBuilder<XES>);
+    factory.builders.push_back(new BuilderBasicTS<XES>);
     factory.builders.push_back(new BasicIteratedLocalSearchBuilder<XES>);
     factory.builders.push_back(new BasicILSPerturbationBuilder<XES>);
     factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<XES>);

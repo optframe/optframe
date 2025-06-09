@@ -19,7 +19,7 @@ using namespace optframe;
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HC.hpp>
 #include <OptFrame/Heuristics/LocalSearches/RDM.hpp>
-#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+#include <OptFrame/Heuristics/SA/BasicSA.hpp>
 #include <OptFrame/Hyper/CheckCommand.hpp>
 #include <OptFrame/Util/RandGenMersenneTwister.hpp>
 #include <OptFrame/Values/MultiObjValue.hpp>  // just for testing
@@ -74,13 +74,13 @@ int main(int argc, char** argv) {
    check.run(100, 10);        // executa testes com 10 iterações
    */
 
-  // BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100,
+  // BasicSA<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100,
   // 900.0, rg);
   /*
    std::function<bool(const op<ESolutionKP>&,
-   BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>*)>
+   BasicSA<ESolutionKP, EvaluationKP, Component>*)>
    specificStopBy =
-      [](const op<ESolutionKP>& se, BasicSimulatedAnnealing<ESolutionKP,
+      [](const op<ESolutionKP>& se, BasicSA<ESolutionKP,
    EvaluationKP, Component>* m) -> bool { return ((m->getT() > 0.001) &&
    (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       };
@@ -90,9 +90,9 @@ int main(int argc, char** argv) {
 
   /*
    SpecificMethodStop<ESolutionKP, EvaluationKP,
-   BasicSimulatedAnnealing<ESolutionKP>> spc {
+   BasicSA<ESolutionKP>> spc {
       [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc,
-   BasicSimulatedAnnealing<ESolutionKP>* me) -> bool { return ((me->getT() >
+   BasicSA<ESolutionKP>* me) -> bool { return ((me->getT() >
    0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
    };
@@ -110,15 +110,15 @@ int main(int argc, char** argv) {
   double _alpha = 0.98;
   int _SAmax = 100;
   double _Ti = 900.0;
-  BasicSimulatedAnnealing<ESolutionKP> sa(_evaluator, _constructive, _neighbors,
-                                          _alpha, _SAmax, _Ti, rg);
+  BasicSA<ESolutionKP> sa(_evaluator, _constructive, _neighbors, _alpha, _SAmax,
+                          _Ti, rg);
 
   /*
    sa.specificStopBy =
      SpecificMethodStop<ESolutionKP, EvaluationKP,
-   BasicSimulatedAnnealing<ESolutionKP>>(
+   BasicSA<ESolutionKP>>(
       [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc,
-   BasicSimulatedAnnealing<ESolutionKP>* me) -> bool { return ((me->getT() >
+   BasicSA<ESolutionKP>* me) -> bool { return ((me->getT() >
    0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
      );

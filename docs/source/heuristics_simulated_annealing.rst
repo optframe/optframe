@@ -76,7 +76,7 @@ Pseudocode for Classic Version in Literature
         \end{algorithm}
 
 
-BasicSimulatedAnnealing
+BasicSimulatedAnnealing - BasicSA
 -----------------------
 
 1. Main Definition
@@ -274,7 +274,7 @@ SearchContext
 BasicSimulatedAnnealing defines a SearchContext called SearchContextSA, 
 with the following data:
 
-- `BasicSimulatedAnnealing<XES>& self``: reference to self (to get parameters)
+- `BasicSA<XES>& self``: reference to self (to get parameters)
 - `double T`: current temperature
 - `int iterT`: current iteration (per temperature)
 

@@ -31,16 +31,15 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
-                                       public FamilySA {
-  // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
+class BuilderBasicSA : public GlobalSearchBuilder<XES>, public FamilySA {
+  // using XM = BasicSA<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~BasicSimulatedAnnealingBuilder() {}
+  ~BuilderBasicSA() override = default;
 
   // has sptr instead of sref, is that on purpose or legacy class?
   GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -68,7 +67,7 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
     if (Component::debug) {
       Log(Debug, &hf) << "BasicSA Builder: got all parameters!" << std::endl;
-      Log(Debug, &hf) << "BasicSimulatedAnnealing with:" << std::endl;
+      Log(Debug, &hf) << "BasicSA with:" << std::endl;
       Log(Debug, &hf) << "\teval=" << ge->id() << std::endl;
       Log(Debug, &hf) << "\tconstructive=" << constructive->id() << std::endl;
       Log(Debug, &hf) << "\t|hlist|=" << hlist.size() << std::endl;
@@ -78,8 +77,8 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
       Log(Debug, &hf) << "\tTi=" << *Ti << std::endl;
     }
 
-    return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, *alpha,
-                                            *SAmax, *Ti, hf.getRandGen());
+    return new BasicSA<XES>(ge, constructive, hlist, *alpha, *SAmax, *Ti,
+                            hf.getRandGen());
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -100,7 +99,7 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicSimulatedAnnealing<XES>::idComponent();
+    return component == BasicSA<XES>::idComponent();
   }
 
   static std::string idComponent() {

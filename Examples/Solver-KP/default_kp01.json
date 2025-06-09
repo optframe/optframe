@@ -4,9 +4,9 @@
     "seed": 1234999991,
     "timelimit": 10.0,
     "batch": 1,
-    "log_level" : "default",
+    "log_level": "default",
     "strategy": {
-        "name": "BasicSimulatedAnnealing",
+        "name": "BasicSA",
         "alpha": 0.98,
         "Tmax": 99999,
         "iterT": 100

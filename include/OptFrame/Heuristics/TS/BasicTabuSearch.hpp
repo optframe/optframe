@@ -17,7 +17,7 @@
 #include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
-#include "TS.h"
+#include "FamilyTS.h"
 
 #define MOD_EXPORT
 #else
@@ -38,7 +38,7 @@ import optframe.concepts;
 namespace optframe {
 
 MOD_EXPORT template <XESolution XES>
-class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
+class BasicTabuSearch : public SingleObjSearch<XES>, public FamilyTS {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;
@@ -334,7 +334,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << "TS:BasicTabuSearch";
+    ss << SingleObjSearch<XES>::idComponent() << "TS:BasicTS";
     return ss.str();
   }
 
@@ -347,12 +347,12 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
+class BuilderBasicTS : public FamilyTS, public SingleObjSearchBuilder<XES> {
   using _S = typename XES::first_type;
   using _XEv = typename XES::second_type;
 
  public:
-  ~BasicTabuSearchBuilder() override = default;
+  ~BuilderBasicTS() override = default;
 
   // NOLINTNEXTLINE
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -431,13 +431,13 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<XES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicTabuSearchBuilder<XES>::idComponent();
+    return component == BuilderBasicTS<XES>::idComponent();
   }
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << TS::family()
-       << ":BasicTabuSearch";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":"
+       << FamilyTS::family() << ":BasicTS";
     return ss.str();
   }
 

@@ -4,6 +4,9 @@
 #ifndef OPTFRAME_HEURISTICS_SA_GEOMETRICSIMULATEDANNEALING_HPP_
 #define OPTFRAME_HEURISTICS_SA_GEOMETRICSIMULATEDANNEALING_HPP_
 
+// This is Geometric Simulated Annealing (GeometricSA)
+// It uses geometric cooling to perform SA search
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // ==== Classic Geometric Cooling Simulated Annealing ====
@@ -182,16 +185,15 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
-                                           public FamilySA {
-  // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
+class BuilderGeometricSA : public GlobalSearchBuilder<XES>, public FamilySA {
+  // using XM = BasicSA<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~GeometricSimulatedAnnealingBuilder() {}
+  ~BuilderGeometricSA() override = default;
 
   // has sptr instead of sref, is that on purpose or legacy class?
   GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,

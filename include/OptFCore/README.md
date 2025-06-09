@@ -193,7 +193,7 @@ NSSeqSwapFancy swapFancy; // swap neighborhood
 BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
 RandGen rg;               // Random number generator
 // we build a simulated annealing with alpha=0.98, iterMax=100 and temperature=99999
-BasicSimulatedAnnealing<ESolutionTSP> sa{
+BasicSA<ESolutionTSP> sa{
    ev, initRand, swapFancy, 0.98, 100, 99999, rg
 };
 // will run simulated annealing for 10 seconds

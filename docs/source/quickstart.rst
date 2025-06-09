@@ -432,7 +432,7 @@ It has few parameters, including: initial temperature :code:`T0`, cooling factor
     BasicInitialSearch<ESolutionKP> initRand(randomConstructive, evalKP);
 
     // Simulated Annealing with: alpha=98%, iterT=100, initial temperature T0 = 99999
-    BasicSimulatedAnnealing<ESolutionKP> sa{
+    BasicSA<ESolutionKP> sa{
         evalKP, initRand, nsFlip, 0.98, 100, 99999, rg
     };
 

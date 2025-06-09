@@ -465,7 +465,7 @@ OPT_MODULE_API LibSearchOutput optframe_api0d_engine_simulated_annealing_params(
   constructive->print();
   neighbors[0]->print();
 
-  optframe::BasicSimulatedAnnealing<FCoreLibESolution> sa{
+  optframe::BasicSA<FCoreLibESolution> sa{
       single_ev, constructive, neighbors, alpha, iter, T, rg};
   sa.setVerbose();
 

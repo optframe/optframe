@@ -4,6 +4,10 @@
 #ifndef OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
 
+// This is Simulated Annealing, a classic metaheuristic
+// See papers from Kirkpatrick
+// This is a Basic implementation, also with Warmup by prof. Marcone Souza
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
@@ -43,11 +47,11 @@ namespace optframe {
 
 // forward declaration
 MOD_EXPORT template <XESSolution XES>
-class BasicSimulatedAnnealing;
+class BasicSA;
 
 MOD_EXPORT template <XESSolution XES>
 struct SearchContextSA {
-  BasicSimulatedAnnealing<XES>& self;
+  BasicSA<XES>& self;
   std::optional<XES>& best;
   std::optional<XES>& incumbent;
   //
@@ -56,10 +60,10 @@ struct SearchContextSA {
 };
 
 MOD_EXPORT template <XESSolution XES>
-class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
-                                public FamilySA,
-                                public ILoop<SearchContextSA<XES>, XES>,
-                                public ITrajectory<XES> {
+class BasicSA : public SingleObjSearch<XES>,
+                public FamilySA,
+                public ILoop<SearchContextSA<XES>, XES>,
+                public ITrajectory<XES> {
  public:
   using XEv = typename XES::second_type;
   using XSH = XES;  // XSearch
@@ -75,11 +79,10 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   // single neighborhood
   // reordered the different term to the front because of peeve, heheheh
   // standart RandGen in declaration could be new standart
-  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES>> _evaluator,
-                          sref<InitialSearch<XES>> _constructive,
-                          sref<NS<XES, XSH>> _neighbors, double _alpha,
-                          int _SAmax, double _Ti,
-                          sref<RandGen> _rg = new RandGen)
+  BasicSA(sref<GeneralEvaluator<XES>> _evaluator,
+          sref<InitialSearch<XES>> _constructive, sref<NS<XES, XSH>> _neighbors,
+          double _alpha, int _SAmax, double _Ti,
+          sref<RandGen> _rg = new RandGen)
       : evaluator(_evaluator), constructive(_constructive), rg(_rg) {
     neighbors.push_back(_neighbors);
     alpha = (_alpha);
@@ -90,11 +93,10 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   // vector of neighborhoods
   // reordered the different term to the front because of peeve, heheheh
   // standart RandGen in declaration could be new standart
-  BasicSimulatedAnnealing(sref<GeneralEvaluator<XES>> _evaluator,
-                          sref<InitialSearch<XES>> _constructive,
-                          vsref<NS<XES, XSH>> _neighbors, double _alpha,
-                          int _SAmax, double _Ti,
-                          sref<RandGen> _rg = new RandGen)
+  BasicSA(sref<GeneralEvaluator<XES>> _evaluator,
+          sref<InitialSearch<XES>> _constructive,
+          vsref<NS<XES, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti,
+          sref<RandGen> _rg = new RandGen)
       : evaluator(_evaluator),
         constructive(_constructive),
         neighbors(_neighbors),
@@ -104,7 +106,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     Ti = (_Ti);
   }
 
-  virtual ~BasicSimulatedAnnealing() = default;
+  virtual ~BasicSA() = default;
 
   // callback to handle main loop and stop criteria
   bool (*onLoopCtx)(const SearchContextSA<XES>& ctx,
@@ -149,7 +151,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& sosc,
                                   std::optional<XSH> _best) override {
     if (Component::information)
-      std::cout << "SA search(" << sosc.timelimit << ")" << std::endl;
+      std::cout << "BasicSA search(" << sosc.timelimit << ")" << std::endl;
 
     std::optional<XSH> star = _best;
 
@@ -157,26 +159,26 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     // assuming trajectory implementation (XES = XSH = XBest = XIncumbent)
     // -------------------------------------------------------------------
     if (Component::verbose)
-      std::cout << "SA: will build initialSearch" << std::endl;
+      std::cout << "BasicSA: will build initialSearch" << std::endl;
 
     // disable 'constructive' if star is given
     std::optional<XSH> incumbent =
         star ? star : constructive->initialSearch(sosc).first;
 
     if (Component::verbose)
-      std::cout << "SA: post build initialSearch" << std::endl;
+      std::cout << "BasicSA: post build initialSearch" << std::endl;
 
     if (Component::verbose) {
-      std::cout << "SA begin: incumbent? " << (bool)incumbent << std::endl;
-      std::cout << "SA begin: star? " << (bool)star << std::endl;
+      std::cout << "BasicSA begin: incumbent? " << (bool)incumbent << std::endl;
+      std::cout << "BasicSA begin: star? " << (bool)star << std::endl;
     }
 
     // if no star and has incumbent, star is incumbent
     if (!star && incumbent) star = incumbent;
 
     if (Component::verbose) {
-      std::cout << "SA begin: incumbent? " << (bool)incumbent << std::endl;
-      std::cout << "SA begin: star? " << (bool)star << std::endl;
+      std::cout << "BasicSA begin: incumbent? " << (bool)incumbent << std::endl;
+      std::cout << "BasicSA begin: star? " << (bool)star << std::endl;
     }
 
     // abort if no star exists
@@ -197,7 +199,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     // initialize search context for Simulated Annealing
     SearchContextSA<XES> ctx{*this, star, incumbent};
 
-    if (Component::verbose) std::cout << "SA: begin SearchContext" << std::endl;
+    if (Component::verbose)
+      std::cout << "BasicSA: begin SearchContext" << std::endl;
 
     // ===================
     // Simulated Annealing
@@ -214,36 +217,36 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
     ctx.iterT = 0;
 
     if (Component::verbose)
-      std::cout << "SA(verbose): BEGIN se: " << se << std::endl;
+      std::cout << "BasicSA(verbose): BEGIN se: " << se << std::endl;
 
     assert(!se.second.isOutdated());  // CXX CONTRACT C++26
 
     while (onLoop(ctx, sosc)) {
       if (Component::verbose)
-        std::cout << "SA(verbose): after onLoop" << std::endl;
+        std::cout << "BasicSA(verbose): after onLoop" << std::endl;
       int n = rg->rand(neighbors.size());
 
       uptr<Move<XES, XSH>> move = neighbors[n]->validRandomMove(se);
 
       if (!move) {
         if (Component::warning)
-          std::cout << "SA warning: no move in iter=" << ctx.iterT
+          std::cout << "BasicSA warning: no move in iter=" << ctx.iterT
                     << " T=" << ctx.T << "! cannot continue..." << std::endl;
         // This is not normal... but not catastrophic stop either.
         return {SearchStatus::EARLY_STOP, star};
       }
 
       if (Component::verbose)
-        std::cout << "SA(verbose): will copy to current=se: " << se
+        std::cout << "BasicSA(verbose): will copy to current=se: " << se
                   << std::endl;
       // copy solution
       XES current(se);
 
       if (Component::verbose)
-        std::cout << "SA(verbose): current: " << current << std::endl;
+        std::cout << "BasicSA(verbose): current: " << current << std::endl;
 
       if (Component::verbose)
-        std::cout << "SA(verbose): will apply move. current=" << current
+        std::cout << "BasicSA(verbose): will apply move. current=" << current
                   << std::endl;
 
       move->applyUpdate(current);
@@ -252,7 +255,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 #ifdef OPTFRAME_USE_STD_CONCEPTS
       if constexpr (XOStreamable<XES>)
         if (Component::verbose)
-          std::cout << "SA(verbose): will reevaluate. current.first="
+          std::cout << "BasicSA(verbose): will reevaluate. current.first="
                     << current.first << std::endl;
 #endif
 
@@ -264,12 +267,12 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 #ifdef OPTFRAME_USE_STD_CONCEPTS
       if constexpr (XOStreamable<XES>)
         if (Component::verbose)
-          std::cout << "SA(verbose): after reevaluate. current=" << current
+          std::cout << "BasicSA(verbose): after reevaluate. current=" << current
                     << std::endl;
 #endif
 
       if (Component::verbose)
-        std::cout << "SA(verbose): will compare betterStrict" << std::endl;
+        std::cout << "BasicSA(verbose): will compare betterStrict" << std::endl;
 
       // if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here,
       // and use 'se.second' to compare directly if(eCurrent.betterStrict(e))
