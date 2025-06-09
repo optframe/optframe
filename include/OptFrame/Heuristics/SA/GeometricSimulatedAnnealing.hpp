@@ -28,7 +28,7 @@
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 #include "./HelperSA.hpp"
-#include "./SA.hpp"
+#include "FamilySA.hpp"
 
 #define MOD_EXPORT
 #else
@@ -49,7 +49,8 @@ import optframe.concepts;
 namespace optframe {
 
 MOD_EXPORT template <XESSolution XES>
-class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
+class GeometricSimulatedAnnealing : public SingleObjSearch<XES>,
+                                    public FamilySA {
  public:
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -167,7 +168,7 @@ class GeometricSimulatedAnnealing : public SingleObjSearch<XES>, public SA {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilySA::family()
        << "GeometricSA";
     return ss.str();
   }
@@ -182,7 +183,7 @@ MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
 class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
-                                           public SA {
+                                           public FamilySA {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
@@ -308,7 +309,7 @@ class GeometricSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family()
+    ss << GlobalSearchBuilder<XES>::idComponent() << FamilySA::family()
        << "GeometricSA";
     return ss.str();
   }

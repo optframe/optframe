@@ -32,7 +32,7 @@ MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
 class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
-                                       public SA {
+                                       public FamilySA {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
@@ -105,7 +105,8 @@ class BasicSimulatedAnnealingBuilder : public GlobalSearchBuilder<XES>,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family() << "BasicSA";
+    ss << GlobalSearchBuilder<XES>::idComponent() << FamilySA::family()
+       << "BasicSA";
     return ss.str();
   }
 

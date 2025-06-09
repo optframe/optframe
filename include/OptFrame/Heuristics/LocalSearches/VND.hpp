@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
-#define OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
+#ifndef OPTFRAME_VND_HPP_
+#define OPTFRAME_VND_HPP_
 
 // =========================================================================
 // This is Variable Neighborhood Descent (VND)
@@ -44,9 +44,10 @@ namespace optframe {
 // OBS: When RandGen is given as parameter it performs RVND
 //
 
-MOD_EXPORT template <XESolution XES,
-                     XEvaluation XEv = typename XES::second_type>
+MOD_EXPORT template <XESolution XES>
 class VND : public LocalSearch<XES> {
+  using XEv = typename XES::second_type;
+
  private:
   sref<GeneralEvaluator<XES>> ev;
   vsref<LocalSearch<XES>> lsList;
@@ -133,4 +134,4 @@ class VND : public LocalSearch<XES> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_*/
+#endif /*OPTFRAME_VND_HPP_*/

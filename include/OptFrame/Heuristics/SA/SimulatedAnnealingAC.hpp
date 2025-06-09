@@ -25,7 +25,7 @@
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 #include "./HelperSA.hpp"
-#include "./SA.hpp"
+#include "FamilySA.hpp"
 
 #define MOD_EXPORT
 #else
@@ -61,7 +61,7 @@ struct SearchContextSA_AC {
 
 MOD_EXPORT template <XESolution XES>
 class SimulatedAnnealingAC : public SingleObjSearch<XES>,
-                             public SA,
+                             public FamilySA,
                              public ILoop<SearchContextSA_AC<XES>, XES>,
                              public ITrajectory<XES> {
  public:
@@ -461,7 +461,7 @@ XSH::first_type::typeR>);
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilySA::family()
        << "SimulatedAnnealingAC";
     return ss.str();
   }
@@ -475,7 +475,8 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, XESolution XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
+class SimulatedAnnealingACBuilder : public FamilySA,
+                                    public GlobalSearchBuilder<XES> {
   // using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
   // using XM = Component; // only general builds here
   using S = typename XES::first_type;
@@ -613,7 +614,7 @@ class SimulatedAnnealingACBuilder : public SA, public GlobalSearchBuilder<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << GlobalSearchBuilder<XES>::idComponent() << SA::family()
+    ss << GlobalSearchBuilder<XES>::idComponent() << FamilySA::family()
        << "SimulatedAnnealingAC";
     return ss.str();
   }

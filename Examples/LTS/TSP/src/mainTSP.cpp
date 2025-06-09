@@ -31,6 +31,7 @@
 #include <OptFrame/printable/printable.hpp>
 // #include "../OptFrame/Util/TestSolution.hpp"
 
+#include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
 
 //

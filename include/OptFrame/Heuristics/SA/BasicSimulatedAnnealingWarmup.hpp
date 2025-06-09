@@ -38,7 +38,8 @@ MOD_EXPORT template <XESolution XES, XESolution XES2,
 MOD_EXPORT template <typename XES, typename XES2,
                      typename X2ES = MultiESolution<XES2>>
 #endif
-class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>, public SA {
+class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>,
+                                      public FamilySA {
   using VParameters = std::vector<std::pair<std::string, std::string>>;
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
@@ -133,7 +134,7 @@ class BasicSimulatedAnnealingWarmup : public WarmupBuilder<XES>, public SA {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << WarmupBuilder<XES>::idComponent() << SA::family() << "BasicSA";
+    ss << WarmupBuilder<XES>::idComponent() << FamilySA::family() << "BasicSA";
     return ss.str();
   }
 

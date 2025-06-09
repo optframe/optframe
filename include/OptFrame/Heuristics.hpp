@@ -21,7 +21,7 @@
 #include "OptFrame/Heuristics/EmptySingleObjSearch.hpp"
 
 // SA family
-#include "OptFrame/Heuristics/SA/SA.hpp"
+#include "OptFrame/Heuristics/SA/FamilySA.hpp"
 //
 #include "OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp"
 //

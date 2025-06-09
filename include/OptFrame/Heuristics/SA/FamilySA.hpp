@@ -30,7 +30,7 @@ namespace optframe {
 
 // This is an interface, but please do not inherit this!
 // Use XFamily concept-checking instead!
-MOD_EXPORT class SA {
+MOD_EXPORT class FamilySA {
  public:
   static std::string family() { return "SA:"; }
 
@@ -39,7 +39,7 @@ MOD_EXPORT class SA {
 
 // #if defined(__cpp_concepts) && (__cpp_concepts >= 201907L)
 #ifdef OPTFRAME_USE_STD_CONCEPTS
-static_assert(XFamily<SA>);
+static_assert(XFamily<FamilySA>);
 #endif
 
 }  // namespace optframe

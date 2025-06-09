@@ -21,7 +21,7 @@
 #include <OptFrame/Search/SingleObjSearch.hpp>
 
 #include "./HelperSA.hpp"
-#include "./SA.hpp"
+#include "FamilySA.hpp"
 
 #define MOD_EXPORT
 #else
@@ -57,7 +57,7 @@ struct SearchContextSA {
 
 MOD_EXPORT template <XESSolution XES>
 class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
-                                public SA,
+                                public FamilySA,
                                 public ILoop<SearchContextSA<XES>, XES>,
                                 public ITrajectory<XES> {
  public:
@@ -335,7 +335,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << SA::family()
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilySA::family()
        << "BasicSA";
     return ss.str();
   }
