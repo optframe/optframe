@@ -4,7 +4,10 @@
 #ifndef OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 
-// This is MetaVNS, a template foi building VNS algorithms
+// This is MetaVNS, a Variable Neighborhood Search metaheuristic
+// See: Nenad Mladenovic and Pierre Hansen on VNS
+// MetaVNS is a template for building VNS algorithms
+// This is not executable! Please use specific implementations:
 
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 

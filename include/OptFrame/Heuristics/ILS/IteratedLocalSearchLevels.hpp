@@ -15,8 +15,8 @@
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
 
 #include "./ILSLPerturbation.hpp"
-#include "./IteratedLocalSearch.hpp"
 #include "FamilyILS.hpp"
+#include "MetaILS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -40,8 +40,7 @@ typedef std::pair<std::pair<int, int>, std::pair<int, int>> levelHistory;
 
 MOD_EXPORT template <XESolution XES,
                      XEvaluation XEv = typename XES::second_type>
-class IteratedLocalSearchLevels
-    : public IteratedLocalSearch<levelHistory, XES, XEv> {
+class IteratedLocalSearchLevels : public MetaILS<levelHistory, XES> {
  protected:
   sref<LocalSearch<XES>> ls;
   sref<ILSLPerturbation<XES, XEv>> p;
@@ -53,7 +52,7 @@ class IteratedLocalSearchLevels
                             sref<LocalSearch<XES>> _ls,
                             sref<ILSLPerturbation<XES, XEv>> _p, int _iterMax,
                             int _levelMax)
-      : IteratedLocalSearch<levelHistory, XES, XEv>(e, constructive),
+      : MetaILS<levelHistory, XES>(e, constructive),
         ls(_ls),
         p(_p),
         iterMax(_iterMax),
@@ -126,7 +125,7 @@ class IteratedLocalSearchLevels
                            levelHistory& history) override {
     // std::cout << "acceptanceCriterion(.)" << std::endl;
 
-    // if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1,
+    // if (MetaILS<levelHistory, XES>::evaluator.betterThan(e1,
     // e2)) if (e1.betterStrict(e2))
     if (Component::debug)
       std::cout << "debug ILSL::acceptanceCriterion() will compare(outdated="
@@ -134,8 +133,7 @@ class IteratedLocalSearchLevels
                 << "; outdated=" << e2.isOutdated() << " e=" << e2.evaluation()
                 << ")" << std::endl;
 
-    if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator->betterStrict(
-            e1, e2)) {
+    if (MetaILS<levelHistory, XES>::evaluator->betterStrict(e1, e2)) {
       if (Component::information) {
         std::cout << "info ILSL::acceptanceCriterion() ";
         std::cout << "Best fo: on [iter " << history.first.first << " of level "
@@ -176,7 +174,7 @@ class IteratedLocalSearchLevels
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << IteratedLocalSearch<levelHistory, XES, XEv>::idComponent() << "ILSL";
+    ss << MetaILS<levelHistory, XES>::idComponent() << "ILSL";
     return ss.str();
   }
 };

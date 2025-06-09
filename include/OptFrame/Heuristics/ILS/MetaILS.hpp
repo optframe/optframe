@@ -4,6 +4,11 @@
 #ifndef OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCH_HPP_
 
+// This is MetaILS, a Iterated Local Search (ILS) metaheuristic
+// See: Lourenço and Stuztle on ILS.
+// MetaILS is a template for building ILS algorithms
+// This is not executable! Please use specific implementations:
+
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
 // C
@@ -40,22 +45,23 @@ import optframe.concepts;
 
 namespace optframe {
 
-MOD_EXPORT template <class H, XESolution XES,
-                     XEvaluation XEv = typename XES::second_type>
-class IteratedLocalSearch : public FamilyILS,
-                            public SingleObjSearch<XES>,
-                            public ITrajectory<XES> {
+MOD_EXPORT template <class H, XESolution XES>
+class MetaILS : public FamilyILS,
+                public SingleObjSearch<XES>,
+                public ITrajectory<XES> {
+  using XEv = typename XES::second_type;
+
  protected:
   sref<GeneralEvaluator<XES>> evaluator;
   // Constructive<S>& constructive;
   sref<InitialSearch<XES>> constructive;
 
  public:
-  IteratedLocalSearch(sref<GeneralEvaluator<XES>> _evaluator,
-                      sref<InitialSearch<XES>> _constructive)
+  MetaILS(sref<GeneralEvaluator<XES>> _evaluator,
+          sref<InitialSearch<XES>> _constructive)
       : evaluator(_evaluator), constructive(_constructive) {}
 
-  ~IteratedLocalSearch() override {}
+  ~MetaILS() override = default;
 
   virtual uptr<H> initializeHistory() = 0;
 
@@ -158,7 +164,8 @@ class IteratedLocalSearch : public FamilyILS,
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilyILS::family();
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilyILS::family()
+       << "MetaILS";
     return ss.str();
   }
 

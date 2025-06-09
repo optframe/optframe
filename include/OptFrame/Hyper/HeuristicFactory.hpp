@@ -58,8 +58,8 @@
 // Metaheuristics
 #include <OptFrame/Heuristics/EmptySingleObjSearch.hpp>
 #include <OptFrame/Heuristics/ILS/BasicIteratedLocalSearch.hpp>
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearch.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
+#include <OptFrame/Heuristics/ILS/MetaILS.hpp>
 // TODO ERROR on IntensifiedIteratedLocalSearchLevels
 // #include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>

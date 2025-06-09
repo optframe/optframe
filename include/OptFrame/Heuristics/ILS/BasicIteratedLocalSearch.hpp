@@ -17,7 +17,7 @@
 
 #include "BasicILSPerturbation.hpp"
 #include "FamilyILS.hpp"
-#include "IteratedLocalSearch.hpp"
+#include "MetaILS.hpp"
 
 #define MOD_EXPORT
 #else
@@ -40,7 +40,7 @@ namespace optframe {
 MOD_EXPORT using BasicHistory = int;
 
 MOD_EXPORT template <XESolution XES>
-class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
+class BasicIteratedLocalSearch : public MetaILS<BasicHistory, XES> {
   using XEv = typename XES::second_type;
 
  protected:
@@ -53,7 +53,7 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
                            sref<InitialSearch<XES>> constructive,
                            sref<LocalSearch<XES>> _ls,
                            sref<BasicILSPerturbation<XES>> _p, int _iterMax)
-      : IteratedLocalSearch<BasicHistory, XES>(e, constructive),
+      : MetaILS<BasicHistory, XES>(e, constructive),
         ls(_ls),
         p(_p),
         iterMax(_iterMax) {}
@@ -86,8 +86,7 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
 
   bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2,
                            BasicHistory& history) override {
-    if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator->betterStrict(
-            e1, e2)) {
+    if (MetaILS<BasicHistory, XES>::evaluator->betterStrict(e1, e2)) {
       // =======================
       //   Melhor solucao: 's2'
       // =======================
@@ -123,8 +122,7 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << IteratedLocalSearch<BasicHistory, XES, XEv>::idComponent()
-       << "BasicILS";
+    ss << MetaILS<BasicHistory, XES>::idComponent() << "BasicILS";
     return ss.str();
   }
 };

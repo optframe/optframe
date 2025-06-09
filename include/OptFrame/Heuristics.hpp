@@ -29,7 +29,7 @@
 #include "OptFrame/Heuristics/ILS/FamilyILS.hpp"
 //
 
-#include "OptFrame/Heuristics/ILS/IteratedLocalSearch.hpp"
+#include "OptFrame/Heuristics/ILS/MetaILS.hpp"
 //
 #include "OptFrame/Heuristics/ILS/ILSLPerturbation.hpp"
 #include "OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp"
