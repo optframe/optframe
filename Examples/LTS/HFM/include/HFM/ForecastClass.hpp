@@ -18,8 +18,8 @@
 #include <OptFrame/Core/NSSeq.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
+#include <OptFrame/Heuristics/ILS/ILSL.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/ILS/MO/BasicMOILS.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLPerturbation.hpp>
 #include <OptFrame/Heuristics/ILS/MO/MOILSLevels.hpp>
@@ -90,7 +90,7 @@ class ForecastClass {
 
   // sptr<VND<ESolutionHFM>> vnd;
   sptr<LocalSearch<ESolutionHFM>> vnd;
-  sptr<IteratedLocalSearchLevels<ESolutionHFM>> ils;
+  sptr<ILSL<ESolutionHFM>> ils;
 
   vector<vector<double>> vBlindResults;
   std::vector<std::pair<SolutionHFM, Evaluation<>>*> vFinalSol;
@@ -234,9 +234,8 @@ class ForecastClass {
 
     sref<LocalSearch<ESolutionHFM>> _vnd = vnd;
     sref<ILSLPerturbation<ESolutionHFM>> _ilsPert = ilsPert;
-    ils = sptr<IteratedLocalSearchLevels<ESolutionHFM>>{
-        new IteratedLocalSearchLevels<ESolutionHFM>(eval, c, _vnd, _ilsPert,
-                                                    100, 10)};
+    ils = sptr<ILSL<ESolutionHFM>>{
+        new ILSL<ESolutionHFM>(eval, c, _vnd, _ilsPert, 100, 10)};
 
     int mu = methodParam.getESMU();
     int lambda = methodParam.getESLambda();

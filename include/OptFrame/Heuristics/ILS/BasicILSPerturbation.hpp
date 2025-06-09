@@ -127,11 +127,11 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BasicILSPerturbationBuilder : public ComponentBuilder<XES> {
+class BuilderBasicILSPerturbation : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~BasicILSPerturbationBuilder() {}
+  virtual ~BuilderBasicILSPerturbation() {}
 
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
                             std::string family = "") override {

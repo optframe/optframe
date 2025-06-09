@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-#include "GRASP.h"
+#include "FamilyGRASP.h"
 #include "GRConstructive.hpp"
 
 namespace optframe {
@@ -139,8 +139,8 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family()
-       << "GRASP";
+    ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent()
+       << FamilyGRASP::family() << "GRASP";
     return ss.str();
   }
 

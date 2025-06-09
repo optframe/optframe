@@ -31,8 +31,8 @@
 
 #include "OptFrame/Heuristics/ILS/MetaILS.hpp"
 //
+#include "OptFrame/Heuristics/ILS/ILSL.hpp"
 #include "OptFrame/Heuristics/ILS/ILSLPerturbation.hpp"
-#include "OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 //
 // EA family
 #include "OptFrame/Heuristics/EA/FamilyEA.hpp"
@@ -47,7 +47,7 @@
 //
 // GRASP
 //
-#include "OptFrame/Heuristics/GRASP/GRASPFamily.h"
+#include "OptFrame/Heuristics/GRASP/FamilyGRASP.h"
 #include "OptFrame/Heuristics/GRASP/GRConstructive.hpp"
 //
 // MO

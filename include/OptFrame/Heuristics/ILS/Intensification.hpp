@@ -40,7 +40,7 @@ class Intensification : public LocalSearch<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << LocalSearch<XES>::idComponent() << "INTENSIFICATION:";
+    ss << LocalSearch<XES>::idComponent() << ":ILS:Intensification";
     return ss.str();
   }
 };

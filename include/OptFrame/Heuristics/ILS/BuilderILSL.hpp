@@ -29,10 +29,9 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class IteratedLocalSearchLevelsBuilder : public FamilyILS,
-                                         public SingleObjSearchBuilder<XES> {
+class BuilderILSL : public FamilyILS, public SingleObjSearchBuilder<XES> {
  public:
-  ~IteratedLocalSearchLevelsBuilder() override = default;
+  ~BuilderILSL() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               std::string family = "") override {
@@ -63,8 +62,7 @@ class IteratedLocalSearchLevelsBuilder : public FamilyILS,
       return nullptr;
     }
 
-    return new IteratedLocalSearchLevels<XES>(eval, constructive, h, pert,
-                                              *iterMax, *levelMax);
+    return new ILSL<XES>(eval, constructive, h, pert, *iterMax, *levelMax);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -87,7 +85,7 @@ class IteratedLocalSearchLevelsBuilder : public FamilyILS,
   }
 
   bool canBuild(std::string component) override {
-    return component == IteratedLocalSearchLevels<XES>::idComponent();
+    return component == ILSL<XES>::idComponent();
   }
 
   static std::string idComponent() {

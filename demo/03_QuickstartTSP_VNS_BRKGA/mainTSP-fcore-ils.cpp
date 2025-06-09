@@ -13,7 +13,7 @@
 
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
+#include <OptFrame/Heuristics/ILS/ILSL.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>
@@ -81,9 +81,8 @@ int main() {
   // VND.setVerbose();//
   ILSLPerturbationLPlus2<ESolutionTSP> pert(demo.eval, demo.nsSwap, rg2);
 
-  IteratedLocalSearchLevels<ESolutionTSP> ils(demo.eval, nnptr::copy(initRand),
-                                              nnptr::copy(VND),
-                                              nnptr::copy(pert), 10, 5);
+  ILSL<ESolutionTSP> ils(demo.eval, nnptr::copy(initRand), nnptr::copy(VND),
+                         nnptr::copy(pert), 10, 5);
   // ils.setVerbose();
 
   std::cout << "will start ILS for 10 seconds" << std::endl;

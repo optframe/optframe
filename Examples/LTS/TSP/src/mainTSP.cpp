@@ -346,7 +346,7 @@ std::endl; #endif
   ns_list.push_back(new BI<ESolutionTSP>(eval, tspswap));
 
   // VND<ESolutionTSP> VND(eval, ns_list);
-  sref<LocalSearch<ESolutionTSP>> VND{new VND<ESolutionTSP>(eval, ns_list)};
+  sref<LocalSearch<ESolutionTSP>> vnd{new VND<ESolutionTSP>(eval, ns_list)};
 
   // VND.setVerbose();
 
@@ -362,8 +362,7 @@ std::endl; #endif
 
   sref<ILSLPerturbation<ESolutionTSP>> pert{ilsl_pert_p};
 
-  IteratedLocalSearchLevels<ESolutionTSP> ils(geval, randomTSP, VND, pert, 3,
-                                              2);
+  ILSL<ESolutionTSP> ils(geval, randomTSP, vnd, pert, 3, 2);
   // ils.setMessageLevel(4);
   //
   // ils.setVerbose();

@@ -23,6 +23,9 @@
 #ifndef OPTFRAME_IILS_HPP_
 #define OPTFRAME_IILS_HPP_
 
+// This is Intensified Iterated Local Search (IntensifiedILS)
+// An implementation of ILS metaheuristic
+
 #include <math.h>
 
 #include <OptFrame/Core/Evaluator.hpp>
@@ -32,17 +35,16 @@
 namespace optframe {
 
 template <class H, class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
+class IntensifiedILS : public SingleObjSearch<XES> {
  protected:
   Evaluator<S>& evaluator;
   InitialSearch<XES>& constructive;
 
  public:
-  IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator,
-                                 InitialSearch<XES>& _constructive)
+  IntensifiedILS(Evaluator<S>& _evaluator, InitialSearch<XES>& _constructive)
       : evaluator(_evaluator), constructive(_constructive) {}
 
-  virtual ~IntensifiedIteratedLocalSearch() {}
+  virtual ~IntensifiedILS() {}
 
   Evaluator<S>& getEvaluator() { return evaluator; }
 
@@ -67,7 +69,8 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
   pair<Solution<R, ADS>&, Evaluation<>&>* search(
       double timelimit = 100000000, double target_f = 0,
       const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr) {
-    std::cout << "IILS search(" << target_f << "," << timelimit << ")" << std::endl;
+    std::cout << "IILS search(" << target_f << "," << timelimit << ")"
+              << std::endl;
 
     Timer tnow;
 
@@ -128,7 +131,7 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << "IILS:";
+    ss << SingleObjSearch<XES>::idComponent() << "IntensifiedILS:";
     return ss.str();
   }
 };

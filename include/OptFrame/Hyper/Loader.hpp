@@ -82,12 +82,12 @@
 
 // single obj search
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
+#include <OptFrame/Heuristics/ILS/BasicILS.hpp>
 #include <OptFrame/Heuristics/ILS/BasicILSPerturbation.hpp>
-#include <OptFrame/Heuristics/ILS/BasicIteratedLocalSearch.hpp>
+#include <OptFrame/Heuristics/ILS/BuilderILSL.hpp>
+#include <OptFrame/Heuristics/ILS/BuilderILSLPerturbation.hpp>
+#include <OptFrame/Heuristics/ILS/ILSL.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
-#include <OptFrame/Heuristics/ILS/ILSLPerturbationBuilder.hpp>
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevelsBuilder.hpp>
 #include <OptFrame/Heuristics/MultiStart.hpp>
 #include <OptFrame/Heuristics/SA/BasicSA.hpp>
 #include <OptFrame/Heuristics/SA/BuilderBasicSA.hpp>
@@ -238,12 +238,12 @@ class Loader {
 #endif
     factory.builders.push_back(new MultiStartBuilder<XSH, XES2, X2ES>);
     factory.builders.push_back(new BuilderBasicTS<XES>);
-    factory.builders.push_back(new BasicIteratedLocalSearchBuilder<XES>);
-    factory.builders.push_back(new BasicILSPerturbationBuilder<XES>);
-    factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<XES>);
-    factory.builders.push_back(new ILSLPerturbationLPlus2Builder<XES>);
-    factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<XES>);
-    factory.builders.push_back(new BasicGRASPBuilder<XES>);
+    factory.builders.push_back(new BuilderBasicILS<XES>);
+    factory.builders.push_back(new BuilderBasicILSPerturbation<XES>);
+    factory.builders.push_back(new BuilderILSL<XES>);
+    factory.builders.push_back(new BuilderILSLPerturbationLPlus2<XES>);
+    factory.builders.push_back(new BuilderILSLPerturbationLPlus2Prob<XES>);
+    factory.builders.push_back(new BuilderBasicGRASP<XES>);
     factory.builders.push_back(new BuilderBasicVNS<XES>);
     factory.builders.push_back(new BuilderReducedVNS<XES>);
     factory.builders.push_back(new BuilderGeneralVNS<XES>);

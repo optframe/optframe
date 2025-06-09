@@ -9,7 +9,7 @@
 #include <OptFrame/Core/Constructive.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
-#include "GRASPFamily.h"
+#include "FamilyGRASP.h"
 
 #define MOD_EXPORT
 #else
@@ -31,7 +31,7 @@ namespace optframe {
 
 // Greedy Randomized Constructive
 MOD_EXPORT template <XSolution S>
-class GRConstructive : public Constructive<S>, public GRASP {
+class GRConstructive : public Constructive<S>, public FamilyGRASP {
  public:
   virtual ~GRConstructive() {}
 
@@ -48,7 +48,7 @@ class GRConstructive : public Constructive<S>, public GRASP {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << GRASP::family()
+    ss << Component::idComponent() << ":" << FamilyGRASP::family()
        << ":GRConstructive";
     return ss.str();
   }
@@ -77,8 +77,8 @@ class BasicGRConstructive : public GRConstructive<S> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << GRASP::family()
-       << ":GRConstructive";
+    ss << Component::idComponent() << ":" << FamilyGRASP::family()
+       << "GRConstructive";
     return ss.str();
   }
 

@@ -21,7 +21,7 @@ int main() {
   sptr<Evaluator<std::vector<int>, Evaluation<int>, MyESolution>> ev;
   sptr<LocalSearch<MyESolution>> ls;
   sptr<BestImprovement<MyESolution>> bi;
-  sptr<IteratedLocalSearchLevels<MyESolution>> ils;
+  sptr<ILSL<MyESolution>> ils;
   sptr<BRKGA<MyESolution>> brkga;
   scannerpp::Scanner s{"10"};
   std::println("int -> {}", *s.nextInt());

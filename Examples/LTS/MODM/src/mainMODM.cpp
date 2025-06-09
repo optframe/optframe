@@ -252,8 +252,7 @@ int main(int argc, char** argv) {
 
   sref<optframe::ILSLPerturbation<ESolutionMODM>> ilsl_pert2{ilsl_pert};
 
-  IteratedLocalSearchLevels<ESolutionMODM> ils(geval, is_grC2, vnd2, ilsl_pert2,
-                                               50, 15);
+  ILSL<ESolutionMODM> ils(geval, is_grC2, vnd2, ilsl_pert2, 50, 15);
   ils.setMessageLevel(modlog::LogLevel::Info);
 
   pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;

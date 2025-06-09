@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
-#define OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
+#ifndef OPTFRAME_HEURISTICS_ILS_BasicILS_HPP_
+#define OPTFRAME_HEURISTICS_ILS_BasicILS_HPP_
+
+// This is Basic Iterated Local Search (BasicILS)
+// An implementation of ILS metaheuristic
 
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
@@ -40,7 +43,7 @@ namespace optframe {
 MOD_EXPORT using BasicHistory = int;
 
 MOD_EXPORT template <XESolution XES>
-class BasicIteratedLocalSearch : public MetaILS<BasicHistory, XES> {
+class BasicILS : public MetaILS<BasicHistory, XES> {
   using XEv = typename XES::second_type;
 
  protected:
@@ -49,16 +52,15 @@ class BasicIteratedLocalSearch : public MetaILS<BasicHistory, XES> {
   int iterMax;
 
  public:
-  BasicIteratedLocalSearch(sref<GeneralEvaluator<XES>> e,
-                           sref<InitialSearch<XES>> constructive,
-                           sref<LocalSearch<XES>> _ls,
-                           sref<BasicILSPerturbation<XES>> _p, int _iterMax)
+  BasicILS(sref<GeneralEvaluator<XES>> e, sref<InitialSearch<XES>> constructive,
+           sref<LocalSearch<XES>> _ls, sref<BasicILSPerturbation<XES>> _p,
+           int _iterMax)
       : MetaILS<BasicHistory, XES>(e, constructive),
         ls(_ls),
         p(_p),
         iterMax(_iterMax) {}
 
-  virtual ~BasicIteratedLocalSearch() {}
+  virtual ~BasicILS() {}
 
   uptr<BasicHistory> initializeHistory() override {
     uptr<int> iter(new int{});
@@ -133,10 +135,9 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class BasicIteratedLocalSearchBuilder : public FamilyILS,
-                                        public SingleObjSearchBuilder<XES> {
+class BuilderBasicILS : public FamilyILS, public SingleObjSearchBuilder<XES> {
  public:
-  ~BasicIteratedLocalSearchBuilder() override = default;
+  ~BuilderBasicILS() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               std::string family = "") override {
@@ -167,8 +168,7 @@ class BasicIteratedLocalSearchBuilder : public FamilyILS,
     int iterMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new BasicIteratedLocalSearch<XES>(eval, constructive, h, pert,
-                                             iterMax);
+    return new BasicILS<XES>(eval, constructive, h, pert, iterMax);
   }
 
   std::vector<std::pair<std::string, std::string>> parameters() override {
@@ -188,7 +188,7 @@ class BasicIteratedLocalSearchBuilder : public FamilyILS,
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicIteratedLocalSearch<XES>::idComponent();
+    return component == BasicILS<XES>::idComponent();
   }
 
   static std::string idComponent() {
@@ -203,4 +203,4 @@ class BasicIteratedLocalSearchBuilder : public FamilyILS,
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
+#endif  // OPTFRAME_HEURISTICS_ILS_BasicILS_HPP_

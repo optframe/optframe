@@ -29,13 +29,13 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class ILSLPerturbationLPlus2Builder : public ComponentBuilder<XES> {
+class BuilderILSLPerturbationLPlus2 : public ComponentBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~ILSLPerturbationLPlus2Builder() = default;
+  virtual ~BuilderILSLPerturbationLPlus2() = default;
 
   // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,
@@ -86,11 +86,11 @@ MOD_EXPORT template <XESolution XES>
 #else
 MOD_EXPORT template <typename XES>
 #endif
-class ILSLPerturbationLPlus2ProbBuilder : public ComponentBuilder<XES> {
+class BuilderILSLPerturbationLPlus2Prob : public ComponentBuilder<XES> {
   using XSH = XES;  // primary-based search type only (BestType)
 
  public:
-  virtual ~ILSLPerturbationLPlus2ProbBuilder() = default;
+  virtual ~BuilderILSLPerturbationLPlus2Prob() = default;
 
   // NOLINTNEXTLINE
   Component* buildComponent(Scanner& scanner, HeuristicFactory<XES>& hf,

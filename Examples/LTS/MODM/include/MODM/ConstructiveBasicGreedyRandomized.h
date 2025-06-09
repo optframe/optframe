@@ -202,7 +202,8 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
             if (PRj[product] > bestPRj) {
               bestj = product;
               bestPRj = PRj[product];
-              if (Component::verbose) std::cout << "bestPRj = " << bestPRj << std::endl;
+              if (Component::verbose)
+                std::cout << "bestPRj = " << bestPRj << std::endl;
             }
         }
       }
@@ -339,7 +340,7 @@ class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << ":" << GRASP::family()
+    ss << Component::idComponent() << ":" << FamilyGRASP::family()
        << ":GRConstructive"
        << ":MODM";
     return ss.str();

@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCHLEVELS_HPP_
-#define OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCHLEVELS_HPP_
+#ifndef OPTFRAME_HEURISTICS_ILS_ILSL_HPP_
+#define OPTFRAME_HEURISTICS_ILS_ILSL_HPP_
+
+// This is Iterated Local Search Levels (ILSL)
+// an implementation of ILS, using levels of perturbation
 
 #if (__cplusplus < 202302L) || !defined(OPTFRAME_CXX_MODULES)
 
@@ -40,25 +43,23 @@ typedef std::pair<std::pair<int, int>, std::pair<int, int>> levelHistory;
 
 MOD_EXPORT template <XESolution XES,
                      XEvaluation XEv = typename XES::second_type>
-class IteratedLocalSearchLevels : public MetaILS<levelHistory, XES> {
+class ILSL : public MetaILS<levelHistory, XES> {
  protected:
   sref<LocalSearch<XES>> ls;
   sref<ILSLPerturbation<XES, XEv>> p;
   int iterMax, levelMax;
 
  public:
-  IteratedLocalSearchLevels(sref<GeneralEvaluator<XES>> e,
-                            sref<InitialSearch<XES>> constructive,
-                            sref<LocalSearch<XES>> _ls,
-                            sref<ILSLPerturbation<XES, XEv>> _p, int _iterMax,
-                            int _levelMax)
+  ILSL(sref<GeneralEvaluator<XES>> e, sref<InitialSearch<XES>> constructive,
+       sref<LocalSearch<XES>> _ls, sref<ILSLPerturbation<XES, XEv>> _p,
+       int _iterMax, int _levelMax)
       : MetaILS<levelHistory, XES>(e, constructive),
         ls(_ls),
         p(_p),
         iterMax(_iterMax),
         levelMax(_levelMax) {}
 
-  virtual ~IteratedLocalSearchLevels() {}
+  virtual ~ILSL() {}
 
   uptr<levelHistory> initializeHistory() override {
     // std::cout << "initializeHistory()" << std::endl;
@@ -181,4 +182,4 @@ class IteratedLocalSearchLevels : public MetaILS<levelHistory, XES> {
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_HEURISTICS_ILS_ITERATEDLOCALSEARCHLEVELS_HPP_
+#endif  // OPTFRAME_HEURISTICS_ILS_ILSL_HPP_

@@ -74,10 +74,10 @@ export import std;
 
 #include "OptFrame/Heuristics/EA/RK/BRKGABuilder.hpp"
 #include "OptFrame/Heuristics/GRASP/BasicGRASP.hpp"
+#include "OptFrame/Heuristics/ILS/BasicILS.hpp"
 #include "OptFrame/Heuristics/ILS/BasicILSPerturbation.hpp"
-#include "OptFrame/Heuristics/ILS/BasicIteratedLocalSearch.hpp"
+#include "OptFrame/Heuristics/ILS/BuilderILSL.hpp"
 #include "OptFrame/Heuristics/ILS/ILSLPerturbationBuilder.hpp"
-#include "OptFrame/Heuristics/ILS/IteratedLocalSearchLevelsBuilder.hpp"
 #include "OptFrame/Heuristics/MultiStart.hpp"
 #include "OptFrame/Heuristics/SA/GeometricSA.hpp"
 #include "OptFrame/Heuristics/SA/SA_AC.hpp"

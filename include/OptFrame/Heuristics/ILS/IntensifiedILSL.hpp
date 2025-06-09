@@ -23,6 +23,10 @@
 #ifndef OPTFRAME_IILSL_HPP_
 #define OPTFRAME_IILSL_HPP_
 
+// This is Intensified Iterated Local Search Levels
+// Or, IntensifiedILSL
+// An implementation of ILS metaheuristic
+
 #include <math.h>
 
 #include <OptFrame/Search/LocalSearch.hpp>
@@ -30,15 +34,14 @@
 
 #include "ILSLPerturbation.hpp"
 #include "Intensification.hpp"
-#include "IntensifiedIteratedLocalSearch.hpp"
+#include "IntensifiedILS.hpp"
 
 namespace optframe {
 
 typedef pair<pair<int, int>, pair<int, int>> levelHistory;
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class IntensifiedIteratedLocalSearchLevels
-    : public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, S> {
+class IntensifiedILSL : public IntensifiedILS<levelHistory, R, ADS, S> {
  protected:
   LocalSearch<XES>& ls;
   Intensification<S, XEv>& h2;
@@ -46,13 +49,10 @@ class IntensifiedIteratedLocalSearchLevels
   int iterMax, levelMax;
 
  public:
-  IntensifiedIteratedLocalSearchLevels(Evaluator<XES, XEv>& e,
-                                       Constructive<S>& constructive,
-                                       LocalSearch<XES>& _ls,
-                                       Intensification<S, XEv>& _h2,
-                                       ILSLPerturbation<S, XEv>& _p,
-                                       int _iterMax, int _levelMax)
-      : IntensifiedIteratedLocalSearch<levelHistory, R, ADS>(e, constructive),
+  IntensifiedILSL(Evaluator<XES, XEv>& e, Constructive<S>& constructive,
+                  LocalSearch<XES>& _ls, Intensification<S, XEv>& _h2,
+                  ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax)
+      : IntensifiedILS<levelHistory, R, ADS>(e, constructive),
         ls(_ls),
         h2(_h2),
         p(_p) {
@@ -60,7 +60,7 @@ class IntensifiedIteratedLocalSearchLevels
     levelMax = _levelMax;
   }
 
-  virtual ~IntensifiedIteratedLocalSearchLevels() {}
+  virtual ~IntensifiedILSL() {}
 
   virtual levelHistory& initializeHistory() {
     // std::cout << "initializeHistory()" << std::endl;
@@ -132,14 +132,13 @@ class IntensifiedIteratedLocalSearchLevels
   virtual bool acceptanceCriterion(const Evaluation<>& e1,
                                    const Evaluation<>& e2,
                                    levelHistory& history) {
-    if (IntensifiedIteratedLocalSearch<levelHistory, R, ADS>::evaluator
-            .betterThan(e1, e2)) {
+    if (IntensifiedILS<levelHistory, R, ADS>::evaluator.betterThan(e1, e2)) {
       // =======================
       //   Melhor solucao: 's2'
       // =======================
       std::cout << "Best fo: " << e1.evaluation();
       std::cout << " on [iter " << history.first.first << " of level "
-           << history.first.second << "]" << std::endl;
+                << history.first.second << "]" << std::endl;
 
       // =======================
       //  Atualiza o historico
@@ -172,8 +171,8 @@ class IntensifiedIteratedLocalSearchLevels
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << IntensifiedIteratedLocalSearch<levelHistory, R, ADS>::idComponent()
-       << "iils";
+    ss << IntensifiedILS<levelHistory, R, ADS>::idComponent()
+       << ":IntensifiedILSL";
     return ss.str();
   }
 };

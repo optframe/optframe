@@ -94,10 +94,10 @@
 
 // single obj search
 #include "Heuristics/GRASP/GRASP.hpp"
+#include "Heuristics/ILS/BasicILS.hpp"
 #include "Heuristics/ILS/BasicILSPerturbation.hpp"
-#include "Heuristics/ILS/BasicIteratedLocalSearch.hpp"
+#include "Heuristics/ILS/ILSL.hpp"
 #include "Heuristics/ILS/ILSLPerturbation.hpp"
-#include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 #include "Heuristics/SA/BasicSA.hpp"
 #include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/VNS/BasicVNS.hpp"
@@ -563,16 +563,16 @@ class Interactive {
     // SingleObjSearch + Parameters
     factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS>);
     factory.builders.push_back(new BuilderBasicSA<R, ADS>);
-    factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS>);
+    factory.builders.push_back(new BasicILSBuilder<R, ADS>);
     factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS>);
-    factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS>);
-    factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS>);
-    factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<R, ADS>);
+    factory.builders.push_back(new BuilderILSL<R, ADS>);
+    factory.builders.push_back(new BuilderILSLPerturbationLPlus2<R, ADS>);
+    factory.builders.push_back(new BuilderILSLPerturbationLPlus2Prob<R, ADS>);
     factory.builders.push_back(new GRASPBuilder<R, ADS>);
-    factory.builders.push_back(new BasicVNSBuilder<R, ADS>);
-    factory.builders.push_back(new ReducedVNSBuilder<R, ADS>);
-    factory.builders.push_back(new GeneralVNSBuilder<R, ADS>);
-    factory.builders.push_back(new RandVNSBuilder<R, ADS>);
+    factory.builders.push_back(new BuilderBasicVNS<R, ADS>);
+    factory.builders.push_back(new BuilderReducedVNS<R, ADS>);
+    factory.builders.push_back(new BuilderGeneralVNS<R, ADS>);
+    factory.builders.push_back(new BuilderRandVNS<R, ADS>);
 
     // test local searches
     factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS>);

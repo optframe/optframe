@@ -16,7 +16,7 @@
 #include <OptFrame/Search/SingleObjSearch.hpp>
 #include <OptFrame/Timer.hpp>
 
-#include "GRASPFamily.h"
+#include "FamilyGRASP.h"
 #include "GRConstructive.hpp"
 //
 #include <OptFrame/Search/SingleObjSearchBuilder.hpp>
@@ -42,7 +42,7 @@ namespace optframe {
 
 // GRASP requires S space interaction
 template <XESolution XES>
-class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
+class BasicGRASP : public SingleObjSearch<XES>, public FamilyGRASP {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
@@ -153,8 +153,8 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearch<XES>::idComponent() << ":" << GRASP::family()
-       << ":BasicGRASP";
+    ss << SingleObjSearch<XES>::idComponent() << ":" << FamilyGRASP::family()
+       << "BasicGRASP";
     return ss.str();
   }
 };
@@ -165,12 +165,13 @@ template <XESolution XES>
 #else
 template <typename XES>
 #endif
-class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
+class BuilderBasicGRASP : public FamilyGRASP,
+                          public SingleObjSearchBuilder<XES> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
  public:
-  ~BasicGRASPBuilder() override = default;
+  ~BuilderBasicGRASP() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<XES>& hf,
                               std::string family = "") override {
@@ -222,13 +223,13 @@ class BasicGRASPBuilder : public GRASP, public SingleObjSearchBuilder<XES> {
   }
 
   bool canBuild(std::string component) override {
-    return component == BasicGRASPBuilder<XES>::idComponent();
+    return component == BuilderBasicGRASP<XES>::idComponent();
   }
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << SingleObjSearchBuilder<XES>::idComponent() << ":" << GRASP::family()
-       << ":BasicGRASP";
+    ss << SingleObjSearchBuilder<XES>::idComponent() << ":"
+       << FamilyGRASP::family() << ":BasicGRASP";
     return ss.str();
   }
 

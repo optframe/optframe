@@ -13,7 +13,7 @@
 
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics.hpp>  // many metaheuristics here...
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
+#include <OptFrame/Heuristics/ILS/ILSL.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VND.hpp>
 #include <OptFrame/Search/LocalSearch.hpp>

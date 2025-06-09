@@ -24,15 +24,13 @@ import optframe.concepts;
 
 #endif
 
-// GRASPH ? TODO FIX THE NAME
-
 namespace optframe {
 
-class GRASPH {
+class FamilyGRASP {
  public:
-  static std::string family() { return "GRASPH:"; }
+  static std::string family() { return "GRASP:"; }
 
-  virtual ~GRASPH() {}
+  virtual ~FamilyGRASP() {}
 };
 
 }  // namespace optframe

@@ -22,8 +22,8 @@
 #include <OptFrame/Heuristics/EA/ESContinuous.hpp>
 #include <OptFrame/Heuristics/EA/NGES.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
+#include <OptFrame/Heuristics/ILS/ILSL.hpp>
 #include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
-#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BI.hpp>
 #include <OptFrame/Heuristics/LocalSearches/EmptyLS.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FI.hpp>
@@ -367,7 +367,7 @@ int main(int argc, char** argv) {
 
          CloneConstructive<ESolutionHFMVRP>
    cloneSolAsConstructive(initialSol->first);
-         IteratedLocalSearchLevels<ESolutionHFMVRP> ilsl(*eval,
+         ILSL<ESolutionHFMVRP> ilsl(*eval,
    cloneSolAsConstructive, newVNDUpdateADS, *ilsl_pert, 130, 15);
          ilsl.setMessageLevel(4);
 
