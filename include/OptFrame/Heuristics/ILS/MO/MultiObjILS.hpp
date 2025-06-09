@@ -14,13 +14,13 @@
 #include "../../../InitialPareto.hpp"
 #include "../../../MOLocalSearch.hpp"
 #include "../../../Search/MultiObjSearch.hpp"
-#include "MOILS.h"
+#include "FamilyMOILS.h"
 
 namespace optframe {
 
 template <class H, XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<XMES>>
-class MultiObjILS : public MOILS, public MultiObjSearch<XMES> {
+class MultiObjILS : public FamilyMOILS, public MultiObjSearch<XMES> {
   using XEv = typename XMEv::XEv;
   using XES = std::pair<S, XEv>;  // TODO:  remove
 

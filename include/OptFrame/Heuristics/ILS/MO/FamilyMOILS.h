@@ -4,17 +4,15 @@
 #ifndef OPTFRAME_MOILS_FAMILY_H_
 #define OPTFRAME_MOILS_FAMILY_H_
 
-#include <string.h>
-
-using namespace std;
+#include <string>
 
 namespace optframe {
 
-class MOILS {
+class FamilyMOILS {
  public:
-  static string family() { return "MOILS:"; }
+  static std::string family() { return "MOILS:"; }
 
-  virtual ~MOILS() {}
+  virtual ~FamilyMOILS() {}
 };
 
 }  // namespace optframe

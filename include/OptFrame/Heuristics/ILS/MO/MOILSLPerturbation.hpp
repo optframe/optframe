@@ -13,13 +13,13 @@
 #include <OptFrame/Core/RandGen.hpp>
 
 #include "../../../Search/MultiObjSearch.hpp"
-#include "MOILS.h"
+#include "FamilyMOILS.h"
 
 namespace optframe {
 
 // template<XSolution S, XEvaluation XEv=Evaluation<>>
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-class MOILSLPerturbation : public Component, public MOILS {
+class MOILSLPerturbation : public Component, public FamilyMOILS {
  public:
   virtual ~MOILSLPerturbation() {}
 
@@ -36,7 +36,7 @@ class MOILSLPerturbation : public Component, public MOILS {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Component::idComponent() << MOFamilyILS::family() << "LevelPert";
+    ss << Component::idComponent() << FamilyMOILS::family() << "LevelPert";
     return ss.str();
   }
 };

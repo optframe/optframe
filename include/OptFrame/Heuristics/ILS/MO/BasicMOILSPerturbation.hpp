@@ -14,14 +14,14 @@
 
 #include "../../../Hyper/ComponentBuilder.hpp"
 #include "../../../Search/MultiObjSearch.hpp"
-#include "MOILS.h"
+#include "FamilyMOILS.h"
 
 namespace optframe {
 
 // template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S,
 // XEv>>
 template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-class BasicMOILSPerturbation : public MOILS, public Component {
+class BasicMOILSPerturbation : public FamilyMOILS, public Component {
  private:
   // MultiEvaluator<S, XEv>& mEval;
   sref<GeneralEvaluator<XMES>> mEval;
