@@ -19,6 +19,8 @@ OptFrame
 
 [![PyPI version](https://badge.fury.io/py/optframe.svg)](https://badge.fury.io/py/optframe)
 
+[![REUSE status](https://api.reuse.software/badge/github.com/OptFrame/OptFrame)](https://api.reuse.software/info/github.com/OptFrame/OptFrame)
+
 ## OptFrame - C++ Optimization Framework
 
 > OptFrame is a multi-language combinatorial optimization framework for metaheuristics written in modern C++.
