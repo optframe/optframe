@@ -14,9 +14,12 @@ using TSP_fcore::Move2Opt;
 using TSP_fcore::MoveSwap;
 using TSP_fcore::MoveSwapDelta;
 
-// Global set to track all allocated solutions for cleanup
-#include <set>
-static std::set<void*> allocated_solutions;
+// Simple and efficient memory management
+#include <vector>
+#include <memory>
+
+// Global registry for automatic cleanup
+static std::vector<std::unique_ptr<std::vector<int>>> solution_registry;
 
 // directly testing optframe C library (static)
 
@@ -34,7 +37,10 @@ FakeSolutionPtr fconstructive_c(FakeProblemPtr p_ptr) {
   std::shared_ptr<PTSP> problem_view{(PTSP*)p_ptr, [](PTSP*) {}};
   sref<PTSP> problem{problem_view};
   auto v = TSP_fcore::frandom(problem);
-  return new std::vector<int>(std::move(v));
+  auto ptr = std::make_unique<std::vector<int>>(std::move(v));
+  auto* raw_ptr = ptr.get();
+  solution_registry.push_back(std::move(ptr));
+  return raw_ptr;
 }
 
 // ==================
@@ -62,7 +68,7 @@ FakeMovePtr fnsrand_c_2opt(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
 }
 
 FakeMovePtr fmove_apply_c(FakeProblemPtr p_ptr, FakeMovePtr m_ptr,
-                          FakeSolutionPtr s_ptr) {
+                         FakeSolutionPtr s_ptr) {
   auto* m = (MoveSwap*)m_ptr;
   int i = m->i;
   int j = m->j;
@@ -226,27 +232,27 @@ PairMoveDoubleLib fmove_applyupdate_delta_c(FakeProblemPtr p_ptr,
   double diff = 0;
   int i = m->i;
   int j = m->j;
-  auto* pv = (std::vector<int>*)s_ptr;
-  auto& v = *pv;
+  auto* v = (std::vector<int>*)s_ptr;
+  auto& vec = *v;
 
   int before_i = (pTSP->n + i - 1) % pTSP->n;
   int before_j = (pTSP->n + j - 1) % pTSP->n;
   int after_i = (pTSP->n + i + 1) % pTSP->n;
   int after_j = (pTSP->n + j + 1) % pTSP->n;
 
-  diff -= pTSP->dist(v[before_i], v[i]);
-  diff -= pTSP->dist(v[i], v[after_i]);
-  diff -= pTSP->dist(v[before_j], v[j]);
-  diff -= pTSP->dist(v[j], v[after_j]);
-  diff += pTSP->dist(v[before_i], v[j]);
-  diff += pTSP->dist(v[j], v[after_i]);
-  diff += pTSP->dist(v[before_j], v[i]);
-  diff += pTSP->dist(v[i], v[after_j]);
+  diff -= pTSP->dist(vec[before_i], vec[i]);
+  diff -= pTSP->dist(vec[i], vec[after_i]);
+  diff -= pTSP->dist(vec[before_j], vec[j]);
+  diff -= pTSP->dist(vec[j], vec[after_j]);
+  diff += pTSP->dist(vec[before_i], vec[j]);
+  diff += pTSP->dist(vec[j], vec[after_i]);
+  diff += pTSP->dist(vec[before_j], vec[i]);
+  diff += pTSP->dist(vec[i], vec[after_j]);
 
   // perform swap of clients i and j
-  int aux = v[j];
-  v[j] = v[i];
-  v[i] = aux;
+  int aux = vec[j];
+  vec[j] = vec[i];
+  vec[i] = aux;
 
   return PairMoveDoubleLib{.first = new MoveSwapDelta{pTSP, j, i},
                            .second = diff};
@@ -298,11 +304,10 @@ FakeMovePtr fCurrent_delta_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
 
 FakeSolutionPtr f_sol_deepcopy(FakeSolutionPtr s_ptr) {
   auto* v = (std::vector<int>*)(s_ptr);
-  // Create a new vector with the same data
-  auto* new_v = new std::vector<int>(*v);
-  // Track this allocation
-  allocated_solutions.insert(new_v);
-  return new_v;
+  auto ptr = std::make_unique<std::vector<int>>(*v);
+  auto* raw_ptr = ptr.get();
+  solution_registry.push_back(std::move(ptr));
+  return raw_ptr;
 }
 
 size_t f_sol_tostring(FakeSolutionPtr s_ptr, char* str, size_t str_size) {
@@ -318,11 +323,15 @@ int f_decref_solution(FakeSolutionPtr s_ptr) {
   if (s_ptr == nullptr) {
     return 0;  // Already deleted or null
   }
-  auto* v = (std::vector<int>*)(s_ptr);
-  // Remove from tracking set
-  allocated_solutions.erase(s_ptr);
-  delete v;
-  return 0;  // Return 0 to indicate no more references
+  // Remove from registry if present
+  auto it = std::find_if(solution_registry.begin(), solution_registry.end(),
+                        [s_ptr](const std::unique_ptr<std::vector<int>>& ptr) {
+                          return ptr.get() == s_ptr;
+                        });
+  if (it != solution_registry.end()) {
+    solution_registry.erase(it);
+  }
+  return 0;  // Always return 0
 }
 
 int f_decref_move(FakeMovePtr m_ptr) {
@@ -331,13 +340,7 @@ int f_decref_move(FakeMovePtr m_ptr) {
   return true;
 }
 
-// Function to clean up any remaining allocated solutions
+// Simple and reliable cleanup function
 void cleanup_remaining_solutions() {
-  for (auto* ptr : allocated_solutions) {
-    if (ptr != nullptr) {
-      auto* v = (std::vector<int>*)(ptr);
-      delete v;
-    }
-  }
-  allocated_solutions.clear();
+  solution_registry.clear(); // unique_ptr automatically deletes objects
 }
