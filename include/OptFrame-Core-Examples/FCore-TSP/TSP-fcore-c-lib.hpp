@@ -14,6 +14,10 @@ using TSP_fcore::Move2Opt;
 using TSP_fcore::MoveSwap;
 using TSP_fcore::MoveSwapDelta;
 
+// Global set to track all allocated solutions for cleanup
+#include <set>
+static std::set<void*> allocated_solutions;
+
 // directly testing optframe C library (static)
 
 double fevaluate_c(FakeProblemPtr p_ptr, FakeSolutionPtr s_ptr) {
@@ -294,7 +298,11 @@ FakeMovePtr fCurrent_delta_c(FakeProblemPtr p_ptr, FakePythonObjPtr it_ptr) {
 
 FakeSolutionPtr f_sol_deepcopy(FakeSolutionPtr s_ptr) {
   auto* v = (std::vector<int>*)(s_ptr);
-  return new std::vector<int>(*v);
+  // Create a new vector with the same data
+  auto* new_v = new std::vector<int>(*v);
+  // Track this allocation
+  allocated_solutions.insert(new_v);
+  return new_v;
 }
 
 size_t f_sol_tostring(FakeSolutionPtr s_ptr, char* str, size_t str_size) {
@@ -307,13 +315,29 @@ size_t f_sol_tostring(FakeSolutionPtr s_ptr, char* str, size_t str_size) {
 }
 
 int f_decref_solution(FakeSolutionPtr s_ptr) {
+  if (s_ptr == nullptr) {
+    return 0;  // Already deleted or null
+  }
   auto* v = (std::vector<int>*)(s_ptr);
+  // Remove from tracking set
+  allocated_solutions.erase(s_ptr);
   delete v;
-  return true;
+  return 0;  // Return 0 to indicate no more references
 }
 
 int f_decref_move(FakeMovePtr m_ptr) {
   auto* m = (Move<ESolutionTSP>*)(m_ptr);
   delete m;
   return true;
+}
+
+// Function to clean up any remaining allocated solutions
+void cleanup_remaining_solutions() {
+  for (auto* ptr : allocated_solutions) {
+    if (ptr != nullptr) {
+      auto* v = (std::vector<int>*)(ptr);
+      delete v;
+    }
+  }
+  allocated_solutions.clear();
 }

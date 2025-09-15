@@ -143,5 +143,8 @@ int main() {
 
   bool b = optframe_api1d_destroy_engine(engine);
 
+  // Clean up any remaining allocated solutions
+  cleanup_remaining_solutions();
+
   return 0;
 }
